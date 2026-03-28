@@ -50,7 +50,7 @@
 | Dokumentacija        | Ažuriranje tehničke dokumentacije i korisničkog uputstva.                          |
 ### Pravila u slučaju neispunjavanja obaveza
 
--Prvo upozorenje: Usmena opomena na internom sastanku tima uz reviziju roka za taj zadatak.
--Drugo upozorenje: Pismeno upozorenje putem e-maila/poruke, uz obavezu nadoknade propuštenog u roku od 48 sati.
--Prijava nastavnom osoblju: Ako član tima ne odgovara na poruke duže od 3 dana ili propusti dva uzastopna ključna roka bez opravdanja.
--Evidentiranje problema: Vodit će se kratka bilješka u zapisniku sastanka o svim neispunjenim obavezama radi transparentnosti pri ocjenjivanju doprinosa.
+* Prvo upozorenje: Usmena opomena na internom sastanku tima uz reviziju roka za taj zadatak.
+* Drugo upozorenje: Pismeno upozorenje putem e-maila/poruke, uz obavezu nadoknade propuštenog u roku od 48 sati.
+* Prijava nastavnom osoblju: Ako član tima ne odgovara na poruke duže od 3 dana ili propusti dva uzastopna ključna roka bez opravdanja.
+* Evidentiranje problema: Vodit će se kratka bilješka u zapisniku sastanka o svim neispunjenim obavezama radi transparentnosti pri ocjenjivanju doprinosa.
