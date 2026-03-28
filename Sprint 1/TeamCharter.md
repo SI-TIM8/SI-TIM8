@@ -39,4 +39,18 @@
 * Rješavanje neslaganja: Glasanje prostom većinom. U slučaju izjednačenog rezultata, prednost ima član zadužen za tu specifičnu oblast. Ukoliko nesuglasice nisu riješene, kontaktiramo asistente.
 
 
+### Početne odgovornosti
 
+|Funkcija|Ključne aktivnosti|
+|Koordinacija sprinta|Praćenje rokova, organizacija sastanaka, uklanjanje blokada.|
+|Backlog i zahtjevi|Komunikacija sa "klijentom", definisanje detalja funkcionalnosti.|
+|Arhitektura i tehnika|Dizajn baze podataka (ER model), odabir frameworka.|
+|Testiranje i kvalitet|Provjerava ispravnosti postavljenih funkcionalnosti, način njihovog rada|
+|Dokumentacija|Ažuriranje tehničke dokumentacije i korisničkog uputstva.|
+
+###Pravila u slučaju neispunjavanja obaveza
+
+-Prvo upozorenje: Usmena opomena na internom sastanku tima uz reviziju roka za taj zadatak.
+-Drugo upozorenje: Pismeno upozorenje putem e-maila/poruke, uz obavezu nadoknade propuštenog u roku od 48 sati.
+-Prijava nastavnom osoblju: Ako član tima ne odgovara na poruke duže od 3 dana ili propusti dva uzastopna ključna roka bez opravdanja.
+-Evidentiranje problema: Vodit će se kratka bilješka u zapisniku sastanka o svim neispunjenim obavezama radi transparentnosti pri ocjenjivanju doprinosa.
