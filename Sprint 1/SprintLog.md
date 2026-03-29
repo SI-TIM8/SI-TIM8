@@ -1,6 +1,7 @@
 ### Sprint Goal
 
-Sprint 1
+* Sprint 1
+  
  Ciljevi sprinta
  *  Upoznavanje tima s temom
  *  Organizacija sastanaka
@@ -8,10 +9,12 @@ Sprint 1
  *  Evidentiranje potencijalnih ograničenja
  *  Finaliziranje potrebnih dokumenata
 
-Ključne stavke:
+* Ključne stavke:
+  
 U timu smo se ravnopravno raspodijelili, diskutovali o svakom dokumentu pojedinačno i donosili kritička mišljenja na svaki od njih. Pošto smo se rasporedili, svaka osoba je trebala objasniti razloge zašto je baš tako nešto uradila i ostale kolege su davale svoja mišljenja i kritike. 
 
-Rizici i zavisnosti
+* Rizici i zavisnosti
+  
 U ovom sprintu nismo imali nikakvih poteškoća pri radu.
 Održani sastanci:
 
@@ -19,7 +22,9 @@ Održani sastanci:
 
 ### Sprint Backlog
 
-# Raspodjela zadataka
+Raspodjela zadataka
+
+
 | ID | Naziv zadatka              | Odgovorna osoba                                      | Status     | Napomena |
 |----|---------------------------|------------------------------------------------------|------------|----------|
 | 1  | Team Charter              | Alma Jusufbegović, Emina Hamamdžić                   | Završeno   | -        |
@@ -29,7 +34,8 @@ Održani sastanci:
 
 ### Sprint Review Summary
 
- Sprint 1
+Sprint 1
+
 U narednom sprintu 2, fokus je na razradi backloga, user stories, acceptance criteria, prioritizaciji i početni nefunkcionalni zahtjevi.
 
 U ovom sprintu smo završili sve zadatke, napisali smo 12 stavki u product backlogu, precizno definisali pravila i kreirali stakeholdere. Nismo imali stvari koje nismo završili.
