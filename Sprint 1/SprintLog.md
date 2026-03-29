@@ -1,7 +1,7 @@
 ### Sprint Goal
 
-# Sprint 1
-# Ciljevi sprinta
+Sprint 1
+ Ciljevi sprinta
  *  Upoznavanje tima s temom
  *  Organizacija sastanaka
  *  Određivanje osnovnih funkcionalnosti projekta
@@ -11,7 +11,7 @@
 Ključne stavke:
 U timu smo se ravnopravno raspodijelili, diskutovali o svakom dokumentu pojedinačno i donosili kritička mišljenja na svaki od njih. Pošto smo se rasporedili, svaka osoba je trebala objasniti razloge zašto je baš tako nešto uradila i ostale kolege su davale svoja mišljenja i kritike. 
 
-# Rizici i zavisnosti
+Rizici i zavisnosti
 U ovom sprintu nismo imali nikakvih poteškoća pri radu.
 Održani sastanci:
 
@@ -29,7 +29,7 @@ Održani sastanci:
 
 ### Sprint Review Summary
 
-# Sprint 1
+ Sprint 1
 U narednom sprintu 2, fokus je na razradi backloga, user stories, acceptance criteria, prioritizaciji i početni nefunkcionalni zahtjevi.
 
 U ovom sprintu smo završili sve zadatke, napisali smo 12 stavki u product backlogu, precizno definisali pravila i kreirali stakeholdere. Nismo imali stvari koje nismo završili.
@@ -39,7 +39,7 @@ U ovom sprintu smo donijeli ključne odluke o stakeholderima, načinu rada na pr
 
 ###  Sprint Retrospective Summary
 
-Rssporedili smo se na vrijeme na same zadatke, davali stalno feedback na grupu.
+Rasporedili smo se na vrijeme na same zadatke, davali stalno feedback na grupu.
 U narednom sprintu će jedna osoba rasporediti zadatke drugima gdje će svako imati jasan rok do kada treba to završiti, bolja upučenost u rad drugih, kako bi kompletan projekat bio konzistentan.
 
 * Srijeda 25.03.2026. 12h - raspodjela zadataka
