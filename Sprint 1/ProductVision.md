@@ -46,3 +46,17 @@ U postojećim rješenjima upravljanje opremom često se vrši putem Excel tabela
 - bolja organizacija rada u laboratoriji  
 - optimalnije iskorištavanje opreme  
 - pouzdanije izvođenje nastavnih i istraživačkih aktivnosti  
+
+---
+
+## Scope MVP verzije
+
+### Ključne funkcionalnosti
+- evidencija opreme  
+- pregled zauzeća termina  
+- rezervacija termina  
+- odobravanje rezervacija  
+
+### Osnovne sistemske funkcije
+- log in sistem (bez registracije)  
+- admin panel za kreiranje korisničkih naloga  
