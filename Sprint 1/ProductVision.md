@@ -60,3 +60,28 @@ U postojećim rješenjima upravljanje opremom često se vrši putem Excel tabela
 ### Osnovne sistemske funkcije
 - log in sistem (bez registracije)  
 - admin panel za kreiranje korisničkih naloga  
+
+---
+
+## Šta ne ulazi u MVP
+
+- notifikacije (email / SMS obavijesti)  
+- napredna analitika (korištenje, zauzetost, kvarovi)  
+- AI funkcionalnosti (predikcija kvarova, detekcija problema)  
+- eksterni autentifikacioni sistemi  
+
+---
+
+## Ključna ograničenja
+
+- vremensko ograničenje: maksimalno 13 sedmica  
+- sastanci tima: subotom  
+- backend tehnologija: C# i .NET  
+- ciljna platforma: web browser  
+
+---
+
+## Pretpostavke
+
+- članovi tima imaju osnovno znanje u C# i .NET  
+- administrator kreira korisničke naloge i definiše njihove uloge
