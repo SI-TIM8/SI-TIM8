@@ -1,15 +1,19 @@
 | ID | Naziv stavke | Kratak opis | Tip stavke | Prioritet | Procjena (Story Points) | Status | Sprint / Release | Napomena |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| 001 | Postavka projekta i DB | Inicijalizacija .NET rješenja, Web API-ja i SQL baze podataka. | Technical Task | Visok (P0) | 5 | To Do |  | Temelj za sav dalji rad. |
-| 002 | Dokumentacija baze podataka | Izrada ER dijagrama i opisa relacija u bazi. | Documentation | Srednji (P2) | 3 | To Do |  | Bitno za održivost koda u timu. |
-| 003 | Kreiranje korisnika | Admin panel za unos studenata i profesora. | Feature | Visok (P1) | 3 | To Do |  | Neophodno da bi sistem imao korisnike. |
-| 004 | Login sistem | Autentifikacija korisnika (Username/Password) na osnovu uloga (Student, Profesor,Laboratorijski tehničar, Admin). | Feature | Visok (P0) | 8 | To Do |  | Ključno za sigurnost i prava pristupa. |
-| 005 | Upravljanje inventarom | CRUD operacije nad laboratorijskom opremom. | Feature | Visok (P1) | 5 | To Do |  | Laboratorijski tehničar unosi opremu. |
-| 006 | Istraživanje biblioteke za kalendar | Analiza dostupnih biblioteka za prikaz rezervacija u browseru. | Research | Nizak (P3) | 2 | To Do |  | Potrebno prije implementacije Pregleda zauzeća. |
-| 007 | Pregled zauzeća | Kalendarski ili tabelarni prikaz termina za svaku jedinicu opreme. | Feature | Srednji (P1) | 8 | To Do |  | Osnova za izbjegavanje duplih rezervacija. |
-| 008 | Validacija duplih termina | Logika na backendu koja sprječava da dva korisnika zauzmu isti uređaj u isto vrijeme. | Technical Task | Visok (P1) | 5 | To Do |  | Rješava jedan od ključnih problema (konflikt). |
-| 009 | Filtriranje opreme | Pretraga opreme po kategoriji, nazivu ili trenutnoj dostupnosti. | Feature | Nizak (P3) | 3 | To Do |  | Poboljšava korisničko iskustvo (UX). |
-| 010 | Podnošenje rezervacije | Forma za studente da izaberu uređaj i vremenski slot. | Feature | Visok (P1) | 5 | To Do |  | Glavni problem koji sistem rješava. |
-| 011 | Odobravanje rezervacije | Interfejs za profesore/asistente da potvrde ili odbiju zahtjev studenta. | Feature | Srednji (P2) | 5 | To Do |  | Mehanizam kontrole korištenja. |
-| 012 | Dashboard za tehničara | Pregled opreme kojoj je potreban servis ili je prijavljena kao neispravna. | Feature | Srednji (P2) | 5 | To Do |  | Status: Ispravno / Neispravno. |
+| 001 | Postavka projekta i baze podataka | Inicijalizacija .NET rješenja, Web API-ja i SQL baze podataka. | Technical Task | Visok (P0) | 5 | To Do |  | Temelj za dalji razvoj i deployment. |
+| 002 | Dokumentacija baze podataka (ERD) | Izrada ER dijagrama i definisanje relacija između entiteta. | Documentation | Visok (P0) | 3 | To Do |  | Neophodno za strukturalnu konzistentnost podataka. |
+| 003 | Upravljanje korisničkim računima | Modul za administraciju i unos korisnika u sistem. | Feature | Visok (P1) | 3 | To Do |  | Omogućava rano kreiranje testnih podataka. |
+| 004 | Autentifikacijski sistem | Implementacija prijave na sistem na osnovu uloga korisnika. | Feature | Visok (P0) | 8 | To Do |  | Osigurava sigurnost i kontrolu pristupa. |
+| 005 | Upravljanje inventarom opreme | CRUD operacije nad resursima laboratorijske opreme. | Feature | Visok (P1) | 5 | To Do |  | Osnovni registar dostupnih sredstava za rad. |
+| 006 | Analiza biblioteke za prikaz kalendara | Odabir i testiranje komponente za vizualizaciju termina. | Research | Srednji (P1) | 2 | To Do |  | Priprema za implementaciju korisničkog interfejsa. |
+| 007 | Pregled zauzetosti resursa | Vizuelni prikaz dostupnosti i zauzetosti za svaku jedinicu opreme. | Feature | Srednji (P1) | 8 | To Do |  | Ključno za planiranje laboratorijskih vježbi. |
+| 008 | Proces podnošenja rezervacije | Korisnička forma za odabir uređaja i vremenskog termina. | Feature | Visok (P1) | 5 | To Do |  | Osnovna funkcionalnost sistema za krajnje korisnike. |
+| 009 | Validacija preklapanja termina | Backend logika koja sprječava dvostruke rezervacije. | Technical Task | Visok (P1) | 5 | To Do |  | Rješava problem konflikta u rasporedu korištenja. |
+| 010 | Modul za odobravanje zahtjeva | Interfejs za profesore za validaciju pristiglih rezervacija. | Feature | Srednji (P2) | 5 | To Do |  | Mehanizam administrativne kontrole i nadzora. |
+| 011 | Kontrolna ploča za tehničare | Pregled opreme prema statusu ispravnosti i potrebi za servisom. | Feature | Srednji (P2) | 5 | To Do |  | Upravljanje operativnim stanjem laboratorijskih resursa. |
+| 012 | Napredno filtriranje opreme | Pretraga resursa prema kategoriji, nazivu i ispravnosti. | Feature | Nizak (P3) | 3 | To Do |  | Optimizacija korisničkog iskustva pri pretrazi. |
+| 013 | Statistički izvještaji o korištenju | Generisanje podataka o učestalosti upotrebe pojedinih uređaja. | Feature | Nizak (P3) | 5 | To Do |  | Pomoć pri planiranju nabavke i održavanja opreme. |
+| 014 | Historija korištenja i revizija | Evidencija o prošlim korisnicima i svim promjenama na uređajima. | Technical Task | Nizak (P3) | 3 | To Do |  | Omogućava praćenje odgovornosti za resurse. |
+| 015 | Upravljanje korisničkim profilom | Funkcionalnost promjene lozinke i ažuriranja ličnih podataka. | Feature | Nizak (P3) | 3 | To Do |  | Standardna sigurnosna i administrativna higijena. |
 
+	
