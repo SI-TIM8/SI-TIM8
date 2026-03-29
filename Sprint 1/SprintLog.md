@@ -20,13 +20,12 @@ Održani sastanci:
 ### Sprint Backlog
 
 # Raspodjela zadataka
-|ID|Naziv zadatka|Odgovorna osoba|Status|Napomena|
-|-|-|-|
-|1|Team Charter|Alma Jusufbegović, Emina Hamamdžić|Završeno| - |
-|2|Product Vision|Refik Mujčinović, Aner Atović|Završeno| - |
-|3|Stakeholder Map|Hamza Hadžić, Merima Glušac|Završeno| - |
-|4|Početni Product Backlog|Haris Sadiković, Hamza Hadžić, Haris Macić|Završeno| - |
-
+| ID | Naziv zadatka              | Odgovorna osoba                                      | Status     | Napomena |
+|----|---------------------------|------------------------------------------------------|------------|----------|
+| 1  | Team Charter              | Alma Jusufbegović, Emina Hamamdžić                   | Završeno   | -        |
+| 2  | Product Vision            | Refik Mujčinović, Aner Atović                        | Završeno   | -        |
+| 3  | Stakeholder Map           | Hamza Hadžić, Merima Glušac                          | Završeno   | -        |
+| 4  | Početni Product Backlog   | Haris Sadiković, Hamza Hadžić, Haris Macić           | Završeno   | -        |
 
 ### Sprint Review Summary
 
