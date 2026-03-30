@@ -33,7 +33,7 @@ Raspodjela zadataka
 
 ### Sprint Review Summary
 
-U ovom sprintu smo završili sve zadatke, napisali smo 12 stavki u product backlogu, precizno definisali pravila i kreirali stakeholdere. Nismo imali stvari koje nismo završili.
+U ovom sprintu smo završili sve zadatke, napisali smo 15 stavki u product backlogu, precizno definisali pravila i kreirali stakeholdere. Nismo imali stvari koje nismo završili.
 
 U ovom sprintu smo donijeli ključne odluke o stakeholderima, načinu rada na projektu, u kojem smjeru bi se trebao projekat realizirati.
 
