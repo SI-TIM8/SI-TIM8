@@ -18,7 +18,7 @@
 ### Način komunikacije:
 
 * Primarni kanal komunikacije: Viber
-* Očekivano vrijeme odgovora: Maksimalno 4 sata tokom radnog dana (09:00 - 20:00h). Vikendom po dogovoru.
+* Očekivano vrijeme odgovora: Maksimalno 4 sata tokom radnog dana. Vikendom po dogovoru.
 * Način zakazivanja sastanaka: Putem Google Calendar-a. Poziv se šalje minimalno 24 sata ranije
   
 ### Radna pravila tima:
