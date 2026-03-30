@@ -23,20 +23,21 @@ Ovi problemi uzrokuju gubitak vremena, smanjuju efikasnost rada i negativno uti�
 - koriste opremu i vrše rezervacije  
 - potreban brz i jednostavan pristup  
 - uvid u dostupnost i ispravnost opreme  
+- pregled i otkazivanje vlastitih rezervacija  
 
 ### Profesori i asistenti
-- odobravaju korištenje opreme  
-- nadgledaju upotrebu i sigurnost  
-- kontrola nad rezervacijama  
+- odobravaju ili odbijaju zahtjeve za rezervaciju  
+- nadgledaju upotrebu i sigurnost opreme  
+- mogu prijaviti kvar opreme tehničaru  
 
 ### Laboratorijski tehničari
-- održavanje opreme  
-- praćenje statusa (ispravnost, dostupnost)  
+- održavaju opremu i ažuriraju njen status  
+- prate status (ispravnost, dostupnost)  
 
 ### Administratori sistema
-- upravljanje korisnicima i sistemom  
-- osiguravanje stabilnosti i sigurnosti  
-- definisanje i kontrola pravila
+- upravljaju korisnicima i sistemom
+- definišu radno vrijeme, termine i pravila korištenja  
+- osiguravaju stabilnost i sigurnost  
 
 ---
 
@@ -55,20 +56,23 @@ Ovi problemi uzrokuju gubitak vremena, smanjuju efikasnost rada i negativno uti�
 
 ### Ključne funkcionalnosti
 - evidencija opreme  
-- pregled zauzeća termina  
-- rezervacija termina  
-- odobravanje rezervacija  
+- pregled zauzeća opreme i termina
+- podnošenje i otkazivanje rezervacija
+- odobravanje rezervacija od strane profesora/asistenta
+- upravljanje statusom opreme i obrada kvarova
+- blokiranje kabineta u određenim periodima
 
 ### Osnovne sistemske funkcije
-- log in sistem (bez registracije)  
-- admin panel za kreiranje korisničkih naloga  
+- log in sistem zasnovan na ulogama (bez registracije)  
+- admin panel za kreiranje korisničkih naloga i upravljanje kabinetima  
 
 ---
 
 ## Šta ne ulazi u MVP
 
 - notifikacije (email / SMS obavijesti)  
-- napredna analitika (korištenje, zauzetost, kvarovi)  
+- napredna analitika (korištenje, zauzetost, kvarovi)
+- historija korištenja opreme  
 - AI funkcionalnosti (predikcija kvarova, detekcija problema)  
 - eksterni autentifikacioni sistemi  
 
@@ -87,3 +91,5 @@ Ovi problemi uzrokuju gubitak vremena, smanjuju efikasnost rada i negativno uti�
 
 - članovi tima imaju osnovno znanje u C# i .NET  
 - administrator kreira korisničke naloge i definiše njihove uloge
+
+---
