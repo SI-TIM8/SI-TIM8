@@ -1,17 +1,8 @@
-| Theme            | ID                    | Title                   | User Story            | Acceptance Criteria | Priority         | Estimation      | Sprint |
-|------------------|-----------------------|-------------------------|-----------------------|---------------------|------------------|-----------------|------|
-| [add theme here] | [add ID here]         | [add story  title here] | [describe story here] | [add criteria here] | [add level here] | [add info here] |      |
-|                  |                       |                         |                       | [add criteria here] | [add level here] | [add info here] |      |
-|                  |                       |                         |                       | [add criteria here] | [add level here] | [add info here] |      |
-|                  | [add ID here]         | [add story  title here] | [describe story here] | [add criteria here] | [add level here] | [add info here] |      |
-|                  |                       |                         |                       | [add criteria here] | [add level here] | [add info here] |      |
-|                  |                       |                         |                       | [add criteria here] | [add level here] | [add info here] |      |
-| [add theme here] | [add ID here]         | [add story  title here] | [describe story here] | [add criteria here] | [add level here] | [add info here] |      |
-|                  |                       |                         |                       | [add criteria here] | [add level here] | [add info here] |      |
-|                  |                       |                         |                       | [add criteria here] | [add level here] | [add info here] |      |
-|                  | [add ID here]         | [add story  title here] | [describe story here] | [add criteria here] | [add level here] | [add info here] |      |
-|                  |                       |                         |                       | [add criteria here] | [add level here] | [add info here] |      |
-|                  |                       |                         |                       | [add criteria here] | [add level here] | [add info here] |      |
-| [add theme here] | [add ID here]         | [add story  title here] | [describe story here] | [add criteria here] | [add level here] | [add info here] |      |
-|                  |                       |                         |                       | [add criteria here] | [add level here] | [add info here] |      |
-|                  |                       |                         |                       | [add criteria here] | [add level here] | [add info here] |      |
+| Tema | ID | Naziv | Opis | Acceptance Criteria | Prioritet | Procjena (Story Points) | Sprint |
+|-|-|-|-|-|-|-|-|
+|Upravljanje pristupom |US01| Prijava na sistem | Kao registrovani korisnik, želim da se prijavim na sistem, kako bih pristupio resursima. | 1. Login uspješan uz ispravan email/lozinku. 2. Poruka o grešci za neispravne podatke. 3. Redirect na dashboard prema ulozi. | High | 3 SP |      |
+| | US02| Promjena lozinke | Kao korisnik, želim promijeniti inicijalnu lozinku, kako bih osigurao svoj profil.| 1. Validacija stare lozinke. 2. Nova lozinka mora imati min. 8 karaktera. 3. Potvrda o uspješnoj promjeni putem emaila. | Medium | 2 SP |      |
+| Resursi i Kabineti |US03| Unos nove opreme| Kao administrator, želim unijeti novu opremu u bazu, kako bi bila dostupna za rezervaciju. | 1. Unos naziva, serijskog broja i kabineta. 2. Provjera duplikata serijskog broja. 3. Oprema odmah vidljiva u listi nakon spašavanja. | High | 5 SP |      |
+||US04| Ažuriranje statusa | Kao tehničar, želim označiti opremu kao neispravnu, kako bi se spriječila rezervacija. | 1. Promjena statusa u "Maintenance". 2. Automatsko otkazivanje budućih rezervacija za tu opremu. 3. Obavijest korisnicima čije su rezervacije otkazane. | High |3 SP|      |
+| Rezervacije | US05| Kreiranje rezervacije | Kao student, želim rezervisati slobodan termin i opremu, kako bih obavio vježbe. | 1. Prikaz samo slobodnih termina. 2. Onemogućeno preklapanje (double-booking). 3. Slanje zahtjeva na odobrenje asistentu. | High | 8 SP |      |
+||US06  | Odobravanje zahtjeva | Kao asistent, želim pregledati zahtjeve, kako bih potvrdio korištenje laboratorije. | 1. Lista svih "Pending" zahtjeva. 2. Mogućnost "Approve" ili "Reject" sa komentarom. 3. Promjena statusa rezervacije u realnom vremenu. | High | 5 SP | |
