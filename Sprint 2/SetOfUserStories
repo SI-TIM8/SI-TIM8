@@ -1,3 +1,13 @@
+|                  |                       |                         |                       |                     |                  |                 |           |
+|------------------|-----------------------|-------------------------|-----------------------|---------------------|------------------|-----------------|-----------|
+| #VALUE!          |                       |                         |                       |                     |                  |                 |           |
+|                  |                       |                         |                       |                     |                  |                 |           |
+| [Sprint]         |                       |                         | User Story Author:    | [add name here]     |                  |                 |           |
+|                  |                       |                         | Sprint Start Date:    | [add date here]     |                  |                 |           |
+|                  |                       |                         |                       |                     |                  |                 |           |
+| Scope:           | [add boundaries here] |                         | Progress Tracker:     | 0%                  |                  |                 |           |
+|                  |                       |                         |                       |                     |                  |                 |           |
+|                  |                       |                         |                       |                     |                  |                 |           |
 | Theme            | ID                    | Title                   | User Story            | Acceptance Criteria | Priority         | Estimation      | Complete? |
 | [add theme here] | [add ID here]         | [add story  title here] | [describe story here] | [add criteria here] | [add level here] | [add info here] | FALSE     |
 |                  |                       |                         |                       | [add criteria here] | [add level here] | [add info here] | FALSE     |
