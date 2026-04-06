@@ -1,47 +1,47 @@
 # Product Backlog
 
-| ID | Naziv stavke | Kratak opis | Tip stavke | Prioritet | Procjena (SP) | Status | Veza sa sprintom | Napomena |
-|:---:|:---|:---|:---:|:---:|:---:|:---:|:---:|:---|
-| **01** | Definisati problem i ciljeve sistema | [cite_start]Razraditi problem koji sistem rješava i osnovne ciljeve proizvoda [cite: 1] | research | High | 3 | Done | Sprint 1 | |
-| **02** | Izraditi Product Vision | [cite_start]Definisati viziju sistema i vrijednost za korisnike [cite: 1] | documentation | High | 5 | Done | Sprint 1 | |
-| **03** | Identifikovati stakeholdere sistema | [cite_start]Prepoznati sve ključne stakeholder grupe [cite: 1] | research | High | 3 | Done | Sprint 1 | |
-| **04** | Izraditi Stakeholder Map | [cite_start]Vizualizacija stakeholdera i njihovih interesa [cite: 1] | documentation | High | 3 | Done | Sprint 1 | |
-| **05** | Napraviti početni Product Backlog | [cite_start]Izraditi početnu verziju backlog-a [cite: 1] | documentation | High | 5 | Done | Sprint 1 | |
-| **06** | Razraditi prioritetne user storyje | [cite_start]Definisati ključne user storyje za MVP [cite: 1] | documentation | High | 5 | To Do | Sprint 2 | |
-| **07** | Definisati acceptance criteria | [cite_start]Napisati mjerljive kriterije za storyje [cite: 1] | documentation | High | 5 | To Do | Sprint 2 | |
-| **08** | Uraditi prioritizaciju backloga | [cite_start]Sortirati backlog po poslovnoj vrijednosti [cite: 1] | research | High | 3 | To Do | Sprint 2 | |
-| **09** | Definisati početne NFR zahtjeve | [cite_start]Identifikovati sigurnosne, performansne i UX zahtjeve [cite: 1] | documentation | Medium | 3 | To Do | Sprint 2 | |
-| **10** | Izraditi Risk Register | [cite_start]Identifikovati rizike i plan mitigacije [cite: 1] | documentation | Medium | 3 | To Do | Sprint 3 | |
-| **11** | Napraviti Domain Model / Use Case Model | [cite_start]Modelovati entitete i odnose sistema [cite: 1] | documentation | High | 5 | To Do | Sprint 3 | |
-| **12** | Izraditi Architecture Overview | [cite_start]Definisati arhitekturu sistema [cite: 1] | documentation | High | 5 | To Do | Sprint 3 | |
-| **13** | Pripremiti Test Strategy | [cite_start]Definisati pristup testiranju [cite: 1] | documentation | Medium | 3 | To Do | Sprint 3 | |
-| **14** | Definisati Definition of Done | [cite_start]Dogovoriti kriterije završetka taska [cite: 1] | documentation | Medium | 2 | To Do | Sprint 4 | |
-| **15** | Napraviti Initial Release Plan | [cite_start]Planirati inkremente i MVP [cite: 1] | documentation | Medium | 3 | To Do | Sprint 4 | |
-| **16** | Razrada modela podataka sistema | [cite_start]Definisati strukturu baze i relacije između entiteta [cite: 2] | documentation | Medium | 3 | To Do | Sprint 3 | |
-| **17** | Postavka tehničkog skeletona sistema | [cite_start]Inicijalizacija projekta i osnovne strukture sistema [cite: 2] | technical task | High | 5 | To Do | Sprint 4 | |
-| **18** | Autentifikacija Login i tokeni | [cite_start]Implementirati login formu i JWT token autentifikaciju [cite: 2] | feature | High | 3 | To Do | Sprint 5 | |
-| **19** | Autentifikacija Role based | [cite_start]Implementirati role-based access control (RBAC) [cite: 2] | feature | High | 3 | To Do | Sprint 5 | |
-| **20** | Autentifikacija Logout i sesija | [cite_start]Implementirati odjavu i upravljanje sesijom [cite: 2] | feature | High | 2 | To Do | Sprint 5 | |
-| **21** | Upravljanje korisnicima | [cite_start]Administrator kreira i upravlja korisnicima [cite: 2] | feature | High | 5 | To Do | Sprint 6 | [cite_start]Neophodno za korisnike [cite: 2] |
-| **22** | Upravljanje kabinetima | [cite_start]Administrator vrši dodavanje i upravljanje kabinetima [cite: 2] | feature | High | 3 | To Do | Sprint 6 | |
-| **23** | Upravljanje inventarom CRUD opreme | [cite_start]Admin dodaje, uređuje i briše laboratorijsku opremu [cite: 2] | feature | High | 5 | To Do | Sprint 6 | |
-| **24** | Upravljanje inventarom - status dostupnosti | [cite_start]Administrator upravlja statusom dostupnosti opreme [cite: 2] | feature | High | 4 | To Do | Sprint 6 | |
-| **25** | Definisanje radnog vremena kabineta | [cite_start]Admin definiše radno vrijeme i trajanje termina [cite: 2] | feature | High | 5 | To Do | Sprint 6 | [cite_start]Sistem pravi raspored [cite: 2] |
-| **26** | Dodavanje rasporeda termina | [cite_start]Tehničar generiše raspored termina u laboratoriju [cite: 3] | feature | Medium | 3 | To Do | Sprint 6 | |
-| **27** | Blokiranje kabineta | [cite_start]Admin blokira korištenje kabineta (praznici, čišćenje...) [cite: 3] | feature | Medium | 3 | To Do | Sprint 6 | |
-| **28** | Pregled termina - Kalendar po kabinetu | [cite_start]Prikaz kalendara slobodnih termina po kabinetu [cite: 3] | feature | High | 3 | To Do | Sprint 7 | |
-| **29** | Pregled termina - Dostupnost opreme | [cite_start]Prikaz dostupnosti opreme u realnom vremenu [cite: 3] | feature | High | 3 | To Do | Sprint 7 | |
-| **30** | Pregled - Kombinovani prikaz | [cite_start]UI za kombinirani prikaz termina i dostupnosti opreme [cite: 3] | feature | High | 2 | To Do | Sprint 7 | |
-| **31** | Odabir termina i podnošenje rezervacije | [cite_start]Korisnik bira kabinet i podnosi zahtjev [cite: 3] | feature | High | 3 | To Do | Sprint 7 | [cite_start]Oprema unutar kabineta [cite: 3] |
-| **32** | Odabir opreme unutar rezervacije | [cite_start]Korisnik odabire željenu opremu kao dio zahtjeva [cite: 3] | feature | Medium | 2 | To Do | Sprint 7 | |
-| **33** | Validacija konflikta termina | [cite_start]Sprječavanje rezervacija koje se preklapaju [cite: 3] | technical task | High | 5 | To Do | Sprint 8 | |
-| **34** | Pregled zahtjeva za rezervaciju | [cite_start]Osoblje vidi listu zahtjeva s detaljima [cite: 3] | feature | High | 2 | To Do | Sprint 8 | [cite_start]Status do početka termina [cite: 3] |
-| **35** | Odobravanje / odbijanje rezervacije | [cite_start]Profesor/asistent odobrava ili odbija zahtjev [cite: 4] | feature | High | 3 | To Do | Sprint 8 | [cite_start]Status do početka termina [cite: 4] |
-| **36** | Ažuriranje statusa opreme (tehničar) | [cite_start]Tehničar ažurira status opreme [cite: 4] | feature | High | 3 | To Do | Sprint 9 | |
-| **37** | Automatska promjena statusa opreme | [cite_start]Sistem automatski označava opremu zauzetom [cite: 4] | Technical task | Medium | 2 | To Do | Sprint 9 | |
-| **38** | Pregled i otkazivanje vlastitih rezervacija | [cite_start]Student može pregledati i otkazati svoje rezervacije [cite: 4] | feature | Medium | 3 | To Do | Sprint 9 | [cite_start]Status do početka termina [cite: 4] |
-| **39** | Filtriranje i pretraga opreme | [cite_start]Pretraga opreme po nazivu i kabinetu [cite: 4] | feature | Medium | 3 | To Do | Sprint 10 | |
-| **40** | Upravljanje korisničkim profilom | [cite_start]Korisnik može promijeniti lozinku i podatke [cite: 4] | feature | Low | 3 | To Do | Sprint 10 | [cite_start]Inicijalna lozinka od admina [cite: 4] |
-| **41** | Historija korištenja opreme | [cite_start]Tehničar i admin imaju uvid u historiju korištenja [cite: 4] | feature | Low | 3 | To Do | Sprint 10 | [cite_start]Nije u MVP [cite: 4] |
-| **42** | Prijava kvara | [cite_start]Korisnik može prijaviti kvar tehničaru [cite: 4] | feature | Medium | 3 | To Do | Sprint 10 | |
-| **43** | Potvrda i obrada kvara | [cite_start]Tehničar obrađuje prijavu kvara [cite: 4] | Feature | Medium | 3 | To Do | Sprint 10 | [cite_start]Povezano sa statusom [cite: 4] |
+| ID | Naziv stavke | Kratak opis | Tip stavke | Prioritet | Procjena složenosti | Status | Sprint | Napomena |
+|---|---|---|---|---|---|---|---|---|
+| S1 | Problem i ciljevi sistema | Razraditi problem koji sistem rješava i osnovne ciljeve proizvoda. | Research | High | Medium | Done | 1 | |
+| S2 | Product Vision | Definisati viziju sistema i vrijednost za korisnike. | Documentation | High | Medium | Done | 1 | |
+| S3 | Identifikacija stakeholdera | Prepoznati sve ključne stakeholder grupe. | Research | High | Low | Done | 1 | |
+| S4 | Stakeholder Map | Vizualizacija stakeholdera i njihovih interesa. | Documentation | High | Low | Done | 1 | |
+| S5 | Početni Product Backlog | Izraditi početnu verziju backlog-a. | Documentation | High | Medium | Done | 1 | |
+| S6 | Prioritetni user storyji | Definisati ključne user storyje za MVP. | Documentation | High | Medium | To Do | 2 | |
+| S7 | Acceptance Criteria | Napisati mjerljive kriterije za storyje. | Documentation | High | Medium | To Do | 2 | |
+| S8 | Prioritizacija backloga | Sortirati backlog po poslovnoj vrijednosti. | Research | High | Low | To Do | 2 | |
+| S9 | Nefunkcionalni zahtjevi (NFR) | Identifikovati sigurnosne, performansne i UX zahtjeve. | Documentation | Medium | Low | To Do | 2 | |
+| S10 | Risk Register | Identifikovati rizike i plan mitigacije. | Documentation | Medium | Medium | To Do | 3 | |
+| S11 | Domain Model / Use Case Model | Modelovati entitete i odnose sistema. | Documentation | High | Medium | To Do | 3 | |
+| S12 | Architecture Overview | Definisati osnovnu arhitekturu sistema. | Documentation | High | High | To Do | 3 | |
+| S13 | Test Strategy | Definisati pristup i strategiju testiranja. | Documentation | Medium | Medium | To Do | 3 | |
+| S14 | Definition of Done (DoD) | Dogovoriti kriterije kada se stavka smatra završenom. | Documentation | Medium | Low | To Do | 4 | |
+| S15 | Initial Release Plan | Planirati inkremente i MVP objavu. | Documentation | Medium | Medium | To Do | 4 | |
+| S16 | Razrada modela podataka | Definisati strukturu baze i relacije između entiteta. | Documentation | Medium | Medium | To Do | 3 | |
+| S17 | Tehnički Skeleton Sistema | Inicijalizacija projekta, repozitorija i osnovne strukture. | Technical Task | High | High | To Do | 4 | |
+| S18 | Login i tokeni | Implementirati login formu i JWT token autentifikaciju. | Feature | High | Medium | To Do | 5 | |
+| S19 | Role-based autentifikacija | Implementirati RBAC kontrolu pristupa za sve uloge. | Feature | High | Medium | To Do | 5 | |
+| S20 | Logout i sesija | Implementirati odjavu i upravljanje sesijom. | Feature | High | Low | To Do | 5 | |
+| S21 | Upravljanje korisnicima | Administrator kreira i upravlja korisnicima (studenti, osoblje). | Feature | High | High | To Do | 6 | Neophodno za rad. |
+| S22 | Upravljanje kabinetima | Administrator dodaje i uređuje laboratorijske prostorije. | Feature | High | Medium | To Do | 6 | |
+| S23 | CRUD opreme | Dodavanje, uređivanje i brisanje laboratorijske opreme. | Feature | High | High | To Do | 6 | |
+| S24 | Status dostupnosti opreme | Upravljanje statusom ispravnosti i dostupnosti opreme. | Feature | High | Medium | To Do | 6 | |
+| S25 | Radno vrijeme kabineta | Definisanje radnih sati i trajanja termina za kabinete. | Feature | High | High | To Do | 6 | |
+| S26 | Generisanje rasporeda | Tehničar generiše slotove termina u laboratoriji. | Feature | Medium | Medium | To Do | 6 | |
+| S27 | Blokiranje kabineta | Onemogućavanje termina zbog praznika ili održavanja. | Feature | Medium | Medium | To Do | 6 | |
+| S28 | Kalendar po kabinetu | Grafički prikaz slobodnih termina za korisnike. | Feature | High | Medium | To Do | 7 | |
+| S29 | Real-time dostupnost opreme | Prikaz koji uređaji su trenutno slobodni u kabinetu. | Feature | High | Medium | To Do | 7 | |
+| S30 | Kombinovani prikaz termina | Jedinstven UI za odabir i termina i potrebne opreme. | Feature | High | Low | To Do | 7 | |
+| S31 | Podnošenje rezervacije | Proces odabira termina i slanja zahtjeva na odobrenje. | Feature | High | Medium | To Do | 7 | |
+| S32 | Odabir opreme u rezervaciji | Selektovanje konkretnih uređaja koji će se koristiti. | Feature | Medium | Low | To Do | 7 | |
+| S33 | Validacija konflikta termina | Logika koja sprečava dupla bukinga istih resursa. | Technical Task | High | High | To Do | 8 | |
+| S34 | Pregled zahtjeva (Osoblje) | Lista pristiglih rezervacija koje čekaju akciju. | Feature | High | Low | To Do | 8 | |
+| S35 | Odobravanje / Odbijanje | Proces potvrde rezervacije od strane profesora/asistenta. | Feature | High | Medium | To Do | 8 | |
+| S36 | Ručno ažuriranje statusa | Mogućnost tehničara da ručno promjeni status uređaja. | Feature | High | Medium | To Do | 9 | |
+| S37 | Automatsko zauzeće opreme | Sistem sam blokira opremu čim rezervacija počne. | Technical Task | Medium | Low | To Do | 9 | |
+| S38 | Otkazivanje rezervacija | Mogućnost da student poništi termin prije početka. | Feature | Medium | Medium | To Do | 9 | |
+| S39 | Filtriranje i pretraga | Brzo pronalaženje opreme po nazivu ili lokaciji. | Feature | Medium | Medium | To Do | 10 | |
+| S40 | Korisnički profil | Izmjena lozinke i ličnih podataka korisnika. | Feature | Low | Medium | To Do | 10 | |
+| S41 | Historija korištenja | Arhiva svih prošlih rezervacija i korisnika opreme. | Feature | Low | Medium | To Do | 10 | |
+| S42 | Prijava kvara | Forma za brzo obavještavanje tehničara o problemu. | Feature | Medium | Medium | To Do | 10 | |
+| S43 | Obrada prijava kvara | Workflow tehničara za popravku i vraćanje u funkciju. | Feature | Medium | Medium | To Do | 10 | |
