@@ -1,22 +1,307 @@
-| Tema | ID | Naziv | Opis |Poslovna vrijednost| Prioritet | Pretpostavka i otvorena pitanja | Veze sa ostalim story | Acceptance Criteria |
-|-|-|-|-|-|-|-|-|-|
-|Upravljanje pristupom|US01|Kreiranje korisnika|Kao administrator, želim kreirati korisnike, kako bi se prijavili na sistem|Omogućava pristup sistemu novim korisnicima|High|Administrator je prijavljen. Postoji forma za unos korisnika.||1. Forma za unos 2. Validacija podataka 3. Korisnik uspješno kreiran|
-||US02|Brisanje korisnika|Kao administrator, želim da brišem korisnike, kako bi se smanjio broj korisnika koji ne koriste sistem|Održavanje ažurirane i sigurne baze korisnika.|High||US01|1.Prikaz liste korisnika 2.Dugme za brisanje korisnika 3.Potvrda brisanja 4.Korisnik uklonjen iz sistema|
-||US03| Prijava na sistem | Kao registrovani korisnik, želim da se prijavim na sistem, kako bih pristupio resursima. |Siguran pristup sistemu.| High |Korisnik ima validan nalog.|US01|1.Unos emaila i lozinke 2.Validacija 3.Uspješna prijava ili prikaz greške |
-||US04| Promjena lozinke | Kao korisnik, želim promijeniti lozinku, kako bih osigurao svoj profil.| Povećanje sigurnosti korisničkog naloga.| Medium |Korisnik je prijavljen.| US03|1.Unos stare i nove lozinke 2.Validacija podataka 3.Lozinka uspješno promijenjena |   
-||US05|Uređivanje profila|Kao korisnik, želim izmijeniti svoje podatke kako bih održavao tačne informacije.|Tačnost korisničkih podataka.|Medium|Korisnik je prijavljen.|US03|1.Prikaz trenutnih podataka 2. Mogućnost izmjene 3. Spremanje izmjena 4. Prikaz ažuriranih podatak|
-| Upravljanje opremom |US06| Kreiranje nove opreme| Kao laboratorijski tehničar, želim unijeti novu opremu u bazu, kako bi bila dostupna za pregled i  rezervaciju. |Omogućava korištenje nove opreme u sistemu i dostupnost za rezervaciju. | High | Laboratorijski tehničar je prijavljen. Postoji forma za unos opreme.| |1. Forma za unos opreme 2.Unos svih potrebnih podataka (naziv, opis, status) 3.Validacija unosa 4.Oprema uspješno dodana u bazu |
-||US07|Brisanje opreme|Kao laboratorijski tehničar, želim ukloniti opremu, koja se više ne koristi.|Održavanje tačne evidencije opreme.|Medium|Oprema postoji u sistemu. Laboratorijski tehničar je prijavljen.|US06|1. Prikaz liste opreme 2.Dugme za brisanje opreme 3.Potvrda brisanja 4.Oprema uklonjena iz sistema|
-||US08|Uređivanje statusa opreme|Kao laboratorijski tehničar, želim promijeniti detalje opreme(dostupnost,ispravnost opreme), kako bi podaci o opremi bili uvijek ispravni.|Osigurava tačnost podataka o dostupnosti i ispravnosti opreme.|Medium|Oprema postoji u sistemu.|US06|1. Prikaz trenutnog statusa opreme 2. Mogućnost izmjene (dostupno/neispravno) 3. Spremanje promjena 4. Status ažuriran u sistemu|
-||US09|Prijava kvara|Kao profesor, želim prijaviti kvar opreme, kako bi imali preciznu evidenciju ispravnosti opreme.|Omogućava evidenciju kvarova i bolju kontrolu ispravnosti opreme.|Medium|Oprema postoji. Profesor je prijavljen u sistem.|US08|1. Forma za prijavu kvara 2. Unos opisa problema 3. Evidentiranje kvara u sistemu 4.Automatska promjena statusa opreme na "neispravna|
-||US10|Filtriranje opreme|Kao korisnik sistema, želim filtrirati opremu po kategoriji, dostupnosti ili nazivu, kako bih brzo pronašao potrebnu opremu.|Omogućava pregled opreme|Medium||US08|1.Sistem omogućava filtriranje opreme po kategoriji 2.Sistem omogućava filtriranje opreme po dostupnosti (dostupna / zauzeta) 3. Korisnik može koristiti više filtera istovremeno 4. Sistem prikazuje samo opremu koja odgovara odabranim filterima 5. Postoji opcija za brisanje svih filtera|
-|Rezervisanje | US11| Kreiranje rezervacije | Kao student, želim rezervisati slobodan termin i opremu, kako bih obavio vježbe.| Omogućava transparentan, brz i jednostavan proces rezervacije resursa prilikom kojeg osoblje igra manju ulogu. | High | Student je registrovan kao korisnik. | US03| 1. Prikaz samo slobodnih termina i opreme. 2. Onemogućeno preklapanje. 3. Slanje zahtjeva na odobrenje asistentu. |
-||US12 | Pregled vlastitih zahtjeva | Kao student, želim pregledati sve svoje odobrene i podnesene zahtjeve, kako bih imao uvid u svoj raspored.| Transparentan prikaz korištenja sistema. | Medium | Student je registrovan kao korisnik. | US03, US11 |  1.Lista zakazanih termina jednog korisnika. |
-||US13  | Otkazivanje rezervacije | Kao student, želim otkazati prije rezervisani termin, kako bih javio da je taj termin oslobođen.| Automatsko mijenjanje statusa rezervacije bez uključivanja drugih korisnika. | Medium | Student je prijavljen. Student ima zakazan termin | US03, US11, US12 | 1.Lista zakazanih termina jednog korisnika. 2. Mogućnost "Otkaži" pored zakazanog termina. 3. Oslobađanje otkazanog termina u realnom vremenu. |
-||US14 | Pregled rezervacija | Kao asistent/profesor, želim pregledati zahtjeve, kako bih imao uvid o održavanju vježbi. | Transparentan prikaz korištenja sistema. | High | Profesor/asistent je prijavljen u sistem. Postoje liste za pregled. | US11, US13 | 1. Lista svih trenutno zauzetih i slobodnih termina i opreme. 2 Lista svih prijašnjih zauzeća. 3. Mogućnost eksportovanja datih listi. |
-||US15  | Odobravanje zahtjeva | Kao asistent/profesor, želim pregledati pristignute zahtjeve, kako bih potvrdio korištenje laboratorije.| Kontolisanje pristupa osjetljivom materijalu i povećanje sigurnosti. | High | Profesor/asistent je prijavljen u sistem. Student je podnio zahtjev za rezervisanje termina. | US11, US14 |1. Lista svih "Pending" zahtjeva. 2. Mogućnost "Approve" ili "Reject" sa komentarom. 3. Promjena statusa rezervacije u realnom vremenu. |
-| Upravljanje terminima | US16| Kreiranje termina | Kao admin, želim definisati radno vrijeme za korištenje laboratorije, kako bi ostali korisnici mogli koristiti laboratoriju i opremu. | Transparentan prikaz radnog vremena.| High | Definiše se radno vrijeme za postojeću postoriju. Prije nije postojalo definisano radno vrijeme.  | - | 1. Prikaz forme za unos radnog vremena. 2. Unos svih potebnih podataka. 3. Dodano definisano radno vrijeme u realnom vremenu.|
-| | US17| Definisanje termina | Kao laboratorijski tehničar, želim definisati novi termin za korištenje laboratorije, kako bi ostali korisnici mogli vidjeti konkretne termine. | Transparentan prikaz radnog vremena.| High | Dodaje se termin za postojeću postoriju i već dodanu opremu. Prije nije postojao taj termin.  | US16 | 1. Prikaz forme za unos termina. 2. Unos svih potebnih podataka. 3. Dodan novi termin u realnom vremenu.|
-| |US18| Mijenjanje termina | Kao laboratorijski tehničar, želim promijeniti termin korištenja laboratorija, kako bi ga prilagodio novim potrebama. | Jednostavan način izmjene.| High | Mijenja se termin za postojeću postoriju i već dodanu opremu. Prije je postojao termin za datu prostoriju ili opremu.  | US17 | 1. Prikaz forme za postojeći termin. 2. Promjena potrebnih podataka. 3. Termin izmijenjan u realnom vremenu.|
-| |US19| Brisanje termina | Kao laboratorijski tehničar, želim ukloniti postojeći termin korištenja laboratorija, kako bi ga prilagodio novim potrebama. | Jednostavan način izmjene.| High | Briše se termin za postojeću postoriju. Prije je postojao termin za datu prostoriju.  | US17, US18 | 1. Prikaz forme za postojeći termin. 2. Brisanje termina. 3. Termin izbrisan u realnom vremenu.|
-| |US20| Pregled termina | Kao student, želim pregledati postavljene termine, kako bih znao kada je određeni laboratorij dostupan. | Transparentan uvid u raspored.| Medium | Student je registrovani korisnik. Postoje definisani termini.  | US03, US11, US17 | 1. Prikaz liste slobodnih termina.|
+
+## 1. Upravljanje pristupom
+
+### USER STORY – Kreiranje korisnika
+**ID storyja:** US01  
+**Naziv storyja:** Kreiranje korisnika  
+**Opis:** Kao administrator, želim kreirati korisnike, kako bi se prijavili na sistem.  
+**Poslovna vrijednost:** Omogućava pristup sistemu novim korisnicima.  
+**Prioritet:** High  
+**Pretpostavke:** Administrator je prijavljen. Postoji forma za unos korisnika.  
+**Veze:** -  
+**Acceptance Criteria:** 1. Forma za unos je dostupna administratoru.
+2. Validacija obaveznih podataka.
+3. Korisnik je uspješno kreiran u bazi.
+
+---
+
+### USER STORY – Brisanje korisnika
+**ID storyja:** US02  
+**Naziv storyja:** Brisanje korisnika  
+**Opis:** Kao administrator, želim da brišem korisnike, kako bi se smanjio broj korisnika koji ne koriste sistem.  
+**Poslovna vrijednost:** Održavanje ažurirane i sigurne baze korisnika.  
+**Prioritet:** High  
+**Veze:** US01  
+**Acceptance Criteria:** 1. Prikaz liste svih korisnika.
+2. Dugme za brisanje korisnika pored svakog unosa.
+3. Potvrda brisanja (Confirmation dialog).
+4. Korisnik je trajno uklonjen iz sistema.
+
+---
+
+### USER STORY – Prijava na sistem
+**ID storyja:** US03  
+**Naziv storyja:** Prijava na sistem  
+**Opis:** Kao registrovani korisnik, želim da se prijavim na sistem, kako bih pristupio resursima.  
+**Poslovna vrijednost:** Siguran pristup sistemu.  
+**Prioritet:** High  
+**Pretpostavke:** Korisnik ima validan nalog.  
+**Veze:** US01  
+**Acceptance Criteria:** 1. Polja za unos emaila i lozinke.
+2. Validacija unesenih kredencijala.
+3. Uspješna prijava ili prikaz jasne poruke o grešci.
+
+---
+
+### USER STORY – Promjena lozinke
+**ID storyja:** US04  
+**Naziv storyja:** Promjena lozinke  
+**Opis:** Kao korisnik, želim promijeniti lozinku, kako bih osigurao svoj profil.  
+**Poslovna vrijednost:** Povećanje sigurnosti korisničkog naloga.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen.  
+**Veze:** US03  
+**Acceptance Criteria:** 1. Unos stare i nove lozinke.
+2. Validacija podataka (npr. minimalna dužina).
+3. Lozinka je uspješno promijenjena.
+
+---
+
+### USER STORY – Uređivanje profila
+**ID storyja:** US05  
+**Naziv storyja:** Uređivanje profila  
+**Opis:** Kao korisnik, želim izmijeniti svoje podatke kako bih održavao tačne informacije.  
+**Poslovna vrijednost:** Tačnost korisničkih podataka.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen.  
+**Veze:** US03  
+**Acceptance Criteria:** 1. Prikaz trenutnih podataka korisnika.
+2. Mogućnost izmjene podataka.
+3. Spremanje izmjena i prikaz ažuriranih informacija.
+
+---
+
+## 2. Upravljanje opremom
+
+### USER STORY – Kreiranje nove opreme
+**ID storyja:** US06  
+**Naziv storyja:** Kreiranje nove opreme  
+**Opis:** Kao laboratorijski tehničar, želim unijeti novu opremu u bazu, kako bi bila dostupna za pregled i rezervaciju.  
+**Poslovna vrijednost:** Omogućava korištenje nove opreme u sistemu.  
+**Prioritet:** High  
+**Pretpostavke:** Tehničar je prijavljen. Postoji forma za unos opreme.  
+**Acceptance Criteria:** 1. Forma za unos opreme je funkcionalna.
+2. Unos svih potrebnih podataka (naziv, opis, status).
+3. Validacija unosa podataka.
+4. Oprema uspješno dodana u bazu.
+
+---
+
+### USER STORY – Brisanje opreme
+**ID storyja:** US07  
+**Naziv storyja:** Brisanje opreme  
+**Opis:** Kao laboratorijski tehničar, želim ukloniti opremu koja se više ne koristi.  
+**Poslovna vrijednost:** Održavanje tačne evidencije opreme.  
+**Prioritet:** Medium  
+**Pretpostavke:** Oprema postoji u sistemu.  
+**Veze:** US06  
+**Acceptance Criteria:** 1. Prikaz liste opreme.
+2. Dugme za brisanje opreme.
+3. Potvrda brisanja.
+4. Oprema trajno uklonjena iz sistema.
+
+---
+
+### USER STORY – Uređivanje statusa opreme
+**ID storyja:** US08  
+**Naziv storyja:** Uređivanje statusa opreme  
+**Opis:** Kao laboratorijski tehničar, želim promijeniti detalje opreme (dostupnost, ispravnost), kako bi podaci bili ispravni.  
+**Poslovna vrijednost:** Osigurava tačnost podataka o dostupnosti i ispravnosti.  
+**Prioritet:** Medium  
+**Pretpostavke:** Oprema postoji u sistemu.  
+**Veze:** US06  
+**Acceptance Criteria:** 1. Prikaz trenutnog statusa opreme.
+2. Mogućnost izmjene statusa (dostupno/neispravno).
+3. Spremanje promjena i ažuriranje u realnom vremenu.
+
+---
+
+### USER STORY – Prijava kvara
+**ID storyja:** US09  
+**Naziv storyja:** Prijava kvara  
+**Opis:** Kao profesor, želim prijaviti kvar opreme, kako bi imali preciznu evidenciju ispravnosti.  
+**Poslovna vrijednost:** Omogućava evidenciju kvarova i bolju kontrolu.  
+**Prioritet:** Medium  
+**Pretpostavke:** Oprema postoji. Profesor je prijavljen.  
+**Veze:** US08  
+**Acceptance Criteria:** 1. Forma za prijavu kvara je dostupna.
+2. Unos detaljnog opisa problema.
+3. Evidentiranje kvara u sistemu.
+4. Automatska promjena statusa opreme na "neispravna".
+
+---
+
+### USER STORY – Filtriranje opreme
+**ID storyja:** US10  
+**Naziv storyja:** Filtriranje opreme  
+**Opis:** Kao korisnik sistema, želim filtrirati opremu po kategoriji, dostupnosti ili nazivu, kako bih brzo pronašao potrebnu opremu.  
+**Poslovna vrijednost:** Omogućava efikasan pregled opreme.  
+**Prioritet:** Medium  
+**Veze:** US08  
+**Acceptance Criteria:** 1. Filtriranje po kategoriji.
+2. Filtriranje po dostupnosti (dostupna / zauzeta).
+3. Mogućnost istovremenog korištenja više filtera.
+4. Prikaz samo odgovarajućih rezultata.
+5. Opcija za resetovanje svih filtera.
+
+---
+
+## 3. Rezervisanje
+
+### USER STORY – Kreiranje rezervacije
+**ID storyja:** US11  
+**Naziv storyja:** Kreiranje rezervacije  
+**Opis:** Kao student, želim rezervisati slobodan termin i opremu, kako bih obavio vježbe.  
+**Poslovna vrijednost:** Transparentan i brz proces rezervacije resursa.  
+**Prioritet:** High  
+**Pretpostavke:** Student je registrovan.  
+**Veze:** US03  
+**Acceptance Criteria:** 1. Prikaz isključivo slobodnih termina i opreme.
+2. Onemogućeno preklapanje termina.
+3. Sistem sprečava rezervaciju termina u prošlosti.
+4. Slanje zahtjeva na odobrenje asistentu.
+
+---
+
+### USER STORY – Pregled vlastitih zahtjeva
+**ID storyja:** US12  
+**Naziv storyja:** Pregled vlastitih zahtjeva  
+**Opis:** Kao student, želim pregledati svoje odobrene i podnesene zahtjeve.  
+**Poslovna vrijednost:** Transparentan uvid u vlastiti raspored.  
+**Prioritet:** Medium  
+**Veze:** US03, US11  
+**Acceptance Criteria:** 1. Prikaz liste svih zahtjeva/termina specifičnog korisnika.
+
+---
+
+### USER STORY – Otkazivanje rezervacije
+**ID storyja:** US13  
+**Naziv storyja:** Otkazivanje rezervacije  
+**Opis:** Kao student, želim otkazati rezervisani termin, kako bih oslobodio resurse drugima.  
+**Poslovna vrijednost:** Automatsko oslobađanje termina bez posrednika.  
+**Prioritet:** Medium  
+**Pretpostavke:** Student je prijavljen i ima aktivan zakazan termin.  
+**Veze:** US03, US11, US12  
+**Acceptance Criteria:** 1. Prikaz liste aktivnih termina.
+2. Mogućnost otkazivanja pored svakog termina.
+3. Trenutno oslobađanje termina u sistemu.
+
+---
+
+### USER STORY – Pregled svih rezervacija
+**ID storyja:** US14  
+**Naziv storyja:** Pregled rezervacija  
+**Opis:** Kao asistent/profesor, želim pregledati zahtjeve, kako bih imao uvid o održavanju vježbi.  
+**Poslovna vrijednost:** Centralizovan uvid u korištenje laboratorije.  
+**Prioritet:** High  
+**Pretpostavke:** Osoblje je prijavljeno.  
+**Veze:** US11, US13  
+**Acceptance Criteria:** 1. Lista svih zauzetih i slobodnih termina/opreme.
+2. Istorija svih prijašnjih zauzeća.
+3. Opcija za eksport podataka.
+
+---
+
+### USER STORY – Odobravanje zahtjeva
+**ID storyja:** US15  
+**Naziv storyja:** Odobravanje zahtjeva  
+**Opis:** Kao asistent/profesor, želim pregledati pristignute zahtjeve, kako bih potvrdio rezervaciju.  
+**Poslovna vrijednost:** Kontrola pristupa i povećanje sigurnosti.  
+**Prioritet:** High  
+**Pretpostavke:** Student je podnio zahtjev. Osoblje je prijavljeno.  
+**Veze:** US11, US14  
+**Acceptance Criteria:** 1. Lista svih zahtjeva na čekanju (Pending).
+2. Opcije "Approve" (Odobri) ili "Reject" (Odbij) uz komentar.
+3. Ažuriranje statusa u realnom vremenu.
+
+---
+### USER STORY – Ograničenje broja aktivnih rezervacija
+**ID storyja:** US16
+**Naziv storyja:** Limitiranje rezervacija po korisniku  
+**Opis:** Kao profesor, želim postaviti limit na maksimalan broj aktivnih rezervacija po studentu.  
+**Poslovna vrijednost:** Pravedna raspodjela termina.  
+**Prioritet:** Medium  
+**Veze:** US11  
+**Acceptance Criteria:** 1. Sistem onemogućava novu rezervaciju ako je student dosegao definirani limit (npr. 3 aktivna termina).
+2. Prikaz poruke upozorenja o dosegnutom limitu.
+
+---
+
+## 4. Upravljanje terminima
+
+### USER STORY – Kreiranje radnog vremena
+**ID storyja:** US17 
+**Naziv storyja:** Kreiranje radnog vremena  
+**Opis:** Kao administrator, želim definisati radno vrijeme laboratorije.  
+**Poslovna vrijednost:** Definisanje vremenskog okvira za korištenje sistema.  
+**Prioritet:** High  
+**Pretpostavke:** Radno vrijeme se definiše za specifičnu prostoriju.  
+**Veze:** -  
+**Acceptance Criteria:** 1. Forma za unos radnog vremena.
+2. Unos svih potrebnih parametara.
+3. Prikaz radnog vremena korisnicima u realnom vremenu.
+
+---
+
+### USER STORY – Definisanje termina
+**ID storyja:** US18 
+**Naziv storyja:** Definisanje termina  
+**Opis:** Kao laboratorijski tehničar, želim definisati novi termin, kako bi ga korisnici mogli vidjeti.  
+**Poslovna vrijednost:** Kreiranje konkretnih slotova za rad.  
+**Prioritet:** High  
+**Pretpostavke:** Postoji definisano radno vrijeme i prostorija.  
+**Veze:** US17  
+**Acceptance Criteria:** 1. Forma za unos novog termina.
+2. Unos trajanja i opreme.
+3. Novi termin vidljiv svim korisnicima odmah.
+
+---
+
+### USER STORY – Mijenjanje termina
+**ID storyja:** US19 
+**Naziv storyja:** Mijenjanje termina  
+**Opis:** Kao laboratorijski tehničar, želim promijeniti postojeći termin.  
+**Poslovna vrijednost:** Fleksibilnost u upravljanju rasporedom.  
+**Prioritet:** High  
+**Pretpostavke:** Termin već postoji.  
+**Veze:** US18  
+**Acceptance Criteria:** 1. Prikaz forme za postojeći termin.
+2. Mogućnost izmjene svih podataka.
+3. Ažuriranje termina u sistemu.
+
+---
+
+### USER STORY – Brisanje termina
+**ID storyja:** US20  
+**Naziv storyja:** Brisanje termina  
+**Opis:** Kao laboratorijski tehničar, želim ukloniti postojeći termin korištenja laboratorije.  
+**Poslovna vrijednost:** Jednostavno prilagođavanje novim potrebama.  
+**Prioritet:** High  
+**Pretpostavke:** Termin postoji u sistemu.  
+**Veze:** US18, US19  
+**Acceptance Criteria:** 1. Mogućnost brisanja odabranog termina.
+2. Brisanje se reflektuje u kalendaru odmah.
+
+---
+
+### USER STORY – Pregled slobodnih termina
+**ID storyja:** US21  
+**Naziv storyja:** Pregled termina  
+**Opis:** Kao student, želim pregledati postavljene termine, kako bih znao dostupnost laboratorije.  
+**Poslovna vrijednost:** Transparentan uvid u raspored za korisnike.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je registrovan. Termini su definisani.  
+**Veze:** US03, US11, US18  
+**Acceptance Criteria:** 1. Prikaz pregledne liste svih dostupnih slobodnih termina.
+
+---
+
+### USER STORY – Generisanje izvještaja o korištenju
+**ID storyja:** US22
+**Naziv storyja:** Izvještaji o laboratorijskim terminima 
+**Opis:** Kao administrator, želim generisati mjesečni izvještaj o najčešće korištenoj opremi i popunjenosti termina.  
+**Poslovna vrijednost:** Bolje planiranje resursa i nabavka nove opreme na osnovu stvarnih potreba.  
+**Prioritet:** Low/Medium  
+**Veze:** US14  
+**Acceptance Criteria:** 1. Opcija za generisanje PDF/Excel izvještaja.
+2. Prikaz statistike o najpopularnijim terminima i najkorištenijim uređajima.
