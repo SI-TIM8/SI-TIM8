@@ -12,3 +12,11 @@
 | NFR-08 | Privatnost | Neovlašteni korisnici ne smiju imati pristup podacima o rezervacijama i opremi. | Testiranje pristupa podacima bez autentifikacije. | High | - |
 | NFR-09 | Dostupnost | Sistem mora biti dostupan najmanje 99.9% vremena tokom radne sedmice. | Monitoring uptime-a sistema. | Medium | - |
 | NFR-10 | Kompatibilnost | Sistem mora raditi u modernim web preglednicima (Chrome, Firefox, Edge). | Testiranje u različitim browserima. | Medium | - |
+| NFR-11 | Održivost | Sistem mora biti organizovan kroz višeslojnu arhitekturu radi lakšeg održavanja. | Pregled arhitekture i strukture koda. | Medium | MVC u UI sloju |
+| NFR-12 | Održivost | Kod mora prolaziti peer review i imati unit testove prije integracije. | Provjera pull requestova i testova. | High | - |
+| NFR-13 | Skalabilnost | Sistem mora podržati najmanje 20 istovremenih korisnika bez pada performansi. | Load testing. | Medium | - |
+| NFR-14 | Performanse | Prikaz dostupnosti opreme mora biti izvršen unutar 2 sekunde. | Mjerenje vremena odziva. | High | - |
+| NFR-15 | Performanse | Kreiranje i otkazivanje rezervacija mora biti izvršeno unutar 2 sekunde. | Mjerenje vremena izvršavanja. | High | - |
+| NFR-16 | Pouzdanost | Sistem mora spriječiti duple rezervacije za isti termin i opremu. | Testiranje konflikata rezervacija. | High | - |
+| NFR-17 | Pouzdanost | Podaci o statusu opreme moraju biti konzistentni u svakom trenutku. | Testiranje integriteta podataka. | High | - |
+
