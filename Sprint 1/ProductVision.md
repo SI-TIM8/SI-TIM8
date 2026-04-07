@@ -80,7 +80,6 @@ Ovi problemi uzrokuju gubitak vremena, smanjuju efikasnost rada i negativno uti�
 ## Ključna ograničenja
 - vremensko ograničenje: maksimalno 13 sedmica
 - sastanci tima: subotom
-- backend tehnologija: C# i .NET
 - ciljna platforma: web browser
 
 ---
