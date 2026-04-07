@@ -85,7 +85,6 @@ Ovi problemi uzrokuju gubitak vremena, smanjuju efikasnost rada i negativno uti�
 ---
 
 ## Pretpostavke
-- članovi tima imaju osnovno znanje u C# i .NET
 - administrator kreira korisničke naloge i definiše njihove uloge
 
 ---
