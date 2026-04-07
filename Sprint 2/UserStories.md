@@ -77,7 +77,7 @@
 2. Mogućnost izmjene podataka.
 3. Spremanje izmjena i prikaz ažuriranih informacija.       
 **Sprint:** 10  
-**Veza sa Product Backlogom:** 40
+**Veza sa Product Backlogom:** 41
 
 ---
 
@@ -145,7 +145,7 @@
 3. Evidentiranje kvara u sistemu.
 4. Automatska promjena statusa opreme na "neispravna".  
 **Sprint:** 10  
-**Veza sa Product Backlogom:** 42, 43
+**Veza sa Product Backlogom:** 43, 44
 
 ---
 
@@ -162,7 +162,7 @@
 4. Prikaz samo odgovarajućih rezultata.
 5. Opcija za resetovanje svih filtera.  
 **Sprint:** 10  
-**Veza sa Product Backlogom:** 39
+**Veza sa Product Backlogom:** 40
 
 ---
 
@@ -194,7 +194,7 @@
 **Veze:** US03, US11  
 **Acceptance Criteria:** 1. Prikaz liste svih zahtjeva/termina specifičnog korisnika.  
 **Sprint:** 9  
-**Veza sa Product Backlogom:** 38
+**Veza sa Product Backlogom:** 39
 
 ---
 
@@ -210,7 +210,7 @@
 2. Mogućnost otkazivanja pored svakog termina.
 3. Trenutno oslobađanje termina u sistemu.  
 **Sprint:** 9  
-**Veza sa Product Backlogom:** 38
+**Veza sa Product Backlogom:** 39
 
 ---
 
@@ -255,7 +255,8 @@
 **Veze:** US11  
 **Acceptance Criteria:** 1. Sistem onemogućava novu rezervaciju ako je student dosegao definirani limit (npr. 3 aktivna termina).
 2. Prikaz poruke upozorenja o dosegnutom limitu.  
-**Sprint:**
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 38
 
 ---
 
@@ -335,16 +336,3 @@
 **Acceptance Criteria:** 1. Prikaz pregledne liste svih dostupnih slobodnih termina.  
 **Sprint:** 7  
 **Veza sa Product Backlogom:** 28-30
-
----
-
-### USER STORY – Generisanje izvještaja o korištenju
-**ID storyja:** US22
-**Naziv storyja:** Izvještaji o laboratorijskim terminima 
-**Opis:** Kao administrator, želim generisati mjesečni izvještaj o najčešće korištenoj opremi i popunjenosti termina.  
-**Poslovna vrijednost:** Bolje planiranje resursa i nabavka nove opreme na osnovu stvarnih potreba.  
-**Prioritet:** Low/Medium  
-**Veze:** US14  
-**Acceptance Criteria:** 1. Opcija za generisanje PDF/Excel izvještaja.
-2. Prikaz statistike o najpopularnijim terminima i najkorištenijim uređajima.
-**Sprint:**
