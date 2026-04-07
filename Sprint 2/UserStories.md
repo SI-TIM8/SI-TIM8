@@ -12,6 +12,8 @@
 **Acceptance Criteria:** 1. Forma za unos je dostupna administratoru.
 2. Validacija obaveznih podataka.
 3. Korisnik je uspješno kreiran u bazi.
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 21
 
 ---
 
@@ -25,7 +27,9 @@
 **Acceptance Criteria:** 1. Prikaz liste svih korisnika.
 2. Dugme za brisanje korisnika pored svakog unosa.
 3. Potvrda brisanja (Confirmation dialog).
-4. Korisnik je trajno uklonjen iz sistema.
+4. Korisnik je trajno uklonjen iz sistema.  
+**Sprint:** 6   
+**Veza sa Product Backlogom:** 21
 
 ---
 
@@ -40,6 +44,8 @@
 **Acceptance Criteria:** 1. Polja za unos emaila i lozinke.
 2. Validacija unesenih kredencijala.
 3. Uspješna prijava ili prikaz jasne poruke o grešci.
+**Sprint:** 5   
+**Veza sa Product Backlogom:** 18 - 20
 
 ---
 
@@ -53,7 +59,9 @@
 **Veze:** US03  
 **Acceptance Criteria:** 1. Unos stare i nove lozinke.
 2. Validacija podataka (npr. minimalna dužina).
-3. Lozinka je uspješno promijenjena.
+3. Lozinka je uspješno promijenjena.  
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 40
 
 ---
 
@@ -67,7 +75,9 @@
 **Veze:** US03  
 **Acceptance Criteria:** 1. Prikaz trenutnih podataka korisnika.
 2. Mogućnost izmjene podataka.
-3. Spremanje izmjena i prikaz ažuriranih informacija.
+3. Spremanje izmjena i prikaz ažuriranih informacija.       
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 40
 
 ---
 
@@ -83,7 +93,9 @@
 **Acceptance Criteria:** 1. Forma za unos opreme je funkcionalna.
 2. Unos svih potrebnih podataka (naziv, opis, status).
 3. Validacija unosa podataka.
-4. Oprema uspješno dodana u bazu.
+4. Oprema uspješno dodana u bazu.  
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 23
 
 ---
 
@@ -98,7 +110,9 @@
 **Acceptance Criteria:** 1. Prikaz liste opreme.
 2. Dugme za brisanje opreme.
 3. Potvrda brisanja.
-4. Oprema trajno uklonjena iz sistema.
+4. Oprema trajno uklonjena iz sistema.  
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 23
 
 ---
 
@@ -112,7 +126,9 @@
 **Veze:** US06  
 **Acceptance Criteria:** 1. Prikaz trenutnog statusa opreme.
 2. Mogućnost izmjene statusa (dostupno/neispravno).
-3. Spremanje promjena i ažuriranje u realnom vremenu.
+3. Spremanje promjena i ažuriranje u realnom vremenu.  
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 36
 
 ---
 
@@ -127,7 +143,9 @@
 **Acceptance Criteria:** 1. Forma za prijavu kvara je dostupna.
 2. Unos detaljnog opisa problema.
 3. Evidentiranje kvara u sistemu.
-4. Automatska promjena statusa opreme na "neispravna".
+4. Automatska promjena statusa opreme na "neispravna".  
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 42, 43
 
 ---
 
@@ -142,7 +160,9 @@
 2. Filtriranje po dostupnosti (dostupna / zauzeta).
 3. Mogućnost istovremenog korištenja više filtera.
 4. Prikaz samo odgovarajućih rezultata.
-5. Opcija za resetovanje svih filtera.
+5. Opcija za resetovanje svih filtera.  
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 39
 
 ---
 
@@ -159,7 +179,9 @@
 **Acceptance Criteria:** 1. Prikaz isključivo slobodnih termina i opreme.
 2. Onemogućeno preklapanje termina.
 3. Sistem sprečava rezervaciju termina u prošlosti.
-4. Slanje zahtjeva na odobrenje asistentu.
+4. Slanje zahtjeva na odobrenje asistentu.  
+**Sprint:** 7  
+**Veza sa Product Backlogom:** 31, 32
 
 ---
 
@@ -170,7 +192,9 @@
 **Poslovna vrijednost:** Transparentan uvid u vlastiti raspored.  
 **Prioritet:** Medium  
 **Veze:** US03, US11  
-**Acceptance Criteria:** 1. Prikaz liste svih zahtjeva/termina specifičnog korisnika.
+**Acceptance Criteria:** 1. Prikaz liste svih zahtjeva/termina specifičnog korisnika.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 38
 
 ---
 
@@ -184,7 +208,9 @@
 **Veze:** US03, US11, US12  
 **Acceptance Criteria:** 1. Prikaz liste aktivnih termina.
 2. Mogućnost otkazivanja pored svakog termina.
-3. Trenutno oslobađanje termina u sistemu.
+3. Trenutno oslobađanje termina u sistemu.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 38
 
 ---
 
@@ -199,22 +225,27 @@
 **Acceptance Criteria:** 1. Lista svih zauzetih i slobodnih termina/opreme.
 2. Istorija svih prijašnjih zauzeća.
 3. Opcija za eksport podataka.
+**Sprint:** 8  
+**Veza sa Product Backlogom:** 34
 
 ---
 
-### USER STORY – Odobravanje zahtjeva
+### USER STORY – Odobravanje/otkazivanje zahtjeva
 **ID storyja:** US15  
 **Naziv storyja:** Odobravanje zahtjeva  
-**Opis:** Kao asistent/profesor, želim pregledati pristignute zahtjeve, kako bih potvrdio rezervaciju.  
+**Opis:** Kao asistent/profesor, želim pregledati pristignute zahtjeve, kako bih potvrdio/odbio rezervaciju.  
 **Poslovna vrijednost:** Kontrola pristupa i povećanje sigurnosti.  
 **Prioritet:** High  
 **Pretpostavke:** Student je podnio zahtjev. Osoblje je prijavljeno.  
 **Veze:** US11, US14  
 **Acceptance Criteria:** 1. Lista svih zahtjeva na čekanju (Pending).
 2. Opcije "Approve" (Odobri) ili "Reject" (Odbij) uz komentar.
-3. Ažuriranje statusa u realnom vremenu.
+3. Ažuriranje statusa u realnom vremenu.  
+**Sprint:** 8  
+**Veza sa Product Backlogom:** 35
 
 ---
+
 ### USER STORY – Ograničenje broja aktivnih rezervacija
 **ID storyja:** US16
 **Naziv storyja:** Limitiranje rezervacija po korisniku  
@@ -223,7 +254,8 @@
 **Prioritet:** Medium  
 **Veze:** US11  
 **Acceptance Criteria:** 1. Sistem onemogućava novu rezervaciju ako je student dosegao definirani limit (npr. 3 aktivna termina).
-2. Prikaz poruke upozorenja o dosegnutom limitu.
+2. Prikaz poruke upozorenja o dosegnutom limitu.  
+**Sprint:**
 
 ---
 
@@ -239,7 +271,9 @@
 **Veze:** -  
 **Acceptance Criteria:** 1. Forma za unos radnog vremena.
 2. Unos svih potrebnih parametara.
-3. Prikaz radnog vremena korisnicima u realnom vremenu.
+3. Prikaz radnog vremena korisnicima u realnom vremenu.  
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 25, 27
 
 ---
 
@@ -253,7 +287,9 @@
 **Veze:** US17  
 **Acceptance Criteria:** 1. Forma za unos novog termina.
 2. Unos trajanja i opreme.
-3. Novi termin vidljiv svim korisnicima odmah.
+3. Novi termin vidljiv svim korisnicima odmah.  
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 26
 
 ---
 
@@ -267,7 +303,9 @@
 **Veze:** US18  
 **Acceptance Criteria:** 1. Prikaz forme za postojeći termin.
 2. Mogućnost izmjene svih podataka.
-3. Ažuriranje termina u sistemu.
+3. Ažuriranje termina u sistemu.  
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 26
 
 ---
 
@@ -280,7 +318,9 @@
 **Pretpostavke:** Termin postoji u sistemu.  
 **Veze:** US18, US19  
 **Acceptance Criteria:** 1. Mogućnost brisanja odabranog termina.
-2. Brisanje se reflektuje u kalendaru odmah.
+2. Brisanje se reflektuje u kalendaru odmah.  
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 26
 
 ---
 
@@ -292,7 +332,9 @@
 **Prioritet:** Medium  
 **Pretpostavke:** Korisnik je registrovan. Termini su definisani.  
 **Veze:** US03, US11, US18  
-**Acceptance Criteria:** 1. Prikaz pregledne liste svih dostupnih slobodnih termina.
+**Acceptance Criteria:** 1. Prikaz pregledne liste svih dostupnih slobodnih termina.  
+**Sprint:** 7  
+**Veza sa Product Backlogom:** 28-30
 
 ---
 
@@ -305,3 +347,4 @@
 **Veze:** US14  
 **Acceptance Criteria:** 1. Opcija za generisanje PDF/Excel izvještaja.
 2. Prikaz statistike o najpopularnijim terminima i najkorištenijim uređajima.
+**Sprint:**
