@@ -1,9 +1,9 @@
 ### Sprint Goal - Sprint 2
   
 #### Ciljevi sprinta
- *  Upoznavanje tima s temom
+ *  Dogovor unutar grupe o daljnim planovima
  *  Organizacija sastanaka
- *  Određivanje osnovnih funkcionalnosti projekta
+ *  Određivanje user story i izmijene u product backlogu
  *  Evidentiranje potencijalnih ograničenja
  *  Finaliziranje potrebnih dokumenata
 
