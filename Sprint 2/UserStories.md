@@ -336,3 +336,187 @@
 **Acceptance Criteria:** 1. Prikaz pregledne liste svih dostupnih slobodnih termina.  
 **Sprint:** 7  
 **Veza sa Product Backlogom:** 28-30
+
+
+---
+## 5. Upravljanje kabinetima i resursima
+
+### USER STORY – Upravljanje kabinetima
+**ID storyja:**US22 
+**Naziv storyja:** Dodavanje i uređivanje kabineta
+**Opis:** Kao administrator, želim dodavati i uređivati kabinete (prostorije), kako bih mogao vezati opremu i termine za konkretne lokacije.  
+**Poslovna vrijednost:** Osigurava fizičku organizaciju resursa u sistemu.
+**Prioritet:** High  
+**Pretpostavke:** Administrator je prijavljen. 
+**Veze:** -  
+**Acceptance Criteria:** 1. Forma za unos naziva i kapaciteta kabineta. 2. Mogućnost izmjene podataka o kabinetu. 3. Prikaz liste svih kabineta.
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 22
+
+---
+### USER STORY – Blokiranje termina kabineta
+**ID storyja:**US23
+**Naziv storyja:** Blokiranje korištenja kabineta
+**Opis:** Kao administrator, želim blokirati određene periode u kabinetu (npr. praznici, čišćenje), kako korisnici ne bi mogli vršiti rezervacije tada.  
+**Poslovna vrijednost:**Sprječava pogrešne rezervacije tokom neradnih dana ili održavanja.
+**Prioritet:** Medium 
+**Pretpostavke:** -
+**Veze:** US22  
+**Acceptance Criteria:** 1. Opcija "Block Period" u kalendaru kabineta. 2. Onemogućavanje rezervacije u tom periodu. 3. Vizuelna oznaka blokiranog termina u kalendaru.
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 27
+
+---
+## 6. Kalendarski prikaz i UI
+
+### USER STORY – Kalendarski prikaz termina
+**ID storyja:**US24
+**Naziv storyja:** Pregled termina putem kalendara
+**Opis:** Kao student, želim vidjeti slobodne termine u formi kalendara po kabinetima, kako bih lakše planirao svoje vrijeme. 
+**Poslovna vrijednost:**Bolje korisničko iskustvo i preglednost.
+**Prioritet:** High
+**Pretpostavke:** -
+**Veze:** US21  
+**Acceptance Criteria:** 1. Prikaz "Calendar View". 2. Mogućnost filtriranja po kabinetu. 3. Različite boje za slobodne, zauzete i blokirane termine.
+**Sprint:** 7
+**Veza sa Product Backlogom:** 28, 30
+
+---
+## 7. Rezervacija opreme koja se koristi u kabinetu
+
+### USER STORY – Odabir specifične opreme pri rezervaciji
+**ID storyja:**US25
+**Naziv storyja:** Odabir opreme unutar rezervacije
+**Opis:** Kao student, želim odabrati tačno određenu opremu iz kabineta prilikom kreiranja rezervacije termina.
+**Poslovna vrijednost:**Osigurava da student dobije alat koji mu je potreban za vježbu.
+**Prioritet:** Medium
+**Pretpostavke:** -
+**Veze:** US11  
+**Acceptance Criteria:**1. Lista dostupne opreme se filtrira prema odabranom kabinetu. 2. Korisnik može označiti više stavki opreme. 3. Sistem bilježi koja je oprema rezervisana uz taj termin.
+**Sprint:** 7
+**Veza sa Product Backlogom:** 32
+
+---
+
+### USER STORY – Automatska validacija konflikta
+**ID storyja:**US26
+**Naziv storyja:** Sprječavanje preklapanja termina
+**Opis:** Kao sistem (automatski proces), želim spriječiti potvrdu rezervacije ako postoji vremenski konflikt ili ako je oprema već zauzeta.
+**Poslovna vrijednost:**Eliminiše ljudske greške i duple rezervacije.
+**Prioritet:** High
+**Pretpostavke:** -
+**Veze:** US11  
+**Acceptance Criteria:**1. Provjera baze podataka u milisekundama prije potvrde. 2. Poruka o grešci "Termin je u međuvremenu zauzet".
+**Sprint:** 8
+**Veza sa Product Backlogom:** 33
+---
+
+## 8. Obavijesti i statusi
+
+### USER STORY – Notifikacija o statusu zahtjeva
+**ID storyja:**US27
+**Naziv storyja:** Obavještenje o odobrenju/odbijanju
+**Opis:** Kao student, želim primiti notifikaciju kada asistent odobri ili odbije moj zahtjev, kako bih znao da li mogu doći u laboratoriju.
+**Poslovna vrijednost:**Brza povratna informacija korisniku.
+**Prioritet:** Medium
+**Pretpostavke:** -
+**Veze:** US15 
+**Acceptance Criteria:**1. Slanje emaila ili in-app notifikacije. 2. Uključivanje komentara asistenta u poruku.
+**Sprint:** 8
+**Veza sa Product Backlogom:** 35
+---
+
+### USER STORY – Automatska promjena statusa opreme nakon kvara
+**ID storyja:**US28
+**Naziv storyja:** utomatsko povlačenje neispravne opreme
+**Opis:** Kao sistem, želim automatski otkazati buduće rezervacije za opremu koja je prijavljena kao kvar.
+**Poslovna vrijednost:**Sprječava studente da dođu na termin i otkriju da oprema ne radi.
+**Prioritet:** Medium
+**Pretpostavke:** -
+**Veze:** US09
+**Acceptance Criteria:**1. Kada se status promijeni u "neispravna", sistem pronalazi sve "Pending" i "Approved" rezervacije za tu stavku. 2. Slanje obavijesti pogođenim korisnicima.
+**Sprint:** 10
+**Veza sa Product Backlogom:** 33, 44
+---
+
+## 9. Autentifikacija i Sigurnost
+
+### USER STORY –Prijava putem JWT tokena
+**ID storyja:**US29
+**Naziv storyja:** Sigurna prijava sa tokenima
+**Opis:** Kao korisnik, želim da sistem generiše siguran token (JWT) prilikom moje prijave, kako bih ostao prijavljen bez potrebe da stalno unosem lozinku pri svakom kliku.
+**Poslovna vrijednost:**Osigurava visok nivo sigurnosti i integriteta podataka pri svakom zahtjevu.
+**Prioritet:** High
+**Pretpostavke:** Korisnik unosi ispravne podatke
+**Veze:** -
+**Acceptance Criteria:**1. Slanje emaila ili in-app notifikacije. 2. Uključivanje komentara asistenta u poruku.
+**Sprint:** 5
+**Veza sa Product Backlogom:** 18
+---
+
+### USER STORY –Pristup na osnovu uloga (RBAC)
+**ID storyja:**US30
+**Naziv storyja:** Ograničenje pristupa prema ulogama
+**Opis:** Kao administrator, želim da sistem prepozna moju ulogu (Admin, Profesor, Student), kako bih imao pristup samo onim stranicama koje su dozvoljene za moju ulogu.
+**Poslovna vrijednost:**Sprječava neovlaštene korisnike da mijenjaju podatke koje ne bi trebali (npr. da student briše opremu).
+**Prioritet:** High
+**Pretpostavke:** Korisnik unosi ispravne podatke
+**Veze:** -
+**Acceptance Criteria:**1. Student ne vidi meni "Upravljanje korisnicima". 2. Samo administrator i tehničar mogu pristupiti CRUD operacijama za opremu. 3. Ako korisnik pokuša ručno pristupiti zabranjenom URL-u, sistem vraća "403 Forbidden".
+**Sprint:** 5
+**Veza sa Product Backlogom:** 19
+---
+
+### USER STORY –Odjava sa sistema
+**ID storyja:**US31
+**Naziv storyja:** Sigurna odjava
+**Opis:**Kao korisnik, želim da se odjavim sa sistema, kako bih poništio svoju sesiju i spriječio druge osobe koje koriste isti računar da pristupe mom profilu.
+**Poslovna vrijednost:**Zaštita privatnosti korisnika nakon završetka rada.
+**Prioritet:** High
+**Pretpostavke:** Korisnik unosi ispravne podatke
+**Veze:** -
+**Acceptance Criteria:**1. Vidljivo dugme "Logout". 2. Klikom na dugme, JWT token se uništava na klijentskoj strani. 3. Korisnik se preusmjerava na Login stranicu i ne može se vratiti unazad (back button) na zaštićene stranice.
+**Sprint:** 5
+**Veza sa Product Backlogom:** 20
+
+---
+
+### USER STORY –Automatski istek sesije
+**ID storyja:**US32
+**Naziv storyja:** Istek sesije
+**Opis:**Kao administrator, želim da sistem automatski odjavi korisnika nakon određenog perioda neaktivnosti, kako bih povećao sigurnost u laboratorijskom okruženju.
+**Poslovna vrijednost:**Smanjuje rizik od zloupotrebe otvorenih sesija na javnim računarima.
+**Prioritet:** Medium
+**Pretpostavke:**-
+**Veze:** -
+**Acceptance Criteria:**1. Sesija ističe nakon npr. 30 minuta neaktivnosti. 2. Korisnik dobija obavještenje "Sesija je istekla". 3. Za ponovni rad potrebna je nova prijava.
+**Sprint:** 5
+**Veza sa Product Backlogom:** 20
+
+---
+
+### USER STORY –Automatski istek sesije
+**ID storyja:**US33
+**Naziv storyja:** Oporavak lozinke putem emaila
+**Opis:**Kao korisnik, želim imati opciju da resetujem lozinku ako je zaboravim, kako bih ponovo dobio pristup svom nalogu bez intervencije administratora.
+**Poslovna vrijednost:**Smanjuje administrativni teret i poboljšava korisničko iskustvo.
+**Prioritet:** Medium
+**Pretpostavke:**-
+**Veze:** -
+**Acceptance Criteria:**1. Link "Forgot Password" na login formi. 2. Slanje unikatnog, privremenog linka na korisnikov email. 3. Mogućnost postavljanja nove lozinke putem tog linka.
+**Sprint:** 10
+**Veza sa Product Backlogom:** 40
+
+---
+
+### USER STORY –Evidencija
+**ID storyja:**US34
+**Naziv storyja:** Praćenje aktivnosti prijava
+**Opis:**Kao administrator, želim imati uvid u to ko se i kada prijavio na sistem, kako bih mogao pratiti korištenje sistema i identifikovati sumnjive aktivnosti.
+**Poslovna vrijednost:**Omogućava reviziju i bolju sigurnosnu kontrolu.
+**Prioritet:** Low
+**Pretpostavke:**-
+**Veze:** -
+**Acceptance Criteria:**1. Sistem bilježi korisničko ime i timestamp svake uspješne i neuspješne prijave. 2. Administrator može pregledati listu tih zapisa.
+**Sprint:** 10
+**Veza sa Product Backlogom:** 41
