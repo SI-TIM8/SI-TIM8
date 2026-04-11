@@ -18,13 +18,13 @@
 ### Način komunikacije:
 
 * Primarni kanal komunikacije: Viber
-* Očekivano vrijeme odgovora: Maksimalno 4 sata tokom radnog dana (09:00 - 20:00h). Vikendom po dogovoru.
+* Očekivano vrijeme odgovora: Maksimalno 4 sata tokom radnog dana. Vikendom po dogovoru.
 * Način zakazivanja sastanaka: Putem Google Calendar-a. Poziv se šalje minimalno 24 sata ranije
   
 ### Radna pravila tima:
 
 * Kada i kako tim radi zajedno: Sastanci se održavaju minimalno jednom sedmično, najčešće subotom putem Google Meet-a
-* Dogovaranje i praćenje zadataka: Koristimo GitHub. Svaki zadatak  mora imati definisan "Definition of Done".
+* Dogovaranje i praćenje zadataka: Koristimo GitHub. Svaki zadatak  mora imati definisane zadatke za svakog člana tima.
 * Dokumentovanje odluka: Sve ključne odluke o arhitekturi ili promjeni zahtjeva zapisuju se u zajednički file SprintLog.md.
 * Rješavanje neslaganja: Glasanje prostom većinom. U slučaju izjednačenog rezultata, prednost ima član zadužen za tu specifičnu oblast. Ukoliko nesuglasice nisu riješene, kontaktiramo asistente.
 
