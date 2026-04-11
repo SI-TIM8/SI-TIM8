@@ -3,8 +3,9 @@
 #### Ciljevi sprinta
  *  Dogovor unutar grupe o daljnim planovima
  *  Organizacija sastanaka
- *  Određivanje user story i izmijene u product backlogu
- *  Evidentiranje potencijalnih ograničenja
+ *  Dogovor o modelu sistema
+ *  Identifikovanje rizika
+ *  Dogovor o načinu testiranja
  *  Finaliziranje potrebnih dokumenata
 
 #### Ključne stavke:
@@ -16,22 +17,20 @@ U timu smo se ravnopravno raspodijelili, diskutovali o svakom dokumentu pojedina
 U ovom sprintu nismo imali nikakvih poteškoća pri radu.
 
 #### Održani sastanci:
-* Srijeda 31.03.2026. 12h - raspodjela zadataka
-* Subota 05.04.2026. 11:30h - zajednička diskusija 
-
+* Nedjelja 12.04.2026. 21:00h - zajednička diskusija
 
 ### Sprint Backlog
 
 Raspodjela zadataka
 
 
-
-| ID | Naziv zadatka              | Odgovorna osoba                                      | Status     | Napomena |
+| ID | Naziv zadatka             | Odgovorna osoba                                      | Status     | Napomena |
 |----|---------------------------|------------------------------------------------------|------------|----------|
-| 1  | User Stories              | Alma Jusufbegović, Emina Hamamdžić                   | Završeno   | -        |
-| 2  | Acceptance Criteria       | Hamza Hadžić, Aner Atović                            | Završeno   | -        |
-| 3  | Lista NFR zahtjeva        |Refik Mujčinović, Merima Glušac                       | Završeno   | -        |
-| 4  | Ažurirani Product Backlog | Haris Sadiković, Haris Macić                         | Završeno   | -        |
+| 1  | Risk Register             | Alma Jusufbegović                                    | Završeno   | -        |
+| 2  | Domain Model              | Refik Mujčinović, Aner Atović                        | Završeno   | -        |
+| 3  | Use Case Model            | Hamza Hadžić                                         | Završeno   | -        |
+| 4  | Architecture Overview     | Emina Hamamdžić, Haris Macić                         | Završeno   | -        |
+| 5  | Test Strategy             | Haris Sadiković, Merima Glušac                       | Završeno   | -        |
 
 
 
