@@ -430,7 +430,7 @@
 
 ### USER STORY – Automatska promjena statusa opreme nakon kvara
 **ID storyja:** US28  
-**Naziv storyja:** utomatsko povlačenje neispravne opreme  
+**Naziv storyja:** Automatsko povlačenje neispravne opreme  
 **Opis:** Kao sistem, želim automatski otkazati buduće rezervacije za opremu koja je prijavljena kao kvar.  
 **Poslovna vrijednost:** Sprječava studente da dođu na termin i otkriju da oprema ne radi.  
 **Prioritet:** Medium  
