@@ -432,7 +432,7 @@
 **ID storyja:** US28  
 **Naziv storyja:** utomatsko povlačenje neispravne opreme  
 **Opis:** Kao sistem, želim automatski otkazati buduće rezervacije za opremu koja je prijavljena kao kvar.  
-**Poslovna vrijednost:**Sprječava studente da dođu na termin i otkriju da oprema ne radi.  
+**Poslovna vrijednost:** Sprječava studente da dođu na termin i otkriju da oprema ne radi.  
 **Prioritet:** Medium  
 **Pretpostavke:** -  
 **Veze:** US09  
