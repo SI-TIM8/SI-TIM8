@@ -342,7 +342,7 @@
 ## 5. Upravljanje kabinetima i resursima
 
 ### USER STORY – Upravljanje kabinetima
-**ID storyja:**US22  
+**ID storyja:** US22  
 **Naziv storyja:** Dodavanje i uređivanje kabineta  
 **Opis:** Kao administrator, želim dodavati i uređivati kabinete (prostorije), kako bih mogao vezati opremu i termine za konkretne lokacije.  
 **Poslovna vrijednost:** Osigurava fizičku organizaciju resursa u sistemu.
@@ -355,7 +355,7 @@
 
 ---
 ### USER STORY – Blokiranje termina kabineta
-**ID storyja:**US23  
+**ID storyja:** US23  
 **Naziv storyja:** Blokiranje korištenja kabineta  
 **Opis:** Kao administrator, želim blokirati određene periode u kabinetu (npr. praznici, čišćenje), kako korisnici ne bi mogli vršiti rezervacije tada.  
 **Poslovna vrijednost:** Sprječava pogrešne rezervacije tokom neradnih dana ili održavanja.
@@ -370,7 +370,7 @@
 ## 6. Kalendarski prikaz i UI
 
 ### USER STORY – Kalendarski prikaz termina
-**ID storyja:**US24  
+**ID storyja:** US24  
 **Naziv storyja:** Pregled termina putem kalendara  
 **Opis:** Kao student, želim vidjeti slobodne termine u formi kalendara po kabinetima, kako bih lakše planirao svoje vrijeme.  
 **Poslovna vrijednost:** Bolje korisničko iskustvo i preglednost.  
@@ -385,7 +385,7 @@
 ## 7. Rezervacija opreme koja se koristi u kabinetu
 
 ### USER STORY – Odabir specifične opreme pri rezervaciji
-**ID storyja:**US25  
+**ID storyja:** US25  
 **Naziv storyja:** Odabir opreme unutar rezervacije  
 **Opis:** Kao student, želim odabrati tačno određenu opremu iz kabineta prilikom kreiranja rezervacije termina.  
 **Poslovna vrijednost:** Osigurava da student dobije alat koji mu je potreban za vježbu.  
@@ -415,7 +415,7 @@
 ## 8. Obavijesti i statusi
 
 ### USER STORY – Notifikacija o statusu zahtjeva
-**ID storyja:**US27  
+**ID storyja:** US27  
 **Naziv storyja:** Obavještenje o odobrenju/odbijanju  
 **Opis:** Kao student, želim primiti notifikaciju kada asistent odobri ili odbije moj zahtjev, kako bih znao da li mogu doći u laboratoriju.  
 **Poslovna vrijednost:** Brza povratna informacija korisniku.  
@@ -429,7 +429,7 @@
 ---
 
 ### USER STORY – Automatska promjena statusa opreme nakon kvara
-**ID storyja:**US28  
+**ID storyja:** US28  
 **Naziv storyja:** utomatsko povlačenje neispravne opreme  
 **Opis:** Kao sistem, želim automatski otkazati buduće rezervacije za opremu koja je prijavljena kao kvar.  
 **Poslovna vrijednost:**Sprječava studente da dođu na termin i otkriju da oprema ne radi.  
