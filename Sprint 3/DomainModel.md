@@ -163,3 +163,30 @@ Jedan termin može imati više zahtjeva za rezervaciju, dok svaki zahtjev pripad
 Veza: 1 : N  
 
 ---
+
+## Poslovna pravila važna za model
+
+1. Svaki korisnik mora imati tačno jednu ulogu u sistemu.  
+2. Korisničke račune kreira administrator, a pristup sistemu je moguć samo registrovanim korisnicima.  
+3. Jedan kabinet sadrži više komada opreme i više termina.  
+4. Svaki kabinet mora pripadati tačno jednom objektu.  
+5. Svaki komad opreme mora pripadati tačno jednom kabinetu.  
+6. Termin može biti definisan samo unutar radnog vremena kabineta.  
+7. Termin može biti blokiran, a za takav termin nije dozvoljeno slanje zahtjeva za rezervaciju.  
+8. Zahtjev za rezervaciju može se kreirati samo za termin čije vrijeme početka nije u prošlosti.  
+9. Svaki zahtjev mora biti vezan za tačno jednog studenta, tačno jedan termin i tačno jedan komad opreme.  
+10. Student može pregledati i otkazati samo vlastite zahtjeve i rezervacije.  
+11. Broj odobrenih zahtjeva za jedan termin u okviru kabineta ne smije preći maksimalan dozvoljeni broj studenata definisan za taj kabinet.  
+12. Profesor ili asistent može odobriti ili odbiti samo pristigle zahtjeve za rezervaciju.  
+13. Zahtjev za rezervaciju može imati status `Pending`, `Approved` ili `Rejected`.  
+14. Status zahtjeva se može mijenjati samo do početka termina.  
+15. Profesor ili asistent može definisati maksimalan broj aktivnih rezervacija po studentu, a sistem mora spriječiti prekoračenje tog limita.  
+16. Oprema koja je označena kao neispravna ne može biti predmet nove rezervacije.  
+17. Tehničar može mijenjati status opreme i obrađivati prijave kvarova.  
+18. Prijava kvara mora biti vezana za tačno jedan komad opreme.  
+19. Kada se prijavi kvar, status opreme se automatski mijenja u `neispravna`.  
+20. Jedan komad opreme može imati više prijavljenih kvarova kroz vrijeme.  
+21. Tehničar može biti zadužen za obradu više tiketa, ali svaki tiket mora imati tačno jednog odgovornog tehničara.  
+22. Administrator upravlja korisnicima, kabinetima, opremom i pravilima korištenja sistema.  
+23. Sistem mora spriječiti vremensko preklapanje rezervacija za istu opremu.  
+24. Sistem mora voditi računa o dostupnosti opreme u realnom vremenu prilikom kreiranja i odobravanja zahtjeva.
