@@ -2,7 +2,7 @@
 
 ## Kratak opis arhitektonskog pristupa
 
-Sistem za upravljanje laboratorijskom opremom i terminima zasnovan je na klasičnoj četveroslojnoj (layered) arhitekturi unutar API-First pristupa. Backend je potpuno odvojen od frontenda, što omogućava nezavisni razvoj i veću fleksibilnost sistema.
+Sistem za upravljanje laboratorijskom opremom i terminima zasnovan je na četveroslojnoj (layered) arhitekturi unutar API-First pristupa. Backend je potpuno odvojen od frontenda, što omogućava nezavisni razvoj i veću fleksibilnost sistema.
 
 Arhitektura se oslanja na strogu separaciju odgovornosti između slojeva kako bi se kompleksna poslovna pravila (posebno vezana za korisničke uloge i dozvole) mogla mijenjati bez utjecaja na ostale dijelove sistema, uključujući bazu podataka.
 
