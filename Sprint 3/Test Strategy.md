@@ -8,7 +8,7 @@
 | :---- | :---- | :---- |
 | **Provjera autentifikacije i autorizacije (RBAC)** (US29, US30, NFR-06) | Prijava putem JWT tokena, automatski istek sesije i ograničenje pristupa za uloge: Administrator, Tehničar, Profesor, Student | Korisnik sa ulogom "Student" dobija 403 Forbidden pri pokušaju pristupa admin rutama; lozinke su ispravno hesirane (NFR-07) |
 | **Validacija procesa rezervacije bez konflikata** (US11, US26, NFR-16) | Kreiranje rezervacije termina i specifične opreme; provjera Database Locks mehanizma | Sistem fizički onemogućava dvije rezervacije za isti ID opreme u istom terminu; student dobija jasnu poruku o zauzetosti |
-| **Upravljanje statusom opreme i prijava kvarova** (US08, US09, US28) | Promjena statusa opreme (dostupno/neispravno); automatsko otkazivanje budućih rezervacija nakon prijave kvara | Prijava kvara traje \< 10s (NFR-03); pogođeni korisnici automatski primaju notifikaciju o otkazivanju |
+| **Upravljanje statusom opreme i prijava kvarova** (US08, US09, US28) | Promjena statusa opreme (dostupno/neispravno); automatsko otkazivanje budućih rezervacija nakon prijave kvara | Prijava kvara traje \< 1s (NFR-03); pogođeni korisnici automatski primaju notifikaciju o otkazivanju |
 | **Provjera performansi i responzivnosti** (NFR-02, NFR-04, NFR-13) | Učitavanje profesorskog dashboarda; rad sistema pod opterećenjem od 50 istovremenih korisnika | Dashboard se učitava za \< 1s; UI je funkcionalan na rezolucijama od 360px do 1920px |
 | **Integritet podataka i backup** (NFR-17, NFR-19) | ACID transakcije pri upisu; automatski incremental backup baze podataka | U slučaju pada, sistem se vraća u stabilno stanje u roku od 500ms; backup se izvršava svaka 24h u 03:00 AM |
 
@@ -18,6 +18,7 @@
 | :---- | :---- | :---- | :---- |
 | **Unit testiranje** | Validacija poslovne logike: provjera formata emaila, validacija dužine lozinke, logika računanja slobodnih termina i provjera limita rezervacija (US16) | Dev tim | Minimalno 80% pokrivenosti kritične logike rezervacija (NFR-12) |
 | **Integracijsko testiranje** | Komunikacija API-ja sa bazom (PostgreSQL/MySQL); provjera JWT tokena u Headeru; automatska promjena statusa opreme u bazi nakon US09 | Dev \+ QA | API endpointi vraćaju 401 Unauthorized bez validnog tokena u roku od 100ms (NFR-05) |
+| **Regresijsko testiranje** | Provjera da nova izmjena koda ne narušava prethodno ispravne funkcionalnosti: autentifikacija, rezervacija, upravljanje kvarovima, RBAC, Calendar View) | QA tim | Svi regresijski testni slučajevi prolaze nakon svakog sprint deploymenta; ni jedan prethodno PASS test ne smije postati FAIL|
 | **Sistemsko testiranje** | E2E tokovi: Student rezerviše \-\> Profesor odobrava \-\> Tehničar prijavljuje kvar \-\> Sistem otkazuje rezervaciju | QA tim | Svi prioritetni "High" storyji prolaze bez blokera; poslovna pravila (1-24) su ispoštovana |
 | **UI testiranje** | Provjera "Calendar View" prikaza (US24); filteri opreme (US10); responzivnost elemenata na mobilnim uređajima | QA tim | Rezervacija završena u max 4 klika (NFR-01); vizuelni indikatori za blokirane termine su jasni |
 | **Sigurnosno testiranje** | RBAC autorizacija; zaštita od SQL injection-a; enkripcija osjetljivih podataka studenata (JMBG) (NFR-08) | Security tim | Student ne vidi lične podatke drugih studenata; administrativne rute su nedostupne bez Admin uloge |
@@ -26,9 +27,9 @@
 
 ## **Šta se testira u kojem nivou**
 
-| Grupa funkcionalnosti (Referenca) | Unit test. | Integracioni nivo | Sistemski E2E | UI/UX provjera | Sec/RBAC | Load/Perf | UAT |
+| Grupa funkcionalnosti (Referenca) | Unit test. | Integracioni nivo |Regresijsko testiranje| Sistemski E2E | UI/UX provjera | Sec/RBAC | Load/Perf | UAT |
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
-| **Upravljanje pristupom** (US01-US05, US29-US32) | DA | DA | DA | DA | DA | DA | DA |
+| **Upravljanje pristupom** (US01-US05, US29-US32) | DA | DA| | DA | DA | DA | DA | DA |
 | **Rezervisanje opreme i termina** (US11, US25, US26) | DA | DA | DA | DA | DA | DA | DA |
 | **Prijava i obrada kvarova** (US09, US28) | DA | DA | DA | DA | NE | NE | DA |
 | **Upravljanje kabinetima i resursima** (US22, US23) | DA | DA | DA | DA | DA | NE | DA |
