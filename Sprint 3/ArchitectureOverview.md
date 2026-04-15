@@ -17,41 +17,54 @@ Svaki sloj ima jasno definisanu odgovornost i komunicira isključivo sa susjedni
 
 ---
 
-## Glavne komponente sistema
+## Glavne komponente sistema (Kompletna lista)
 
-Sistem je organizovan u 4 sloja:
+Sistem je organizovan u 4 sloja, a svaki od 8 entiteta iz baze podataka ima svoje komponente u svakom sloju kako bi se osigurala potpuna pokrivenost funkcionalnosti:
 
-1. **Presentation layer**: Prima HTTP zahtjeve od klijenata i vraća odgovore. Odgovoran je za validaciju ulaznih podataka, autentifikaciju korisnika i formatiranje odgovora. Ne sadrži poslovnu logiku.
-    - `KorisnikController`
-    - `TerminController`
-    - `OpremaController`
-    - `KabinetController`
-    - `ZahtjevController`
-    - `ObjekatController`
+### 1. Presentation layer (API Kontroleri)
+Odgovorni za izlaganje endpointa i validaciju ulaznih podataka za svaki entitet:
+- `KorisnikController` – Upravljanje profilima i autentifikacijom.
+- `TerminController` – Rezervacije i pregled rasporeda.
+- `ZahtjevController` – Obrada zahtjeva za termine ili opremu.
+- `KabinetController` – Upravljanje podacima o laboratorijama.
+- `ObjekatController` – Upravljanje lokacijama i radnim vremenom.
+- `OpremaController` – Inventura i status laboratorijske opreme.
+- `EvidencijaController` – Praćenje istorije i stanja opreme.
+- `KorisnikObjekatController` – Upravljanje vezama između osoblja i objekata.
 
-2. **Application layer**: Orkestrira tok jedne korisničke akcije od početka do kraja. Prima zahtjev od prezentacijskog sloja, zatim poziva module iz domenskog sloja i sloja za pristup podacima.
-    - `KorisnikService`
-    - `TerminService`
-    - `OpremaService`
-    - `KabinetService`
-    - `WorkflowService`
+### 2. Application layer (Servisi)
+Sadrže poslovnu logiku i orkestraciju procesa:
+- `KorisnikService` – Logika registracije, prijave i JWT generisanja.
+- `TerminService` – Provjera dostupnosti i zakazivanje termina.
+- `ZahtjevService` – Workflow odobravanja ili odbijanja zahtjeva.
+- `KabinetService` – Organizacija kabineta unutar objekata.
+- `ObjekatService` – Administracija radnog vremena i lokacija.
+- `OpremaService` – Dodavanje opreme i dodjela kabinetima.
+- `EvidencijaService` – Automatizovano bilježenje promjena statusa.
+- `KorisnikObjekatService` – Logika dodjele prava pristupa objektima.
 
-3. **Domain layer**: Sadrži poslovne entitete i sva pravila koja se na njih primjenjuju. Ovaj sloj ne poznaje detalje baze podataka niti HTTP protokola.
-    - `Korisnik`
-    - `Termin`
-    - `Zahtjev`
-    - `Kabinet`
-    - `Objekat`
-    - `Oprema`
-    - `Evidencija`
+### 3. Domain layer (Entiteti)
+Čiste klase koje predstavljaju podatke i pravila (prema tvojim tabelama):
+- `Korisnik` (ID, ImePrezime, Email, Password, Username)
+- `Termin` (ID, VrijemePocetka, VrijemeKraja, Datum, KreatorID, KabinetID)
+- `Zahtjev` (ID, Status, Komentar, TerminID, KabinetID)
+- `Kabinet` (ID, Naziv, KorisnikID)
+- `Objekat` (ID, Lokacija, RadnoVrijeme, KabinetID)
+- `Oprema` (ID, Naziv, SerijskiBroj, KreatorID, KabinetID)
+- `Evidencija` (ID, Status, Komentar, OpremaID, KorisnikID)
+- `KorisnikObjekat` (ID, KorisnikID, ObjekatID)
 
-4. **Data access layer**: Jedini sloj koji direktno komunicira s bazom podataka. Odgovoran je za čitanje i pisanje podataka, te prevođenje između domenskih entiteta i baze.
-    - `KorisnikRepository`
-    - `TerminRepository`
-    - `OpremaRepository`
-    - `KabinetRepository`
-    - `ZahtjevRepository`
-
+### 4. Data access layer (Repozitoriji)
+Zaduženi za direktne SQL operacije i komunikaciju sa bazom:
+- `KorisnikRepository`
+- `TerminRepository`
+- `ZahtjevRepository`
+- `KabinetRepository`
+- `ObjekatRepository`
+- `OpremaRepository`
+- `EvidencijaRepository`
+- `KorisnikObjekatRepository`
+  
 ---
 
 ## Odgovornosti komponenti
