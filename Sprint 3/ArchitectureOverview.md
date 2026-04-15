@@ -111,7 +111,6 @@ Zahtjev korisnika prolazi kroz slojeve u strogo definisanom redoslijedu.
 
 ## Ključne tehničke odluke
 
-## Ključne tehničke odluke
 
 ### Izbor četveroslojne (Layered) arhitekture
 Odabrana arhitektura osigurava strogu podjelu između korisničkog interfejsa, poslovne logike i baze podataka.
