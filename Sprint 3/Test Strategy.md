@@ -11,13 +11,13 @@
 | **Upravljanje statusom opreme i prijava kvarova** (US08, US09, US28) | Promjena statusa opreme (dostupno/neispravno); automatsko otkazivanje budućih rezervacija nakon prijave kvara | Promjena statusa opreme(isprvan/kvar) za mnaje od 10 sekundi ukupnog rada od strane laboratorijskog tehničara(NFR-03); pogođeni korisnici automatski primaju notifikaciju o otkazivanju |
 | **Provjera performansi i responzivnosti** (NFR-02, NFR-04, NFR-13) | Učitavanje profesorskog dashboarda; rad sistema pod opterećenjem od 50 istovremenih korisnika | Dashboard se učitava za \< 1s; UI je funkcionalan na rezolucijama od 360px do 1920px |
 | **Integritet podataka i backup** (NFR-17, NFR-19) | ACID transakcije pri upisu; automatski incremental backup baze podataka | U slučaju pada, sistem se vraća u stabilno stanje u roku od 500ms; backup se izvršava svaka 24h u 03:00 AM |
-| **Validacija ograničenja rezervacija po studentu (US16)** | Kreiranje više rezervacija od dozvoljenog limita | Sistem ne dozvoljava novu rezervaciju i prikazuje poruku o dostignutom limitu |
-| **Testiranje blokiranih termina** | Pokušaj rezervacije termina označenog kao blokiran | Sistem odbija zahtjev i prikazuje informaciju da termin nije dostupan |
-| **Rezervacija neispravne opreme** | Pokušaj rezervacije opreme čiji je status "neispravna" | Sistem onemogućava rezervaciju i jasno označava opremu kao nedostupnu |
-| **Otkazivanje rezervacije** | Student otkazuje postojeću rezervaciju | Termin i oprema ponovo postaju dostupni za rezervaciju |
-| **Validacija unosa podataka** | Unos neispravnih ili nepotpunih podataka (npr. prazna polja) | Sistem odbija unos i prikazuje validacione poruke |
-| **Pristup tuđim podacima** | Student pokušava pristupiti rezervacijama drugog studenta | Sistem zabranjuje pristup i vraća grešku |
-| **Rezervacija termina u prošlosti** | Student pokušava rezervisati termin koji je već prošao | Sistem ne dozvoljava kreiranje zahtjeva |
+| **Validacija ograničenja rezervacija po studentu** (US16, NFR-16) | Kreiranje više rezervacija od dozvoljenog limita | Sistem ne dozvoljava novu rezervaciju i prikazuje poruku o dostignutom limitu |
+| **Testiranje blokiranih termina** (US11, NFR-16) | Pokušaj rezervacije termina označenog kao blokiran | Sistem odbija zahtjev i prikazuje informaciju da termin nije dostupan |
+| **Rezervacija neispravne opreme** (US08, US28, NFR-16) | Pokušaj rezervacije opreme čiji je status "neispravna" | Sistem onemogućava rezervaciju i jasno označava opremu kao nedostupnu |
+| **Otkazivanje rezervacije** (US11, NFR-13)| Student otkazuje postojeću rezervaciju | Termin i oprema ponovo postaju dostupni za rezervaciju |
+| **Validacija unosa podataka** (US30, NFR-06)| Unos neispravnih ili nepotpunih podataka (npr. prazna polja) | Sistem odbija unos i prikazuje validacione poruke |
+| **Pristup tuđim podacima** (US29, NFR-06)| Student pokušava pristupiti rezervacijama drugog studenta | Sistem zabranjuje pristup i vraća grešku |
+| **Rezervacija termina u prošlosti** (US11, US26, NFR-13, NFR-16)| Student pokušava rezervisati termin koji je već prošao | Sistem ne dozvoljava kreiranje zahtjeva |
 
 
 ## **Nivoi testiranja**
