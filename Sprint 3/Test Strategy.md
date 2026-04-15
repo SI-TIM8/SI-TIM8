@@ -28,7 +28,7 @@
 ## **Šta se testira u kojem nivou**
 
 | Grupa funkcionalnosti (Referenca) | Unit test. | Integracioni nivo |Regresijsko testiranje| Sistemski E2E | UI/UX provjera | Sec/RBAC | Load/Perf | UAT |
-| :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
+| :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
 | **Upravljanje pristupom** (US01-US05, US29-US32) | DA | DA| DA | DA | DA | DA | DA | DA |
 | **Rezervisanje opreme i termina** (US11, US25, US26) | DA | DA | DA | DA | DA | DA | DA | DA |
 | **Prijava i obrada kvarova** (US09, US28) | DA | DA | DA | DA | DA | NE | NE | DA |
