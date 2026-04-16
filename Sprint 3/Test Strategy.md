@@ -24,11 +24,11 @@
 
 | Faza testiranja | Predmet provjere | Zaduženi tim | Kriterijum završetka |
 | :---- | :---- | :---- | :---- |
-| **Unit testiranje** | Validacija poslovne logike: provjera formata emaila, validacija dužine lozinke, logika računanja slobodnih termina i provjera limita rezervacija (US16) | Dev tim | Minimalno 80% pokrivenosti kritične logike rezervacija (NFR-12) |
+| **Unit testiranje** | Validacija poslovne logike: provjera formata emaila, validacija dužine lozinke, provjera dostupnosti opreme na osnovu statusa, logika računanja slobodnih termina, validacija da se status zahtjeva ne moze promijeniti nakon pocetka termina i provjera limita rezervacija (US16) | Dev tim | Minimalno 80% pokrivenosti kritične logike rezervacija (NFR-12) |
 | **Integracijsko testiranje** | Komunikacija API-ja sa bazom (PostgreSQL/MySQL); provjera JWT tokena u Headeru; automatska promjena statusa opreme u bazi nakon US09 | Dev \+ QA | API endpointi vraćaju 401 Unauthorized bez validnog tokena u roku od 100ms (NFR-05) |
 | **Regresijsko testiranje** | Verifikacija stabilnosti postojećih funkcionalnosti nakon izmjena: autentifikacija (JWT), RBAC, rezervacije, status opreme, API endpointi, UI tokovi i integritet baze (ACID, locks) | QA tim | 100% prolaz kritičnih testova; nijedan prethodno PASS test ne smije postati FAIL; svi NFR kriteriji (NFR-01 do NFR-19) ostaju zadovoljeni|
 | **Sistemsko testiranje** | E2E tokovi: Student rezerviše \-\> Profesor odobrava \-\> Tehničar prijavljuje kvar \-\> Sistem otkazuje rezervaciju | QA tim | Svi prioritetni "High" storyji prolaze bez blokera; poslovna pravila (1-24) su ispoštovana |
-| **UI testiranje** | Provjera "Calendar View" prikaza (US24); filteri opreme (US10); responzivnost elemenata na mobilnim uređajima | QA tim | Rezervacija završena u max 4 klika (NFR-01); vizuelni indikatori za blokirane termine su jasni |
+| **UI testiranje** | Provjera "Calendar View" prikaza (US24); filteri opreme (US10); provjera da su blokirani termini vizuelno drugacije oznaceni; responzivnost elemenata na mobilnim uređajima | QA tim | Rezervacija završena u max 4 klika (NFR-01); vizuelni indikatori za blokirane termine su jasni |
 | **Sigurnosno testiranje** | RBAC autorizacija; zaštita od SQL injection-a; enkripcija osjetljivih podataka studenata (JMBG) (NFR-08) | Security tim | Student ne vidi lične podatke drugih studenata; administrativne rute su nedostupne bez Admin uloge |
 | **Performansno testiranje** | Load testing sa 50 concurrent korisnika; mjerenje latencije upisa u bazu (\< 300ms) | QA \+ DevOps | Sistem održava odziv ispod 1s pri maksimalnom definisanom opterećenju (NFR-13) |
 | **Testiranje prihvatljivosti** | Provjera usklađenosti sa Product Vision-om i MVP opsegom; validacija na BHS jezicima (NFR-18) | Product Owner | Svi kriteriji iz "Definition of Done" su ispunjeni; korisnici (studenti/profesori) potvrđuju upotrebljivost |
@@ -50,8 +50,12 @@
 | Povezani User Story/NFR | Opis AC-a | Faze u kojima se testira | Artefakt (Testni dokaz) |
 | :---- | :---- | :---- | :---- |
 | **US01, US30** | Administrator kreira korisnika; Student ne vidi meni "Upravljanje korisnicima" | Sistemsko, Sigurnosno | Izvještaj o testiranju uloga (Role-Permission Matrix); 403 status kod na admin rutama |
+| **US16** | Student ne može kreirati novu rezervaciju ako je dostignut maksimalan broj aktivnih rezervacija | Unit, Integracijsko | Unit test za provjeru limita; API response sa porukom o prekoračenju limita | 
 | **US11, US26** | Onemogućeno preklapanje termina i rezervacija opreme u prošlosti | Unit, Integracijsko, Sistemsko | Unit testovi za datumsku logiku; DB lock logovi pri pokušaju konkurentnog upisa |
+| **US11** | Student može otkazati rezervaciju, nakon čega termin i oprema postaju ponovo dostupni | Integracijsko, Sistemsko | Promjena statusa u bazi; API log koji potvrđuje oslobađanje termina |
 | **US09, US28** | Automatska promjena statusa opreme na "neispravna" i otkazivanje rezervacija | Integracijsko, Sistemsko | Zapis u bazi nakon prijave kvara; logovi poslatih notifikacija pogođenim studentima |
+| **US24 (blokiranje termina)** | Za blokirani termin nije moguće poslati zahtjev za rezervaciju | Integracijsko, Sistemsko | API vraća grešku; zapis u logu o odbijenom zahtjevu |
+| **US11** | Zahtjev mijenja status iz Pending u Approved ili Rejected od strane profesora/asistenta | Integracijsko, Sistemsko | Promjena statusa u bazi; audit log odluke |
 | **NFR-01** | Rezervacija slobodnog termina u maksimalno 4 klika | UI, Sistemsko | Time-to-task video zapis ili report sa brojem klikova (Click-stream analysis) |
 | **NFR-07** | Lozinke hesirane koristeći Argon2 ili BCrypt (min 16 byte salt) | Sigurnosno | Inspekcija baze podataka (hash string provjera); Code review kriptografskog modula |
 | **US24** | Kalendarski prikaz sa različitim bojama za slobodne/zauzete/blokirane termine | UI | Vizuelna validacija (Screenshotovi) na različitim rezolucijama (360px-1920px) |
@@ -62,6 +66,8 @@
 | :---- | :---- | :---- | :---- | :---- | :---- | :---- | :---- |
 | 28-03-2026 | US26, NFR-16 | Spriječavanje duple rezervacije opreme | Integracijsko | JMeter log / SQL log | **FAIL** | BUG-28-03-2026-001 | Trka (Race condition) pri 5 paralelnih zahtjeva |
 | 29-03-2026 | US30, NFR-06 | Zabrana pristupa studentu admin panelu | Sigurnosno | Postman Report | **PASS** | N/A | Vraćen 403 Forbidden za /api/admin/\* |
+| 30-03-2026 | US11, NFR-16 | Validacija datuma termina (zabrana termina iz prošlosti) | Unit | Unit test log | **PASS** | N/A | Sistem odbija zahtjev za termin sa datumom u prošlosti |
+| 01-04-2026 | US11, NFR-13 | Otkazivanje rezervacije i oslobađanje termina | Integracijsko | API + DB log | **PASS** | N/A | Termin i oprema ponovo dostupni nakon otkazivanja |
 
 **Notacija defekata:** BUG-\[DD-MM-YYYY\]-\[sekvenca\].
 
@@ -78,4 +84,5 @@
 | **R-03: Gubitak podataka pri padu sistema** — Pad fakultetske mreže briše trenutne sesije ili zapise o rezervacijama (Rizik 013). | Visok | Visoka | Korištenje ACID transakcija; incremental backup svaka 24h; testiranje oporavka (Recovery Testing) unutar 500ms |
 | **R-04: Loše korisničko iskustvo (Složenost)** — Korisnici odbijaju sistem jer je proces rezervacije predug (Rizik 010). | Srednji | Srednja | Pridržavanje NFR-01 (max 4 klika) i provođenje testiranja upotrebljivosti sa fokusnom grupom studenata |
 | **R-05: Nekompatibilnost preglednika** — Sistem ne radi ispravno na starijim verzijama Safarija ili Firefoxa (NFR-10). | Srednji | Srednja | Cross-browser testiranje (Chrome v110+, Firefox v105+, Safari v15+) pomoću automatizovanih UI alata |
+| **R-06: Race condition pri otkazivanju rezervacije** — Slot ostaje zauzet iako je rezervacija otkazana | Visok | Srednja | Testiranje konkurentnih operacija i korištenje transakcija |
 
