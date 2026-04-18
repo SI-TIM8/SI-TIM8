@@ -33,7 +33,7 @@ Jedna od ključnih prednosti ovog setupa je što svaki član tima može pratiti 
 
 1. Host: IP adresa servera.  
 2. Port: 5432\.  
-3. Database: LabManagerDB (ili ime koje definišete).  
+3. Database: LabManagerDB.  
 4. Credentials: Koristite zajednički Username i Password definisan u Docker environment fajlu.  
 5. Prednost: DBeaver nam omogućava vizuelni prikaz tabela, ER dijagrame i direktno izvršavanje SQL upita bez pisanja koda u C\#-u.
 
