@@ -1,23 +1,23 @@
-### Sprint Goal - Sprint 3
+### Sprint Goal - Sprint 4
   
 #### Ciljevi sprinta
- *  Dogovor unutar grupe o daljnim planovima
- *  Organizacija sastanaka
- *  Dogovor o modelu sistema
- *  Identifikovanje rizika
- *  Dogovor o načinu testiranja
- *  Finaliziranje potrebnih dokumenata
+ * Prepravka sprinta 3
+ * Dogovor tima o DoD
+ * Pronalazak najkompatibilnijeg Branching strategije
+ * Dogovor o realease planu
+ * Identifikovanje osnovinih tehnologija za setup sistema
+ * Postavljanje inivcijalnog kostura sistema
 
 #### Ključne stavke:
   
-U timu smo se ravnopravno raspodijelili, diskutovali o svakom dokumentu pojedinačno i donosili kritička mišljenja na svaki od njih. Nakon što smo se rasporedili, svaka osoba je trebala objasniti razloge zašto je baš na taj način nešto uradila i ostale kolege su davale svoja mišljenja i kritike. 
+Tim je zajednički pregledao prijašnji sprint i identifikovao prijašnje nedostatke u formulisanju određenih dijeva dokumenata prošlog sprinta. Prepravljen je i unapriješen Risk Register, Domain Model, Test Strategy, te Architecture Overview. Zatim su dogovorene odgovornosti tekućeg sprinta i raspoređeni su članovi grupe ravnopravno. 
 
 #### Rizici i zavisnosti
   
-U ovom sprintu nismo imali nikakvih poteškoća pri radu.
+DoD i IRP su bili naručito zahtjevni zbog težine predviđanja odvijanja razvoja.
 
 #### Održani sastanci:
-* Nedjelja 12.04.2026. 21:00h - zajednička diskusija
+* Subota 18.04.2026. 11:00h - zajednička diskusija
 
 ### Sprint Backlog
 
@@ -26,11 +26,12 @@ Raspodjela zadataka
 
 | ID | Naziv zadatka             | Odgovorna osoba                                      | Status     | Napomena |
 |----|---------------------------|------------------------------------------------------|------------|----------|
-| 1  | Risk Register             | Alma Jusufbegović                                    | Završeno   | -        |
-| 2  | Domain Model              | Refik Mujčinović, Aner Atović                        | Završeno   | -        |
-| 3  | Use Case Model            | Hamza Hadžić                                         | Završeno   | -        |
-| 4  | Architecture Overview     | Emina Hamamdžić, Haris Macić                         | Završeno   | -        |
-| 5  | Test Strategy             | Haris Sadiković, Merima Glušac                       | Završeno   | -        |
+| 1  | Prepravka prošlog sprinta | Refik Mujčinović, Alma Jusufbegović, Emina Hamamdžić | Završeno   | -        |
+| 2  | Definition of Done        | Hamza Hadžić                                         | Završeno   | -        |
+| 3  | Initial Realise Plan      | Haris Macić, Merima Glušac                           | Završeno   | -        |
+| 4  | Inicijalni kostur sistema | Emina Hamamdžić, Haris Macić                         | Završeno   | -        |
+| 5  | Osnovni tehnički setup    | Haris Sadiković                                      | Završeno   | -        |
+| 6  | Branching Strategy        | Alma Jusufbegović, Aner Atović                       | Završeno   | -        |
 
 
 
