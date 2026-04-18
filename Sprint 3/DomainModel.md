@@ -11,27 +11,32 @@ Sistem za upravljanje laboratorijskom opremom zasniva se na sljedećim glavnim e
 - Zahtjev  
 - Evidencija  
 - Objekat  
+- Historija  
+- Historija_Termin  
+- Obavijest  
+- Recenzija  
+- Oprema_Recenzija  
+- Korisnik_Objekat  
 
-Ovi entiteti pokrivaju osnovne funkcionalnosti sistema, uključujući upravljanje korisnicima, kabinetima, laboratorijskom opremom, terminima, rezervacijama, evidencijom stanja opreme, kao i organizaciju prostora kroz objekte i kabinete.
+Ovi entiteti pokrivaju upravljanje korisnicima, kabinetima, opremom, terminima, rezervacijama, evidencijom aktivnosti, organizacijom prostora, kao i dodatnim funkcionalnostima poput obavještenja, historije i recenzija opreme.
 
 ---
 
 ## Ključni atributi
 
 ### 1. Korisnik  
-Predstavlja korisnika sistema (student, profesor, asistent ili tehničar).
+Predstavlja korisnika sistema.
 
 Ključni atributi:
 - ImePrezime  
 - Email  
 - Username  
 - Password  
-- Uloga  
 
 ---
 
 ### 2. Kabinet  
-Predstavlja laboratorijski prostor u kojem se nalazi oprema i u kojem se odvijaju termini.
+Predstavlja laboratorijski prostor.
 
 Ključni atributi:
 - Naziv  
@@ -39,16 +44,17 @@ Ključni atributi:
 ---
 
 ### 3. Oprema  
-Predstavlja laboratorijske uređaje i alate dostupne za korištenje unutar kabineta.
+Predstavlja laboratorijske uređaje i alate.
 
 Ključni atributi:
 - Naziv  
 - SerijskiBroj  
+- tipOpreme  
 
 ---
 
 ### 4. Termin  
-Predstavlja vremenski period rezervisan za korištenje kabineta.
+Predstavlja vremenski period korištenja kabineta.
 
 Ključni atributi:
 - VrijemePocetka  
@@ -58,7 +64,7 @@ Ključni atributi:
 ---
 
 ### 5. Zahtjev  
-Predstavlja zahtjev korisnika za pristup terminu i korištenje opreme.
+Predstavlja zahtjev za rezervaciju.
 
 Ključni atributi:
 - Status  
@@ -67,7 +73,7 @@ Ključni atributi:
 ---
 
 ### 6. Evidencija  
-Predstavlja zapis o stanju ili aktivnosti vezanoj za opremu.
+Predstavlja zapis o stanju ili aktivnosti opreme.
 
 Ključni atributi:
 - Status  
@@ -76,7 +82,7 @@ Ključni atributi:
 ---
 
 ### 7. Objekat  
-Predstavlja fizičku lokaciju (npr. zgradu fakulteta) u kojoj se nalaze kabineti.
+Predstavlja fizičku lokaciju.
 
 Ključni atributi:
 - Lokacija  
@@ -84,83 +90,142 @@ Ključni atributi:
 
 ---
 
+### 8. Historija  
+Predstavlja zapis promjena ili aktivnosti.
+
+Ključni atributi:
+- Datum  
+
+---
+
+### 9. Historija_Termin  
+Predstavlja vezu između historije i termina.
+
+Ključni atributi:
+- HistorijaID  
+- TerminID  
+
+---
+
+### 10. Obavijest  
+Predstavlja obavještenja vezana za termine.
+
+Ključni atributi:
+- Novosti  
+- Dostupnost  
+
+---
+
+### 11. Recenzija  
+Predstavlja ocjenu i komentar.
+
+Ključni atributi:
+- Komentar  
+- Ocjena  
+
+---
+
+### 12. Oprema_Recenzija  
+Veza između opreme i recenzije.
+
+Ključni atributi:
+- OpremaID  
+- RecenzijaID  
+
+---
+
+### 13. Korisnik_Objekat  
+Veza između korisnika i objekta.
+
+Ključni atributi:
+- KorisnikID  
+- ObjekatID  
+
+---
+
 ## Veze između entiteta
 
 ### Korisnik i Kabinet  
-Korisnik može biti povezan sa više kabineta u kojima ima određene ovlasti ili pristup.  
-
-Veza: 1 : N  
+Korisnik upravlja kabinetima.  
+**Veza:** 1 : N  
 
 ---
 
 ### Korisnik i Oprema  
-Ovlašteni korisnik može dodavati i upravljati opremom u sistemu.  
-
-Veza: 1 : N  
+Korisnik dodaje i upravlja opremom.  
+**Veza:** 1 : N  
 
 ---
 
 ### Korisnik i Evidencija  
-Ovlašteni korisnik može voditi evidenciju o stanju i aktivnostima opreme.  
-
-Veza: 1 : N  
-
----
-
-### Korisnik i Objekat  
-Korisnici mogu imati pristup više objekata, dok jedan objekat može biti dostupan više korisnika.  
-Veza se realizuje preko posredne tabele Korisnik_Objekat.  
-
-Veza: M : N  
-
----
-
-### Objekat i Kabinet  
-Jedan objekat sadrži više kabineta, dok svaki kabinet pripada tačno jednom objektu.  
-
-Veza: 1 : N  
-
----
-
-### Kabinet i Oprema  
-Jedan kabinet sadrži više komada opreme, dok svaki komad opreme pripada tačno jednom kabinetu.  
-
-Veza: 1 : N  
-
----
-
-### Evidencija i Oprema  
-Jedan komad opreme može imati više zapisa evidencije, dok svaki zapis pripada tačno jednoj opremi.  
-
-Veza: 1 : N  
+Korisnik vodi evidenciju.  
+**Veza:** 1 : N  
 
 ---
 
 ### Korisnik i Termin  
-Ovlašteni korisnik može upravljati terminima u sistemu.  
+Korisnik kreira termine.  
+**Veza:** 1 : N  
 
-Veza: 1 : N  
+---
+
+### Korisnik i Objekat  
+Veza se ostvaruje preko `Korisnik_Objekat`.  
+**Veza:** M : N  
+
+---
+
+### Objekat i Kabinet  
+Jedan objekat sadrži više kabineta.  
+**Veza:** 1 : N  
+
+---
+
+### Kabinet i Oprema  
+Jedan kabinet sadrži više komada opreme.  
+**Veza:** 1 : N  
 
 ---
 
 ### Kabinet i Termin  
-Jedan kabinet može imati više termina, dok svaki termin pripada tačno jednom kabinetu.  
-
-Veza: 1 : N  
-
----
-
-### Kabinet i Zahtjev  
-Jedan kabinet može imati više zahtjeva za rezervaciju, dok svaki zahtjev pripada tačno jednom kabinetu.  
-
-Veza: 1 : N  
+Jedan kabinet ima više termina.  
+**Veza:** 1 : N  
 
 ---
 
 ### Termin i Zahtjev  
-Jedan termin može imati više zahtjeva za rezervaciju, dok svaki zahtjev pripada tačno jednom terminu.  
+Jedan termin ima više zahtjeva.  
+**Veza:** 1 : N  
 
-Veza: 1 : N  
+---
+
+### Kabinet i Zahtjev  
+Jedan kabinet ima više zahtjeva.  
+**Veza:** 1 : N  
+
+---
+
+### Evidencija i Oprema  
+Jedan komad opreme ima više evidencija.  
+**Veza:** 1 : N  
+
+---
+
+### Historija i Termin  
+Veza se ostvaruje preko `Historija_Termin`.  
+**Veza:** M : N  
+
+---
+
+### Termin i Obavijest  
+Jedan termin može imati više obavijesti.  
+**Veza:** 1 : N  
+
+---
+
+### Oprema i Recenzija  
+Veza se ostvaruje preko `Oprema_Recenzija`.  
+**Veza:** M : N  
 
 ---
 
