@@ -1,14 +1,378 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LabSistem\\",
+  "WorkspaceRootPath": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{14EEBAB8-455F-41C4-B108-F654CFB554E8}|LabSistem.Domain\\LabSistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\models\\korisnik.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{14EEBAB8-455F-41C4-B108-F654CFB554E8}|LabSistem.Domain\\LabSistem.Domain.csproj|solutionrelative:labsistem.domain\\models\\korisnik.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\enums\\ulogakorisnika.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\enums\\ulogakorisnika.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{95061646-9AA0-431D-8CD0-AED5EFABB432}|LabSistem.Api\\LabSistem.Api.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{95061646-9AA0-431D-8CD0-AED5EFABB432}|LabSistem.Api\\LabSistem.Api.csproj|solutionrelative:labsistem.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\enums\\statusopreme.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\enums\\statusopreme.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\enums\\statuszahtjeva.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\enums\\statuszahtjeva.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\korisnikobjekat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\korisnikobjekat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\opremarecenzija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\opremarecenzija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\historijatermin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\historijatermin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\recenzija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\recenzija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\obavijest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\obavijest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\historija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\historija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\evidencija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\evidencija.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\zahtjev.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\zahtjev.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\termin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\termin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\oprema.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\oprema.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\kabinet.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\kabinet.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\objekat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\objekat.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\entities\\korisnik.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\entities\\korisnik.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.domain\\labsistem.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{85D70729-5E21-469E-A388-B789C53C3F10}|LABsistem.Domain\\LABsistem.Domain.csproj|solutionrelative:labsistem.domain\\labsistem.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\repositories\\recenzijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\repositories\\recenzijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\repositories\\obavijestrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\repositories\\obavijestrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\repositories\\historijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\repositories\\historijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\repositories\\objekatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\repositories\\objekatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\repositories\\evidencijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\repositories\\evidencijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\repositories\\zahtjevrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\repositories\\zahtjevrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\repositories\\terminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\repositories\\terminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\repositories\\opremarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\repositories\\opremarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\repositories\\kabinetrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\repositories\\kabinetrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\repositories\\korisnikrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\repositories\\korisnikrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\interfaces\\irecenzijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\interfaces\\irecenzijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\interfaces\\iobavijestrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\interfaces\\iobavijestrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\interfaces\\ihistorijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\interfaces\\ihistorijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\interfaces\\iobjekatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\interfaces\\iobjekatrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\interfaces\\ievidencijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\interfaces\\ievidencijarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\interfaces\\izahtjevrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\interfaces\\izahtjevrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\interfaces\\iterminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\interfaces\\iterminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\interfaces\\iopremarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\interfaces\\iopremarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\interfaces\\ikabinetrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\interfaces\\ikabinetrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\interfaces\\ikorisnikrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\interfaces\\ikorisnikrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\korisnikobjekatconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\korisnikobjekatconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\opremarecenzijaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\opremarecenzijaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\historijaterminconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\historijaterminconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\recenzijaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\recenzijaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\obavijestconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\obavijestconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\historijaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\historijaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\evidencijaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\evidencijaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\zahtjevconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\zahtjevconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\terminconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\terminconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\opremaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\opremaconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\kabinetconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\kabinetconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\objekatconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\objekatconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\configurations\\korisnikconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\configurations\\korisnikconfiguration.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\db\\labsistemdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\db\\labsistemdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.dal\\labsistem.dal.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{C8F55BC6-90B7-4DCC-8E48-AD4A8B26485C}|LABsistem.Dal\\LABsistem.Dal.csproj|solutionrelative:labsistem.dal\\labsistem.dal.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\exceptions\\forbiddenexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\exceptions\\forbiddenexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\exceptions\\notfoundexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\exceptions\\notfoundexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\exceptions\\businessexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\exceptions\\businessexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\validators\\zahtjevbusinessrules.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\validators\\zahtjevbusinessrules.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\validators\\terminbusinessrules.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\validators\\terminbusinessrules.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\services\\obavijestservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\services\\obavijestservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\services\\recenzijaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\services\\recenzijaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\services\\evidencijaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\services\\evidencijaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\services\\zahtjevservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\services\\zahtjevservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\services\\terminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\services\\terminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\services\\opremaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\services\\opremaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\services\\kabinetservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\services\\kabinetservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\services\\korisnikservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\services\\korisnikservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\interfaces\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\interfaces\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\interfaces\\iobavijestservic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\interfaces\\iobavijestservic.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\interfaces\\irecenzijaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\interfaces\\irecenzijaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\interfaces\\ievidencijaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\interfaces\\ievidencijaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\interfaces\\izahtjevservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\interfaces\\izahtjevservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\interfaces\\iterminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\interfaces\\iterminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\interfaces\\iopremaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\interfaces\\iopremaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\interfaces\\ikabinetservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\interfaces\\ikabinetservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.bll\\interfaces\\ikorisnikservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{26B4BEFC-142F-4694-9D64-0F58BA9585A6}|LABsistem.Bll\\LABsistem.Bll.csproj|solutionrelative:labsistem.bll\\interfaces\\ikorisnikservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\middleware\\exceptionmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\middleware\\exceptionmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\dtos\\recenzijadtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\dtos\\recenzijadtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\dtos\\zahtjevdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\dtos\\zahtjevdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\dtos\\termindtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\dtos\\termindtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\dtos\\opremadtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\dtos\\opremadtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\dtos\\kabinetdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\dtos\\kabinetdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\dtos\\korisnikdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\dtos\\korisnikdtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\controllers\\obavijestcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\controllers\\obavijestcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\controllers\\evidencijacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\controllers\\evidencijacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\controllers\\recenzijacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\controllers\\recenzijacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\controllers\\zahtjevcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\controllers\\zahtjevcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\controllers\\termincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\controllers\\termincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\controllers\\opremacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\controllers\\opremacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\controllers\\kabinetcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\controllers\\kabinetcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\controllers\\objekatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\controllers\\objekatcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\controllers\\korisnikcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\controllers\\korisnikcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si-tim8\\projekat\\labsistem\\labsistem.presentation\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{B8BC2EB7-B294-4307-AA81-C5FA2A5E6174}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,27 +387,1210 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Korisnik.cs",
-              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LabSistem\\LabSistem.Domain\\Models\\Korisnik.cs",
-              "RelativeDocumentMoniker": "LabSistem.Domain\\Models\\Korisnik.cs",
-              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LabSistem\\LabSistem.Domain\\Models\\Korisnik.cs",
-              "RelativeToolTip": "LabSistem.Domain\\Models\\Korisnik.cs",
+              "Title": "UlogaKorisnika.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Enums\\UlogaKorisnika.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Enums\\UlogaKorisnika.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Enums\\UlogaKorisnika.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Enums\\UlogaKorisnika.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-18T06:00:12.802Z",
+              "WhenOpened": "2026-04-18T22:52:06.763Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LabSistem\\LabSistem.Api\\appsettings.json",
-              "RelativeDocumentMoniker": "LabSistem.Api\\appsettings.json",
-              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LabSistem\\LabSistem.Api\\appsettings.json",
-              "RelativeToolTip": "LabSistem.Api\\appsettings.json",
+              "Title": "StatusOpreme.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Enums\\StatusOpreme.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Enums\\StatusOpreme.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Enums\\StatusOpreme.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Enums\\StatusOpreme.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-04-17T22:38:46.323Z",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:51:53.925Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "StatusZahtjeva.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Enums\\StatusZahtjeva.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Enums\\StatusZahtjeva.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Enums\\StatusZahtjeva.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Enums\\StatusZahtjeva.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:51:40.536Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "KorisnikObjekat.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\KorisnikObjekat.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\KorisnikObjekat.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\KorisnikObjekat.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\KorisnikObjekat.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:51:22.27Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "OpremaRecenzija.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\OpremaRecenzija.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\OpremaRecenzija.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\OpremaRecenzija.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\OpremaRecenzija.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:51:07.157Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "HistorijaTermin.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\HistorijaTermin.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\HistorijaTermin.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\HistorijaTermin.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\HistorijaTermin.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:50:51.532Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Recenzija.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Recenzija.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\Recenzija.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Recenzija.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\Recenzija.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:50:33.983Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Obavijest.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Obavijest.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\Obavijest.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Obavijest.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\Obavijest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:50:23.216Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Historija.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Historija.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\Historija.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Historija.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\Historija.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:50:14.804Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Evidencija.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Evidencija.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\Evidencija.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Evidencija.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\Evidencija.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:50:03.259Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Zahtjev.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Zahtjev.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\Zahtjev.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Zahtjev.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\Zahtjev.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:49:51.672Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Termin.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Termin.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\Termin.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Termin.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\Termin.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:49:42.69Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Oprema.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Oprema.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\Oprema.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Oprema.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\Oprema.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:49:33.986Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "Kabinet.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Kabinet.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\Kabinet.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Kabinet.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\Kabinet.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:49:25.436Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Objekat.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Objekat.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\Objekat.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Objekat.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\Objekat.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:49:15.741Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Korisnik.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Korisnik.cs",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\Entities\\Korisnik.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\Entities\\Korisnik.cs",
+              "RelativeToolTip": "LABsistem.Domain\\Entities\\Korisnik.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:49:05.283Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "LABsistem.Domain",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\LABsistem.Domain.csproj",
+              "RelativeDocumentMoniker": "LABsistem.Domain\\LABsistem.Domain.csproj",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Domain\\LABsistem.Domain.csproj",
+              "RelativeToolTip": "LABsistem.Domain\\LABsistem.Domain.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-18T22:47:47.06Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "RecenzijaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\RecenzijaRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Repositories\\RecenzijaRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\RecenzijaRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Repositories\\RecenzijaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:47:04.527Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "ObavijestRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\ObavijestRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Repositories\\ObavijestRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\ObavijestRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Repositories\\ObavijestRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:45:21.42Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "HistorijaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\HistorijaRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Repositories\\HistorijaRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\HistorijaRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Repositories\\HistorijaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:45:11.519Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "ObjekatRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\ObjekatRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Repositories\\ObjekatRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\ObjekatRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Repositories\\ObjekatRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:45:00.897Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "EvidencijaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\EvidencijaRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Repositories\\EvidencijaRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\EvidencijaRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Repositories\\EvidencijaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:44:52.072Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "ZahtjevRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\ZahtjevRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Repositories\\ZahtjevRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\ZahtjevRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Repositories\\ZahtjevRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:44:43.056Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "TerminRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\TerminRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Repositories\\TerminRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\TerminRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Repositories\\TerminRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:44:34.215Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "OpremaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\OpremaRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Repositories\\OpremaRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\OpremaRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Repositories\\OpremaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:44:24.435Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "KabinetRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\KabinetRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Repositories\\KabinetRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\KabinetRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Repositories\\KabinetRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:44:15.937Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "KorisnikRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\KorisnikRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Repositories\\KorisnikRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Repositories\\KorisnikRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Repositories\\KorisnikRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:44:07.186Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "IRecenzijaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IRecenzijaRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Interfaces\\IRecenzijaRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IRecenzijaRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Interfaces\\IRecenzijaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:43:20.975Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "IObavijestRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IObavijestRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Interfaces\\IObavijestRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IObavijestRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Interfaces\\IObavijestRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:43:10.699Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "IHistorijaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IHistorijaRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Interfaces\\IHistorijaRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IHistorijaRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Interfaces\\IHistorijaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:43:01.318Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "IObjekatRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IObjekatRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Interfaces\\IObjekatRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IObjekatRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Interfaces\\IObjekatRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:42:51.736Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "IEvidencijaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IEvidencijaRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Interfaces\\IEvidencijaRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IEvidencijaRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Interfaces\\IEvidencijaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:42:41.752Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "IZahtjevRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IZahtjevRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Interfaces\\IZahtjevRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IZahtjevRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Interfaces\\IZahtjevRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:42:29.314Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "ITerminRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\ITerminRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Interfaces\\ITerminRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\ITerminRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Interfaces\\ITerminRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:42:19.476Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "IOpremaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IOpremaRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Interfaces\\IOpremaRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IOpremaRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Interfaces\\IOpremaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:42:03.675Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "IKabinetRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IKabinetRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Interfaces\\IKabinetRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IKabinetRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Interfaces\\IKabinetRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:41:52.201Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "IKorisnikRepository.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IKorisnikRepository.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Interfaces\\IKorisnikRepository.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Interfaces\\IKorisnikRepository.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Interfaces\\IKorisnikRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:41:41.482Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "KorisnikObjekatConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\KorisnikObjekatConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\KorisnikObjekatConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\KorisnikObjekatConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\KorisnikObjekatConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:40:58.535Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "OpremaRecenzijaConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\OpremaRecenzijaConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\OpremaRecenzijaConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\OpremaRecenzijaConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\OpremaRecenzijaConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:40:48.382Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "HistorijaTerminConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\HistorijaTerminConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\HistorijaTerminConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\HistorijaTerminConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\HistorijaTerminConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:40:38.636Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "RecenzijaConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\RecenzijaConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\RecenzijaConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\RecenzijaConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\RecenzijaConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:40:26.355Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "ObavijestConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\ObavijestConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\ObavijestConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\ObavijestConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\ObavijestConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:40:11.651Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "HistorijaConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\HistorijaConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\HistorijaConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\HistorijaConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\HistorijaConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:40:00.466Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "EvidencijaConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\EvidencijaConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\EvidencijaConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\EvidencijaConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\EvidencijaConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:39:51.88Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 44,
+              "Title": "ZahtjevConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\ZahtjevConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\ZahtjevConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\ZahtjevConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\ZahtjevConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:39:41.033Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 45,
+              "Title": "TerminConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\TerminConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\TerminConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\TerminConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\TerminConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:39:26.171Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 46,
+              "Title": "OpremaConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\OpremaConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\OpremaConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\OpremaConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\OpremaConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:39:17.346Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 47,
+              "Title": "KabinetConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\KabinetConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\KabinetConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\KabinetConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\KabinetConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:39:07.042Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 48,
+              "Title": "ObjekatConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\ObjekatConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\ObjekatConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\ObjekatConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\ObjekatConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:38:58.071Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 49,
+              "Title": "KorisnikConfiguration.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\KorisnikConfiguration.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\Configurations\\KorisnikConfiguration.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\Configurations\\KorisnikConfiguration.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\Configurations\\KorisnikConfiguration.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:38:48.292Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 50,
+              "Title": "LabSistemDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\LabSistemDbContext.cs",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\Db\\LabSistemDbContext.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\Db\\LabSistemDbContext.cs",
+              "RelativeToolTip": "LABsistem.Dal\\Db\\LabSistemDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:38:19.461Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 51,
+              "Title": "LABsistem.Dal",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\LABsistem.Dal.csproj",
+              "RelativeDocumentMoniker": "LABsistem.Dal\\LABsistem.Dal.csproj",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Dal\\LABsistem.Dal.csproj",
+              "RelativeToolTip": "LABsistem.Dal\\LABsistem.Dal.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-18T22:36:17.334Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 52,
+              "Title": "ForbiddenException.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Exceptions\\ForbiddenException.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Exceptions\\ForbiddenException.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Exceptions\\ForbiddenException.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Exceptions\\ForbiddenException.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:35:32.794Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 53,
+              "Title": "NotFoundException.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Exceptions\\NotFoundException.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Exceptions\\NotFoundException.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Exceptions\\NotFoundException.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Exceptions\\NotFoundException.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:35:19.901Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 54,
+              "Title": "BusinessException.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Exceptions\\BusinessException.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Exceptions\\BusinessException.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Exceptions\\BusinessException.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Exceptions\\BusinessException.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:35:09.758Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 55,
+              "Title": "ZahtjevBusinessRules.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Validators\\ZahtjevBusinessRules.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Validators\\ZahtjevBusinessRules.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Validators\\ZahtjevBusinessRules.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Validators\\ZahtjevBusinessRules.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:34:54.047Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 56,
+              "Title": "TerminBusinessRules.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Validators\\TerminBusinessRules.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Validators\\TerminBusinessRules.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Validators\\TerminBusinessRules.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Validators\\TerminBusinessRules.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:34:44.522Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 57,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\AuthService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Services\\AuthService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\AuthService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Services\\AuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:34:29.869Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 58,
+              "Title": "ObavijestService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\ObavijestService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Services\\ObavijestService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\ObavijestService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Services\\ObavijestService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:34:20.868Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 59,
+              "Title": "RecenzijaService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\RecenzijaService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Services\\RecenzijaService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\RecenzijaService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Services\\RecenzijaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:34:12.694Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 60,
+              "Title": "EvidencijaService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\EvidencijaService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Services\\EvidencijaService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\EvidencijaService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Services\\EvidencijaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:34:03.219Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 61,
+              "Title": "ZahtjevService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\ZahtjevService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Services\\ZahtjevService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\ZahtjevService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Services\\ZahtjevService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:33:53.363Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 62,
+              "Title": "TerminService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\TerminService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Services\\TerminService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\TerminService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Services\\TerminService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:33:39.807Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 63,
+              "Title": "OpremaService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\OpremaService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Services\\OpremaService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\OpremaService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Services\\OpremaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:33:28.928Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 64,
+              "Title": "KabinetService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\KabinetService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Services\\KabinetService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\KabinetService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Services\\KabinetService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:33:18.857Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 65,
+              "Title": "KorisnikService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\KorisnikService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Services\\KorisnikService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Services\\KorisnikService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Services\\KorisnikService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:33:08.716Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 66,
+              "Title": "IAuthService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IAuthService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Interfaces\\IAuthService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IAuthService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Interfaces\\IAuthService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:32:54.148Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 67,
+              "Title": "IObavijestServic.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IObavijestServic.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Interfaces\\IObavijestServic.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IObavijestServic.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Interfaces\\IObavijestServic.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:32:44.644Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 68,
+              "Title": "IRecenzijaService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IRecenzijaService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Interfaces\\IRecenzijaService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IRecenzijaService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Interfaces\\IRecenzijaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:32:34.792Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 69,
+              "Title": "IEvidencijaService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IEvidencijaService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Interfaces\\IEvidencijaService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IEvidencijaService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Interfaces\\IEvidencijaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:32:23.444Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 70,
+              "Title": "IZahtjevService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IZahtjevService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Interfaces\\IZahtjevService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IZahtjevService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Interfaces\\IZahtjevService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:32:11.837Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 71,
+              "Title": "ITerminService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\ITerminService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Interfaces\\ITerminService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\ITerminService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Interfaces\\ITerminService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:31:57.159Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 72,
+              "Title": "IOpremaService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IOpremaService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Interfaces\\IOpremaService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IOpremaService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Interfaces\\IOpremaService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:31:46.151Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 73,
+              "Title": "IKabinetService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IKabinetService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Interfaces\\IKabinetService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IKabinetService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Interfaces\\IKabinetService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:31:35.665Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 74,
+              "Title": "IKorisnikService.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IKorisnikService.cs",
+              "RelativeDocumentMoniker": "LABsistem.Bll\\Interfaces\\IKorisnikService.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Bll\\Interfaces\\IKorisnikService.cs",
+              "RelativeToolTip": "LABsistem.Bll\\Interfaces\\IKorisnikService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:31:19.46Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 75,
+              "Title": "ExceptionMiddleware.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Middleware\\ExceptionMiddleware.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Middleware\\ExceptionMiddleware.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Middleware\\ExceptionMiddleware.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Middleware\\ExceptionMiddleware.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:28:44.076Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 76,
+              "Title": "RecenzijaDtos.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\RecenzijaDtos.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\DTOs\\RecenzijaDtos.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\RecenzijaDtos.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\DTOs\\RecenzijaDtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:27:42.358Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 77,
+              "Title": "ZahtjevDtos.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\ZahtjevDtos.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\DTOs\\ZahtjevDtos.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\ZahtjevDtos.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\DTOs\\ZahtjevDtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:27:27.529Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 78,
+              "Title": "TerminDtos.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\TerminDtos.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\DTOs\\TerminDtos.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\TerminDtos.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\DTOs\\TerminDtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:27:13.336Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 79,
+              "Title": "OpremaDtos.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\OpremaDtos.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\DTOs\\OpremaDtos.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\OpremaDtos.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\DTOs\\OpremaDtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:26:59.627Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 80,
+              "Title": "KabinetDtos.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\KabinetDtos.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\DTOs\\KabinetDtos.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\KabinetDtos.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\DTOs\\KabinetDtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:26:48.999Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 81,
+              "Title": "KorisnikDtos.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\KorisnikDtos.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\DTOs\\KorisnikDtos.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\DTOs\\KorisnikDtos.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\DTOs\\KorisnikDtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:26:30.831Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 82,
+              "Title": "ObavijestController.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\ObavijestController.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Controllers\\ObavijestController.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\ObavijestController.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Controllers\\ObavijestController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:25:55.003Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 83,
+              "Title": "EvidencijaController.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\EvidencijaController.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Controllers\\EvidencijaController.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\EvidencijaController.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Controllers\\EvidencijaController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:25:28.769Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 84,
+              "Title": "RecenzijaController.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\RecenzijaController.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Controllers\\RecenzijaController.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\RecenzijaController.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Controllers\\RecenzijaController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:25:08.373Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 86,
+              "Title": "ZahtjevController.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\ZahtjevController.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Controllers\\ZahtjevController.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\ZahtjevController.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Controllers\\ZahtjevController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:24:50.696Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 87,
+              "Title": "TerminController.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\TerminController.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Controllers\\TerminController.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\TerminController.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Controllers\\TerminController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:24:34.825Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 85,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:22:44.976Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 88,
+              "Title": "OpremaController.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\OpremaController.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Controllers\\OpremaController.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\OpremaController.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Controllers\\OpremaController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:24:17.816Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 89,
+              "Title": "KabinetController.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\KabinetController.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Controllers\\KabinetController.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\KabinetController.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Controllers\\KabinetController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:24:02.525Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 90,
+              "Title": "ObjekatController.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\ObjekatController.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Controllers\\ObjekatController.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\ObjekatController.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Controllers\\ObjekatController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:23:45.259Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 91,
+              "Title": "KorisnikController.cs",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\KorisnikController.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Controllers\\KorisnikController.cs",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Controllers\\KorisnikController.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Controllers\\KorisnikController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-18T22:23:25.841Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 92,
+              "Title": "Dockerfile",
+              "DocumentMoniker": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Dockerfile",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Dockerfile",
+              "ToolTip": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\Dockerfile",
+              "RelativeToolTip": "LABsistem.Presentation\\Dockerfile",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-04-18T22:17:57.729Z",
               "EditorCaption": ""
             }
           ]

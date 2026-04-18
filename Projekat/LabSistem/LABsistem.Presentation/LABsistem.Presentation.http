@@ -1,0 +1,6 @@
+@LABsistem.Presentation_HostAddress = http://localhost:5222
+
+GET {{LABsistem.Presentation_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
