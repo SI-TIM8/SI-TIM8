@@ -1,116 +1,35 @@
 # INITIAL RELEASE PLAN
 
-**Sistem za upravljanje laboratorijskom opremom**  
-Tim 8 – ETF Sarajevo | Sprint 3 – April 2026
-
----
-
-## 1. Uvod i svrha dokumenta
-
-Ovaj dokument predstavlja Inicijalni Plan Objavljivanja (Initial Release Plan) sistema za upravljanje laboratorijskom opremom, koji razvija Tim 8 u okviru kolegija na ETF-u Sarajevo. Dokument definira raspored svih planiranih releasea, mapira user storyje i stavke product backloga na konkretne sprintove, te opisuje šta svaki inkrement sistema donosi kao upotrebljivu vrijednost krajnjim korisnicima.
-
-Plan je zasnovan na svim dokumentima kreiranim tijekom Sprintova 1–3: Product Backlog (44 stavke), User Stories (US01–US34), Nefunkcionalni zahtjevi (NFR-01–NFR-20), Architecture Overview, Domain Model, Use Case Model i ERD. Ukupni vremenski okvir projekta je 13 sedmica, a razvoj traje od Sprinta 4 (inicijalizacija) do Sprinta 10 (finalne funkcionalnosti).
-
-Tim broji **8 članova** koji rade paralelno, što omogućava istovremenu realizaciju više user storija unutar jednog sprinta uz jasnu podjelu odgovornosti po oblastima.
+## 1. Uvod
+Plan je zasnovan na svim dokumentima kreiranim tokom Sprintova 1–3: Product Backlog (44 stavke), User Stories (US01–US34), Nefunkcionalni zahtjevi (NFR-01–NFR-20), Architecture Overview, Domain Model, Use Case Model i ERD. Ukupni vremenski okvir projekta je 13 sedmica, a razvoj traje od Sprinta 4 (inicijalizacija) do Sprinta 10 (finalne funkcionalnosti).
 
 ---
 
 ## 2. Pregled svih releasea
 
-Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkcionalnosti. Svaki release zatvara jedan inkrement sistema koji je upotrebljiv i testabilan. Nije moguće prijeći na sljedeći release bez završetka prethodnog, jer postoje čvrste zavisnosti između slojeva.
+Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkcionalnosti. Svaki release zatvara jedan inkrement sistema koji je upotrebljiv i testabilan. Nije moguće preći na sljedeći release bez završetka prethodnog, jer postoje čvrste zavisnosti između slojeva.
 
-| Release | Naziv | Sprintovi | Kapacitet tima | Ključni isporučaj |
-|---------|-------|-----------|----------------|-------------------|
-| **R0** | Projektna dokumentacija i inicijalizacija | Sprint 1, 2, 3 i 4 | – | Kompletna projektna dokumentacija i postavljeni tehnički temelji |
-| **R1** | Autentifikacija i jezgro sistema | Sprint 5 | ~62% | Funkcionalan login sistem sa JWT tokenima i role-based pristupom |
-| **R2** | Administracija i inventar | Sprint 6 | ~95% | Admin panel za upravljanje korisnicima, kabinetima i opremom |
-| **R3** | Rezervacijski sistem | Sprint 7 i Sprint 8 | ~65% / ~80% | Funkcionalan end-to-end tok rezervacije termina i opreme |
-| **R4** | Upravljanje opremom i napredne funkcionalnosti | Sprint 9 i Sprint 10 | ~40% / ~85% | Pregled i otkazivanje rezervacija, kvarovi, profil i sekundarne funkcionalnosti |
-
----
-
-## 3. Detalji po releaseu i sprintu
-
----
-
-### Release 0 – Projektna dokumentacija i inicijalizacija
-
-**Obuhvaćeni sprintovi:** Sprint 1, Sprint 2, Sprint 3 i Sprint 4  
-**Ključni isporučaj:** Kompletna projektna dokumentacija i postavljeni tehnički temelji  
-**Zavisnosti:** Nema – ovo je polazišna tačka projekta.  
-**Glavni rizici:** Nejasna vizija projekta može uzrokovati pogrešne pretpostavke u kasnijim fazama; kašnjenje tehničkog setu može blokirati Sprint 5.
-
----
-
-#### Sprint 1 | 25.03.2026 – 28.03.2026
-
-**Cilj sprinta:** Definisanje vizije projekta i identifikacija stakeholdera
-
-| ID | Naziv stavke | Tip | Story Pts | Prioritet | Status |
-|----|-------------|-----|-----------|-----------|--------|
-| US– | Team Charter | Dokumentacija | – | High | Done |
-| PB02 | Product Vision | Dokumentacija | 5 | High | Done |
-| PB03/04 | Stakeholder Map | Dokumentacija/Research | 6 | High | Done |
-| PB01 | Definisanje problema i ciljeva sistema | Research | 3 | High | Done |
-| PB05 | Početni Product Backlog (35 stavki) | Dokumentacija | 5 | High | Done |
-
----
-
-#### Sprint 2 | 31.03.2026 – 05.04.2026
-
-**Cilj sprinta:** Razrada korisničkih priča, kriterija prihvatljivosti i nefunkcionalnih zahtjeva
-
-| ID | Naziv stavke | Tip | Story Pts | Prioritet | Status |
-|----|-------------|-----|-----------|-----------|--------|
-| PB06 | User Stories (US01–US34) | Dokumentacija | 5 | High | Done |
-| PB07 | Acceptance Criteria za sve user storyje | Dokumentacija | 5 | High | Done |
-| PB08 | Prioritizacija backloga (MoSCoW) | Research | 3 | High | Done |
-| PB09 | NFR zahtjevi (NFR-01 do NFR-20) | Dokumentacija | 3 | Medium | Done |
-| PB– | Ažurirani Product Backlog | Dokumentacija | – | High | Done |
-
----
-
-#### Sprint 3 | 06.04.2026 – 12.04.2026
-
-**Cilj sprinta:** Modelovanje sistema, arhitektura, strategija testiranja i upravljanje rizicima
-
-| ID | Naziv stavke | Tip | Story Pts | Prioritet | Status |
-|----|-------------|-----|-----------|-----------|--------|
-| PB10 | Risk Register (30 rizika) | Dokumentacija | 3 | Medium | Done |
-| PB11a | Domain Model (7 entiteta, 24 poslovna pravila) | Dokumentacija | 3 | High | Done |
-| PB11b | Use Case Model (UC01–UC19) | Dokumentacija | 3 | High | Done |
-| PB12 | Architecture Overview (4-slojna arhitektura) | Dokumentacija | 5 | High | Done |
-| PB13 | Test Strategy (8 nivoa testiranja) | Dokumentacija | 3 | Medium | Done |
-| PB16 | ERD – Finalni model podataka (13 tabela) | Dokumentacija | 3 | Medium | Done |
-| PB– | Tehnološki Setup Sistema (ASP.NET/React/PostgreSQL/Docker) | Dokumentacija | – | High | Done |
-
----
-
-#### Sprint 4 | TBD
-
-**Cilj sprinta:** Definisanje kriterija završetka, plana objave i uspostava tehničkog skeleta
-
-| ID | Naziv stavke | Tip | Story Pts | Prioritet | Status |
-|----|-------------|-----|-----------|-----------|--------|
-| PB14 | Definition of Done (DoD) | Dokumentacija | 2 | Medium | To Do |
-| PB15 | Initial Release Plan | Dokumentacija | 3 | Medium | To Do |
-| PB17 | Postavljanje tehničkog skeletona (repo, CI/CD, Docker Compose, skeleton projekta) | Technical Task | 5 | High | To Do |
-
-> **Sažetak releasea:** Ovaj release obuhvata svu dokumentarnu i analitičku fazu projekta. Na kraju Sprinta 4 tim ima potpuno definisanu viziju, arhitekturu, model podataka i funkcionalan razvojni ambijent spreman za implementaciju.
+| Release | Naziv | Sprintovi | Isporuka |
+|---------|-------|-----------|-------------------|
+| **R0** | Projektna dokumentacija i inicijalizacija | Sprint 1, 2, 3 i 4 | Kompletna projektna dokumentacija i postavljeni tehnički temelji |
+| **R1** | Autentifikacija i jezgro sistema | Sprint 5 | Funkcionalan login sistem sa JWT tokenima i role-based pristupom |
+| **R2** | Administracija i inventar | Sprint 6 | Admin panel za upravljanje korisnicima, kabinetima i opremom |
+| **R3** | Rezervacijski sistem | Sprint 7 i Sprint 8 |  Funkcionalan end-to-end tok rezervacije termina i opreme |
+| **R4** | Upravljanje opremom i napredne funkcionalnosti | Sprint 9 i Sprint 10 | Pregled i otkazivanje rezervacija, kvarovi, profil i sekundarne funkcionalnosti |
 
 ---
 
 ### Release 1 – Autentifikacija i jezgro sistema
 
 **Obuhvaćeni sprintovi:** Sprint 5  
-**Ključni isporučaj:** Funkcionalan login sistem sa JWT tokenima i role-based pristupom  
+**Ključna isporuka:** Funkcionalan login sistem sa JWT tokenima i role-based pristupom  
 **Kapacitet tima:** ~62% (namjerno – auth mora biti temeljno istestiran)  
-**Zavisnosti:** Release 0 mora biti završen. Tehnički skelet (Docker, repo, CI/CD) mora biti postavljen prije prvog commita poslovne logike.  
+**Zavisnosti:** Release 0 mora biti završen. Tehnički skelet mora biti postavljen prije prvog commita poslovne logike.  
 **Glavni rizici:** Nedovoljno iskustvo tima sa JWT implementacijom može uzrokovati sigurnosne propuste (R028); neautorizirani pristup admin panelu ako RBAC nije ispravno implementiran (R001).
 
 ---
 
-#### Sprint 5 | TBD
+#### Sprint 5 |
 
 **Cilj sprinta:** Kompletna implementacija autentifikacije i autorizacije korisnika
 
@@ -141,7 +60,7 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 ### Release 2 – Administracija i inventar
 
 **Obuhvaćeni sprintovi:** Sprint 6  
-**Ključni isporučaj:** Admin panel za upravljanje korisnicima, kabinetima i opremom  
+**Ključna isporuka:** Admin panel za upravljanje korisnicima, kabinetima i opremom  
 **Kapacitet tima:** ~95% (kritičan sprint – svi rade paralelno na jasno odvojenim CRUD oblastima)  
 **Zavisnosti:** Release 1 mora biti završen. CRUD operacije zahtijevaju funkcionalan JWT i RBAC sistem – bez autentifikacije nije moguće razlikovati administratora od studenta.  
 **Glavni rizici:** Preopterećenost tima u Sprintu 6 zbog najvećeg broja paralelnih featura (R–); neslaganje oko tehničkih odluka pri integraciji komponenti (R027).
@@ -182,7 +101,7 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 ### Release 3 – Rezervacijski sistem
 
 **Obuhvaćeni sprintovi:** Sprint 7 i Sprint 8  
-**Ključni isporučaj:** Funkcionalan end-to-end tok rezervacije termina i opreme  
+**Ključna isporuka:** Funkcionalan end-to-end tok rezervacije termina i opreme  
 **Zavisnosti:** Release 2 mora biti završen. Rezervacijski sistem ne može funkcionisati bez prethodno kreiranog inventara – kabineti, oprema, termini i korisnici moraju postojati u bazi.  
 **Glavni rizici:** Race condition – dupla rezervacija ako database locks nisu ispravno implementirani (R004; NFR-16); iznenadni novi zahtjevi koji remete scope (R011).
 
@@ -246,7 +165,7 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 ### Release 4 – Upravljanje opremom i napredne funkcionalnosti
 
 **Obuhvaćeni sprintovi:** Sprint 9 i Sprint 10  
-**Ključni isporučaj:** Pregled i otkazivanje rezervacija, upravljanje kvarovima, profil korisnika i sekundarne funkcionalnosti  
+**Ključna isporuka:** Pregled i otkazivanje rezervacija, upravljanje kvarovima, profil korisnika i sekundarne funkcionalnosti  
 **Zavisnosti:** Release 3 mora biti završen. Upravljanje kvarovima i automatska promjena statusa direktno ovise o rezervacijskom toku koji mora biti testiran i stabilan.  
 **Glavni rizici:** Nedostupnost developera u finalnim sprintovima može ugroziti demo pripremu (R009); Sprint 10 je zahtjevan po broju stavki – potrebno je pažljivo planiranje kapaciteta.
 
@@ -316,7 +235,7 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 
 ---
 
-## 5. Mapiranje ključnih NFR zahtjeva na releasee
+## 5. Mapiranje ključnih NFR zahtjeva na release
 
 | NFR ID | Opis (skraćeno) | Kategorija | Release |
 |--------|----------------|------------|---------|
@@ -353,9 +272,9 @@ Svaka stavka se smatra završenom kada su ispunjeni sljedeći kriteriji (bit će
 
 ---
 
-## 7. Ključni rizici plana i mitigacijske mjere
+## 7. Ključni rizici plana
 
-| ID | Rizik | Vjerovatnoća | Uticaj | Mitigacija u planu |
+| ID | Rizik | Vjerovatnoća | Uticaj | Akcije za smanjenje rizika |
 |----|-------|--------------|--------|--------------------|
 | R009 | Nedostupnost developera – kašnjenje isporuke | Srednja | Visok | GitHub uvid u rad; zamjenski resursi unutar tima; buffer kapacitet u S9 |
 | R028 | Nedovoljno iskustvo tima za zahtjevane tehnologije | Srednja | Visok | Redovni sastanci; parni rad; istraživanje unaprijed |
