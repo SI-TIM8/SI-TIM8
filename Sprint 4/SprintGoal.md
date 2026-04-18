@@ -6,7 +6,7 @@
  * Pronalazak najkompatibilnijeg Branching strategije
  * Dogovor o realease planu
  * Identifikovanje osnovinih tehnologija za setup sistema
- * Postavljanje inivcijalnog kostura sistema
+ * Postavljanje inicijalnog kostura sistema
 
 #### Ključne stavke:
   
