@@ -4,7 +4,7 @@
 
 | Kategorija | Tehnologija | Opis / Uloga |
 | :---- | :---- | :---- |
-| **Backend Framework** | **ASP.NET Core 8.0** | Primarni framework za razvoj REST API-ja. |
+| **Backend Framework** | **ASP.NET Core 10.0** | Primarni framework za razvoj REST API-ja. |
 | **Frontend Library** | **React.js** | Klijentski interfejs zasnovan na komponentama. |
 | **Baza podataka** | **PostgreSQL (Docker)** | Relaciona baza unutar izolovanog kontejnera. |
 | **Kontejnerizacija** | **Docker & Compose** | Standardizacija razvojnog i produkcionog okruženja. |
@@ -62,7 +62,7 @@ Pošto koristimo Docker, aplikacija je spremna za moderne Cloud platforme koje n
 
 | Komponenta | Tehnologija | Okruženje |
 | :---- | :---- | :---- |
-| **API Server** | .NET 8 (Dockerized) | Cloud (Sandbox) |
+| **API Server** | .NET 10 (Dockerized) | Cloud (Sandbox) |
 | **Baza podataka** | PostgreSQL (Docker) | Cloud (Pristup putem DBeaver-a) |
 | **Frontend UI** | React.js (Build) | Vercel  |
 | **Upravljanje** | SQL / GUI | DBeaver Community Edition |
