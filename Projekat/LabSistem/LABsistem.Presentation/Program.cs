@@ -1,5 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
 
+
+
+var connectionString = builder.Configuration.GetConnectionString("Default");
+Console.WriteLine($"TRENUTNI CONNECTION STRING JE: {connectionString}");
 // Add services to the container.
 
 builder.Services.AddControllers();

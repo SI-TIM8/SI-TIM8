@@ -13,6 +13,14 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["LABsistem.Presentation/LABsistem.Presentation.csproj", "LABsistem.Presentation/"]
+# Ovdje moraš dodati SVE projekte iz tvoje 4-slojne arhitekture
+COPY ["LABsistem.Presentation/LABsistem.Presentation.csproj", "LABsistem.Presentation/"]
+COPY ["LABsistem.Api/LABsistem.Api.csproj", "LABsistem.Api/"]
+COPY ["LABsistem.Dal/LABsistem.Dal.csproj", "LABsistem.Dal/"]
+COPY ["LABsistem.Domain/LABsistem.Domain.csproj", "LABsistem.Domain/"]
+
+# Onda uradiš restore za glavni projekat (on će povući i ostale)
+RUN dotnet restore "LABsistem.Presentation/LABsistem.Presentation.csproj"
 RUN dotnet restore "./LABsistem.Presentation/LABsistem.Presentation.csproj"
 COPY . .
 WORKDIR "/src/LABsistem.Presentation"

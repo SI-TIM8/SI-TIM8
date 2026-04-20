@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Tq7UTdcDKpU=",
+  "dgSpecHash": "zrrqjJvVGoo=",
   "success": true,
-  "projectFilePath": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\LABsistem.Presentation.csproj",
+  "projectFilePath": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LabSistem\\LABsistem.Presentation\\LABsistem.Presentation.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\emina\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.6\\microsoft.aspnetcore.openapi.10.0.6.nupkg.sha512",
     "C:\\Users\\emina\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512",

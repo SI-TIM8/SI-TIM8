@@ -1,5 +1,8 @@
 <Solution>
-  <Project Path="LABsistem.Bll/LABsistem.Bll.csproj" />
+  <Folder Name="/Solution Items/">
+    <File Path="docker-compose.yml" />
+  </Folder>
+  <Project Path="LABsistem.Bll/LABsistem.Api.csproj" />
   <Project Path="LABsistem.Dal/LABsistem.Dal.csproj" />
   <Project Path="LABsistem.Domain/LABsistem.Domain.csproj" />
   <Project Path="LABsistem.Presentation/LABsistem.Presentation.csproj" />

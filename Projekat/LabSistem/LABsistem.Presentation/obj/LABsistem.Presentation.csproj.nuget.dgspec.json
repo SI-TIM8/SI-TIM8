@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\LABsistem.Presentation.csproj": {}
+    "C:\\Users\\emina\\SI-TIM8\\Projekat\\LabSistem\\LABsistem.Presentation\\LABsistem.Presentation.csproj": {}
   },
   "projects": {
-    "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\LABsistem.Presentation.csproj": {
+    "C:\\Users\\emina\\SI-TIM8\\Projekat\\LabSistem\\LABsistem.Presentation\\LABsistem.Presentation.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\LABsistem.Presentation.csproj",
+        "projectUniqueName": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LabSistem\\LABsistem.Presentation\\LABsistem.Presentation.csproj",
         "projectName": "LABsistem.Presentation",
-        "projectPath": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\LABsistem.Presentation.csproj",
+        "projectPath": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LabSistem\\LABsistem.Presentation\\LABsistem.Presentation.csproj",
         "packagesPath": "C:\\Users\\emina\\.nuget\\packages\\",
         "outputPath": "C:\\Users\\emina\\SI-TIM8\\Projekat\\LABsistem\\LABsistem.Presentation\\obj\\",
         "projectStyle": "PackageReference",
