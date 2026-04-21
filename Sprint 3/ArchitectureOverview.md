@@ -21,7 +21,7 @@ Svaki sloj ima jasno definisanu odgovornost i komunicira isključivo sa susjedni
 
 Sistem je organizovan u 4 sloja, a svaki od definisanih entiteta iz domenskog modela ima svoje komponente u odgovarajućim slojevima kako bi se osigurala potpuna pokrivenost funkcionalnosti:
 
-### 1. Presentation layer (API Kontroleri)
+### 1. Presentation layer
 Odgovoran za korisnički interfejs i interakciju sa sistemom:
 - Prikaz podataka (termini, oprema, zahtjevi)
 - Unos podataka putem formi
@@ -86,7 +86,13 @@ Zaduženi za direktne SQL operacije i komunikaciju sa bazom:
 ## Odgovornosti komponenti
 
 ### Presentation layer
-Frontend sloj je zadužen za prikaz podataka korisniku i interakciju sa sistemom. Korisnik putem ovog sloja šalje zahtjeve prema backendu i prima odgovore u obliku prikaza (UI).
+Frontend je realizovan koristeći komponentno-orijentisani pristup (React), gdje je korisnički interfejs podijeljen na manje, ponovno iskoristive komponente. 
+
+Struktura frontenda podrazumijeva:
+- UI komponente – odgovorne za prikaz podataka (npr. tabela termina, lista opreme)
+- Komponente za upravljanje logikom – zadužene za komunikaciju sa backend API-jem
+- Servisni sloj (API layer) – centralizuje HTTP pozive prema backendu (npr. Axios/fetch)
+- Upravljanje stanjem aplikacije – čuvanje podataka o korisniku, rezervacijama i opremi tokom rada aplikacije
 
 ### Application layer
 Ovaj sloj upravlja izvršavanjem korisničkih akcija i povezuje preostale slojeve. Prima zahtjev od prezentacijskog sloja, poziva logiku iz domenskog sloja i repozitorije, te vraća finalni rezultat. Ovdje se vrši i generisanje tokena prilikom prijave korisnika.
