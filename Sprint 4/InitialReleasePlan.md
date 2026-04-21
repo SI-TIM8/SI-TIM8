@@ -282,7 +282,7 @@ Svaka stavka se smatra završenom kada su ispunjeni sljedeći kriteriji (bit će
 | R011 | Iznenadno dodavanje novih zahtjeva | Visoka | Srednji | Potpisan scope; svaki novi zahtjev = produženje roka |
 | R001 | Neautorizirani pristup admin panelu | Niska | Visok | JWT + RBAC implementacija u Sprintu 5 (Release 1) |
 | R004 | Race condition – dupla rezervacija | Srednja | Srednji | Database Locks (NFR-16) implementacija u Sprintu 8 |
-| R– | Preopterećenost tima u Sprintu 6 | Srednja | Visok | Jasna podjela oblasti po članu; M8 dedikovan isključivo za testiranje |
+| R031 | Preopterećenost tima u Sprintu 6 | Srednja | Visok | Jasna podjela oblasti po članu; M8 dedikovan isključivo za testiranje |
 
 ---
 
