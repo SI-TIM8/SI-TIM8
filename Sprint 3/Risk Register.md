@@ -32,6 +32,7 @@
 |028|Developerski tim nema potrebna znanja da funkcionalno odradi dio potrebnih zahtijeva|Zadužen nedovoljno iskusan tim; Koriste se nepoznate tehnologije|Srednja|Visok|Visok|Održavanje sastanaka; redovna komunikacija o iskustvu|Project Manager|Identifikovan|
 |029|Ne postojanje načina za vraćanje izgubljene lozinke|Gubitak pristupa|Srednja|Visok|Visok|Mogućnost povratka pristupa preko fakultetskog maila|Security tim|Otvoren|
 |030|Neispravan prikaz dostupnosti opreme|Status opreme se ne mijenja u realnom vremenu|Niska|Srednji|Srednji|Uvođenje automatskog osvježavanja stanice |Backend tim|Otvoren|
+|031|Preopterećenost tima|Previše zadataka za riješiti u kratkom vremenskom periodu |Srednja|Visok|Visok|Jasna podjela oblasti po članu|Project Manager|Identifikovan|
 
 
 
