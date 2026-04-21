@@ -19,7 +19,7 @@ Svaki sloj ima jasno definisanu odgovornost i komunicira isključivo sa susjedni
 
 ## Glavne komponente sistema (Kompletna lista)
 
-Sistem je organizovan u 4 sloja, a svaki od 8 entiteta iz baze podataka ima svoje komponente u svakom sloju kako bi se osigurala potpuna pokrivenost funkcionalnosti:
+Sistem je organizovan u 4 sloja, a svaki od definisanih entiteta iz domenskog modela ima svoje komponente u odgovarajućim slojevima kako bi se osigurala potpuna pokrivenost funkcionalnosti:
 
 ### 1. Presentation layer (API Kontroleri)
 Odgovoran za korisnički interfejs i interakciju sa sistemom:
