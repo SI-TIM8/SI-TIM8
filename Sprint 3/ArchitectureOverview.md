@@ -3,7 +3,7 @@
 ## Kratak opis arhitektonskog pristupa
 
 Sistem za upravljanje laboratorijskom opremom i terminima zasnovan je na klasičnoj **četveroslojnoj (layered) arhitekturi** koja razdvaja odgovornosti između četiri horizontalna sloja: 
-- **Prezentacijski sloj** - upravlja komunikacijom s korisnikom, prima HTTP zahtjeve i vraća odgovore.
+- **Prezentacijski sloj (Frontend)** - upravlja komunikacijom s korisnikom, prima HTTP zahtjeve i vraća odgovore.
 - **Aplikacijski sloj** - upravlja izvršavanjem korisničkih zahtjeva i povezuje prezentacijski sloj s ostatkom sistema.
 - **Domenski sloj** - sadrži poslovna pravila i logiku sistema.
 - **Sloj za pristup podacima** - upravlja pristupom bazi podataka i omogućava čitanje i zapisivanje podataka.
@@ -22,7 +22,16 @@ Svaki sloj ima jasno definisanu odgovornost i komunicira isključivo sa susjedni
 Sistem je organizovan u 4 sloja, a svaki od 8 entiteta iz baze podataka ima svoje komponente u svakom sloju kako bi se osigurala potpuna pokrivenost funkcionalnosti:
 
 ### 1. Presentation layer (API Kontroleri)
-Odgovorni za izlaganje endpointa i validaciju ulaznih podataka za svaki entitet:
+Odgovoran za korisnički interfejs i interakciju sa sistemom:
+- Prikaz podataka (termini, oprema, zahtjevi)
+- Unos podataka putem formi
+- Slanje HTTP zahtjeva prema backendu
+- Osnovna validacija unosa
+
+### 2. Application layer (Servisi i API Kontroleri)
+Sadrže poslovnu logiku, orkestraciju procesa i API endpointe:
+
+#### API Kontroleri
 - `KorisnikController` – Upravljanje profilima i autentifikacijom.
 - `TerminController` – Rezervacije i pregled rasporeda.
 - `ZahtjevController` – Obrada zahtjeva za termine ili opremu.
@@ -32,8 +41,7 @@ Odgovorni za izlaganje endpointa i validaciju ulaznih podataka za svaki entitet:
 - `EvidencijaController` – Praćenje istorije i stanja opreme.
 - `KorisnikObjekatController` – Upravljanje vezama između osoblja i objekata.
 
-### 2. Application layer (Servisi)
-Sadrže poslovnu logiku i orkestraciju procesa:
+#### Servisi
 - `KorisnikService` – Logika registracije, prijave i JWT generisanja.
 - `TerminService` – Provjera dostupnosti i zakazivanje termina.
 - `ZahtjevService` – Workflow odobravanja ili odbijanja zahtjeva.
@@ -44,15 +52,20 @@ Sadrže poslovnu logiku i orkestraciju procesa:
 - `KorisnikObjekatService` – Logika dodjele prava pristupa objektima.
 
 ### 3. Domain layer (Entiteti)
-Čiste klase koje predstavljaju podatke i pravila (prema tvojim tabelama):
-- `Korisnik` (ID, ImePrezime, Email, Password, Username)
-- `Termin` (ID, VrijemePocetka, VrijemeKraja, Datum, KreatorID, KabinetID)
-- `Zahtjev` (ID, Status, Komentar, TerminID, KabinetID)
-- `Kabinet` (ID, Naziv, KorisnikID)
-- `Objekat` (ID, Lokacija, RadnoVrijeme, KabinetID)
-- `Oprema` (ID, Naziv, SerijskiBroj, KreatorID, KabinetID)
-- `Evidencija` (ID, Status, Komentar, OpremaID, KorisnikID)
-- `KorisnikObjekat` (ID, KorisnikID, ObjekatID)
+Čiste klase koje predstavljaju podatke i pravila:
+- `Korisnik` (ID, ImePrezime, Email, Username, Password, Uloga)
+- `Kabinet` (ID, Naziv)
+- `Oprema` (ID, Naziv, SerijskiBroj, Status, KabinetID, KreatorID)
+- `Termin` (ID, VrijemePocetka, VrijemeKraja, Datum, Status, KabinetID, KreatorID)
+- `Zahtjev` (ID, Status, Komentar, TerminID, OpremaID, StudentID)
+- `Evidencija` (ID, Status, Komentar, OpremaID, KorisnikID, Datum)
+- `Objekat` (ID, Lokacija, RadnoVrijeme)
+- `Historija` (ID, Entitet, Akcija, Vrijeme, KorisnikID)
+- `Historija_Termin` (ID, TerminID, Promjena, Vrijeme, KorisnikID)
+- `Obavijest` (ID, Sadrzaj, Datum, KorisnikID, Status)
+- `Recenzija` (ID, Ocjena, Komentar, Datum, KorisnikID)
+- `Oprema_Recenzija` (ID, OpremaID, RecenzijaID)
+- `Korisnik_Objekat` (ID, KorisnikID, ObjekatID)
 
 ### 4. Data access layer (Repozitoriji)
 Zaduženi za direktne SQL operacije i komunikaciju sa bazom:
@@ -64,18 +77,21 @@ Zaduženi za direktne SQL operacije i komunikaciju sa bazom:
 - `OpremaRepository`
 - `EvidencijaRepository`
 - `KorisnikObjekatRepository`
+- `HistorijaRepository`
+- `ObavijestRepository`
+- `RecenzijaRepository`
   
 ---
 
 ## Odgovornosti komponenti
 
 ### Presentation layer
-U ovom sloju se definišu API rute. Svaki od Controllera sadrži rute za osnovne CRUD operacije. Na primjer, ruta `/termin` služi za pregled i kreiranje termina, dok ruta `/termin/{id}` omogućava modifikaciju i brisanje pojedinačnog termina.
-
-Sloj vrši validaciju formata ulaznih podataka (poput cijelih brojeva, teksta ili formata vremena). Također, vrši autentifikaciju korisnika provjerom JWT tokena u zaglavlju zahtjeva.
+Frontend sloj je zadužen za prikaz podataka korisniku i interakciju sa sistemom. Korisnik putem ovog sloja šalje zahtjeve prema backendu i prima odgovore u obliku prikaza (UI).
 
 ### Application layer
 Ovaj sloj upravlja izvršavanjem korisničkih akcija i povezuje preostale slojeve. Prima zahtjev od prezentacijskog sloja, poziva logiku iz domenskog sloja i repozitorije, te vraća finalni rezultat. Ovdje se vrši i generisanje tokena prilikom prijave korisnika.
+
+API kontroleri unutar ovog sloja definišu rute (npr. `/termin`, `/termin/{id}`), vrše validaciju ulaznih podataka i autentifikaciju korisnika putem JWT tokena.
 
 ### Domain layer
 Predstavlja srce sistema gdje su definisana sva ključna pravila:
