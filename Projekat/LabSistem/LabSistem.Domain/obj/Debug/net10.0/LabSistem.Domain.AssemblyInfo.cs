@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LABsistem.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1cf0ccac20047f8498583610c6a326f18842b092")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+71a46ecc7bbd8fc586ed2d290bff335542c9da7b")]
 [assembly: System.Reflection.AssemblyProductAttribute("LABsistem.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LABsistem.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
