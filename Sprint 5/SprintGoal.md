@@ -1,37 +1,35 @@
 ### Sprint Goal - Sprint 5
   
 #### Ciljevi sprinta
- * Prepravka sprinta 3
- * Dogovor tima o DoD
- * Pronalazak najkompatibilnijeg Branching strategije
- * Dogovor o realease planu
- * Identifikovanje osnovinih tehnologija za setup sistema
- * Postavljanje inicijalnog kostura sistema
+ * Identifikovati glavne zadatke sprinta
+ * Raspodijeliti se unutar tima
+ * Usaglasiti se o korištenju AI alata
 
 #### Ključne stavke:
   
-Tim je zajednički pregledao prijašnji sprint i identifikovao prijašnje nedostatke u formulisanju određenih dijeva dokumenata prošlog sprinta. Prepravljen je i unapriješen Risk Register, Domain Model, Test Strategy, te Architecture Overview. Zatim su dogovorene odgovornosti tekućeg sprinta i raspoređeni su članovi grupe ravnopravno. 
-
+Tim je zajednički pregledao prijašnji sprint i identifikovao ciljeve trenutnog sprinta, te se raspodijelio u skladu sa rasporedom članova tima i odredio rok za završetak zadataka.
 #### Rizici i zavisnosti
   
-DoD i IRP su bili naručito zahtjevni zbog težine predviđanja odvijanja razvoja.
+Neadekvatno korištenje AI alata
 
 #### Održani sastanci:
-* Subota 18.04.2026. 11:00h - zajednička diskusija
+* Srijeda 22.04.2026. 19:00h - zajednička diskusija
 
 ### Sprint Backlog
 
 Raspodjela zadataka
 
+| ID | Oblast odgovornosti |Odgovorna osoba |
+|------|---------------------|--------------|
+| 1 | Login UI + validacija forme (frontend) |Aner Atović|
+| 2 | JWT generisanje i verifikacija (backend) |Haris Sadiković|
+| 3 | RBAC logika – uloge i zaštita ruta |Emina Hamamdžić|
+| 4 | Sigurna odjava + redirect na login stranicu |Hamza Hadžić|
+| 5 | Automatski istek sesije (US32) |Alma Jusufbegović|
+| 6 | Testiranje auth toka (unit + integration testovi) |Merima Glušac|
+| 7 | CI/CD pipeline + Docker konfiguracija |Haris Macić|
+| 8 | API setup, dokumentacija endpointa |Refik Mujčinović|
 
-| ID | Naziv zadatka             | Odgovorna osoba                                      | Status     | Napomena |
-|----|---------------------------|------------------------------------------------------|------------|----------|
-| 1  | Prepravka prošlog sprinta | Refik Mujčinović, Alma Jusufbegović, Emina Hamamdžić | Završeno   | -        |
-| 2  | Definition of Done        | Hamza Hadžić                                         | Završeno   | -        |
-| 3  | Initial Realise Plan      | Haris Macić, Merima Glušac                           | Završeno   | -        |
-| 4  | Inicijalni kostur sistema | Emina Hamamdžić, Haris Macić                         | Završeno   | -        |
-| 5  | Osnovni tehnički setup    | Haris Sadiković                                      | Završeno   | -        |
-| 6  | Branching Strategy        | Alma Jusufbegović, Aner Atović                       | Završeno   | -        |
 
 
 
