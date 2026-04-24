@@ -4,7 +4,11 @@ using System.Text;
 
 namespace LABsistem.Domain.Enums
 {
-    internal class StatusZahtjeva
+    public enum StatusZahtjeva
     {
+        NaCekanju = 1,
+        Odobren = 2,
+        Odbijen = 3,
+        Storniran = 4
     }
 }

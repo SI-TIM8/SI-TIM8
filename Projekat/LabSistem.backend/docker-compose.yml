@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:16
@@ -16,19 +18,14 @@ services:
       timeout: 5s
       retries: 20
 
-  api:
+  labsistem.api:
     build:
       context: .
       dockerfile: LABsistem.Presentation/Dockerfile
     container_name: labsistem-api
     environment:
-      APP_UID: "0"
-
-      ASPNETCORE_ENVIRONMENT: Development
-      ASPNETCORE_URLS: http://+:8080
-
-      
-      ConnectionStrings__Default: Host=db;Port=5432;Database=labsistem;Username=labsistem;Password=labsistem
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Default=Host=db;Port=5432;Database=labsistem;Username=labsistem;Password=labsistem
     ports:
       - "8080:8080"
     depends_on:
