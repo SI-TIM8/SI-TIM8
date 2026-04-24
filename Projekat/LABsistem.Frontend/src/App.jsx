@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { pingApi } from "./api/client";
+import Login from "./pages/Login";
 
-function App() {
+function Home() {
   const [status, setStatus] = useState("Frontend skeleton je spreman.");
   const [loading, setLoading] = useState(false);
 
@@ -32,8 +34,23 @@ function App() {
         </button>
 
         <p className="status">{status}</p>
+
+        <p style={{ marginTop: 16 }}>
+          <Link to="/login">Idi na login →</Link>
+        </p>
       </section>
     </main>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
