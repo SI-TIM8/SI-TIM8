@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { pingApi } from "./api/client";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Layout from "./components/Layout";
+import Profil from "./pages/Profil";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
-const SESSION_DURATION_MS = 30 * 60 * 1000; // 30 minuta — mora biti isto kao u Login.jsx
-const UPOZORENJE_MS = 5 * 60 * 1000; // upozorenje 5 minuta prije isteka
+const SESSION_DURATION_MS = 30 * 60 * 1000;
+const UPOZORENJE_MS = 5 * 60 * 1000;
 
-// Zaštićena ruta — ako nema tokena ili je istekao, šalje na /login
+// ─── Zaštićena ruta ────────────────────────────────
 function ZasticenaRuta({ children }) {
   const token = localStorage.getItem("token");
   const expiry = localStorage.getItem("tokenExpiry");
@@ -15,31 +18,31 @@ function ZasticenaRuta({ children }) {
   if (!aktivna) {
     localStorage.removeItem("token");
     localStorage.removeItem("tokenExpiry");
+    localStorage.removeItem("uloga");
+    localStorage.removeItem("korisnik");
     return <Navigate to="/login?sesija=istekla" replace />;
   }
 
   return children;
 }
 
-// Timer koji prati neaktivnost korisnika
+// ─── Timer neaktivnosti ────────────────────────────
 function SesijaTimer() {
   const navigate = useNavigate();
   const [upozorenje, setUpozorenje] = useState(false);
   const [preostaloSekundi, setPreostaloSekundi] = useState(null);
 
-  useEffect(() => {
-    // Resetuje timer svaki put kada korisnik nešto uradi
-    const resetujTimer = () => {
-      const noviExpiry = Date.now() + SESSION_DURATION_MS;
-      localStorage.setItem("tokenExpiry", noviExpiry.toString());
-      setUpozorenje(false);
-    };
+  const resetujTimer = useCallback(() => {
+    const expiry = localStorage.getItem("tokenExpiry");
+    if (!expiry) return;
+    localStorage.setItem("tokenExpiry", (Date.now() + SESSION_DURATION_MS).toString());
+    setUpozorenje(false);
+  }, []);
 
-    // Događaji koji se smatraju aktivnošću
+  useEffect(() => {
     const dogadjaji = ["mousemove", "keydown", "click", "scroll", "touchstart"];
     dogadjaji.forEach((d) => window.addEventListener(d, resetujTimer));
 
-    // Provjera svakih 1 sekundu
     const interval = setInterval(() => {
       const expiry = localStorage.getItem("tokenExpiry");
       if (!expiry) return;
@@ -50,6 +53,8 @@ function SesijaTimer() {
         clearInterval(interval);
         localStorage.removeItem("token");
         localStorage.removeItem("tokenExpiry");
+        localStorage.removeItem("uloga");
+        localStorage.removeItem("korisnik");
         navigate("/login?sesija=istekla");
       } else if (preostalo <= UPOZORENJE_MS) {
         setUpozorenje(true);
@@ -61,96 +66,106 @@ function SesijaTimer() {
       clearInterval(interval);
       dogadjaji.forEach((d) => window.removeEventListener(d, resetujTimer));
     };
-  }, [navigate]);
+  }, [navigate, resetujTimer]);
 
   if (!upozorenje) return null;
 
   return (
-    <div style={{
-      position: "fixed",
-      bottom: 24,
-      right: 24,
-      background: "#fff3cd",
-      border: "1px solid #ffc107",
-      borderRadius: 8,
-      padding: "12px 16px",
-      zIndex: 9999,
-      boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
-    }}>
+    <div className="sesija-upozorenje">
       ⚠️ Sesija ističe za <strong>{preostaloSekundi}</strong> sekundi zbog neaktivnosti.
     </div>
   );
 }
 
-// Privremena Dashboard stranica dok se ne napravi prava
-function Dashboard() {
-  const navigate = useNavigate();
-
-  const handleOdjava = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("tokenExpiry");
-    navigate("/login");
-  };
-
+// ─── Placeholder stranica ──────────────────────────
+function PlaceholderStranica({ naslov, opis }) {
   return (
-    <main className="page">
-      <section className="card">
-        <h1>Dashboard</h1>
-        <p>Dobrodošli u LABsistem. Sesija traje 30 minuta.</p>
-        <button className="button" onClick={handleOdjava}>
-          Odjavi se
-        </button>
-      </section>
-      <SesijaTimer />
-    </main>
+    <Layout>
+      <div className="page-header">
+        <h1>{naslov}</h1>
+        <p>{opis}</p>
+      </div>
+      <div className="card">
+        <p style={{ color: "#94a3b8", fontStyle: "italic" }}>
+          Stranica je u izradi.
+        </p>
+      </div>
+    </Layout>
   );
 }
 
-function Home() {
-  const [status, setStatus] = useState("Frontend skeleton je spreman.");
-  const [loading, setLoading] = useState(false);
-
-  const handleApiCheck = async () => {
-    setLoading(true);
-    setStatus("Provjera API konekcije...");
-    try {
-      const code = await pingApi();
-      setStatus(`API odgovor uspjesan (HTTP ${code}).`);
-    } catch {
-      setStatus("API trenutno nije dostupan.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <main className="page">
-      <section className="card">
-        <h1>LABsistem Frontend</h1>
-        <p>React + Axios skeleton za povezivanje sa ASP.NET Core API-jem.</p>
-        <button className="button" type="button" onClick={handleApiCheck} disabled={loading}>
-          {loading ? "Provjera..." : "Testiraj API konekciju"}
-        </button>
-        <p className="status">{status}</p>
-      </section>
-    </main>
-  );
-}
-
+// ─── App ───────────────────────────────────────────
 function App() {
   return (
     <BrowserRouter>
+      <SesijaTimer />
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* Javne rute */}
         <Route path="/login" element={<Login />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ZasticenaRuta>
-              <Dashboard />
-            </ZasticenaRuta>
-          }
-        />
+        <Route path="/" element={<Navigate to="/login" replace />} />
+
+        {/* Zaštićene rute */}
+        <Route path="/dashboard" element={
+          <ZasticenaRuta><Dashboard /></ZasticenaRuta>
+        } />
+        <Route path="/kalendar" element={
+          <ZasticenaRuta>
+            <PlaceholderStranica naslov="Kalendar termina" opis="Prikaz termina u kalendarskom prikazu." />
+          </ZasticenaRuta>
+        } />
+        <Route path="/zakazivanje" element={
+          <ZasticenaRuta>
+            <PlaceholderStranica naslov="Zakaži termin" opis="Forma za odabir laboratorija, datuma i trajanja." />
+          </ZasticenaRuta>
+        } />
+        <Route path="/rezervacije" element={
+          <ZasticenaRuta>
+            <PlaceholderStranica naslov="Rezervacije" opis="Lista aktivnih i prošlih rezervacija." />
+          </ZasticenaRuta>
+        } />
+        <Route path="/oprema" element={
+          <ZasticenaRuta>
+            <PlaceholderStranica naslov="Oprema" opis="Lista opreme po laboratorijima." />
+          </ZasticenaRuta>
+        } />
+       <Route path="/profil" element={
+        <ZasticenaRuta>
+          <Profil />
+          </ZasticenaRuta>
+        } />
+        <Route path="/zahtjevi" element={
+          <ZasticenaRuta>
+            <PlaceholderStranica naslov="Zahtjevi studenata" opis="Lista zahtjeva s akcijama odobravanja i odbijanja." />
+          </ZasticenaRuta>
+        } />
+        <Route path="/historija" element={
+          <ZasticenaRuta>
+            <PlaceholderStranica naslov="Historija studenata" opis="Tabelarni prikaz pohađanja vježbi." />
+          </ZasticenaRuta>
+        } />
+        <Route path="/termini" element={
+          <ZasticenaRuta>
+            <PlaceholderStranica naslov="Upravljanje terminima" opis="CRUD okruženje za termine." />
+          </ZasticenaRuta>
+        } />
+        <Route path="/kvarovi" element={
+          <ZasticenaRuta>
+            <PlaceholderStranica naslov="Kvarovi opreme" opis="Pregled prijavljenih kvarova i promjena statusa." />
+          </ZasticenaRuta>
+        } />
+        <Route path="/korisnici" element={
+          <ZasticenaRuta>
+            <PlaceholderStranica naslov="Upravljanje korisnicima" opis="Kreiranje, uređivanje i deaktivacija korisnika." />
+          </ZasticenaRuta>
+        } />
+        <Route path="/objekti" element={
+          <ZasticenaRuta>
+            <PlaceholderStranica naslov="Objekti i kabineti" opis="CRUD za lokacije, laboratorije i radno vrijeme." />
+          </ZasticenaRuta>
+        } />
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );

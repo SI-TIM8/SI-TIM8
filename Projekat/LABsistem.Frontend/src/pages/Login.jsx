@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const SESSION_DURATION_MS = 30 * 60 * 1000; // 30 minuta
+const SESSION_DURATION_MS = 30 * 60 * 1000;
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -10,11 +10,9 @@ function Login() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Prikaži poruku ako je sesija istekla
   const sesijaIstekla = new URLSearchParams(location.search).get("sesija") === "istekla";
 
   useEffect(() => {
-    // Ako je već prijavljen, idi na dashboard
     const token = localStorage.getItem("token");
     const expiry = localStorage.getItem("tokenExpiry");
     if (token && expiry && Date.now() < parseInt(expiry)) {
@@ -26,70 +24,72 @@ function Login() {
     e.preventDefault();
     setGreska("");
 
-    // TODO: zamijeniti sa pravim API pozivom kada backend bude gotov
-    // const response = await api.post("/korisnik/login", { email, password });
-    // const { token } = response.data;
-
-    if (email && password) {
-      // Mock token dok backend nije gotov
-      const mockToken = "mock-jwt-token-12345";
-      const expiry = Date.now() + SESSION_DURATION_MS;
-
-      localStorage.setItem("token", mockToken);
-      localStorage.setItem("tokenExpiry", expiry.toString());
-
-      navigate("/dashboard");
-    } else {
+    if (!email || !password) {
       setGreska("Unesite email i lozinku.");
+      return;
     }
+
+    // TODO: zamijeniti sa pravim API pozivom
+    // const response = await api.post("/korisnik/login", { email, password });
+    // const { token, uloga, ime } = response.data;
+
+    const mockToken = "mock-jwt-token-12345";
+    const expiry = Date.now() + SESSION_DURATION_MS;
+
+    localStorage.setItem("token", mockToken);
+    localStorage.setItem("tokenExpiry", expiry.toString());
+    localStorage.setItem("uloga", "student"); // privremeno
+    localStorage.setItem("korisnik", email.split("@")[0]);
+
+    navigate("/dashboard");
   };
 
   return (
     <main className="page">
-      <section className="card">
-        <h1>Prijava</h1>
-        <p>Unesi svoje podatke za pristup LABsistem-u.</p>
+      <div className="login-card">
+        <h1>LABsistem</h1>
+        <p className="subtitle">Prijavite se za pristup sistemu.</p>
 
         {sesijaIstekla && (
-          <p style={{ color: "red", marginBottom: 12 }}>
+          <p style={{ color: "#dc2626", marginBottom: 16, fontSize: 14 }}>
             ⚠️ Vaša sesija je istekla. Prijavite se ponovo.
           </p>
         )}
 
         {greska && (
-          <p style={{ color: "red", marginBottom: 12 }}>{greska}</p>
+          <p style={{ color: "#dc2626", marginBottom: 16, fontSize: 14 }}>
+            {greska}
+          </p>
         )}
 
         <form onSubmit={handleSubmit} noValidate>
-          <div style={{ marginBottom: 12 }}>
+          <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               id="email"
               type="email"
-              required
               placeholder="ime@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              style={{ width: "100%", padding: 8, marginTop: 4 }}
             />
           </div>
 
-          <div style={{ marginBottom: 12 }}>
+          <div className="form-group">
             <label htmlFor="password">Lozinka</label>
             <input
               id="password"
               type="password"
-              required
               placeholder="********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              style={{ width: "100%", padding: 8, marginTop: 4 }}
             />
           </div>
 
-          <button className="button" type="submit">Prijavi se</button>
+          <button className="button" type="submit" style={{ width: "100%" }}>
+            Prijavi se
+          </button>
         </form>
-      </section>
+      </div>
     </main>
   );
 }
