@@ -1,7 +1,97 @@
-import { useState } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { pingApi } from "./api/client";
 import Login from "./pages/Login";
+
+const SESSION_DURATION_MS = 30 * 60 * 1000; // 30 minuta — mora biti isto kao u Login.jsx
+const UPOZORENJE_MS = 5 * 60 * 1000; // upozorenje 5 minuta prije isteka
+
+// Zaštićena ruta — ako nema tokena ili je istekao, šalje na /login
+function ZasticenaRuta({ children }) {
+  const token = localStorage.getItem("token");
+  const expiry = localStorage.getItem("tokenExpiry");
+  const aktivna = token && expiry && Date.now() < parseInt(expiry);
+
+  if (!aktivna) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenExpiry");
+    return <Navigate to="/login?sesija=istekla" replace />;
+  }
+
+  return children;
+}
+
+// Timer koji prati istek sesije
+function SesijaTimer() {
+  const navigate = useNavigate();
+  const [upozorenje, setUpozorenje] = useState(false);
+  const [preostaloSekundi, setPreostaloSekundi] = useState(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const expiry = localStorage.getItem("tokenExpiry");
+      if (!expiry) return;
+
+      const preostalo = parseInt(expiry) - Date.now();
+
+      if (preostalo <= 0) {
+        // Sesija istekla
+        clearInterval(interval);
+        localStorage.removeItem("token");
+        localStorage.removeItem("tokenExpiry");
+        navigate("/login?sesija=istekla");
+      } else if (preostalo <= UPOZORENJE_MS) {
+        // Manje od 5 minuta
+        setUpozorenje(true);
+        setPreostaloSekundi(Math.floor(preostalo / 1000));
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [navigate]);
+
+  if (!upozorenje) return null;
+
+  return (
+    <div style={{
+      position: "fixed",
+      bottom: 24,
+      right: 24,
+      background: "#fff3cd",
+      border: "1px solid #ffc107",
+      borderRadius: 8,
+      padding: "12px 16px",
+      zIndex: 9999,
+      boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
+    }}>
+      ⚠️ Sesija ističe za <strong>{preostaloSekundi}</strong> sekundi.
+    </div>
+  );
+}
+
+// Privremena Dashboard stranica dok se ne napravi prava
+function Dashboard() {
+  const navigate = useNavigate();
+
+  const handleOdjava = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenExpiry");
+    navigate("/login");
+  };
+
+  return (
+    <main className="page">
+      <section className="card">
+        <h1>Dashboard</h1>
+        <p>Dobrodošli u LABsistem. Sesija traje 30 minuta.</p>
+        <button className="button" onClick={handleOdjava}>
+          Odjavi se
+        </button>
+      </section>
+      <SesijaTimer />
+    </main>
+  );
+}
 
 function Home() {
   const [status, setStatus] = useState("Frontend skeleton je spreman.");
@@ -10,12 +100,11 @@ function Home() {
   const handleApiCheck = async () => {
     setLoading(true);
     setStatus("Provjera API konekcije...");
-
     try {
       const code = await pingApi();
       setStatus(`API odgovor uspjesan (HTTP ${code}).`);
-    } catch (error) {
-      setStatus("API trenutno nije dostupan. Provjeri da li je backend pokrenut na definisanom URL-u.");
+    } catch {
+      setStatus("API trenutno nije dostupan.");
     } finally {
       setLoading(false);
     }
@@ -25,19 +114,11 @@ function Home() {
     <main className="page">
       <section className="card">
         <h1>LABsistem Frontend</h1>
-        <p>
-          React + Axios skeleton za povezivanje sa ASP.NET Core API-jem.
-        </p>
-
+        <p>React + Axios skeleton za povezivanje sa ASP.NET Core API-jem.</p>
         <button className="button" type="button" onClick={handleApiCheck} disabled={loading}>
           {loading ? "Provjera..." : "Testiraj API konekciju"}
         </button>
-
         <p className="status">{status}</p>
-
-        <p style={{ marginTop: 16 }}>
-          <Link to="/login">Idi na login →</Link>
-        </p>
       </section>
     </main>
   );
@@ -49,6 +130,14 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ZasticenaRuta>
+              <Dashboard />
+            </ZasticenaRuta>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

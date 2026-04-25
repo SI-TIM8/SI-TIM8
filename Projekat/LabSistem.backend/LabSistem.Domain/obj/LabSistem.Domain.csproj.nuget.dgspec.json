@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj": {}
+    "C:\\Radna površina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj": {
+    "C:\\Radna površina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj",
+        "projectUniqueName": "C:\\Radna površina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj",
         "projectName": "LABsistem.Domain",
-        "projectPath": "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj",
-        "packagesPath": "C:\\Users\\emina\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\obj\\",
+        "projectPath": "C:\\Radna površina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj",
+        "packagesPath": "C:\\Users\\almaj\\.nuget\\packages\\",
+        "outputPath": "C:\\Radna površina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\emina\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\almaj\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

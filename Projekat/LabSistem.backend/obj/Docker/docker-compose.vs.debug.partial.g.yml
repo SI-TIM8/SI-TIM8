@@ -14,15 +14,15 @@ services:
       - ASPNETCORE_LOGGING__CONSOLE__DISABLECOLORS=true
       - NUGET_FALLBACK_PACKAGES=/.nuget/fallbackpackages
     volumes:
-      - C:\Users\emina\SI\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Presentation:/app:rw
-      - C:\Users\emina\SI\SI-TIM8\Projekat\LabSistem.backend:/src:rw
-      - C:\Users\emina\vsdbg\vs2017u5:/remote_debugger:rw
-      - C:\Users\emina\.nuget\packages:/.nuget/packages:ro
+      - C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Presentation:/app:rw
+      - C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend:/src:rw
+      - C:\Users\almaj\vsdbg\vs2017u5:/remote_debugger:rw
+      - C:\Users\almaj\.nuget\packages:/.nuget/packages:ro
       - C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages:/.nuget/fallbackpackages:ro
-      - C:\Users\emina\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
-      - C:\Users\emina\AppData\Roaming\ASP.NET\Https:/home/app/.aspnet/https:ro
-      - C:\Users\emina\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
-      - C:\Users\emina\AppData\Roaming\Microsoft\UserSecrets:/home/app/.microsoft/usersecrets:ro
+      - C:\Users\almaj\AppData\Roaming\ASP.NET\Https:/root/.aspnet/https:ro
+      - C:\Users\almaj\AppData\Roaming\ASP.NET\Https:/home/app/.aspnet/https:ro
+      - C:\Users\almaj\AppData\Roaming\Microsoft\UserSecrets:/root/.microsoft/usersecrets:ro
+      - C:\Users\almaj\AppData\Roaming\Microsoft\UserSecrets:/home/app/.microsoft/usersecrets:ro
       - C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Sdks\Microsoft.Docker.Sdk\tools\linux-x64\net6.0:/VSTools:ro
       - C:\Program Files\Microsoft Visual Studio\18\Community\Common7\IDE\extensions\Microsoft\managedprojectsystem\HotReload:/HotReloadAgent:ro
 

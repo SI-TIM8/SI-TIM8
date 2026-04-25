@@ -11,3 +11,16 @@ C:\Users\emina\SI\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\
 C:\Users\emina\SI\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\refint\LABsistem.Domain.dll
 C:\Users\emina\SI\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.pdb
 C:\Users\emina\SI\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\ref\LABsistem.Domain.dll
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\bin\Debug\net10.0\LABsistem.Domain.deps.json
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\bin\Debug\net10.0\LABsistem.Domain.dll
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\bin\Debug\net10.0\LABsistem.Domain.pdb
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.csproj.AssemblyReference.cache
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.AssemblyInfoInputs.cache
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.AssemblyInfo.cs
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.csproj.CoreCompileInputs.cache
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.sourcelink.json
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.dll
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\refint\LABsistem.Domain.dll
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.pdb
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\ref\LABsistem.Domain.dll

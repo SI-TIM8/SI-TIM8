@@ -16,3 +16,21 @@ C:\Users\emina\SI\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net
 C:\Users\emina\SI\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\refint\LABsistem.Api.dll
 C:\Users\emina\SI\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\LABsistem.Api.pdb
 C:\Users\emina\SI\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\ref\LABsistem.Api.dll
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\bin\Debug\net10.0\LABsistem.Api.deps.json
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\bin\Debug\net10.0\LABsistem.Api.dll
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\bin\Debug\net10.0\LABsistem.Api.pdb
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\bin\Debug\net10.0\LABsistem.Dal.dll
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\bin\Debug\net10.0\LABsistem.Domain.dll
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\bin\Debug\net10.0\LABsistem.Dal.pdb
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\bin\Debug\net10.0\LABsistem.Domain.pdb
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\LABsistem.Api.csproj.AssemblyReference.cache
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\LABsistem.Api.GeneratedMSBuildEditorConfig.editorconfig
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\LABsistem.Api.AssemblyInfoInputs.cache
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\LABsistem.Api.AssemblyInfo.cs
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\LABsistem.Api.csproj.CoreCompileInputs.cache
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\LABsistem.Api.sourcelink.json
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\LABsiste.D812D653.Up2Date
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\LABsistem.Api.dll
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\refint\LABsistem.Api.dll
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\LABsistem.Api.pdb
+C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Api\obj\Debug\net10.0\ref\LABsistem.Api.dll
