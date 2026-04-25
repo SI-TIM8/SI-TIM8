@@ -1,17 +1,17 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\",
+  "WorkspaceRootPath": "C:\\Radna povr\u0161ina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{7AFA2911-931C-C6D5-98FE-38A307D20A2B}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si\\si-tim8\\projekat\\labsistem.backend\\labsistem.presentation\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{7AFA2911-931C-C6D5-98FE-38A307D20A2B}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\radna povr\u0161ina\\projects\\si-tim8\\projekat\\labsistem.backend\\labsistem.presentation\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7AFA2911-931C-C6D5-98FE-38A307D20A2B}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7AFA2911-931C-C6D5-98FE-38A307D20A2B}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si\\si-tim8\\projekat\\labsistem.backend\\labsistem.presentation\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{7AFA2911-931C-C6D5-98FE-38A307D20A2B}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\radna povr\u0161ina\\projects\\si-tim8\\projekat\\labsistem.backend\\labsistem.presentation\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{7AFA2911-931C-C6D5-98FE-38A307D20A2B}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7AFA2911-931C-C6D5-98FE-38A307D20A2B}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\users\\emina\\si\\si-tim8\\projekat\\labsistem.backend\\labsistem.presentation\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "AbsoluteMoniker": "D:0:0:{7AFA2911-931C-C6D5-98FE-38A307D20A2B}|LABsistem.Presentation\\LABsistem.Presentation.csproj|c:\\radna povr\u0161ina\\projects\\si-tim8\\projekat\\labsistem.backend\\labsistem.presentation\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{7AFA2911-931C-C6D5-98FE-38A307D20A2B}|LABsistem.Presentation\\LABsistem.Presentation.csproj|solutionrelative:labsistem.presentation\\dockerfile||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
@@ -22,46 +22,76 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 9,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "Dockerfile",
-              "DocumentMoniker": "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\LabSistem.Presentation\\Dockerfile",
-              "RelativeDocumentMoniker": "LabSistem.Presentation\\Dockerfile",
-              "ToolTip": "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\LabSistem.Presentation\\Dockerfile",
-              "RelativeToolTip": "LabSistem.Presentation\\Dockerfile",
+              "DocumentMoniker": "C:\\Radna povr\u0161ina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Presentation\\Dockerfile",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Dockerfile",
+              "ToolTip": "C:\\Radna povr\u0161ina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Presentation\\Dockerfile",
+              "RelativeToolTip": "LABsistem.Presentation\\Dockerfile",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-04-24T12:42:02.455Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-24T12:42:02.455Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\LabSistem.Presentation\\appsettings.json",
-              "RelativeDocumentMoniker": "LabSistem.Presentation\\appsettings.json",
-              "ToolTip": "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\LabSistem.Presentation\\appsettings.json",
-              "RelativeToolTip": "LabSistem.Presentation\\appsettings.json",
+              "DocumentMoniker": "C:\\Radna povr\u0161ina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Presentation\\appsettings.json",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\appsettings.json",
+              "ToolTip": "C:\\Radna povr\u0161ina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Presentation\\appsettings.json",
+              "RelativeToolTip": "LABsistem.Presentation\\appsettings.json",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2026-04-24T12:30:10.171Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-24T12:30:10.171Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\LabSistem.Presentation\\Program.cs",
-              "RelativeDocumentMoniker": "LabSistem.Presentation\\Program.cs",
-              "ToolTip": "C:\\Users\\emina\\SI\\SI-TIM8\\Projekat\\LabSistem.backend\\LabSistem.Presentation\\Program.cs",
-              "RelativeToolTip": "LabSistem.Presentation\\Program.cs",
+              "DocumentMoniker": "C:\\Radna povr\u0161ina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Presentation\\Program.cs",
+              "RelativeDocumentMoniker": "LABsistem.Presentation\\Program.cs",
+              "ToolTip": "C:\\Radna povr\u0161ina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Presentation\\Program.cs",
+              "RelativeToolTip": "LABsistem.Presentation\\Program.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-24T10:24:53.052Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             }
           ]
         }
