@@ -21,13 +21,25 @@ function ZasticenaRuta({ children }) {
   return children;
 }
 
-// Timer koji prati istek sesije
+// Timer koji prati neaktivnost korisnika
 function SesijaTimer() {
   const navigate = useNavigate();
   const [upozorenje, setUpozorenje] = useState(false);
   const [preostaloSekundi, setPreostaloSekundi] = useState(null);
 
   useEffect(() => {
+    // Resetuje timer svaki put kada korisnik nešto uradi
+    const resetujTimer = () => {
+      const noviExpiry = Date.now() + SESSION_DURATION_MS;
+      localStorage.setItem("tokenExpiry", noviExpiry.toString());
+      setUpozorenje(false);
+    };
+
+    // Događaji koji se smatraju aktivnošću
+    const dogadjaji = ["mousemove", "keydown", "click", "scroll", "touchstart"];
+    dogadjaji.forEach((d) => window.addEventListener(d, resetujTimer));
+
+    // Provjera svakih 1 sekundu
     const interval = setInterval(() => {
       const expiry = localStorage.getItem("tokenExpiry");
       if (!expiry) return;
@@ -35,19 +47,20 @@ function SesijaTimer() {
       const preostalo = parseInt(expiry) - Date.now();
 
       if (preostalo <= 0) {
-        // Sesija istekla
         clearInterval(interval);
         localStorage.removeItem("token");
         localStorage.removeItem("tokenExpiry");
         navigate("/login?sesija=istekla");
       } else if (preostalo <= UPOZORENJE_MS) {
-        // Manje od 5 minuta
         setUpozorenje(true);
         setPreostaloSekundi(Math.floor(preostalo / 1000));
       }
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      dogadjaji.forEach((d) => window.removeEventListener(d, resetujTimer));
+    };
   }, [navigate]);
 
   if (!upozorenje) return null;
@@ -64,7 +77,7 @@ function SesijaTimer() {
       zIndex: 9999,
       boxShadow: "0 2px 8px rgba(0,0,0,0.15)"
     }}>
-      ⚠️ Sesija ističe za <strong>{preostaloSekundi}</strong> sekundi.
+      ⚠️ Sesija ističe za <strong>{preostaloSekundi}</strong> sekundi zbog neaktivnosti.
     </div>
   );
 }
