@@ -1,18 +1,18 @@
 {
   "version": 2,
-  "dgSpecHash": "aoESRSrtrvM=",
+  "dgSpecHash": "vlI9xJiHsno=",
   "success": true,
-  "projectFilePath": "C:\\Radna površina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj",
+  "projectFilePath": "C:\\Users\\hsadi\\Documents\\GitHub\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\almaj\\.nuget\\packages\\microsoft.extensions.configuration\\6.0.0\\microsoft.extensions.configuration.6.0.0.nupkg.sha512",
-    "C:\\Users\\almaj\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\6.0.0\\microsoft.extensions.configuration.abstractions.6.0.0.nupkg.sha512",
-    "C:\\Users\\almaj\\.nuget\\packages\\microsoft.extensions.configuration.fileextensions\\6.0.0\\microsoft.extensions.configuration.fileextensions.6.0.0.nupkg.sha512",
-    "C:\\Users\\almaj\\.nuget\\packages\\microsoft.extensions.configuration.json\\6.0.0\\microsoft.extensions.configuration.json.6.0.0.nupkg.sha512",
-    "C:\\Users\\almaj\\.nuget\\packages\\microsoft.extensions.configuration.usersecrets\\6.0.1\\microsoft.extensions.configuration.usersecrets.6.0.1.nupkg.sha512",
-    "C:\\Users\\almaj\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\6.0.0\\microsoft.extensions.fileproviders.abstractions.6.0.0.nupkg.sha512",
-    "C:\\Users\\almaj\\.nuget\\packages\\microsoft.extensions.fileproviders.physical\\6.0.0\\microsoft.extensions.fileproviders.physical.6.0.0.nupkg.sha512",
-    "C:\\Users\\almaj\\.nuget\\packages\\microsoft.extensions.filesystemglobbing\\6.0.0\\microsoft.extensions.filesystemglobbing.6.0.0.nupkg.sha512",
-    "C:\\Users\\almaj\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512"
+    "C:\\Users\\hsadi\\.nuget\\packages\\microsoft.extensions.configuration\\6.0.0\\microsoft.extensions.configuration.6.0.0.nupkg.sha512",
+    "C:\\Users\\hsadi\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\6.0.0\\microsoft.extensions.configuration.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\hsadi\\.nuget\\packages\\microsoft.extensions.configuration.fileextensions\\6.0.0\\microsoft.extensions.configuration.fileextensions.6.0.0.nupkg.sha512",
+    "C:\\Users\\hsadi\\.nuget\\packages\\microsoft.extensions.configuration.json\\6.0.0\\microsoft.extensions.configuration.json.6.0.0.nupkg.sha512",
+    "C:\\Users\\hsadi\\.nuget\\packages\\microsoft.extensions.configuration.usersecrets\\6.0.1\\microsoft.extensions.configuration.usersecrets.6.0.1.nupkg.sha512",
+    "C:\\Users\\hsadi\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\6.0.0\\microsoft.extensions.fileproviders.abstractions.6.0.0.nupkg.sha512",
+    "C:\\Users\\hsadi\\.nuget\\packages\\microsoft.extensions.fileproviders.physical\\6.0.0\\microsoft.extensions.fileproviders.physical.6.0.0.nupkg.sha512",
+    "C:\\Users\\hsadi\\.nuget\\packages\\microsoft.extensions.filesystemglobbing\\6.0.0\\microsoft.extensions.filesystemglobbing.6.0.0.nupkg.sha512",
+    "C:\\Users\\hsadi\\.nuget\\packages\\microsoft.extensions.primitives\\6.0.0\\microsoft.extensions.primitives.6.0.0.nupkg.sha512"
   ],
   "logs": []
 }

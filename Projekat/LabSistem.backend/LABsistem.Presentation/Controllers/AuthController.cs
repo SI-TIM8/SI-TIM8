@@ -1,12 +1,89 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using LABsistem.Bll.Services;
+using LABsistem.Dal.Db;
+using LABsistem.Presentation.DTOs.Auth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LABsistem.Presentation.Controllers
 {
-    public class AuthController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class AuthController : ControllerBase
     {
-        public IActionResult Index()
+        private readonly LabSistemDbContext _dbContext;
+        private readonly IJwtService _jwtService;
+
+        public AuthController(LabSistemDbContext dbContext, IJwtService jwtService)
         {
-            return View();
+            _dbContext = dbContext;
+            _jwtService = jwtService;
+        }
+
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
+            {
+                return BadRequest("Username i password su obavezni.");
+            }
+
+            var korisnik = await _dbContext.Korisnici
+                .FirstOrDefaultAsync(x => x.Username == request.Username && x.Password == request.Password);
+
+            if (korisnik is null)
+            {
+                return Unauthorized("Pogrešni kredencijali.");
+            }
+
+            var token = _jwtService.GenerateToken(
+                korisnik.ID.ToString(),
+                korisnik.Username,
+                korisnik.Uloga.ToString());
+
+            var response = new LoginResponseDto
+            {
+                Token = token,
+                UserId = korisnik.ID,
+                Username = korisnik.Username,
+                Role = korisnik.Uloga.ToString()
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet("verify")]
+        [Authorize]
+        public IActionResult VerifyAuthenticatedToken()
+        {
+            return Ok(new
+            {
+                Valid = true,
+                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                Username = User.FindFirstValue(ClaimTypes.Name),
+                Role = User.FindFirstValue(ClaimTypes.Role)
+            });
+        }
+
+        [HttpPost("verify-token")]
+        [AllowAnonymous]
+        public IActionResult VerifyToken([FromBody] VerifyTokenRequestDto request)
+        {
+            var principal = _jwtService.ValidateToken(request.Token);
+            if (principal is null)
+            {
+                return Unauthorized(new { Valid = false });
+            }
+
+            return Ok(new
+            {
+                Valid = true,
+                UserId = principal.FindFirstValue(ClaimTypes.NameIdentifier),
+                Username = principal.FindFirstValue(ClaimTypes.Name),
+                Role = principal.FindFirstValue(ClaimTypes.Role)
+            });
         }
     }
 }

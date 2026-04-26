@@ -372,23 +372,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\almaj\\.nuget\\packages\\": {},
+    "C:\\Users\\hsadi\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Radna površina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj",
+      "projectUniqueName": "C:\\Users\\hsadi\\Documents\\GitHub\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj",
       "projectName": "LABsistem.Domain",
-      "projectPath": "C:\\Radna površina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj",
-      "packagesPath": "C:\\Users\\almaj\\.nuget\\packages\\",
-      "outputPath": "C:\\Radna površina\\projects\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\obj\\",
+      "projectPath": "C:\\Users\\hsadi\\Documents\\GitHub\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\LABsistem.Domain.csproj",
+      "packagesPath": "C:\\Users\\hsadi\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\hsadi\\Documents\\GitHub\\SI-TIM8\\Projekat\\LabSistem.backend\\LABsistem.Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\almaj\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\hsadi\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -401,7 +401,6 @@
       },
       "frameworks": {
         "net10.0": {
-          "framework": "net10.0",
           "targetAlias": "net10.0",
           "projectReferences": {}
         }
@@ -416,11 +415,10 @@
         "auditLevel": "low",
         "auditMode": "all"
       },
-      "SdkAnalysisLevel": "10.0.200"
+      "SdkAnalysisLevel": "10.0.100"
     },
     "frameworks": {
       "net10.0": {
-        "framework": "net10.0",
         "targetAlias": "net10.0",
         "dependencies": {
           "Microsoft.Extensions.Configuration.UserSecrets": {
@@ -444,7 +442,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json",
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
         "packagesToPrune": {
           "Microsoft.CSharp": "(,4.7.32767]",
           "Microsoft.VisualBasic": "(,10.4.32767]",

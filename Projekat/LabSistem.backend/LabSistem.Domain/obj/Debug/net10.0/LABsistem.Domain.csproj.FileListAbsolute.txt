@@ -24,3 +24,16 @@ C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\
 C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\refint\LABsistem.Domain.dll
 C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.pdb
 C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\ref\LABsistem.Domain.dll
+C:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\bin\Debug\net10.0\LABsistem.Domain.deps.json
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\bin\Debug\net10.0\LABsistem.Domain.dll
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\bin\Debug\net10.0\LABsistem.Domain.pdb
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.csproj.AssemblyReference.cache
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.AssemblyInfoInputs.cache
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.AssemblyInfo.cs
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.csproj.CoreCompileInputs.cache
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.sourcelink.json
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.dll
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\refint\LABsistem.Domain.dll
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\LABsistem.Domain.pdb
+C:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\LABsistem.Domain\obj\Debug\net10.0\ref\LABsistem.Domain.dll

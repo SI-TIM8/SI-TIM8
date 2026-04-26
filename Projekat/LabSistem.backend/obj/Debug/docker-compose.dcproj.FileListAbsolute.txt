@@ -42,3 +42,4 @@ C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\bin\Debug\LABsist
 C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\obj\Debug\docker-compose.dcproj.AssemblyReference.cache
 C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\obj\Debug\docker-compose.dcproj.CoreCompileInputs.cache
 C:\Radna površina\projects\SI-TIM8\Projekat\LabSistem.backend\obj\Debug\docker-c.35A3FFBA.Up2Date
+c:\Users\hsadi\Documents\GitHub\SI-TIM8\Projekat\LabSistem.backend\obj\Debug\docker-compose.dcproj.CoreCompileInputs.cache
