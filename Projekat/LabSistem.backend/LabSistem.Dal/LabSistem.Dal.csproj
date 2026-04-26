@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LABsistem.Domain\LABsistem.Domain.csproj" />
+    <ProjectReference Include="..\LabSistem.Domain\LabSistem.Domain.csproj" />
   </ItemGroup>
 
 </Project>
