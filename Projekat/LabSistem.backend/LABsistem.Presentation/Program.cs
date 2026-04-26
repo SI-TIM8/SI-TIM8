@@ -2,20 +2,17 @@ using System.Text;
 using LABsistem.Bll.Models;
 using LABsistem.Bll.Services;
 using Microsoft.EntityFrameworkCore;
-using LABsistem.Dal.Db; 
+using LABsistem.Dal.Db;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
-
 var builder = WebApplication.CreateBuilder(args);
-
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
 Console.WriteLine($"TRENUTNI CONNECTION STRING JE: {connectionString}");
 
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()
     ?? throw new InvalidOperationException("JWT konfiguracija nije pronađena.");
-
 
 builder.Services.AddDbContext<LabSistemDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -40,6 +37,16 @@ builder.Services
         };
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
@@ -51,7 +58,6 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<LabSistemDbContext>();
-        // Ova linija provjerava migracije i izvršava ih ako već nisu izvršene
         context.Database.Migrate();
         Console.WriteLine("Migracije su uspješno provjerene/primijenjene.");
     }
@@ -61,14 +67,18 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
 
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
 app.MapControllers();
 
 app.Run();

@@ -8,8 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
-    <ProjectReference Include="..\LABsistem.Dal\LABsistem.Dal.csproj" />
-    <ProjectReference Include="..\LABsistem.Domain\LABsistem.Domain.csproj" />
+    <ProjectReference Include="..\LabSistem.Dal\LABsistem.Dal.csproj" />
+    <ProjectReference Include="..\LabSistem.Domain\LABsistem.Domain.cspro" />
   </ItemGroup>
 
 </Project>
