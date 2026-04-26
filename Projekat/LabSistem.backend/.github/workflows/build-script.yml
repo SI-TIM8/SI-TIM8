@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [ "create-cicd-scripts" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Projekat/LabSistem.backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore ./LABsistem.Presentation/LABsistem.Presentation.csproj
+
+      - name: Build
+        run: dotnet build ./LABsistem.Presentation/LABsistem.Presentation.csproj --no-restore
