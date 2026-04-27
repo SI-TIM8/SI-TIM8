@@ -1,4 +1,4 @@
-namespace LABsistem.Presentation.DTOs.Auth
+namespace LABsistem.Bll.DTOs.Auth
 {
     public class VerifyTokenRequestDto
     {

@@ -19,6 +19,7 @@ builder.Services.AddDbContext<LabSistemDbContext>(options =>
 
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

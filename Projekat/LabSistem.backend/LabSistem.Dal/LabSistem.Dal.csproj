@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LabSistem.Domain\LABsistem.Domain.csproj" />
+    <ProjectReference Include="..\LabSistem.Domain\LabSistem.Domain.csproj" />
   </ItemGroup>
 
 </Project>

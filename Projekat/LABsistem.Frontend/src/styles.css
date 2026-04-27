@@ -341,6 +341,34 @@ tbody td {
   margin-bottom: 28px;
 }
 
+.tabs {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  color: #0f766e;
+  border-bottom-color: #0f766e;
+}
+
+.tab-btn:hover:not(.active) {
+  color: #1f2937;
+}
+
 /* ─── UPOZORENJE SESIJA ──────────────────────────── */
 .sesija-upozorenje {
   position: fixed;
