@@ -12,6 +12,8 @@ services:
       - "5432:5432"
     volumes:
       - labsistem_pgdata:/var/lib/postgresql/data
+    networks:
+      - labsistem-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -29,9 +31,28 @@ services:
       - ConnectionStrings__Default=${CONNECTION_STRING}
     ports:
       - "8080:8080"
+    networks:
+      - labsistem-network
     depends_on:
       db:
         condition: service_healthy
 
+  labsistem.frontend:
+    build:
+      context: ../LABsistem.Frontend
+      dockerfile: Dockerfile
+    container_name: labsistem-frontend
+    ports:
+      - "3001:80"
+    networks:
+      - labsistem-network
+    depends_on:
+      labsistem.api:
+        condition: service_started
+
 volumes:
   labsistem_pgdata:
+
+networks:
+  labsistem-network:
+    name: labsistem-network
