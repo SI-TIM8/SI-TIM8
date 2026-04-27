@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - labsistem_pgdata:/var/lib/postgresql/data
+    networks:
+      - labsistem-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -23,9 +25,26 @@ services:
       ConnectionStrings__Default: ${CONNECTION_STRING}
     ports:
       - "8080:8080"
+    networks:
+      - labsistem-network
     depends_on:
       db:
         condition: service_healthy
 
+  labsistem.frontend:
+    image: labsistem-frontend:latest
+    container_name: labsistem-frontend
+    ports:
+      - "3000:80"
+    networks:
+      - labsistem-network
+    depends_on:
+      labsistem.api:
+        condition: service_started
+
 volumes:
   labsistem_pgdata:
+
+networks:
+  labsistem-network:
+    name: labsistem-network
