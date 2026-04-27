@@ -3,6 +3,8 @@ using LABsistem.Bll.Models;
 using LABsistem.Bll.Services;
 using Microsoft.EntityFrameworkCore;
 using LABsistem.Dal.Db;
+using LABsistem.Domain.Entities;
+using LABsistem.Domain.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -41,7 +43,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "http://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -60,6 +64,21 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<LabSistemDbContext>();
         context.Database.Migrate();
         Console.WriteLine("Migracije su uspješno provjerene/primijenjene.");
+
+        // Seed admin korisnik ako ne postoji
+        if (!context.Korisnici.Any(k => k.Uloga == UlogaKorisnika.Admin))
+        {
+            context.Korisnici.Add(new Korisnik
+            {
+                ImePrezime = "Administrator",
+                Email = "admin@labsistem.ba",
+                Username = "admin",
+                Password = BCrypt.Net.BCrypt.HashPassword("Admin123!"),
+                Uloga = UlogaKorisnika.Admin
+            });
+            context.SaveChanges();
+            Console.WriteLine("Admin korisnik je kreiran. Username: admin | Password: Admin123!");
+        }
     }
     catch (Exception ex)
     {

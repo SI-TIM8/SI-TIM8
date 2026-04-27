@@ -1,12 +1,16 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import api from "../api/client";
 
 const SESSION_DURATION_MS = 30 * 60 * 1000;
 
+const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
 function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [greska, setGreska] = useState("");
+  const [ucitava, setUcitava] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,28 +24,43 @@ function Login() {
     }
   }, [navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setGreska("");
 
-    if (!email || !password) {
-      setGreska("Unesite email i lozinku.");
+    if (!username || !password) {
+      setGreska("Unesite username i lozinku.");
       return;
     }
 
-    // TODO: zamijeniti sa pravim API pozivom
-    // const response = await api.post("/korisnik/login", { email, password });
-    // const { token, uloga, ime } = response.data;
+    if (!PASSWORD_REGEX.test(password)) {
+      setGreska("Lozinka mora imati min. 8 znakova, jedno veliko slovo, broj i specijalni znak.");
+      return;
+    }
 
-    const mockToken = "mock-jwt-token-12345";
-    const expiry = Date.now() + SESSION_DURATION_MS;
+    setUcitava(true);
+    try {
+      const response = await api.post("/api/auth/login", { username, password });
+      const { token, userId, username: korisnikUsername, role } = response.data;
 
-    localStorage.setItem("token", mockToken);
-    localStorage.setItem("tokenExpiry", expiry.toString());
-    localStorage.setItem("uloga", "student"); // privremeno
-    localStorage.setItem("korisnik", email.split("@")[0]);
+      const expiry = Date.now() + SESSION_DURATION_MS;
+      localStorage.setItem("token", token);
+      localStorage.setItem("tokenExpiry", expiry.toString());
+      localStorage.setItem("uloga", role.toLowerCase());
+      localStorage.setItem("korisnik", korisnikUsername);
+      localStorage.setItem("userId", userId.toString());
 
-    navigate("/dashboard");
+      navigate("/dashboard");
+    } catch (err) {
+      const poruka = err.response?.data;
+      if (typeof poruka === "string") {
+        setGreska(poruka);
+      } else {
+        setGreska("Pogrešni kredencijali. Pokušajte ponovo.");
+      }
+    } finally {
+      setUcitava(false);
+    }
   };
 
   return (
@@ -64,13 +83,14 @@ function Login() {
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="username">Username</label>
             <input
-              id="email"
-              type="email"
-              placeholder="ime@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              type="text"
+              placeholder="vaš_username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              autoComplete="username"
             />
           </div>
 
@@ -82,13 +102,21 @@ function Login() {
               placeholder="********"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
             />
           </div>
 
-          <button className="button" type="submit" style={{ width: "100%" }}>
-            Prijavi se
+          <button className="button" type="submit" style={{ width: "100%" }} disabled={ucitava}>
+            {ucitava ? "Prijavljivanje..." : "Prijavi se"}
           </button>
         </form>
+
+        <p style={{ textAlign: "center", marginTop: 16, fontSize: 14, color: "#64748b" }}>
+          Nemate nalog?{" "}
+          <Link to="/register" style={{ color: "#0f766e", fontWeight: 600 }}>
+            Registrujte se
+          </Link>
+        </p>
       </div>
     </main>
   );

@@ -26,7 +26,7 @@ namespace LABsistem.Domain.Entities
         public string Username { get; set; }
         
 
-        [Required, StringLength(20)]
+        [Required, StringLength(100)]
         public string Password { get; set; }
 
 
