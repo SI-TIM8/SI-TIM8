@@ -20,7 +20,10 @@ jobs:
             Projekat/LabSistem.backend
 
       - name: Save Docker image
-        run: docker save labsistem-api:latest -o labsistem-api.tar
+        run: |
+          docker save labsistem-api:latest -o labsistem-api.tar
+          chmod 644 labsistem-api.tar
+          ls -l labsistem-api.tar
 
       - name: Copy image and compose file to server
         uses: appleboy/scp-action@v0.1.7
@@ -30,6 +33,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: "labsistem-api.tar,Projekat/LabSistem.backend/docker-compose.production.yml"
           target: ${{ secrets.APP_DIR }}
+          overwrite: true
 
       - name: Load image and restart containers
         uses: appleboy/ssh-action@v1.0.3
@@ -42,8 +46,6 @@ jobs:
 
             docker load -i labsistem-api.tar
 
-            cp Projekat/LabSistem.backend/docker-compose.production.yml docker-compose.prod.yml
-
-            docker compose -f docker-compose.production.yml up -d
+            docker compose -f Projekat/LabSistem.backend/docker-compose.production.yml up -d
 
             docker image prune -f
