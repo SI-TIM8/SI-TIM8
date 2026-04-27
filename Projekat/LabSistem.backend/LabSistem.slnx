@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".env" />
+  </Folder>
+  <Project Path="../LABsistem.Tests/LABsistem.Tests.csproj" Id="8cb74260-07ba-4916-a30c-9aa489617d1d" />
   <Project Path="docker-compose.dcproj">
     <Build />
   </Project>
