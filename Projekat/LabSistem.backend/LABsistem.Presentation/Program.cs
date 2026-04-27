@@ -77,7 +77,7 @@ using (var scope = app.Services.CreateScope())
                 Uloga = UlogaKorisnika.Admin
             });
             context.SaveChanges();
-            Console.WriteLine("Admin korisnik je kreiran. Username: admin | Password: Admin123!");
+            Console.WriteLine("Admin korisnik je kreiran. Username: admin");
         }
     }
     catch (Exception ex)
