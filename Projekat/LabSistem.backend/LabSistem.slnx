@@ -3,7 +3,7 @@
     <Build />
   </Project>
   <Project Path="LABsistem.Api/LABsistem.Api.csproj" />
-  <Project Path="LABsistem.Dal/LABsistem.Dal.csproj" />
-  <Project Path="LABsistem.Domain/LABsistem.Domain.csproj" />
+  <Project Path="LabSistem.Dal/LabSistem.Dal.csproj" />
+  <Project Path="LabSistem.Domain/LABsistem.Domain.csproj" />
   <Project Path="LABsistem.Presentation/LABsistem.Presentation.csproj" />
 </Solution>

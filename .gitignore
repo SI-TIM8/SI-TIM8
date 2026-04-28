@@ -36,3 +36,4 @@ Projekat/LabSistem.backend/package-lock.json
 # =========================
 Thumbs.db
 .DS_Store
+.dotnet/
