@@ -76,19 +76,25 @@ namespace LABsistem.Bll.Services
 
         public async Task<ProfileResponseDto?> GetProfileAsync(int userId)
         {
-            var korisnik = await _dbContext.Korisnici
-                .Include(x => x.KreiraniTermini)
-                    .ThenInclude(x => x.Kabinet)
-                .Include(x => x.Evidencije)
-                    .ThenInclude(x => x.Oprema)
-                .FirstOrDefaultAsync(x => x.ID == userId);
+            var profile = await _dbContext.Korisnici
+                .Where(x => x.ID == userId)
+                .Select(x => new ProfileResponseDto
+                {
+                    UserId = x.ID,
+                    ImePrezime = x.ImePrezime,
+                    Email = x.Email,
+                    Username = x.Username,
+                    Role = x.Uloga.ToString()
+                })
+                .FirstOrDefaultAsync();
 
-            if (korisnik is null)
+            if (profile is null)
             {
                 return null;
             }
 
-            return MapProfile(korisnik);
+            profile.RecentActivities = await BuildRecentActivitiesAsync(userId);
+            return profile;
         }
 
         public async Task<List<UserListItemDto>> GetUsersAsync()
@@ -108,12 +114,7 @@ namespace LABsistem.Bll.Services
 
         public async Task<(bool Success, string Message, ProfileResponseDto? Profile)> UpdateProfileAsync(int userId, UpdateProfileRequestDto request)
         {
-            var korisnik = await _dbContext.Korisnici
-                .Include(x => x.KreiraniTermini)
-                    .ThenInclude(x => x.Kabinet)
-                .Include(x => x.Evidencije)
-                    .ThenInclude(x => x.Oprema)
-                .FirstOrDefaultAsync(x => x.ID == userId);
+            var korisnik = await _dbContext.Korisnici.FirstOrDefaultAsync(x => x.ID == userId);
 
             if (korisnik is null)
             {
@@ -145,7 +146,8 @@ namespace LABsistem.Bll.Services
 
             await _dbContext.SaveChangesAsync();
 
-            return (true, "Profil je uspjesno azuriran.", MapProfile(korisnik));
+            var updatedProfile = await GetProfileAsync(userId);
+            return (true, "Profil je uspjesno azuriran.", updatedProfile);
         }
 
         public async Task<(bool Success, string Message)> ChangePasswordAsync(int userId, ChangePasswordRequestDto request)
@@ -240,9 +242,10 @@ namespace LABsistem.Bll.Services
             }
         }
 
-        private static ProfileResponseDto MapProfile(Korisnik korisnik)
+        private async Task<List<RecentActivityDto>> BuildRecentActivitiesAsync(int userId)
         {
-            var recentTermini = korisnik.KreiraniTermini?
+            var recentTermini = await _dbContext.Termini
+                .Where(x => x.KreatorID == userId)
                 .OrderByDescending(x => x.Datum)
                 .ThenByDescending(x => x.VrijemePocetka)
                 .Take(3)
@@ -250,31 +253,26 @@ namespace LABsistem.Bll.Services
                 {
                     Title = "Kreirali ste termin",
                     Description = $"{x.Datum:dd.MM.yyyy} u {x.VrijemePocetka:hh\\:mm}",
-                    Meta = x.Kabinet is null ? "Termin" : $"Kabinet: {x.Kabinet.Naziv}"
-                }) ?? Enumerable.Empty<RecentActivityDto>();
+                    Meta = x.Kabinet == null ? "Termin" : $"Kabinet: {x.Kabinet.Naziv}"
+                })
+                .ToListAsync();
 
-            var recentEvidencije = korisnik.Evidencije?
+            var recentEvidencije = await _dbContext.Evidencije
+                .Where(x => x.KorisnikID == userId)
                 .OrderByDescending(x => x.ID)
                 .Take(3)
                 .Select(x => new RecentActivityDto
                 {
                     Title = "Dodali ste evidenciju",
-                    Description = x.Oprema is null ? "Evidencija opreme" : $"Oprema: {x.Oprema.Naziv}",
+                    Description = x.Oprema == null ? "Evidencija opreme" : $"Oprema: {x.Oprema.Naziv}",
                     Meta = string.IsNullOrWhiteSpace(x.Status) ? $"Evidencija #{x.ID}" : $"Status: {x.Status}"
-                }) ?? Enumerable.Empty<RecentActivityDto>();
+                })
+                .ToListAsync();
 
-            return new ProfileResponseDto
-            {
-                UserId = korisnik.ID,
-                ImePrezime = korisnik.ImePrezime,
-                Email = korisnik.Email,
-                Username = korisnik.Username,
-                Role = korisnik.Uloga.ToString(),
-                RecentActivities = recentTermini
-                    .Concat(recentEvidencije)
-                    .Take(6)
-                    .ToList()
-            };
+            return recentTermini
+                .Concat(recentEvidencije)
+                .Take(6)
+                .ToList();
         }
 
         private static string? ValidateProfileFields(string imePrezime, string email, string username)

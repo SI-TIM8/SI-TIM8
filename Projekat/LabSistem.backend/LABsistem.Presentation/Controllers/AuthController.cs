@@ -157,13 +157,23 @@ namespace LABsistem.Presentation.Controllers
                 return BadRequest(new { Message = "Token ne sadrzi jti." });
             }
 
-            var expirationClaim = User.FindFirstValue(JwtRegisteredClaimNames.Exp);
-            if (string.IsNullOrWhiteSpace(expirationClaim) || !long.TryParse(expirationClaim, out var expirationUnixSeconds))
+            var authorizationHeader = Request.Headers.Authorization.ToString();
+            if (string.IsNullOrWhiteSpace(authorizationHeader) ||
+                !authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new { Message = "Authorization header ne sadrzi bearer token." });
+            }
+
+            var token = authorizationHeader["Bearer ".Length..].Trim();
+            var tokenHandler = new JwtSecurityTokenHandler();
+            if (!tokenHandler.CanReadToken(token))
             {
                 return BadRequest(new { Message = "Token ne sadrzi ispravan datum isteka." });
             }
 
-            var expiresAtUtc = DateTimeOffset.FromUnixTimeSeconds(expirationUnixSeconds).UtcDateTime;
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+            var expiresAtUtc = jwtToken.ValidTo;
+
             _revokedTokenStore.Revoke(jti, expiresAtUtc);
             return Ok(new { Message = "Odjava uspjesna." });
         }
