@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
   timeout: 6000
 });
 
@@ -18,9 +18,12 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const token = localStorage.getItem("token");
+    if (error.response?.status === 401 && token) {
       localStorage.removeItem("token");
       localStorage.removeItem("tokenExpiry");
+      localStorage.removeItem("uloga");
+      localStorage.removeItem("korisnik");
       window.location.href = "/login?sesija=istekla";
     }
     return Promise.reject(error);

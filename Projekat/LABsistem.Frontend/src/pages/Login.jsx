@@ -1,10 +1,23 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import api from "../api/client";
 
-const SESSION_DURATION_MS = 30 * 60 * 1000;
+function getTokenExpiry(token) {
+  try {
+    const [, payload] = token.split(".");
+    const decodedPayload = JSON.parse(atob(payload));
+    if (!decodedPayload.exp) {
+      return null;
+    }
+
+    return decodedPayload.exp * 1000;
+  } catch {
+    return null;
+  }
+}
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [greska, setGreska] = useState("");
   const navigate = useNavigate();
@@ -15,44 +28,61 @@ function Login() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const expiry = localStorage.getItem("tokenExpiry");
-    if (token && expiry && Date.now() < parseInt(expiry)) {
+    if (token && expiry && Date.now() < Number.parseInt(expiry, 10)) {
       navigate("/dashboard");
     }
   }, [navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setGreska("");
 
-    if (!email || !password) {
-      setGreska("Unesite email i lozinku.");
+    if (!usernameOrEmail || !password) {
+      setGreska("Unesite korisnicko ime ili email adresu i lozinku.");
       return;
     }
 
-    // TODO: zamijeniti sa pravim API pozivom
-    // const response = await api.post("/korisnik/login", { email, password });
-    // const { token, uloga, ime } = response.data;
+    try {
+      const response = await api.post("/Auth/login", {
+        username: usernameOrEmail,
+        password,
+      });
 
-    const mockToken = "mock-jwt-token-12345";
-    const expiry = Date.now() + SESSION_DURATION_MS;
+      const { token, role, username: authenticatedUsername } = response.data;
+      const expiry = getTokenExpiry(token);
 
-    localStorage.setItem("token", mockToken);
-    localStorage.setItem("tokenExpiry", expiry.toString());
-    localStorage.setItem("uloga", "student"); // privremeno
-    localStorage.setItem("korisnik", email.split("@")[0]);
+      localStorage.setItem("token", token);
+      if (expiry) {
+        localStorage.setItem("tokenExpiry", expiry.toString());
+      } else {
+        localStorage.removeItem("tokenExpiry");
+      }
+      localStorage.setItem("uloga", role.toLowerCase());
+      localStorage.setItem("korisnik", authenticatedUsername);
+      localStorage.setItem("korisnikEmail", usernameOrEmail.includes("@") ? usernameOrEmail : "");
 
-    navigate("/dashboard");
+      navigate("/dashboard");
+    } catch (error) {
+      const responseData = error.response?.data;
+      const backendMessage =
+        typeof responseData === "string"
+          ? responseData
+          : responseData?.message;
+
+      setGreska(
+        backendMessage || "Prijava nije uspjela. Provjerite korisnicko ime ili email adresu i lozinku."
+      );
+    }
   };
 
   return (
     <main className="page">
       <div className="login-card">
-        <h1>LABsistem</h1>
-        <p className="subtitle">Prijavite se za pristup sistemu.</p>
+        <h1 className="login-title">Prijavite se sa svojim LABsistem korisničkim nalogom</h1>
 
         {sesijaIstekla && (
           <p style={{ color: "#dc2626", marginBottom: 16, fontSize: 14 }}>
-            ⚠️ Vaša sesija je istekla. Prijavite se ponovo.
+            Sesija je istekla. Prijavite se ponovo.
           </p>
         )}
 
@@ -64,18 +94,18 @@ function Login() {
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="username">Korisničko ime ili email adresa:</label>
             <input
-              id="email"
-              type="email"
-              placeholder="ime@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              type="text"
+              placeholder="Unesite korisničko ime ili email adresu"
+              value={usernameOrEmail}
+              onChange={(e) => setUsernameOrEmail(e.target.value)}
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Lozinka</label>
+            <label htmlFor="password">Lozinka:</label>
             <input
               id="password"
               type="password"

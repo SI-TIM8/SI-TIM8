@@ -1,32 +1,49 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import AccessDenied from "./pages/AccessDenied";
+import AboutApp from "./pages/AboutApp";
 import Dashboard from "./pages/Dashboard";
+import Korisnici from "./pages/Korisnici";
 import Layout from "./components/Layout";
+import Login from "./pages/Login";
 import Profil from "./pages/Profil";
-import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { ALLOWED_ROLES_BY_ROUTE, canAccessRoute, getCurrentRole } from "./auth/routeAccess";
 
 const SESSION_DURATION_MS = 30 * 60 * 1000;
 const UPOZORENJE_MS = 5 * 60 * 1000;
 
-// ─── Zaštićena ruta ────────────────────────────────
-function ZasticenaRuta({ children }) {
+function clearSession() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("tokenExpiry");
+  localStorage.removeItem("uloga");
+  localStorage.removeItem("korisnik");
+}
+
+function ZasticenaRuta({ children, allowedRoles }) {
   const token = localStorage.getItem("token");
   const expiry = localStorage.getItem("tokenExpiry");
-  const aktivna = token && expiry && Date.now() < parseInt(expiry);
+  const location = useLocation();
+  const aktivna = token && expiry && Date.now() < parseInt(expiry, 10);
 
   if (!aktivna) {
-    localStorage.removeItem("token");
-    localStorage.removeItem("tokenExpiry");
-    localStorage.removeItem("uloga");
-    localStorage.removeItem("korisnik");
+    clearSession();
     return <Navigate to="/login?sesija=istekla" replace />;
+  }
+
+  const uloga = getCurrentRole();
+  if (allowedRoles && !allowedRoles.includes(uloga)) {
+    return (
+      <Navigate
+        to="/pristup-odbijen"
+        replace
+        state={{ attemptedPath: location.pathname }}
+      />
+    );
   }
 
   return children;
 }
 
-// ─── Timer neaktivnosti ────────────────────────────
 function SesijaTimer() {
   const navigate = useNavigate();
   const [upozorenje, setUpozorenje] = useState(false);
@@ -34,27 +51,29 @@ function SesijaTimer() {
 
   const resetujTimer = useCallback(() => {
     const expiry = localStorage.getItem("tokenExpiry");
-    if (!expiry) return;
+    if (!expiry) {
+      return;
+    }
+
     localStorage.setItem("tokenExpiry", (Date.now() + SESSION_DURATION_MS).toString());
     setUpozorenje(false);
   }, []);
 
   useEffect(() => {
     const dogadjaji = ["mousemove", "keydown", "click", "scroll", "touchstart"];
-    dogadjaji.forEach((d) => window.addEventListener(d, resetujTimer));
+    dogadjaji.forEach((dogadjaj) => window.addEventListener(dogadjaj, resetujTimer));
 
     const interval = setInterval(() => {
       const expiry = localStorage.getItem("tokenExpiry");
-      if (!expiry) return;
+      if (!expiry) {
+        return;
+      }
 
-      const preostalo = parseInt(expiry) - Date.now();
+      const preostalo = parseInt(expiry, 10) - Date.now();
 
       if (preostalo <= 0) {
         clearInterval(interval);
-        localStorage.removeItem("token");
-        localStorage.removeItem("tokenExpiry");
-        localStorage.removeItem("uloga");
-        localStorage.removeItem("korisnik");
+        clearSession();
         navigate("/login?sesija=istekla");
       } else if (preostalo <= UPOZORENJE_MS) {
         setUpozorenje(true);
@@ -64,20 +83,21 @@ function SesijaTimer() {
 
     return () => {
       clearInterval(interval);
-      dogadjaji.forEach((d) => window.removeEventListener(d, resetujTimer));
+      dogadjaji.forEach((dogadjaj) => window.removeEventListener(dogadjaj, resetujTimer));
     };
   }, [navigate, resetujTimer]);
 
-  if (!upozorenje) return null;
+  if (!upozorenje) {
+    return null;
+  }
 
   return (
     <div className="sesija-upozorenje">
-      ⚠️ Sesija ističe za <strong>{preostaloSekundi}</strong> sekundi zbog neaktivnosti.
+      Sesija istice za <strong>{preostaloSekundi}</strong> sekundi zbog neaktivnosti.
     </div>
   );
 }
 
-// ─── Placeholder stranica ──────────────────────────
 function PlaceholderStranica({ naslov, opis }) {
   return (
     <Layout>
@@ -94,77 +114,159 @@ function PlaceholderStranica({ naslov, opis }) {
   );
 }
 
-// ─── App ───────────────────────────────────────────
+function ProtectedPage({ path, children }) {
+  return (
+    <ZasticenaRuta allowedRoles={ALLOWED_ROLES_BY_ROUTE[path]}>
+      {children}
+    </ZasticenaRuta>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
       <SesijaTimer />
       <Routes>
-        {/* Javne rute */}
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* Zaštićene rute */}
-        <Route path="/dashboard" element={
-          <ZasticenaRuta><Dashboard /></ZasticenaRuta>
-        } />
-        <Route path="/kalendar" element={
-          <ZasticenaRuta>
-            <PlaceholderStranica naslov="Kalendar termina" opis="Prikaz termina u kalendarskom prikazu." />
-          </ZasticenaRuta>
-        } />
-        <Route path="/zakazivanje" element={
-          <ZasticenaRuta>
-            <PlaceholderStranica naslov="Zakaži termin" opis="Forma za odabir laboratorija, datuma i trajanja." />
-          </ZasticenaRuta>
-        } />
-        <Route path="/rezervacije" element={
-          <ZasticenaRuta>
-            <PlaceholderStranica naslov="Rezervacije" opis="Lista aktivnih i prošlih rezervacija." />
-          </ZasticenaRuta>
-        } />
-        <Route path="/oprema" element={
-          <ZasticenaRuta>
-            <PlaceholderStranica naslov="Oprema" opis="Lista opreme po laboratorijima." />
-          </ZasticenaRuta>
-        } />
-       <Route path="/profil" element={
-        <ZasticenaRuta>
-          <Profil />
-          </ZasticenaRuta>
-        } />
-        <Route path="/zahtjevi" element={
-          <ZasticenaRuta>
-            <PlaceholderStranica naslov="Zahtjevi studenata" opis="Lista zahtjeva s akcijama odobravanja i odbijanja." />
-          </ZasticenaRuta>
-        } />
-        <Route path="/historija" element={
-          <ZasticenaRuta>
-            <PlaceholderStranica naslov="Historija studenata" opis="Tabelarni prikaz pohađanja vježbi." />
-          </ZasticenaRuta>
-        } />
-        <Route path="/termini" element={
-          <ZasticenaRuta>
-            <PlaceholderStranica naslov="Upravljanje terminima" opis="CRUD okruženje za termine." />
-          </ZasticenaRuta>
-        } />
-        <Route path="/kvarovi" element={
-          <ZasticenaRuta>
-            <PlaceholderStranica naslov="Kvarovi opreme" opis="Pregled prijavljenih kvarova i promjena statusa." />
-          </ZasticenaRuta>
-        } />
-        <Route path="/korisnici" element={
-          <ZasticenaRuta>
-            <PlaceholderStranica naslov="Upravljanje korisnicima" opis="Kreiranje, uređivanje i deaktivacija korisnika." />
-          </ZasticenaRuta>
-        } />
-        <Route path="/objekti" element={
-          <ZasticenaRuta>
-            <PlaceholderStranica naslov="Objekti i kabineti" opis="CRUD za lokacije, laboratorije i radno vrijeme." />
-          </ZasticenaRuta>
-        } />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedPage path="/dashboard">
+              <Dashboard />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/kalendar"
+          element={
+            <ProtectedPage path="/kalendar">
+              <PlaceholderStranica
+                naslov="Kalendar termina"
+                opis="Prikaz termina u kalendarskom prikazu."
+              />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/zakazivanje"
+          element={
+            <ProtectedPage path="/zakazivanje">
+              <PlaceholderStranica
+                naslov="Zakazi termin"
+                opis="Forma za odabir laboratorija, datuma i trajanja."
+              />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/rezervacije"
+          element={
+            <ProtectedPage path="/rezervacije">
+              <PlaceholderStranica
+                naslov="Rezervacije"
+                opis="Lista aktivnih i proslih rezervacija."
+              />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/oprema"
+          element={
+            <ProtectedPage path="/oprema">
+              <PlaceholderStranica
+                naslov="Oprema"
+                opis="Lista opreme po laboratorijima."
+              />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/profil"
+          element={
+            <ProtectedPage path="/profil">
+              <Profil />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/o-aplikaciji"
+          element={
+            <ProtectedPage path="/o-aplikaciji">
+              <AboutApp />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/zahtjevi"
+          element={
+            <ProtectedPage path="/zahtjevi">
+              <PlaceholderStranica
+                naslov="Zahtjevi studenata"
+                opis="Lista zahtjeva s akcijama odobravanja i odbijanja."
+              />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/historija"
+          element={
+            <ProtectedPage path="/historija">
+              <PlaceholderStranica
+                naslov="Historija studenata"
+                opis="Tabelarni prikaz pohadjanja vjezbi."
+              />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/termini"
+          element={
+            <ProtectedPage path="/termini">
+              <PlaceholderStranica naslov="Upravljanje terminima" opis="CRUD okruzenje za termine." />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/kvarovi"
+          element={
+            <ProtectedPage path="/kvarovi">
+              <PlaceholderStranica
+                naslov="Kvarovi opreme"
+                opis="Pregled prijavljenih kvarova i promjena statusa."
+              />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/korisnici"
+          element={
+            <ProtectedPage path="/korisnici">
+              <Korisnici />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/objekti"
+          element={
+            <ProtectedPage path="/objekti">
+              <PlaceholderStranica
+                naslov="Objekti i kabineti"
+                opis="CRUD za lokacije, laboratorije i radno vrijeme."
+              />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/pristup-odbijen"
+          element={
+            <ZasticenaRuta>
+              <AccessDenied />
+            </ZasticenaRuta>
+          }
+        />
 
-        {/* Fallback */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>

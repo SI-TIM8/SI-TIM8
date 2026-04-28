@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:16
@@ -8,8 +6,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - "5432:5432"
     volumes:
       - labsistem_pgdata:/var/lib/postgresql/data
     networks:
@@ -21,14 +17,12 @@ services:
       retries: 20
 
   labsistem.api:
-    build:
-      context: .
-      dockerfile: LABsistem.Presentation/Dockerfile
+    image: labsistem-api:latest
     container_name: labsistem-api
     environment:
-      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
-      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
-      - ConnectionStrings__Default=${CONNECTION_STRING}
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ASPNETCORE_URLS: ${ASPNETCORE_URLS}
+      ConnectionStrings__Default: ${CONNECTION_STRING}
     ports:
       - "8080:8080"
     networks:
@@ -38,12 +32,10 @@ services:
         condition: service_healthy
 
   labsistem.frontend:
-    build:
-      context: ../LABsistem.Frontend
-      dockerfile: Dockerfile
+    image: labsistem-frontend:latest
     container_name: labsistem-frontend
     ports:
-      - "3001:80"
+      - "3000:80"
     networks:
       - labsistem-network
     depends_on:

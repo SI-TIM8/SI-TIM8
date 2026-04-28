@@ -1,9 +1,10 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using LABsistem.Bll.Models;
 using LABsistem.Bll.Services;
-using Microsoft.EntityFrameworkCore;
 using LABsistem.Dal.Db;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,7 @@ var connectionString = builder.Configuration.GetConnectionString("Default");
 Console.WriteLine($"TRENUTNI CONNECTION STRING JE: {connectionString}");
 
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()
-    ?? throw new InvalidOperationException("JWT konfiguracija nije pronađena.");
+    ?? throw new InvalidOperationException("JWT konfiguracija nije pronadjena.");
 
 if (!builder.Environment.IsEnvironment("Testing"))
 {
@@ -20,8 +21,11 @@ if (!builder.Environment.IsEnvironment("Testing"))
         options.UseNpgsql(connectionString));
 }
 
+builder.Services.AddMemoryCache();
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddSingleton<IRevokedTokenStore, InMemoryRevokedTokenStore>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -38,15 +42,31 @@ builder.Services
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = context =>
+            {
+                var revokedTokenStore = context.HttpContext.RequestServices.GetRequiredService<IRevokedTokenStore>();
+                var jti = context.Principal?.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+
+                if (!string.IsNullOrWhiteSpace(jti) && revokedTokenStore.IsRevoked(jti))
+                {
+                    context.Fail("Token has been revoked.");
+                }
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3001")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
@@ -63,12 +83,16 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<LabSistemDbContext>();
         if (!app.Environment.IsEnvironment("Testing")) { 
         context.Database.Migrate();
-        Console.WriteLine("Migracije su uspješno provjerene/primijenjene.");
+        if (app.Environment.IsDevelopment())
+        {
+            await LabSistemDbSeeder.SeedDefaultUsersAsync(context);
+        }
+        Console.WriteLine("Migracije su uspjesno provjerene/primijenjene.");
     }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Greška pri migraciji: {ex.Message}");
+        Console.WriteLine($"Greska pri migraciji: {ex.Message}");
     }
 }
 
