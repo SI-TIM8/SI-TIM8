@@ -1,0 +1,53 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Projekat", "Projekat", "{E00E0452-A3A4-C200-45A3-7EC50F04EBAF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LabSistem.backend", "LabSistem.backend", "{67F5A50A-742B-15C5-262F-613973D74B14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LABsistem.Api", "Projekat\LabSistem.backend\LABsistem.Api\LABsistem.Api.csproj", "{12EEF97E-77F2-DCA6-1172-642B63C945A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabSistem.Dal", "Projekat\LabSistem.backend\LabSistem.Dal\LabSistem.Dal.csproj", "{D2404D31-CE19-F771-2752-E860548DBE31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LabSistem.Domain", "Projekat\LabSistem.backend\LabSistem.Domain\LabSistem.Domain.csproj", "{9865A3F1-90BB-47A3-8618-5F2E4B28AB14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LABsistem.Presentation", "Projekat\LabSistem.backend\LABsistem.Presentation\LABsistem.Presentation.csproj", "{D6A36332-1CF7-36ED-5FE2-CC112D19B93B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12EEF97E-77F2-DCA6-1172-642B63C945A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12EEF97E-77F2-DCA6-1172-642B63C945A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12EEF97E-77F2-DCA6-1172-642B63C945A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12EEF97E-77F2-DCA6-1172-642B63C945A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2404D31-CE19-F771-2752-E860548DBE31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2404D31-CE19-F771-2752-E860548DBE31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2404D31-CE19-F771-2752-E860548DBE31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2404D31-CE19-F771-2752-E860548DBE31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9865A3F1-90BB-47A3-8618-5F2E4B28AB14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9865A3F1-90BB-47A3-8618-5F2E4B28AB14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9865A3F1-90BB-47A3-8618-5F2E4B28AB14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9865A3F1-90BB-47A3-8618-5F2E4B28AB14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6A36332-1CF7-36ED-5FE2-CC112D19B93B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6A36332-1CF7-36ED-5FE2-CC112D19B93B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6A36332-1CF7-36ED-5FE2-CC112D19B93B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6A36332-1CF7-36ED-5FE2-CC112D19B93B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{67F5A50A-742B-15C5-262F-613973D74B14} = {E00E0452-A3A4-C200-45A3-7EC50F04EBAF}
+		{12EEF97E-77F2-DCA6-1172-642B63C945A9} = {67F5A50A-742B-15C5-262F-613973D74B14}
+		{D2404D31-CE19-F771-2752-E860548DBE31} = {67F5A50A-742B-15C5-262F-613973D74B14}
+		{9865A3F1-90BB-47A3-8618-5F2E4B28AB14} = {67F5A50A-742B-15C5-262F-613973D74B14}
+		{D6A36332-1CF7-36ED-5FE2-CC112D19B93B} = {67F5A50A-742B-15C5-262F-613973D74B14}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {43444631-9AC0-4D31-95A9-E68738E30D1A}
+	EndGlobalSection
+EndGlobal

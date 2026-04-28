@@ -51,6 +51,18 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+// Swagger/Swashbuckle setup - jednostavna konfiguracija
+builder.Services.AddSwaggerGen(options =>
+{
+    // Uključi XML komentare iz dokumentacije
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (System.IO.File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath);
+    }
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -75,8 +87,16 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Swagger middleware
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "LABsistem API v1");
+        options.RoutePrefix = "swagger";
+        options.DocumentTitle = "LABsistem API Dokumentacija";
+    });
     app.MapOpenApi();
 }
 
