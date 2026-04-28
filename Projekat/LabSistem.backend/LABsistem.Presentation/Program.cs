@@ -15,8 +15,11 @@ Console.WriteLine($"TRENUTNI CONNECTION STRING JE: {connectionString}");
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()
     ?? throw new InvalidOperationException("JWT konfiguracija nije pronadjena.");
 
-builder.Services.AddDbContext<LabSistemDbContext>(options =>
-    options.UseNpgsql(connectionString));
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddDbContext<LabSistemDbContext>(options =>
+        options.UseNpgsql(connectionString));
+}
 
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton(jwtSettings);
@@ -78,12 +81,14 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<LabSistemDbContext>();
+        if (!app.Environment.IsEnvironment("Testing")) { 
         context.Database.Migrate();
         if (app.Environment.IsDevelopment())
         {
             await LabSistemDbSeeder.SeedDefaultUsersAsync(context);
         }
         Console.WriteLine("Migracije su uspjesno provjerene/primijenjene.");
+    }
     }
     catch (Exception ex)
     {
@@ -106,3 +111,4 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 app.Run();
+public partial class Program { }
