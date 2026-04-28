@@ -12,7 +12,7 @@ namespace LABsistem.Tests.Unit
 
         public JwtServiceTests()
         {
-            // Setup valid JWT settings for testing
+          
             _jwtSettings = new JwtSettings
             {
                 Key = "TestSuperSecretKeyThatMustBeLongEnough123!",
@@ -36,7 +36,7 @@ namespace LABsistem.Tests.Unit
 
             // Assert
             Assert.False(string.IsNullOrWhiteSpace(token));
-            Assert.Contains(".", token); // A valid JWT consists of 3 parts separated by dots
+            Assert.Contains(".", token);
         }
 
         [Fact]
