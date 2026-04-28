@@ -1,11 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using LABsistem.Api.Services;
+using LABsistem.Bll.DTOs.Auth;
 using LABsistem.Bll.Services;
-using LABsistem.Dal.Db;
-using LABsistem.Presentation.DTOs.Auth;
+using LABsistem.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LABsistem.Presentation.Controllers
 {
@@ -13,17 +13,12 @@ namespace LABsistem.Presentation.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly LabSistemDbContext _dbContext;
-        private readonly IJwtService _jwtService;
+        private readonly IAuthService _authService;
         private readonly IRevokedTokenStore _revokedTokenStore;
 
-        public AuthController(
-            LabSistemDbContext dbContext,
-            IJwtService jwtService,
-            IRevokedTokenStore revokedTokenStore)
+        public AuthController(IAuthService authService, IRevokedTokenStore revokedTokenStore)
         {
-            _dbContext = dbContext;
-            _jwtService = jwtService;
+            _authService = authService;
             _revokedTokenStore = revokedTokenStore;
         }
 
@@ -31,33 +26,39 @@ namespace LABsistem.Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
+            var response = await _authService.LoginAsync(request);
+            if (response == null)
             {
-                return BadRequest("Username i password su obavezni.");
+                return Unauthorized(new { Message = "Pogrešni kredencijali." });
             }
-
-            var korisnik = await _dbContext.Korisnici
-                .FirstOrDefaultAsync(x => x.Username == request.Username && x.Password == request.Password);
-
-            if (korisnik is null)
-            {
-                return Unauthorized("Pogrešni kredencijali.");
-            }
-
-            var token = _jwtService.GenerateToken(
-                korisnik.ID.ToString(),
-                korisnik.Username,
-                korisnik.Uloga.ToString());
-
-            var response = new LoginResponseDto
-            {
-                Token = token,
-                UserId = korisnik.ID,
-                Username = korisnik.Username,
-                Role = korisnik.Uloga.ToString()
-            };
 
             return Ok(response);
+        }
+
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
+        {
+            var result = await _authService.RegisterAsync(request);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message });
+        }
+
+        [HttpPost("create-user")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateUser([FromBody] RegisterRequestDto request, [FromQuery] UlogaKorisnika uloga)
+        {
+            var result = await _authService.CreateUserAsync(request, uloga);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message });
         }
 
         [HttpGet("verify")]
@@ -67,9 +68,9 @@ namespace LABsistem.Presentation.Controllers
             return Ok(new
             {
                 Valid = true,
-                UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
-                Username = User.FindFirstValue(ClaimTypes.Name),
-                Role = User.FindFirstValue(ClaimTypes.Role)
+                UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                Username = User.FindFirst(ClaimTypes.Name)?.Value,
+                Role = User.FindFirst(ClaimTypes.Role)?.Value
             });
         }
 
@@ -77,7 +78,7 @@ namespace LABsistem.Presentation.Controllers
         [AllowAnonymous]
         public IActionResult VerifyToken([FromBody] VerifyTokenRequestDto request)
         {
-            var principal = _jwtService.ValidateToken(request.Token);
+            var principal = _authService.ValidateToken(request.Token);
             if (principal is null)
             {
                 return Unauthorized(new { Valid = false });
@@ -92,9 +93,9 @@ namespace LABsistem.Presentation.Controllers
             return Ok(new
             {
                 Valid = true,
-                UserId = principal.FindFirstValue(ClaimTypes.NameIdentifier),
-                Username = principal.FindFirstValue(ClaimTypes.Name),
-                Role = principal.FindFirstValue(ClaimTypes.Role)
+                UserId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value,
+                Username = principal.FindFirst(ClaimTypes.Name)?.Value,
+                Role = principal.FindFirst(ClaimTypes.Role)?.Value
             });
         }
 
@@ -105,7 +106,7 @@ namespace LABsistem.Presentation.Controllers
             var authorizationHeader = Request.Headers.Authorization.ToString();
             if (string.IsNullOrWhiteSpace(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
             {
-                return BadRequest("Authorization token nije pronađen.");
+                return BadRequest(new { Message = "Authorization token nije pronađen." });
             }
 
             var token = authorizationHeader["Bearer ".Length..].Trim();
@@ -114,7 +115,7 @@ namespace LABsistem.Presentation.Controllers
 
             if (string.IsNullOrWhiteSpace(jti))
             {
-                return BadRequest("Token ne sadrži jti.");
+                return BadRequest(new { Message = "Token ne sadrži jti." });
             }
 
             _revokedTokenStore.Revoke(jti, jwtToken.ValidTo);

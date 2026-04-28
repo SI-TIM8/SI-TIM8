@@ -3,6 +3,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Layout from "./components/Layout";
 import Profil from "./pages/Profil";
+import Korisnici from "./pages/Korisnici";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -155,7 +156,7 @@ function App() {
         } />
         <Route path="/korisnici" element={
           <ZasticenaRuta>
-            <PlaceholderStranica naslov="Upravljanje korisnicima" opis="Kreiranje, uređivanje i deaktivacija korisnika." />
+            <Korisnici />
           </ZasticenaRuta>
         } />
         <Route path="/objekti" element={
