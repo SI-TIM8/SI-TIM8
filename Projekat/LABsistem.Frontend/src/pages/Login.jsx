@@ -1,17 +1,25 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/client";
 
-const SESSION_DURATION_MS = 60 * 60 * 1000; // 60 minutes matching backend JWT expiry
+function getTokenExpiry(token) {
+  try {
+    const [, payload] = token.split(".");
+    const decodedPayload = JSON.parse(atob(payload));
+    if (!decodedPayload.exp) {
+      return null;
+    }
+
+    return decodedPayload.exp * 1000;
+  } catch {
+    return null;
+  }
+}
 
 function Login() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [username, setUsername] = useState("");
+  const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [imePrezime, setImePrezime] = useState("");
   const [greska, setGreska] = useState("");
-  const [uspeh, setUspeh] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -20,97 +28,61 @@ function Login() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const expiry = localStorage.getItem("tokenExpiry");
-    if (token && expiry && Date.now() < parseInt(expiry)) {
+    if (token && expiry && Date.now() < Number.parseInt(expiry, 10)) {
       navigate("/dashboard");
     }
   }, [navigate]);
 
-  const validatePassword = (pass) => {
-    if (pass.length < 8) return "Lozinka mora imati najmanje 8 znakova.";
-    if (!/[A-Z]/.test(pass)) return "Lozinka mora imati barem jedno veliko slovo.";
-    if (!/[0-9]/.test(pass)) return "Lozinka mora imati barem jedan broj.";
-    if (!/[^a-zA-Z0-9]/.test(pass)) return "Lozinka mora imati barem jedan specijalan znak.";
-    return null;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setGreska("");
-    setUspeh("");
 
-    if (isLogin) {
-      if (!username || !password) {
-        setGreska("Unesite korisničko ime i lozinku.");
-        return;
-      }
+    if (!usernameOrEmail || !password) {
+      setGreska("Unesite korisnicko ime ili email adresu i lozinku.");
+      return;
+    }
 
-      try {
-        const response = await api.post("/Auth/login", { username, password });
-        const { token, role, username: resUsername } = response.data;
+    try {
+      const response = await api.post("/Auth/login", {
+        username: usernameOrEmail,
+        password,
+      });
 
-        const expiry = Date.now() + SESSION_DURATION_MS;
-        localStorage.setItem("token", token);
+      const { token, role, username: authenticatedUsername } = response.data;
+      const expiry = getTokenExpiry(token);
+
+      localStorage.setItem("token", token);
+      if (expiry) {
         localStorage.setItem("tokenExpiry", expiry.toString());
-        localStorage.setItem("uloga", role.toLowerCase());
-        localStorage.setItem("korisnik", resUsername);
+      } else {
+        localStorage.removeItem("tokenExpiry");
+      }
+      localStorage.setItem("uloga", role.toLowerCase());
+      localStorage.setItem("korisnik", authenticatedUsername);
+      localStorage.setItem("korisnikEmail", usernameOrEmail.includes("@") ? usernameOrEmail : "");
 
-        navigate("/dashboard");
-      } catch (err) {
-        setGreska(err.response?.data || "Pogrešno korisničko ime ili lozinka.");
-      }
-    } else {
-      if (!username || !password || !email || !imePrezime) {
-        setGreska("Sva polja su obavezna.");
-        return;
-      }
+      navigate("/dashboard");
+    } catch (error) {
+      const responseData = error.response?.data;
+      const backendMessage =
+        typeof responseData === "string"
+          ? responseData
+          : responseData?.message;
 
-      const passError = validatePassword(password);
-      if (passError) {
-        setGreska(passError);
-        return;
-      }
-
-      try {
-        await api.post("/Auth/register", {
-          imePrezime,
-          email,
-          username,
-          password
-        });
-        setUspeh("Registracija uspješna! Sada se možete prijaviti.");
-        setIsLogin(true);
-      } catch (err) {
-        setGreska(err.response?.data || "Greška pri registraciji.");
-      }
+      setGreska(
+        backendMessage || "Prijava nije uspjela. Provjerite korisnicko ime ili email adresu i lozinku."
+      );
     }
   };
 
   return (
     <main className="page">
       <div className="login-card">
-        <h1>LABsistem</h1>
-        <div className="tabs">
-          <button 
-            className={`tab-btn ${isLogin ? 'active' : ''}`} 
-            onClick={() => { setIsLogin(true); setGreska(""); setUspeh(""); }}
-          >
-            Log in
-          </button>
-          <button 
-            className={`tab-btn ${!isLogin ? 'active' : ''}`} 
-            onClick={() => { setIsLogin(false); setGreska(""); setUspeh(""); }}
-          >
-            Sign up
-          </button>
-        </div>
-
-        <p className="subtitle">
-          {isLogin ? "Prijavite se za pristup sistemu." : "Napravite novi račun kao student."}
-        </p>
+        <h1 className="login-title">Prijavite se sa svojim LABsistem korisničkim nalogom</h1>
 
         {sesijaIstekla && (
           <p style={{ color: "#dc2626", marginBottom: 16, fontSize: 14 }}>
-            ⚠️ Vaša sesija je istekla. Prijavite se ponovo.
+            Sesija je istekla. Prijavite se ponovo.
           </p>
         )}
 
@@ -120,51 +92,20 @@ function Login() {
           </p>
         )}
 
-        {uspeh && (
-          <p style={{ color: "#16a34a", marginBottom: 16, fontSize: 14 }}>
-            {uspeh}
-          </p>
-        )}
-
         <form onSubmit={handleSubmit} noValidate>
-          {!isLogin && (
-            <>
-              <div className="form-group">
-                <label htmlFor="imePrezime">Ime i Prezime</label>
-                <input
-                  id="imePrezime"
-                  type="text"
-                  placeholder="Ime Prezime"
-                  value={imePrezime}
-                  onChange={(e) => setImePrezime(e.target.value)}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  id="email"
-                  type="email"
-                  placeholder="ime@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-            </>
-          )}
-
           <div className="form-group">
-            <label htmlFor="username">Korisničko ime</label>
+            <label htmlFor="username">Korisničko ime ili email adresa:</label>
             <input
               id="username"
               type="text"
-              placeholder="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Unesite korisničko ime ili email adresu"
+              value={usernameOrEmail}
+              onChange={(e) => setUsernameOrEmail(e.target.value)}
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Lozinka</label>
+            <label htmlFor="password">Lozinka:</label>
             <input
               id="password"
               type="password"
@@ -175,7 +116,7 @@ function Login() {
           </div>
 
           <button className="button" type="submit" style={{ width: "100%" }}>
-            {isLogin ? "Prijavi se" : "Registruj se"}
+            Prijavi se
           </button>
         </form>
       </div>

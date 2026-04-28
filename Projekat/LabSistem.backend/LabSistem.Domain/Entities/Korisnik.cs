@@ -14,15 +14,15 @@ namespace LABsistem.Domain.Entities
         public int ID { get; set; }
         
 
-        [Required, StringLength(40)]
+        [Required, StringLength(100)]
         public string ImePrezime { get; set; }
        
 
-        [Required, StringLength(30)]
+        [Required, StringLength(100)]
         public string Email { get; set; }
         
 
-        [Required, StringLength(20)]
+        [Required, StringLength(50)]
         public string Username { get; set; }
         
 

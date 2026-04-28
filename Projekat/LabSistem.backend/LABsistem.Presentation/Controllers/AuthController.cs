@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using LABsistem.Bll.DTOs.Auth;
 using LABsistem.Bll.Services;
@@ -12,10 +13,12 @@ namespace LABsistem.Presentation.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
+        private readonly IRevokedTokenStore _revokedTokenStore;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, IRevokedTokenStore revokedTokenStore)
         {
             _authService = authService;
+            _revokedTokenStore = revokedTokenStore;
         }
 
         [HttpPost("login")]
@@ -25,23 +28,10 @@ namespace LABsistem.Presentation.Controllers
             var response = await _authService.LoginAsync(request);
             if (response == null)
             {
-                return Unauthorized(new { Message = "Pogrešni kredencijali." });
+                return Unauthorized(new { Message = "Pogresni kredencijali." });
             }
 
             return Ok(response);
-        }
-
-        [HttpPost("register")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
-        {
-            var result = await _authService.RegisterAsync(request);
-            if (!result.Success)
-            {
-                return BadRequest(new { Message = result.Message });
-            }
-
-            return Ok(new { Message = result.Message });
         }
 
         [HttpPost("create-user")]
@@ -57,6 +47,14 @@ namespace LABsistem.Presentation.Controllers
             return Ok(new { Message = result.Message });
         }
 
+        [HttpGet("users")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _authService.GetUsersAsync();
+            return Ok(users);
+        }
+
         [HttpGet("verify")]
         [Authorize]
         public IActionResult VerifyAuthenticatedToken()
@@ -70,12 +68,72 @@ namespace LABsistem.Presentation.Controllers
             });
         }
 
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetProfile()
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var profile = await _authService.GetProfileAsync(userId);
+            if (profile is null)
+            {
+                return NotFound(new { Message = "Profil nije pronadjen." });
+            }
+
+            return Ok(profile);
+        }
+
+        [HttpPut("profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequestDto request)
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var result = await _authService.UpdateProfileAsync(userId, request);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message, Profile = result.Profile });
+        }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto request)
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var result = await _authService.ChangePasswordAsync(userId, request);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message });
+        }
+
         [HttpPost("verify-token")]
         [AllowAnonymous]
         public IActionResult VerifyToken([FromBody] VerifyTokenRequestDto request)
         {
             var principal = _authService.ValidateToken(request.Token);
             if (principal is null)
+            {
+                return Unauthorized(new { Valid = false });
+            }
+
+            var jti = principal.FindFirstValue(JwtRegisteredClaimNames.Jti);
+            if (!string.IsNullOrWhiteSpace(jti) && _revokedTokenStore.IsRevoked(jti))
             {
                 return Unauthorized(new { Valid = false });
             }
@@ -87,6 +145,43 @@ namespace LABsistem.Presentation.Controllers
                 Username = principal.FindFirst(ClaimTypes.Name)?.Value,
                 Role = principal.FindFirst(ClaimTypes.Role)?.Value
             });
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            var jti = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
+            if (string.IsNullOrWhiteSpace(jti))
+            {
+                return BadRequest(new { Message = "Token ne sadrzi jti." });
+            }
+
+            var authorizationHeader = Request.Headers.Authorization.ToString();
+            if (string.IsNullOrWhiteSpace(authorizationHeader) ||
+                !authorizationHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest(new { Message = "Authorization header ne sadrzi bearer token." });
+            }
+
+            var token = authorizationHeader["Bearer ".Length..].Trim();
+            var tokenHandler = new JwtSecurityTokenHandler();
+            if (!tokenHandler.CanReadToken(token))
+            {
+                return BadRequest(new { Message = "Token ne sadrzi ispravan datum isteka." });
+            }
+
+            var jwtToken = tokenHandler.ReadJwtToken(token);
+            var expiresAtUtc = jwtToken.ValidTo;
+
+            _revokedTokenStore.Revoke(jti, expiresAtUtc);
+            return Ok(new { Message = "Odjava uspjesna." });
+        }
+
+        private bool TryGetCurrentUserId(out int userId)
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(userIdClaim, out userId);
         }
     }
 }
