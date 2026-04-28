@@ -23,6 +23,10 @@ function extractErrorMessage(error, fallbackMessage) {
   return fallbackMessage;
 }
 
+function isValidUsername(value) {
+  return /^[A-Za-z0-9]+$/.test(value);
+}
+
 function Profil() {
   const [profil, setProfil] = useState(null);
   const [osnovniPodaci, setOsnovniPodaci] = useState({
@@ -91,6 +95,12 @@ function Profil() {
     setSavingProfile(true);
     setUspjeh("");
     setGreska("");
+
+    if (!isValidUsername(osnovniPodaci.username.trim())) {
+      setGreska("Korisničko ime može sadržavati samo slova i brojeve, bez razmaka i specijalnih znakova.");
+      setSavingProfile(false);
+      return;
+    }
 
     try {
       const response = await api.put("/Auth/profile", osnovniPodaci);
@@ -218,6 +228,9 @@ function Profil() {
                   type="text"
                   value={osnovniPodaci.username}
                   onChange={handleOsnovniPodaciChange}
+                  inputMode="text"
+                  pattern="[A-Za-z0-9]+"
+                  title="Koristite samo slova i brojeve, bez razmaka."
                 />
               </div>
 

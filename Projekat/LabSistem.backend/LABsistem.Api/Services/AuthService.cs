@@ -4,11 +4,13 @@ using LABsistem.Dal.Db;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace LABsistem.Bll.Services
 {
     public class AuthService : IAuthService
     {
+        private static readonly Regex UsernameRegex = new("^[A-Za-z0-9]+$", RegexOptions.Compiled);
         private readonly LabSistemDbContext _dbContext;
         private readonly IJwtService _jwtService;
 
@@ -290,6 +292,11 @@ namespace LABsistem.Bll.Services
             if (string.IsNullOrWhiteSpace(username))
             {
                 return "Username je obavezan.";
+            }
+
+            if (!UsernameRegex.IsMatch(username.Trim()))
+            {
+                return "Korisnicko ime moze sadrzavati samo slova i brojeve, bez razmaka i specijalnih znakova.";
             }
 
             return null;

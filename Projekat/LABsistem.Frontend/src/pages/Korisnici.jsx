@@ -38,6 +38,10 @@ const INITIAL_FORM_STATE = {
   uloga: "2",
 };
 
+function isValidUsername(value) {
+  return /^[A-Za-z0-9]+$/.test(value);
+}
+
 function Korisnici() {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -117,6 +121,15 @@ function Korisnici() {
     event.preventDefault();
     setCreatingUser(true);
     setCreateMessage({ type: "", text: "" });
+
+    if (!isValidUsername(formState.username.trim())) {
+      setCreateMessage({
+        type: "error",
+        text: "Korisničko ime može sadržavati samo slova i brojeve, bez razmaka i specijalnih znakova.",
+      });
+      setCreatingUser(false);
+      return;
+    }
 
     try {
       await api.post(`/Auth/create-user?uloga=${formState.uloga}`, {
@@ -307,6 +320,9 @@ function Korisnici() {
                   type="text"
                   value={formState.username}
                   onChange={handleFormChange}
+                  inputMode="text"
+                  pattern="[A-Za-z0-9]+"
+                  title="Koristite samo slova i brojeve, bez razmaka."
                   required
                 />
               </div>
