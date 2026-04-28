@@ -79,7 +79,10 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<LabSistemDbContext>();
         context.Database.Migrate();
-        await LabSistemDbSeeder.SeedDefaultUsersAsync(context);
+        if (app.Environment.IsDevelopment())
+        {
+            await LabSistemDbSeeder.SeedDefaultUsersAsync(context);
+        }
         Console.WriteLine("Migracije su uspjesno provjerene/primijenjene.");
     }
     catch (Exception ex)

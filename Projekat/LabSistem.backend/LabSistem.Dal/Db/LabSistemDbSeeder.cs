@@ -17,7 +17,7 @@ namespace LABsistem.Dal.Db
                     ImePrezime = "Admin Korisnik",
                     Email = "admin@labsistem.local",
                     Username = "admin",
-                    Password = "admin123",
+                    Password = BCrypt.Net.BCrypt.HashPassword("admin123"),
                     Uloga = UlogaKorisnika.Admin
                 },
                 new Korisnik
@@ -25,7 +25,7 @@ namespace LABsistem.Dal.Db
                     ImePrezime = "Profesor Korisnik",
                     Email = "profesor@labsistem.local",
                     Username = "profesor",
-                    Password = "profesor123",
+                    Password = BCrypt.Net.BCrypt.HashPassword("profesor123"),
                     Uloga = UlogaKorisnika.Profesor
                 },
                 new Korisnik
@@ -33,7 +33,7 @@ namespace LABsistem.Dal.Db
                     ImePrezime = "Student Korisnik",
                     Email = "student@labsistem.local",
                     Username = "student",
-                    Password = "student123",
+                    Password = BCrypt.Net.BCrypt.HashPassword("student123"),
                     Uloga = UlogaKorisnika.Student
                 },
                 new Korisnik
@@ -41,7 +41,7 @@ namespace LABsistem.Dal.Db
                     ImePrezime = "Tehnicar Korisnik",
                     Email = "tehnicar@labsistem.local",
                     Username = "tehnicar",
-                    Password = "tehnicar123",
+                    Password = BCrypt.Net.BCrypt.HashPassword("tehnicar123"),
                     Uloga = UlogaKorisnika.Tehnicar
                 }
             };
