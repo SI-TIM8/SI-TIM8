@@ -72,6 +72,102 @@ namespace LABsistem.Bll.Services
             };
         }
 
+        public async Task<ProfileResponseDto?> GetProfileAsync(int userId)
+        {
+            var korisnik = await _dbContext.Korisnici
+                .Include(x => x.KreiraniTermini)
+                    .ThenInclude(x => x.Kabinet)
+                .Include(x => x.Evidencije)
+                    .ThenInclude(x => x.Oprema)
+                .FirstOrDefaultAsync(x => x.ID == userId);
+
+            if (korisnik is null)
+            {
+                return null;
+            }
+
+            return MapProfile(korisnik);
+        }
+
+        public async Task<(bool Success, string Message, ProfileResponseDto? Profile)> UpdateProfileAsync(int userId, UpdateProfileRequestDto request)
+        {
+            var korisnik = await _dbContext.Korisnici
+                .Include(x => x.KreiraniTermini)
+                    .ThenInclude(x => x.Kabinet)
+                .Include(x => x.Evidencije)
+                    .ThenInclude(x => x.Oprema)
+                .FirstOrDefaultAsync(x => x.ID == userId);
+
+            if (korisnik is null)
+            {
+                return (false, "Korisnik nije pronadjen.", null);
+            }
+
+            var validationMessage = ValidateProfileFields(request.ImePrezime, request.Email, request.Username);
+            if (validationMessage is not null)
+            {
+                return (false, validationMessage, null);
+            }
+
+            var normalizedUsername = request.Username.Trim();
+            var normalizedEmail = request.Email.Trim();
+
+            if (await _dbContext.Korisnici.AnyAsync(x => x.ID != userId && x.Username == normalizedUsername))
+            {
+                return (false, "Username je vec zauzet.", null);
+            }
+
+            if (await _dbContext.Korisnici.AnyAsync(x => x.ID != userId && x.Email == normalizedEmail))
+            {
+                return (false, "Email je vec zauzet.", null);
+            }
+
+            korisnik.ImePrezime = request.ImePrezime.Trim();
+            korisnik.Email = normalizedEmail;
+            korisnik.Username = normalizedUsername;
+
+            await _dbContext.SaveChangesAsync();
+
+            return (true, "Profil je uspjesno azuriran.", MapProfile(korisnik));
+        }
+
+        public async Task<(bool Success, string Message)> ChangePasswordAsync(int userId, ChangePasswordRequestDto request)
+        {
+            var korisnik = await _dbContext.Korisnici.FirstOrDefaultAsync(x => x.ID == userId);
+
+            if (korisnik is null)
+            {
+                return (false, "Korisnik nije pronadjen.");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.CurrentPassword) ||
+                string.IsNullOrWhiteSpace(request.NewPassword) ||
+                string.IsNullOrWhiteSpace(request.ConfirmPassword))
+            {
+                return (false, "Sva polja za promjenu lozinke su obavezna.");
+            }
+
+            if (request.NewPassword != request.ConfirmPassword)
+            {
+                return (false, "Nova lozinka i potvrda se ne poklapaju.");
+            }
+
+            if (!VerifyPassword(korisnik, request.CurrentPassword))
+            {
+                return (false, "Trenutna lozinka nije ispravna.");
+            }
+
+            if (!IsPasswordValid(request.NewPassword))
+            {
+                return (false, "Lozinka mora imati najmanje 8 znakova, jedno veliko slovo, jedan broj i jedan specijalni znak.");
+            }
+
+            korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            await _dbContext.SaveChangesAsync();
+
+            return (true, "Lozinka je uspjesno promijenjena.");
+        }
+
         public async Task<(bool Success, string Message)> CreateUserAsync(RegisterRequestDto request, UlogaKorisnika uloga)
         {
             if (uloga != UlogaKorisnika.Profesor && uloga != UlogaKorisnika.Tehnicar)
@@ -120,21 +216,81 @@ namespace LABsistem.Bll.Services
             return _jwtService.ValidateToken(token);
         }
 
-        private static string? ValidateRequiredFields(RegisterRequestDto request)
+        private static bool VerifyPassword(Korisnik korisnik, string password)
         {
-            if (string.IsNullOrWhiteSpace(request.ImePrezime))
+            try
+            {
+                return BCrypt.Net.BCrypt.Verify(password, korisnik.Password);
+            }
+            catch (BCrypt.Net.SaltParseException)
+            {
+                return korisnik.Password == password;
+            }
+        }
+
+        private static ProfileResponseDto MapProfile(Korisnik korisnik)
+        {
+            var recentTermini = korisnik.KreiraniTermini?
+                .OrderByDescending(x => x.Datum)
+                .ThenByDescending(x => x.VrijemePocetka)
+                .Take(3)
+                .Select(x => new RecentActivityDto
+                {
+                    Title = "Kreirali ste termin",
+                    Description = $"{x.Datum:dd.MM.yyyy} u {x.VrijemePocetka:hh\\:mm}",
+                    Meta = x.Kabinet is null ? "Termin" : $"Kabinet: {x.Kabinet.Naziv}"
+                }) ?? Enumerable.Empty<RecentActivityDto>();
+
+            var recentEvidencije = korisnik.Evidencije?
+                .OrderByDescending(x => x.ID)
+                .Take(3)
+                .Select(x => new RecentActivityDto
+                {
+                    Title = "Dodali ste evidenciju",
+                    Description = x.Oprema is null ? "Evidencija opreme" : $"Oprema: {x.Oprema.Naziv}",
+                    Meta = string.IsNullOrWhiteSpace(x.Status) ? $"Evidencija #{x.ID}" : $"Status: {x.Status}"
+                }) ?? Enumerable.Empty<RecentActivityDto>();
+
+            return new ProfileResponseDto
+            {
+                UserId = korisnik.ID,
+                ImePrezime = korisnik.ImePrezime,
+                Email = korisnik.Email,
+                Username = korisnik.Username,
+                Role = korisnik.Uloga.ToString(),
+                RecentActivities = recentTermini
+                    .Concat(recentEvidencije)
+                    .Take(6)
+                    .ToList()
+            };
+        }
+
+        private static string? ValidateProfileFields(string imePrezime, string email, string username)
+        {
+            if (string.IsNullOrWhiteSpace(imePrezime))
             {
                 return "Ime i prezime je obavezno.";
             }
 
-            if (string.IsNullOrWhiteSpace(request.Email))
+            if (string.IsNullOrWhiteSpace(email))
             {
                 return "Email je obavezan.";
             }
 
-            if (string.IsNullOrWhiteSpace(request.Username))
+            if (string.IsNullOrWhiteSpace(username))
             {
                 return "Username je obavezan.";
+            }
+
+            return null;
+        }
+
+        private static string? ValidateRequiredFields(RegisterRequestDto request)
+        {
+            var profileValidationMessage = ValidateProfileFields(request.ImePrezime, request.Email, request.Username);
+            if (profileValidationMessage is not null)
+            {
+                return profileValidationMessage;
             }
 
             if (string.IsNullOrWhiteSpace(request.Password))

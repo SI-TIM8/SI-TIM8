@@ -60,6 +60,60 @@ namespace LABsistem.Presentation.Controllers
             });
         }
 
+        [HttpGet("profile")]
+        [Authorize]
+        public async Task<IActionResult> GetProfile()
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var profile = await _authService.GetProfileAsync(userId);
+            if (profile is null)
+            {
+                return NotFound(new { Message = "Profil nije pronadjen." });
+            }
+
+            return Ok(profile);
+        }
+
+        [HttpPut("profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequestDto request)
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var result = await _authService.UpdateProfileAsync(userId, request);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message, Profile = result.Profile });
+        }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequestDto request)
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var result = await _authService.ChangePasswordAsync(userId, request);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message });
+        }
+
         [HttpPost("verify-token")]
         [AllowAnonymous]
         public IActionResult VerifyToken([FromBody] VerifyTokenRequestDto request)
@@ -89,23 +143,27 @@ namespace LABsistem.Presentation.Controllers
         [Authorize]
         public IActionResult Logout()
         {
-            var authorizationHeader = Request.Headers.Authorization.ToString();
-            if (string.IsNullOrWhiteSpace(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
-            {
-                return BadRequest(new { Message = "Authorization token nije pronadjen." });
-            }
-
-            var token = authorizationHeader["Bearer ".Length..].Trim();
-            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
-            var jti = jwtToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
-
+            var jti = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
             if (string.IsNullOrWhiteSpace(jti))
             {
                 return BadRequest(new { Message = "Token ne sadrzi jti." });
             }
 
-            _revokedTokenStore.Revoke(jti, jwtToken.ValidTo);
+            var expirationClaim = User.FindFirstValue(JwtRegisteredClaimNames.Exp);
+            if (string.IsNullOrWhiteSpace(expirationClaim) || !long.TryParse(expirationClaim, out var expirationUnixSeconds))
+            {
+                return BadRequest(new { Message = "Token ne sadrzi ispravan datum isteka." });
+            }
+
+            var expiresAtUtc = DateTimeOffset.FromUnixTimeSeconds(expirationUnixSeconds).UtcDateTime;
+            _revokedTokenStore.Revoke(jti, expiresAtUtc);
             return Ok(new { Message = "Odjava uspjesna." });
+        }
+
+        private bool TryGetCurrentUserId(out int userId)
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(userIdClaim, out userId);
         }
     }
 }
