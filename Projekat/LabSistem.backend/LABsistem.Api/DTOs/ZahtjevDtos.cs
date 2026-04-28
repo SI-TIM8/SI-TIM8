@@ -1,4 +1,4 @@
-﻿namespace LABsistem.Presentation.DTOs
+namespace LABsistem.Bll.DTOs
 {
     public class ZahtjevDtos
     {
