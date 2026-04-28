@@ -2,14 +2,19 @@
 
 |ID odluke|Datum|Naziv odluke|Opis|Razmatrane opcije|Odabrana opcija|Razlog izbora|Posljedice odluke|Status odluke|
 |-|-|-|-|-|-|-|-|-|
-||||||||||
-||||||||||
-||||||||||
-||||||||||
-||||||||||
-||||||||||
-||||||||||
-||||||||||
+|DL-5.1|22.04.2026|Odabir JWT autentifikacije|Razmatran je način autentifikacije korisnika u sistemu.|Session-based autentifikacija; JWT autentifikacija|JWT autentifikacija|JWT omogućava stateless komunikaciju pogodnu za SPA aplikaciju.|Potrebno implementirati verifikaciju tokena i refresh mehanizam.|Usvojena|
+|DL-5.2|22.04.2026|Čuvanje access tokena|Razmatran način pohrane access tokena na frontend-u.|localStorage; sessionStorage; memorija aplikacije|Memorija aplikacije|Smanjuje rizik od XSS napada.|Token se briše nakon refresh-a stranice.|Usvojena|
+|DL-5.3|22.04.2026|Zaštita ruta na frontend-u|Razmatran način kontrole pristupa rutama.|Backend-only provjera; ProtectedRoute komponenta|ProtectedRoute komponenta|Omogućava brzu provjeru pristupa i bolji UX.|Potrebno održavati role logiku.|Usvojena|
+|DL-5.4|22.04.2026|Organizacija arhitekture sistema|Razmatran način organizacije strukture aplikacije.|Monolit bez slojeva; Layered arhitektura|Layered arhitektura|Omogućava razdvajanje odgovornosti između slojeva.|Povećava kompleksnost projekta.|Usvojena|
+|DL-5.5|22.04.2026|Pristup bazi podataka|Razmatran način komunikacije sa bazom.|Direktni SQL upiti; Repository pattern|Repository pattern|Centralizuje pristup podacima.|Potrebno održavati dodatne klase.|Usvojena|
+|DL-5.6|22.04.2026|Pokretanje baze podataka|Razmatran način pokretanja baze tokom razvoja.|Lokalna instalacija PostgreSQL; Docker Compose|Docker Compose|Omogućava standardizovano razvojno okruženje.|Zahtijeva održavanje docker konfiguracije.|Usvojena|
+|DL-5.7|22.04.2026|Frontend arhitektura|Razmatran tip frontend aplikacije.|Multi-page aplikacija; SPA aplikacija|SPA (React)|Omogućava dinamičku navigaciju bez reload-a stranice.|Potrebno upravljanje state-om aplikacije.|Usvojena|
+|DL-5.8|22.04.2026|Automatski logout korisnika|Razmatran način odjave korisnika nakon isteka sesije.|Bez automatskog logout-a; automatski logout|Automatski logout|Povećava sigurnost sistema.|Potrebno pravilno očitavati expiration vrijeme.|Usvojena|
+|DL-5.9|22.04.2026|Odabir baze podataka|Razmatran izbor relacijske baze.|MySQL; PostgreSQL; SQL Server|PostgreSQL|Dobra podrška za Docker i kompleksne relacije.|Potrebno održavanje migracija.|Usvojena|
+|DL-5.10|22.04.2026|Korištenje DTO modela|Razmatran način razmjene podataka između slojeva.|Direktni entiteti; DTO modeli|DTO modeli|Povećava sigurnost podataka.|Potrebno dodatno mapiranje objekata.|Usvojena|
+|DL-5.11|22.04.2026|Razmatranje session-based autentifikacije|Razmatrana mogućnost korištenja session-based autentifikacije.|Session-based autentifikacija; JWT autentifikacija|JWT autentifikacija|Session-based pristup bi zahtijevao server-side stanje.|Povećana složenost skaliranja.|Neusvojena|
+|DL-5.12|22.04.2026|Razmatranje localStorage za token|Razmatrana mogućnost čuvanja tokena u localStorage.|localStorage; memorija aplikacije|Memorija aplikacije|localStorage je podložan XSS napadima.|Povećani sigurnosni rizici.|Neusvojena|
+|DL-5.13|22.04.2026|Razmatranje direktnih SQL upita|Razmatrana mogućnost direktnog pristupa bazi iz kontrolera.|Direktni SQL; Repository pattern|Repository pattern|Direktni SQL otežava održavanje i testiranje.|Dupliranje koda.|Neusvojena|
 
 
 
