@@ -25,7 +25,7 @@ namespace LABsistem.Presentation.Controllers
             var response = await _authService.LoginAsync(request);
             if (response == null)
             {
-                return Unauthorized("Pogrešni kredencijali.");
+                return Unauthorized(new { Message = "Pogrešni kredencijali." });
             }
 
             return Ok(response);
@@ -38,7 +38,7 @@ namespace LABsistem.Presentation.Controllers
             var result = await _authService.RegisterAsync(request);
             if (!result.Success)
             {
-                return BadRequest(result.Message);
+                return BadRequest(new { Message = result.Message });
             }
 
             return Ok(new { Message = result.Message });
@@ -51,7 +51,7 @@ namespace LABsistem.Presentation.Controllers
             var result = await _authService.CreateUserAsync(request, uloga);
             if (!result.Success)
             {
-                return BadRequest(result.Message);
+                return BadRequest(new { Message = result.Message });
             }
 
             return Ok(new { Message = result.Message });

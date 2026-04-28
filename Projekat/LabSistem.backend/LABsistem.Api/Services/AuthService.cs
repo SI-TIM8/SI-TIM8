@@ -18,30 +18,51 @@ namespace LABsistem.Bll.Services
             _dbContext = dbContext;
             _jwtService = jwtService;
         }
-
+        
         public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request)
+{
+    var korisnik = await _dbContext.Korisnici
+        .FirstOrDefaultAsync(x => x.Username == request.Username);
+
+    if (korisnik is null) return null;
+
+    bool isPasswordValid = false;
+
+    try 
+    {
+        
+        isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, korisnik.Password);
+    }
+    catch (BCrypt.Net.SaltParseException) 
+    {
+
+        if (korisnik.Password == request.Password)
         {
-            var korisnik = await _dbContext.Korisnici
-                .FirstOrDefaultAsync(x => x.Username == request.Username);
+            isPasswordValid = true;
+            
+            
+            korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            await _dbContext.SaveChangesAsync();
+        }
+    }
 
-            if (korisnik is null || !BCrypt.Net.BCrypt.Verify(request.Password, korisnik.Password))
-            {
-                return null;
-            }
+    if (!isPasswordValid) return null;
 
-            var token = _jwtService.GenerateToken(
-                korisnik.ID.ToString(),
-                korisnik.Username,
-                korisnik.Uloga.ToString());
+    
+    var token = _jwtService.GenerateToken(
+        korisnik.ID.ToString(),
+        korisnik.Username,
+        korisnik.Uloga.ToString());
 
-            return new LoginResponseDto
-            {
-                Token = token,
+    return new LoginResponseDto
+    {
+          Token = token,
                 UserId = korisnik.ID,
                 Username = korisnik.Username,
                 Role = korisnik.Uloga.ToString()
-            };
-        }
+    };
+}
+
 
         public async Task<(bool Success, string Message)> RegisterAsync(RegisterRequestDto request)
         {

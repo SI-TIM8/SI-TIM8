@@ -100,7 +100,7 @@ function Login() {
             className={`tab-btn ${!isLogin ? 'active' : ''}`} 
             onClick={() => { setIsLogin(false); setGreska(""); setUspeh(""); }}
           >
-            Sign in
+            Sign up
           </button>
         </div>
 
