@@ -9,7 +9,7 @@ WORKDIR /src
 COPY ["LABsistem.Presentation/LABsistem.Presentation.csproj", "LABsistem.Presentation/"]
 COPY ["LABsistem.Api/LABsistem.Api.csproj", "LABsistem.Api/"]
 COPY ["LabSistem.Dal/LabSistem.Dal.csproj", "LabSistem.Dal/"]
-COPY ["LabSistem.Domain/LABsistem.Domain.csproj", "LabSistem.Domain/"]
+COPY ["LabSistem.Domain/LabSistem.Domain.csproj", "LabSistem.Domain/"]
 
 RUN dotnet restore "LABsistem.Presentation/LABsistem.Presentation.csproj"
 
