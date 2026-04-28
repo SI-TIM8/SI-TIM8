@@ -10,7 +10,7 @@
     <PackageReference Include="BCrypt.Net-Next" Version="4.1.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
     <ProjectReference Include="..\LabSistem.Dal\LabSistem.Dal.csproj" />
-    <ProjectReference Include="..\LabSistem.Domain\LabSistem.Domain.csproj" />
+    <ProjectReference Include="..\LabSistem.Domain\LABsistem.Domain.csproj" />
   </ItemGroup>
 
 </Project>
