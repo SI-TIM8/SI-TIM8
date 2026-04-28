@@ -25,19 +25,6 @@ function Korisnici() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
-  const currentUserRole = localStorage.getItem("uloga");
-
-  if (currentUserRole !== "admin") {
-    return (
-      <Layout>
-        <div className="page-header">
-          <h1>Pristup odbijen</h1>
-          <p>Samo administrator moze upravljati korisnicima.</p>
-        </div>
-      </Layout>
-    );
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);

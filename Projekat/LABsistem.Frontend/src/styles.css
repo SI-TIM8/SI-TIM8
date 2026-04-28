@@ -348,6 +348,15 @@ tbody td {
   margin-top: 16px;
 }
 
+.access-denied-card {
+  max-width: 640px;
+}
+
+.access-denied-actions {
+  display: flex;
+  margin-top: 24px;
+}
+
 .login-card .subtitle {
   color: #64748b;
   font-size: 14px;

@@ -1,50 +1,12 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import { NAVIGATION_BY_ROLE, ROLE_LABELS, getCurrentRole } from "../auth/routeAccess";
 import api from "../api/client";
-
-const NAV_PO_ULOZI = {
-  student: [
-    { label: "Kalendar termina", path: "/kalendar" },
-    { label: "Zakaži termin", path: "/zakazivanje" },
-    { label: "Moje rezervacije", path: "/rezervacije" },
-    { label: "Oprema", path: "/oprema" },
-    { label: "Moj profil", path: "/profil" },
-  ],
-  profesor: [
-    { label: "Zahtjevi studenata", path: "/zahtjevi" },
-    { label: "Lista rezervacija", path: "/rezervacije" },
-    { label: "Historija studenata", path: "/historija" },
-    { label: "Kalendar termina", path: "/kalendar" },
-    { label: "Moj profil", path: "/profil" },
-  ],
-  tehnicar: [
-    { label: "Upravljanje terminima", path: "/termini" },
-    { label: "Upravljanje opremom", path: "/oprema" },
-    { label: "Kvarovi opreme", path: "/kvarovi" },
-    { label: "Kalendar termina", path: "/kalendar" },
-    { label: "Moj profil", path: "/profil" },
-  ],
-  admin: [
-    { label: "Upravljanje korisnicima", path: "/korisnici" },
-    { label: "Objekti i kabineti", path: "/objekti" },
-    { label: "Kalendar termina", path: "/kalendar" },
-    { label: "Moj profil", path: "/profil" },
-  ],
-};
-
-const ULOGA_LABELA = {
-  student: "Student",
-  profesor: "Profesor / Asistent",
-  tehnicar: "Lab. tehničar",
-  admin: "Administrator",
-};
 
 function Layout({ children }) {
   const navigate = useNavigate();
-
-  // Čita ulogu iz localStorage (postavlja se pri prijavi)
-  const uloga = localStorage.getItem("uloga") || "student";
+  const uloga = getCurrentRole();
   const korisnik = localStorage.getItem("korisnik") || "Korisnik";
-  const navStavke = NAV_PO_ULOZI[uloga] || NAV_PO_ULOZI.student;
+  const navStavke = NAVIGATION_BY_ROLE[uloga] || NAVIGATION_BY_ROLE.student;
 
   const handleOdjava = async () => {
     try {
@@ -62,21 +24,20 @@ function Layout({ children }) {
 
   return (
     <div className="app-layout">
-      {/* Sidebar */}
       <aside className="sidebar">
         <NavLink to="/dashboard" style={{ textDecoration: "none" }}>
-        <div className="sidebar-logo">
+          <div className="sidebar-logo">
             LAB<span>sistem</span>
-            </div>
+          </div>
         </NavLink>
 
         <nav className="sidebar-nav">
-          <span className="nav-section">{ULOGA_LABELA[uloga]}</span>
+          <span className="nav-section">{ROLE_LABELS[uloga]}</span>
           {navStavke.map((stavka) => (
             <NavLink
               key={stavka.path}
               to={stavka.path}
-              className={({ isActive }) => isActive ? "active" : ""}
+              className={({ isActive }) => (isActive ? "active" : "")}
             >
               {stavka.label}
             </NavLink>
@@ -91,10 +52,7 @@ function Layout({ children }) {
         </div>
       </aside>
 
-      {/* Glavni sadržaj */}
-      <main className="main-content">
-        {children}
-      </main>
+      <main className="main-content">{children}</main>
     </div>
   );
 }
