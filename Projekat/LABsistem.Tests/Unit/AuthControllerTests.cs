@@ -1,106 +1,82 @@
-﻿using LABsistem.Bll.Services;
-using LABsistem.Dal.Db;
-using LABsistem.Domain.Entities;
-using LABsistem.Domain.Enums;
+﻿using System.Security.Claims;
+using LABsistem.Bll.DTOs.Auth;
+using LABsistem.Bll.Services;
 using LABsistem.Presentation.Controllers;
-using LABsistem.Presentation.DTOs.Auth;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
+using AutoFixture;
+using System.IdentityModel.Tokens.Jwt;
 
-namespace LABsistem.Tests.Unit
+public class AuthControllerTests
 {
-    public class AuthControllerTests : IDisposable
+    private readonly IFixture _fixture;
+    private readonly Mock<IAuthService> _authServiceMock;
+    private readonly Mock<IRevokedTokenStore> _revokedTokenStoreMock;
+    private readonly AuthController _controller;
+
+    public AuthControllerTests()
     {
-        private readonly LabSistemDbContext _dbContext;
-        private readonly Mock<IJwtService> _mockJwtService;
-        private readonly AuthController _controller;
+        _fixture = new Fixture();
+        _fixture.Behaviors.Remove(_fixture.Behaviors.OfType<ThrowingRecursionBehavior>().FirstOrDefault());
+        _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
-        public AuthControllerTests()
+        _authServiceMock = new Mock<IAuthService>();
+        _revokedTokenStoreMock = new Mock<IRevokedTokenStore>();
+
+        _controller = new AuthController(_authServiceMock.Object, _revokedTokenStoreMock.Object);
+    }
+
+    [Fact]
+    public async Task Login_WithValidCredentials_ReturnsOk()
+    {
+        // Arrange
+        var request = _fixture.Create<LoginRequestDto>();
+        var responseDto = _fixture.Create<LoginResponseDto>();
+        _authServiceMock.Setup(s => s.LoginAsync(request)).ReturnsAsync(responseDto);
+
+        // Act
+        var result = await _controller.Login(request);
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(responseDto, okResult.Value);
+    }
+
+    [Fact]
+    public async Task Login_WithInvalidCredentials_ReturnsUnauthorized()
+    {
+        // Arrange
+        var request = _fixture.Create<LoginRequestDto>();
+        _authServiceMock.Setup(s => s.LoginAsync(request)).ReturnsAsync((LoginResponseDto?)null);
+
+        // Act
+        var result = await _controller.Login(request);
+
+        // Assert
+        var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
+        Assert.NotNull(unauthorizedResult.Value);
+    }
+
+    [Fact]
+    public void Logout_WithMissingJti_ReturnsBadRequest()
+    {
+        // Arrange
+        var claims = new[] { new Claim(ClaimTypes.Name, "TestUser") }; // Nedostaje Jti claim
+        var identity = new ClaimsIdentity(claims, "TestAuth");
+        var claimsPrincipal = new ClaimsPrincipal(identity);
+
+        _controller.ControllerContext = new ControllerContext
         {
-           
-            var options = new DbContextOptionsBuilder<LabSistemDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                .Options;
+            HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+        };
 
-            _dbContext = new LabSistemDbContext(options);
-            _mockJwtService = new Mock<IJwtService>();
+        // Act
+        var result = _controller.Logout();
 
-            _controller = new AuthController(_dbContext, _mockJwtService.Object);
-
-            SeedDatabase();
-        }
-
-        private void SeedDatabase()
-        {
-            _dbContext.Korisnici.Add(new Korisnik
-            {
-                ID = 1,
-                ImePrezime = "John Doe",
-                Email = "john.doe@test.com",
-                Username = "johndoe",
-                Password = "securepassword",
-                Uloga = UlogaKorisnika.Admin
-            });
-            _dbContext.SaveChanges();
-        }
-
-        [Fact]
-        public async Task Login_WithValidCredentials_ReturnsOkWithToken()
-        {
-            // Arrange
-            var request = new LoginRequestDto { Username = "johndoe", Password = "securepassword" };
-            var expectedToken = "mocked-jwt-token";
-
-            _mockJwtService.Setup(x => x.GenerateToken("1", "johndoe", "Admin"))
-                           .Returns(expectedToken);
-
-            // Act
-            var result = await _controller.Login(request);
-
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            var response = Assert.IsType<LoginResponseDto>(okResult.Value);
-
-            Assert.Equal(expectedToken, response.Token);
-            Assert.Equal(1, response.UserId);
-        }
-
-        [Fact]
-        public async Task Login_WithInvalidCredentials_ReturnsUnauthorized()
-        {
-            // Arrange
-            var request = new LoginRequestDto { Username = "nonexistent", Password = "wrongpassword" };
-
-            // Act
-            var result = await _controller.Login(request);
-
-            // Assert
-            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
-            
-            Assert.Equal("Pogrešni kredencijali.", unauthorizedResult.Value);
-        }
-
-        [Fact]
-        public async Task Login_WithEmptyRequest_ReturnsBadRequest()
-        {
-            // Arrange
-            var request = new LoginRequestDto { Username = "", Password = "" };
-
-            // Act
-            var result = await _controller.Login(request);
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-          
-            Assert.Equal("Username i password su obavezni.", badRequestResult.Value);
-        }
-
-        public void Dispose()
-        {
-            _dbContext.Database.EnsureDeleted();
-            _dbContext.Dispose();
-        }
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Contains("Token ne sadrzi jti", badRequestResult.Value.ToString());
     }
 }

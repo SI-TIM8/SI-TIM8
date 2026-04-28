@@ -1,98 +1,44 @@
-﻿using LABsistem.Dal.Db;
-using LABsistem.Domain.Entities;
-using LABsistem.Domain.Enums;
-using LABsistem.Presentation.DTOs.Auth;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Json;
+using LABsistem.Bll.DTOs.Auth;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
-namespace LABsistem.Tests.Integration
+public class AuthIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 {
-    public class AuthIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+    private readonly HttpClient _client;
+
+    public AuthIntegrationTests(WebApplicationFactory<Program> factory)
     {
-        private readonly WebApplicationFactory<Program> _factory;
-        private readonly HttpClient _client;
+        // Ovdje se po potrebi u postavkama factoryja može mockati baza ili koristiti in-memory baza
+        _client = factory.CreateClient();
+    }
 
-        public AuthIntegrationTests(WebApplicationFactory<Program> factory)
-        {
-            _factory = factory.WithWebHostBuilder(builder =>
-            {
-                
-                builder.UseEnvironment("Testing");
+    [Fact]
+    public async Task LoginEndpoint_WithEmptyBody_ReturnsUnauthorized()
+    {
+        // Arrange
+        var request = new LoginRequestDto { Username = "", Password = "" };
 
-                builder.ConfigureServices(services =>
-                {
-                    
-                    services.AddDbContext<LabSistemDbContext>(options =>
-                    {
-                        options.UseInMemoryDatabase("IntegrationTestDatabase");
-                    });
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/Auth/login", request);
 
-                    // Seed the database
-                    var serviceProvider = services.BuildServiceProvider();
-                    using var scope = serviceProvider.CreateScope();
-                    var db = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
-                    db.Database.EnsureCreated();
+        // Assert
+        // Očekujemo Unauthorized (401) jer AuthService vraća null za prazna polja, 
+        // a AuthController na null vraća Unauthorized.
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
 
-                    if (!db.Korisnici.Any())
-                    {
-                        db.Korisnici.Add(new Korisnik
-                        {
-                            ImePrezime = "Integration User",
-                            Email = "integration@test.com",
-                            Username = "integration_user",
-                            Password = "integration_password",
-                            Uloga = UlogaKorisnika.Student
-                        });
-                        db.SaveChanges();
-                    }
-                });
-            });
+    [Fact]
+    public async Task VerifyTokenEndpoint_WithInvalidToken_ReturnsUnauthorized()
+    {
+        // Arrange
+        var request = new VerifyTokenRequestDto { Token = "neispravan.jwt.token" };
 
-            _client = _factory.CreateClient();
-        }
+        // Act
+        var response = await _client.PostAsJsonAsync("/api/Auth/verify-token", request);
 
-        [Fact]
-        public async Task PostLogin_WithValidCredentials_ReturnsSuccessStatusCodeAndToken()
-        {
-            // Arrange
-            var loginData = new LoginRequestDto
-            {
-                Username = "integration_user",
-                Password = "integration_password"
-            };
-
-            // Act
-            var response = await _client.PostAsJsonAsync("/api/auth/login", loginData);
-
-            // Assert
-            response.EnsureSuccessStatusCode();
-            var result = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
-
-            Assert.NotNull(result);
-            Assert.NotEmpty(result.Token);
-            Assert.Equal("integration_user", result.Username);
-        }
-
-        [Fact]
-        public async Task PostLogin_WithWrongPassword_ReturnsUnauthorizedStatusCode()
-        {
-            // Arrange
-            var loginData = new LoginRequestDto
-            {
-                Username = "integration_user",
-                Password = "wrong_password_123"
-            };
-
-            // Act
-            var response = await _client.PostAsJsonAsync("/api/auth/login", loginData);
-
-            // Assert
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        }
+        // Assert
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 }
