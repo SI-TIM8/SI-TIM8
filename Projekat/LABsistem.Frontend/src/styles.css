@@ -20,10 +20,160 @@ body {
   min-height: 100vh;
 }
 
-.main-content {
+.content-shell {
   flex: 1;
   margin-left: 240px;
+  min-width: 0;
+}
+
+.main-content {
   padding: 32px;
+}
+
+.topbar {
+  height: 76px;
+  padding: 0 32px;
+  background: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  backdrop-filter: blur(10px);
+}
+
+.topbar-account {
+  position: relative;
+}
+
+.topbar-account-trigger {
+  border: 1px solid #dbe3ee;
+  background: white;
+  border-radius: 999px;
+  padding: 7px 10px 7px 8px;
+  min-width: 228px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.topbar-account-trigger:hover {
+  border-color: #0f766e;
+  box-shadow: 0 8px 24px rgba(15, 118, 110, 0.08);
+  background: #fcfffe;
+}
+
+.topbar-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0f766e, #0e7490);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.topbar-account-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  flex: 1;
+}
+
+.topbar-account-meta strong {
+  font-size: 14px;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar-account-meta small {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.topbar-chevron {
+  color: #94a3b8;
+  font-size: 14px;
+  transition: transform 0.18s ease;
+}
+
+.topbar-chevron.open {
+  transform: rotate(180deg);
+}
+
+.topbar-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 260px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.16);
+  overflow: hidden;
+}
+
+.topbar-menu-header {
+  display: grid;
+  gap: 4px;
+  padding: 16px 18px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  background: linear-gradient(180deg, #fcfffe 0%, #f8fafc 100%);
+}
+
+.topbar-menu-header strong {
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.topbar-menu-header span {
+  font-size: 13px;
+  color: #64748b;
+  word-break: break-word;
+}
+
+.topbar-menu-item {
+  width: calc(100% - 16px);
+  margin: 8px;
+  border: none;
+  background: transparent;
+  color: #0f172a;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.topbar-menu-item:hover {
+  background: #f8fafc;
+}
+
+.topbar-menu-item.logout {
+  color: #b91c1c;
+}
+
+.topbar-menu-item.logout:hover {
+  background: #fff5f5;
+}
+
+.topbar-menu-divider {
+  height: 1px;
+  background: #f1f5f9;
+  margin: 0 8px;
 }
 
 /* ─── SIDEBAR ────────────────────────────────────── */
@@ -519,8 +669,36 @@ tbody td {
   color: #64748b;
 }
 
+.about-app-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.about-app-section h2 {
+  font-size: 18px;
+  margin-bottom: 14px;
+  color: #0f172a;
+}
+
+.about-app-section p {
+  margin-bottom: 0;
+  color: #475569;
+}
+
+.about-app-list {
+  padding-left: 18px;
+  color: #475569;
+  display: grid;
+  gap: 10px;
+}
+
 @media (max-width: 960px) {
   .profil-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .about-app-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -764,6 +942,38 @@ body.modal-open {
 }
 
 @media (max-width: 900px) {
+  .content-shell {
+    margin-left: 0;
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .topbar {
+    padding: 12px 16px;
+    height: auto;
+  }
+
+  .topbar-account-trigger {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .topbar-menu {
+    width: min(100vw - 32px, 260px);
+  }
+
+  .main-content {
+    padding: 24px 16px;
+  }
+
   .users-list-header {
     display: none;
   }

@@ -59,6 +59,7 @@ function Login() {
       }
       localStorage.setItem("uloga", role.toLowerCase());
       localStorage.setItem("korisnik", authenticatedUsername);
+      localStorage.setItem("korisnikEmail", usernameOrEmail.includes("@") ? usernameOrEmail : "");
 
       navigate("/dashboard");
     } catch (error) {

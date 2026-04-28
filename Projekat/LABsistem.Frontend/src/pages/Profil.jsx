@@ -113,6 +113,7 @@ function Profil() {
         username: updatedProfile.username,
       });
       localStorage.setItem("korisnik", updatedProfile.username);
+      localStorage.setItem("korisnikEmail", updatedProfile.email);
       setUspjeh(response.data.message || "Profil je uspjesno azuriran.");
     } catch (error) {
       setGreska(extractErrorMessage(error, "Doslo je do greske pri cuvanju profila."));

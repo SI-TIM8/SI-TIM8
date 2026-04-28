@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import AccessDenied from "./pages/AccessDenied";
+import AboutApp from "./pages/AboutApp";
 import Dashboard from "./pages/Dashboard";
 import Korisnici from "./pages/Korisnici";
 import Layout from "./components/Layout";
@@ -186,6 +187,14 @@ function App() {
           element={
             <ProtectedPage path="/profil">
               <Profil />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/o-aplikaciji"
+          element={
+            <ProtectedPage path="/o-aplikaciji">
+              <AboutApp />
             </ProtectedPage>
           }
         />
