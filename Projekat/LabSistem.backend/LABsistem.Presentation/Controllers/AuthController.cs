@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using LABsistem.Api.Services;
 using LABsistem.Bll.DTOs.Auth;
 using LABsistem.Bll.Services;
 using LABsistem.Domain.Enums;
@@ -29,23 +28,10 @@ namespace LABsistem.Presentation.Controllers
             var response = await _authService.LoginAsync(request);
             if (response == null)
             {
-                return Unauthorized(new { Message = "Pogrešni kredencijali." });
+                return Unauthorized(new { Message = "Pogresni kredencijali." });
             }
 
             return Ok(response);
-        }
-
-        [HttpPost("register")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Register([FromBody] RegisterRequestDto request)
-        {
-            var result = await _authService.RegisterAsync(request);
-            if (!result.Success)
-            {
-                return BadRequest(new { Message = result.Message });
-            }
-
-            return Ok(new { Message = result.Message });
         }
 
         [HttpPost("create-user")]
@@ -106,7 +92,7 @@ namespace LABsistem.Presentation.Controllers
             var authorizationHeader = Request.Headers.Authorization.ToString();
             if (string.IsNullOrWhiteSpace(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
             {
-                return BadRequest(new { Message = "Authorization token nije pronađen." });
+                return BadRequest(new { Message = "Authorization token nije pronadjen." });
             }
 
             var token = authorizationHeader["Bearer ".Length..].Trim();
@@ -115,11 +101,11 @@ namespace LABsistem.Presentation.Controllers
 
             if (string.IsNullOrWhiteSpace(jti))
             {
-                return BadRequest(new { Message = "Token ne sadrži jti." });
+                return BadRequest(new { Message = "Token ne sadrzi jti." });
             }
 
             _revokedTokenStore.Revoke(jti, jwtToken.ValidTo);
-            return Ok(new { Message = "Odjava uspješna." });
+            return Ok(new { Message = "Odjava uspjesna." });
         }
     }
 }

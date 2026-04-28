@@ -26,6 +26,12 @@ obj/
 *.log
 
 # =========================
+# Local tooling artifacts
+# =========================
+dotnet-home/
+Projekat/LabSistem.backend/package-lock.json
+
+# =========================
 # OS
 # =========================
 Thumbs.db

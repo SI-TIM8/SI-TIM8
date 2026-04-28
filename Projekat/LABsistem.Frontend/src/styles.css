@@ -335,6 +335,19 @@ tbody td {
   color: #0f172a;
 }
 
+.login-title {
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+  margin-bottom: 64px;
+  color: #0f172a;
+}
+
+.login-card form {
+  margin-top: 16px;
+}
+
 .login-card .subtitle {
   color: #64748b;
   font-size: 14px;
