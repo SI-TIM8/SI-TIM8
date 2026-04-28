@@ -18,9 +18,12 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const token = localStorage.getItem("token");
+    if (error.response?.status === 401 && token) {
       localStorage.removeItem("token");
       localStorage.removeItem("tokenExpiry");
+      localStorage.removeItem("uloga");
+      localStorage.removeItem("korisnik");
       window.location.href = "/login?sesija=istekla";
     }
     return Promise.reject(error);

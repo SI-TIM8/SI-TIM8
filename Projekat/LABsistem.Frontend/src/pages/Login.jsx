@@ -1,10 +1,23 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import api from "../api/client";
 
-const SESSION_DURATION_MS = 30 * 60 * 1000;
+function getTokenExpiry(token) {
+  try {
+    const [, payload] = token.split(".");
+    const decodedPayload = JSON.parse(atob(payload));
+    if (!decodedPayload.exp) {
+      return null;
+    }
+
+    return decodedPayload.exp * 1000;
+  } catch {
+    return null;
+  }
+}
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [greska, setGreska] = useState("");
   const navigate = useNavigate();
@@ -20,28 +33,42 @@ function Login() {
     }
   }, [navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setGreska("");
 
-    if (!email || !password) {
-      setGreska("Unesite email i lozinku.");
+    if (!username || !password) {
+      setGreska("Unesite username i lozinku.");
       return;
     }
 
-    // TODO: zamijeniti sa pravim API pozivom
-    // const response = await api.post("/korisnik/login", { email, password });
-    // const { token, uloga, ime } = response.data;
+    try {
+      const response = await api.post("/Auth/login", {
+        username,
+        password,
+      });
 
-    const mockToken = "mock-jwt-token-12345";
-    const expiry = Date.now() + SESSION_DURATION_MS;
+      const { token, role, username: authenticatedUsername } = response.data;
+      const expiry = getTokenExpiry(token);
 
-    localStorage.setItem("token", mockToken);
-    localStorage.setItem("tokenExpiry", expiry.toString());
-    localStorage.setItem("uloga", "student"); // privremeno
-    localStorage.setItem("korisnik", email.split("@")[0]);
+      localStorage.setItem("token", token);
+      if (expiry) {
+        localStorage.setItem("tokenExpiry", expiry.toString());
+      } else {
+        localStorage.removeItem("tokenExpiry");
+      }
+      localStorage.setItem("uloga", role.toLowerCase());
+      localStorage.setItem("korisnik", authenticatedUsername);
 
-    navigate("/dashboard");
+      navigate("/dashboard");
+    } catch (error) {
+      const backendMessage = error.response?.data;
+      setGreska(
+        typeof backendMessage === "string"
+          ? backendMessage
+          : "Prijava nije uspjela. Provjerite username i lozinku."
+      );
+    }
   };
 
   return (
@@ -64,13 +91,13 @@ function Login() {
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="username">Username</label>
             <input
-              id="email"
-              type="email"
-              placeholder="ime@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              type="text"
+              placeholder="Unesite username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
 
