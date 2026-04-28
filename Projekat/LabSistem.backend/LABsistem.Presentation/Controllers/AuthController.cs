@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using LABsistem.Bll.Services;
 using LABsistem.Dal.Db;
 using LABsistem.Presentation.DTOs.Auth;
@@ -14,11 +15,16 @@ namespace LABsistem.Presentation.Controllers
     {
         private readonly LabSistemDbContext _dbContext;
         private readonly IJwtService _jwtService;
+        private readonly IRevokedTokenStore _revokedTokenStore;
 
-        public AuthController(LabSistemDbContext dbContext, IJwtService jwtService)
+        public AuthController(
+            LabSistemDbContext dbContext,
+            IJwtService jwtService,
+            IRevokedTokenStore revokedTokenStore)
         {
             _dbContext = dbContext;
             _jwtService = jwtService;
+            _revokedTokenStore = revokedTokenStore;
         }
 
         [HttpPost("login")]
@@ -77,6 +83,12 @@ namespace LABsistem.Presentation.Controllers
                 return Unauthorized(new { Valid = false });
             }
 
+            var jti = principal.FindFirstValue(JwtRegisteredClaimNames.Jti);
+            if (!string.IsNullOrWhiteSpace(jti) && _revokedTokenStore.IsRevoked(jti))
+            {
+                return Unauthorized(new { Valid = false });
+            }
+
             return Ok(new
             {
                 Valid = true,
@@ -84,6 +96,29 @@ namespace LABsistem.Presentation.Controllers
                 Username = principal.FindFirstValue(ClaimTypes.Name),
                 Role = principal.FindFirstValue(ClaimTypes.Role)
             });
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            var authorizationHeader = Request.Headers.Authorization.ToString();
+            if (string.IsNullOrWhiteSpace(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
+            {
+                return BadRequest("Authorization token nije pronađen.");
+            }
+
+            var token = authorizationHeader["Bearer ".Length..].Trim();
+            var jwtToken = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            var jti = jwtToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Jti)?.Value;
+
+            if (string.IsNullOrWhiteSpace(jti))
+            {
+                return BadRequest("Token ne sadrži jti.");
+            }
+
+            _revokedTokenStore.Revoke(jti, jwtToken.ValidTo);
+            return Ok(new { Message = "Odjava uspješna." });
         }
     }
 }

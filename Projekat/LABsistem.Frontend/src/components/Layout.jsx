@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import api from "../api/client";
 
 const NAV_PO_ULOZI = {
   student: [
@@ -45,12 +46,18 @@ function Layout({ children }) {
   const korisnik = localStorage.getItem("korisnik") || "Korisnik";
   const navStavke = NAV_PO_ULOZI[uloga] || NAV_PO_ULOZI.student;
 
-  const handleOdjava = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("tokenExpiry");
-    localStorage.removeItem("uloga");
-    localStorage.removeItem("korisnik");
-    navigate("/login");
+  const handleOdjava = async () => {
+    try {
+      await api.post("/Auth/logout");
+    } catch {
+      // Client-side cleanup still happens even if the backend logout fails.
+    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("tokenExpiry");
+      localStorage.removeItem("uloga");
+      localStorage.removeItem("korisnik");
+      navigate("/login");
+    }
   };
 
   return (

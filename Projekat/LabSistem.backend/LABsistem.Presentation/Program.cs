@@ -1,4 +1,5 @@
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 using LABsistem.Bll.Models;
 using LABsistem.Bll.Services;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +18,10 @@ var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>()
 builder.Services.AddDbContext<LabSistemDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+builder.Services.AddMemoryCache();
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddSingleton<IRevokedTokenStore, InMemoryRevokedTokenStore>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -34,6 +37,22 @@ builder.Services
             ValidAudience = jwtSettings.Audience,
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            OnTokenValidated = context =>
+            {
+                var revokedTokenStore = context.HttpContext.RequestServices.GetRequiredService<IRevokedTokenStore>();
+                var jti = context.Principal?.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+
+                if (!string.IsNullOrWhiteSpace(jti) && revokedTokenStore.IsRevoked(jti))
+                {
+                    context.Fail("Token has been revoked.");
+                }
+
+                return Task.CompletedTask;
+            }
         };
     });
 
