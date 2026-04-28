@@ -89,6 +89,21 @@ namespace LABsistem.Bll.Services
             return MapProfile(korisnik);
         }
 
+        public async Task<List<UserListItemDto>> GetUsersAsync()
+        {
+            return await _dbContext.Korisnici
+                .OrderBy(x => x.ImePrezime)
+                .Select(x => new UserListItemDto
+                {
+                    UserId = x.ID,
+                    ImePrezime = x.ImePrezime,
+                    Email = x.Email,
+                    Username = x.Username,
+                    Role = x.Uloga.ToString()
+                })
+                .ToListAsync();
+        }
+
         public async Task<(bool Success, string Message, ProfileResponseDto? Profile)> UpdateProfileAsync(int userId, UpdateProfileRequestDto request)
         {
             var korisnik = await _dbContext.Korisnici
@@ -170,11 +185,6 @@ namespace LABsistem.Bll.Services
 
         public async Task<(bool Success, string Message)> CreateUserAsync(RegisterRequestDto request, UlogaKorisnika uloga)
         {
-            if (uloga != UlogaKorisnika.Profesor && uloga != UlogaKorisnika.Tehnicar)
-            {
-                return (false, "Admin moze kreirati samo Profesore ili Tehnicare.");
-            }
-
             var validationMessage = ValidateRequiredFields(request);
             if (validationMessage is not null)
             {

@@ -47,6 +47,14 @@ namespace LABsistem.Presentation.Controllers
             return Ok(new { Message = result.Message });
         }
 
+        [HttpGet("users")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetUsers()
+        {
+            var users = await _authService.GetUsersAsync();
+            return Ok(users);
+        }
+
         [HttpGet("verify")]
         [Authorize]
         public IActionResult VerifyAuthenticatedToken()
