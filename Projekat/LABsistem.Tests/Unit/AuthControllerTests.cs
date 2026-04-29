@@ -1,13 +1,13 @@
-﻿using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using AutoFixture;
 using LABsistem.Bll.DTOs.Auth;
+using LABsistem.Bll.Models;
 using LABsistem.Bll.Services;
 using LABsistem.Presentation.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Xunit;
-using AutoFixture;
-using System.IdentityModel.Tokens.Jwt;
 
 public class AuthControllerTests
 {
@@ -24,59 +24,112 @@ public class AuthControllerTests
 
         _authServiceMock = new Mock<IAuthService>();
         _revokedTokenStoreMock = new Mock<IRevokedTokenStore>();
-
         _controller = new AuthController(_authServiceMock.Object, _revokedTokenStoreMock.Object);
     }
 
     [Fact]
     public async Task Login_WithValidCredentials_ReturnsOk()
     {
-        // Arrange
         var request = _fixture.Create<LoginRequestDto>();
         var responseDto = _fixture.Create<LoginResponseDto>();
-        _authServiceMock.Setup(s => s.LoginAsync(request)).ReturnsAsync(responseDto);
 
-        // Act
+        _authServiceMock
+            .Setup(s => s.LoginAsync(request, It.IsAny<string?>(), It.IsAny<string?>()))
+            .ReturnsAsync(responseDto);
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
         var result = await _controller.Login(request);
 
-        // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(responseDto, okResult.Value);
     }
 
     [Fact]
-    public async Task Login_WithInvalidCredentials_ReturnsUnauthorized()
+    public async Task Refresh_WithInvalidRefreshToken_ReturnsUnauthorized()
     {
-        // Arrange
-        var request = _fixture.Create<LoginRequestDto>();
-        _authServiceMock.Setup(s => s.LoginAsync(request)).ReturnsAsync((LoginResponseDto?)null);
-
-        // Act
-        var result = await _controller.Login(request);
-
-        // Assert
-        var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
-        Assert.NotNull(unauthorizedResult.Value);
-    }
-
-    [Fact]
-    public void Logout_WithMissingJti_ReturnsBadRequest()
-    {
-        // Arrange
-        var claims = new[] { new Claim(ClaimTypes.Name, "TestUser") }; // Nedostaje Jti claim
-        var identity = new ClaimsIdentity(claims, "TestAuth");
-        var claimsPrincipal = new ClaimsPrincipal(identity);
+        _authServiceMock
+            .Setup(s => s.RefreshAsync("bad-refresh-token", It.IsAny<string?>(), It.IsAny<string?>()))
+            .ReturnsAsync((LoginResponseDto?)null);
 
         _controller.ControllerContext = new ControllerContext
         {
-            HttpContext = new DefaultHttpContext { User = claimsPrincipal }
+            HttpContext = new DefaultHttpContext()
         };
 
-        // Act
-        var result = _controller.Logout();
+        var result = await _controller.Refresh(new RefreshTokenRequestDto
+        {
+            RefreshToken = "bad-refresh-token"
+        });
 
-        // Assert
+        Assert.IsType<UnauthorizedObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task Logout_WithMissingJti_ReturnsBadRequest()
+    {
+        var identity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, "TestUser") }, "TestAuth");
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(identity)
+            }
+        };
+
+        var result = await _controller.Logout(new LogoutRequestDto());
+
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Contains("Token ne sadrzi jti", badRequestResult.Value.ToString());
+        Assert.Contains("Token ne sadrzi jti", badRequestResult.Value?.ToString());
+    }
+
+    [Fact]
+    public async Task Logout_WithValidTokenAndRefreshToken_RevokesAccessAndRefreshTokens()
+    {
+        var jwtService = new JwtService(new JwtSettings
+        {
+            Key = "TestSuperSecretKeyThatMustBeLongEnough123!",
+            Issuer = "TestIssuer",
+            Audience = "TestAudience",
+            ExpireMinutes = 60,
+            RefreshExpireDays = 7
+        });
+
+        var token = jwtService.GenerateToken("1", "testuser", "Admin");
+        var principal = jwtService.ValidateToken(token)!;
+        var jti = principal.FindFirstValue(JwtRegisteredClaimNames.Jti)!;
+
+        var httpContext = new DefaultHttpContext
+        {
+            User = principal
+        };
+        httpContext.Request.Headers.Authorization = $"Bearer {token}";
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = httpContext
+        };
+
+        _revokedTokenStoreMock
+            .Setup(s => s.RevokeAsync(jti, It.IsAny<DateTime>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+        _authServiceMock
+            .Setup(s => s.RevokeRefreshTokenAsync("refresh-token"))
+            .ReturnsAsync(true);
+
+        var result = await _controller.Logout(new LogoutRequestDto
+        {
+            RefreshToken = "refresh-token"
+        });
+
+        Assert.IsType<OkObjectResult>(result);
+        _revokedTokenStoreMock.Verify(
+            s => s.RevokeAsync(jti, It.IsAny<DateTime>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+        _authServiceMock.Verify(s => s.RevokeRefreshTokenAsync("refresh-token"), Times.Once);
     }
 }
