@@ -23,8 +23,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LabSistem.backend\LABsistem.Api\LABsistem.Api.csproj" />
-    <ProjectReference Include="..\LabSistem.backend\LABsistem.Dal\LABsistem.Dal.csproj" />
-    <ProjectReference Include="..\LabSistem.backend\LABsistem.Domain\LABsistem.Domain.csproj" />
+    <ProjectReference Include="..\LabSistem.backend\LabSistem.Dal\LabSistem.Dal.csproj" />
+    <ProjectReference Include="..\LabSistem.backend\LabSistem.Domain\LabSistem.Domain.csproj" />
     <ProjectReference Include="..\LabSistem.backend\LABsistem.Presentation\LABsistem.Presentation.csproj" />
   </ItemGroup>
 

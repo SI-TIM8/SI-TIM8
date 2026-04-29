@@ -2,15 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [ "chore/container-switch-in-cicd" ]
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: Projekat/LabSistem.backend
 
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +16,10 @@ jobs:
           dotnet-version: "10.0.x"
 
       - name: Restore
-        run: dotnet restore ./LABsistem.Presentation/LABsistem.Presentation.csproj
+        run: dotnet restore ./Projekat/LabSistem.backend/LabSistem.slnx
 
       - name: Build
-        run: dotnet build ./LABsistem.Presentation/LABsistem.Presentation.csproj --no-restore
+        run: dotnet build ./Projekat/LabSistem.backend/LabSistem.slnx --no-restore
+
+      - name: Test
+        run: dotnet test ./Projekat/LABsistem.Tests/LABsistem.Tests.csproj --no-build --logger "console;verbosity=normal"
