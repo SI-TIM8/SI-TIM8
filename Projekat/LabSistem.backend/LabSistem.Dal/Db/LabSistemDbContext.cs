@@ -46,6 +46,10 @@ namespace LABsistem.Dal.Db
                 .HasConversion<int>(); // Sprema Enum kao integer u bazu za US30
 
             modelBuilder.Entity<Korisnik>()
+                .Property(x => x.IsActive)
+                .HasDefaultValue(true);
+
+            modelBuilder.Entity<Korisnik>()
                 .HasIndex(x => x.Username)
                 .IsUnique();
 

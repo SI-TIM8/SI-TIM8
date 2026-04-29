@@ -2,6 +2,7 @@ const ACCESS_TOKEN_KEY = "token";
 const ACCESS_TOKEN_EXPIRY_KEY = "tokenExpiry";
 const REFRESH_TOKEN_KEY = "refreshToken";
 const REFRESH_TOKEN_EXPIRY_KEY = "refreshTokenExpiry";
+const USER_ID_KEY = "userId";
 const ROLE_KEY = "uloga";
 const USERNAME_KEY = "korisnik";
 const USER_EMAIL_KEY = "korisnikEmail";
@@ -13,6 +14,7 @@ export function clearSession() {
   localStorage.removeItem(ACCESS_TOKEN_EXPIRY_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_EXPIRY_KEY);
+  localStorage.removeItem(USER_ID_KEY);
   localStorage.removeItem(ROLE_KEY);
   localStorage.removeItem(USERNAME_KEY);
   localStorage.removeItem(USER_EMAIL_KEY);
@@ -23,8 +25,14 @@ export function persistSession(session) {
   localStorage.setItem(ACCESS_TOKEN_EXPIRY_KEY, Date.parse(session.accessTokenExpiresAtUtc).toString());
   localStorage.setItem(REFRESH_TOKEN_KEY, session.refreshToken);
   localStorage.setItem(REFRESH_TOKEN_EXPIRY_KEY, Date.parse(session.refreshTokenExpiresAtUtc).toString());
+  localStorage.setItem(USER_ID_KEY, session.userId?.toString?.() || "");
   localStorage.setItem(ROLE_KEY, session.role.toLowerCase());
   localStorage.setItem(USERNAME_KEY, session.username);
+}
+
+export function getCurrentUserId() {
+  const value = localStorage.getItem(USER_ID_KEY);
+  return value ? Number.parseInt(value, 10) : null;
 }
 
 export function getAccessToken() {

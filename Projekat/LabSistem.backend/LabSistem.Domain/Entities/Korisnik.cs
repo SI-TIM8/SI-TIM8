@@ -29,6 +29,10 @@ namespace LABsistem.Domain.Entities
         [Required, StringLength(100)]
         public string Password { get; set; }
 
+        public bool IsActive { get; set; } = true;
+
+        public DateTime? DeactivatedAt { get; set; }
+
 
         // Za RBAC (US30) 
         //[Required]

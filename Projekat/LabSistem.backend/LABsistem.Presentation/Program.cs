@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using LABsistem.Bll.Models;
 using LABsistem.Bll.Services;
@@ -54,6 +55,22 @@ builder.Services
                     revokedTokenStore.IsRevokedAsync(jti, context.HttpContext.RequestAborted).GetAwaiter().GetResult())
                 {
                     context.Fail("Token has been revoked.");
+                    return Task.CompletedTask;
+                }
+
+                var userIdClaim = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (int.TryParse(userIdClaim, out var userId))
+                {
+                    var dbContext = context.HttpContext.RequestServices.GetRequiredService<LabSistemDbContext>();
+                    var isActive = dbContext.Korisnici
+                        .Where(x => x.ID == userId)
+                        .Select(x => x.IsActive)
+                        .FirstOrDefault();
+
+                    if (!isActive)
+                    {
+                        context.Fail("User account is inactive.");
+                    }
                 }
 
                 return Task.CompletedTask;

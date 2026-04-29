@@ -76,6 +76,60 @@ namespace LABsistem.Presentation.Controllers
             return Ok(users);
         }
 
+        [HttpPut("users/{userId:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUser(int userId, [FromBody] UpdateManagedUserRequestDto request)
+        {
+            if (!TryGetCurrentUserId(out var currentUserId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var result = await _authService.UpdateUserAsync(currentUserId, userId, request);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message, User = result.User });
+        }
+
+        [HttpPost("users/{userId:int}/deactivate")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeactivateUser(int userId)
+        {
+            if (!TryGetCurrentUserId(out var currentUserId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var result = await _authService.DeactivateUserAsync(currentUserId, userId);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message, User = result.User });
+        }
+
+        [HttpPost("users/{userId:int}/activate")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ActivateUser(int userId)
+        {
+            if (!TryGetCurrentUserId(out var currentUserId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var result = await _authService.ActivateUserAsync(currentUserId, userId);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message, User = result.User });
+        }
+
         [HttpGet("verify")]
         [Authorize]
         public IActionResult VerifyAuthenticatedToken()
@@ -145,7 +199,7 @@ namespace LABsistem.Presentation.Controllers
 
         [HttpPost("verify-token")]
         [AllowAnonymous]
-        public IActionResult VerifyToken([FromBody] VerifyTokenRequestDto request)
+        public async Task<IActionResult> VerifyToken([FromBody] VerifyTokenRequestDto request)
         {
             var principal = _authService.ValidateToken(request.Token);
             if (principal is null)
@@ -153,9 +207,15 @@ namespace LABsistem.Presentation.Controllers
                 return Unauthorized(new { Valid = false });
             }
 
+            var userIdClaim = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdClaim, out var userId) || !await _authService.IsUserActiveAsync(userId))
+            {
+                return Unauthorized(new { Valid = false });
+            }
+
             var jti = principal.FindFirstValue(JwtRegisteredClaimNames.Jti);
             if (!string.IsNullOrWhiteSpace(jti) &&
-                _revokedTokenStore.IsRevokedAsync(jti).GetAwaiter().GetResult())
+                await _revokedTokenStore.IsRevokedAsync(jti))
             {
                 return Unauthorized(new { Valid = false });
             }
