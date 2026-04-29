@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "chore/container-switch-in-cicd" ]
 
 jobs:
   deploy:
@@ -12,41 +12,63 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
+      - name: Build Docker images
         run: |
           docker build \
             -f Projekat/LabSistem.backend/LABsistem.Presentation/Dockerfile \
             -t labsistem-api:latest \
             Projekat/LabSistem.backend
+          docker build \
+            -f Projekat/LABsistem.Frontend/Dockerfile \
+            -t labsistem-frontend:latest \
+            Projekat/LABsistem.Frontend
 
-      - name: Save Docker image
-        run: docker save labsistem-api:latest -o labsistem-api.tar
+      - name: Save Docker images
+        run: |
+          docker save labsistem-api:latest -o labsistem-api.tar
+          docker save labsistem-frontend:latest -o labsistem-frontend.tar
 
-      - name: Make saved image readable
-        run: chmod 644 labsistem-api.tar
+      - name: Make saved images readable
+        run: chmod 644 labsistem-api.tar labsistem-frontend.tar
 
-      - name: Copy image and compose file to server
+      - name: Copy images and compose file to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: "labsistem-api.tar,Projekat/LabSistem.backend/docker-compose.production.yml"
+          source: "labsistem-api.tar,labsistem-frontend.tar,Projekat/LabSistem.backend/docker-compose.production.yml"
           target: ${{ secrets.APP_DIR }}
 
-      - name: Load image and restart containers
+      - name: Load images and restart containers
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            set -e
             cd ${{ secrets.APP_DIR }}
 
             docker load -i labsistem-api.tar
+            docker load -i labsistem-frontend.tar
 
             cp Projekat/LabSistem.backend/docker-compose.production.yml docker-compose.prod.yml
 
-            docker compose -f docker-compose.production.yml up -d
+            if docker ps --format '{{.Names}}' | grep -Fxq labsistem-api; then
+              echo "Existing labsistem-api container detected. Recreating it with the new image."
+            else
+              echo "No running labsistem-api container detected. Starting the service."
+            fi
+
+            if docker ps --format '{{.Names}}' | grep -Fxq labsistem-frontend; then
+              echo "Existing labsistem-frontend container detected. Recreating it with the new image."
+            else
+              echo "No running labsistem-frontend container detected. Starting the service."
+            fi
+
+            docker compose -f docker-compose.prod.yml up -d db
+            docker compose -f docker-compose.prod.yml up -d --no-deps --force-recreate labsistem.api
+            docker compose -f docker-compose.prod.yml up -d --no-deps --force-recreate labsistem.frontend
 
             docker image prune -f
