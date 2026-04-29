@@ -41,26 +41,42 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
         _client = factory.CreateClient();
     }
 
-    private async Task SeedUserAsync(string username, string email, string password)
+    private async Task<int> SeedUserAsync(
+        string username,
+        string email,
+        string password,
+        UlogaKorisnika role = UlogaKorisnika.Student,
+        bool isActive = true)
     {
         using var scope = _factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
 
-        if (await context.Korisnici.AnyAsync(x => x.Username == username))
+        var existingUser = await context.Korisnici.FirstOrDefaultAsync(x => x.Username == username);
+        if (existingUser is not null)
         {
-            return;
+            existingUser.Password = BCrypt.Net.BCrypt.HashPassword(password);
+            existingUser.Email = email;
+            existingUser.Uloga = role;
+            existingUser.IsActive = isActive;
+            existingUser.DeactivatedAt = isActive ? null : DateTime.UtcNow;
+            await context.SaveChangesAsync();
+            return existingUser.ID;
         }
 
-        context.Korisnici.Add(new Korisnik
+        var user = new Korisnik
         {
             ImePrezime = "Test User",
             Email = email,
             Username = username,
             Password = BCrypt.Net.BCrypt.HashPassword(password),
-            Uloga = UlogaKorisnika.Student
-        });
+            Uloga = role,
+            IsActive = isActive,
+            DeactivatedAt = isActive ? null : DateTime.UtcNow
+        };
 
+        context.Korisnici.Add(user);
         await context.SaveChangesAsync();
+        return user.ID;
     }
 
     [Fact]
@@ -82,6 +98,24 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
         Assert.False(string.IsNullOrWhiteSpace(payload.RefreshToken));
         Assert.True(payload.AccessTokenExpiresAtUtc > DateTime.UtcNow);
         Assert.True(payload.RefreshTokenExpiresAtUtc > DateTime.UtcNow);
+    }
+
+    [Fact]
+    public async Task LoginEndpoint_WithInactiveUser_ReturnsUnauthorized()
+    {
+        await SeedUserAsync(
+            "inactiveintegration",
+            "inactive.integration@test.com",
+            "ValidPassword123!",
+            isActive: false);
+
+        var response = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "inactiveintegration",
+            Password = "ValidPassword123!"
+        });
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [Fact]
@@ -140,6 +174,73 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
         var refreshResponse = await _client.PostAsJsonAsync("/api/Auth/refresh", new RefreshTokenRequestDto
         {
             RefreshToken = loginPayload.RefreshToken
+        });
+
+        Assert.Equal(HttpStatusCode.Unauthorized, refreshResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task VerifyEndpoint_WithDeactivatedUserAccessToken_ReturnsUnauthorized()
+    {
+        var userId = await SeedUserAsync("verifyinactive", "verify.inactive@test.com", "ValidPassword123!");
+
+        var loginResponse = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "verifyinactive",
+            Password = "ValidPassword123!"
+        });
+        loginResponse.EnsureSuccessStatusCode();
+
+        var loginPayload = await loginResponse.Content.ReadFromJsonAsync<LoginResponseDto>();
+
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+            var user = await context.Korisnici.SingleAsync(x => x.ID == userId);
+            user.IsActive = false;
+            user.DeactivatedAt = DateTime.UtcNow;
+            await context.SaveChangesAsync();
+        }
+
+        using var verifyRequest = new HttpRequestMessage(HttpMethod.Get, "/api/Auth/verify");
+        verifyRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginPayload!.Token);
+
+        var verifyResponse = await _client.SendAsync(verifyRequest);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, verifyResponse.StatusCode);
+    }
+
+    [Fact]
+    public async Task DeactivateEndpoint_RevokesRefreshTokenAndBlocksRefresh()
+    {
+        await SeedUserAsync("adminintegration", "admin.integration@test.com", "AdminPassword123!", UlogaKorisnika.Admin);
+        var targetUserId = await SeedUserAsync("targetintegration", "target.integration@test.com", "ValidPassword123!");
+
+        var adminLogin = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "adminintegration",
+            Password = "AdminPassword123!"
+        });
+        adminLogin.EnsureSuccessStatusCode();
+        var adminPayload = await adminLogin.Content.ReadFromJsonAsync<LoginResponseDto>();
+
+        var targetLogin = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "targetintegration",
+            Password = "ValidPassword123!"
+        });
+        targetLogin.EnsureSuccessStatusCode();
+        var targetPayload = await targetLogin.Content.ReadFromJsonAsync<LoginResponseDto>();
+
+        using var deactivateRequest = new HttpRequestMessage(HttpMethod.Post, $"/api/Auth/users/{targetUserId}/deactivate");
+        deactivateRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", adminPayload!.Token);
+
+        var deactivateResponse = await _client.SendAsync(deactivateRequest);
+        deactivateResponse.EnsureSuccessStatusCode();
+
+        var refreshResponse = await _client.PostAsJsonAsync("/api/Auth/refresh", new RefreshTokenRequestDto
+        {
+            RefreshToken = targetPayload!.RefreshToken
         });
 
         Assert.Equal(HttpStatusCode.Unauthorized, refreshResponse.StatusCode);

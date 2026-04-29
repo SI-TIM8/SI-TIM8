@@ -4,6 +4,7 @@ using AutoFixture;
 using LABsistem.Bll.DTOs.Auth;
 using LABsistem.Bll.Models;
 using LABsistem.Bll.Services;
+using LABsistem.Domain.Enums;
 using LABsistem.Presentation.Controllers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -69,6 +70,111 @@ public class AuthControllerTests
     }
 
     [Fact]
+    public async Task UpdateUser_WithValidPayload_ReturnsOk()
+    {
+        var request = new UpdateManagedUserRequestDto
+        {
+            ImePrezime = "Novo Ime",
+            Email = "novo@test.com",
+            Username = "novouser",
+            Uloga = UlogaKorisnika.Profesor,
+            NewPassword = string.Empty
+        };
+
+        var updatedUser = new UserListItemDto
+        {
+            UserId = 2,
+            ImePrezime = request.ImePrezime,
+            Email = request.Email,
+            Username = request.Username,
+            Role = "Profesor",
+            IsActive = true,
+            Status = "Aktivan"
+        };
+
+        _authServiceMock
+            .Setup(s => s.UpdateUserAsync(1, 2, request))
+            .ReturnsAsync((true, "Korisnik je uspjesno azuriran.", updatedUser));
+
+        _controller.ControllerContext = BuildAuthorizedControllerContext(userId: 1);
+
+        var result = await _controller.UpdateUser(2, request);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Contains("Korisnik je uspjesno azuriran.", okResult.Value?.ToString());
+    }
+
+    [Fact]
+    public async Task DeactivateUser_WithValidPayload_ReturnsOk()
+    {
+        var managedUser = new UserListItemDto
+        {
+            UserId = 2,
+            ImePrezime = "Target User",
+            Email = "target@test.com",
+            Username = "targetuser",
+            Role = "Student",
+            IsActive = false,
+            Status = "Deaktiviran"
+        };
+
+        _authServiceMock
+            .Setup(s => s.DeactivateUserAsync(1, 2))
+            .ReturnsAsync((true, "Korisnik je deaktiviran.", managedUser));
+
+        _controller.ControllerContext = BuildAuthorizedControllerContext(userId: 1);
+
+        var result = await _controller.DeactivateUser(2);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Contains("Korisnik je deaktiviran.", okResult.Value?.ToString());
+    }
+
+    [Fact]
+    public async Task ActivateUser_WithValidPayload_ReturnsOk()
+    {
+        var managedUser = new UserListItemDto
+        {
+            UserId = 2,
+            ImePrezime = "Target User",
+            Email = "target@test.com",
+            Username = "targetuser",
+            Role = "Student",
+            IsActive = true,
+            Status = "Aktivan"
+        };
+
+        _authServiceMock
+            .Setup(s => s.ActivateUserAsync(1, 2))
+            .ReturnsAsync((true, "Korisnik je ponovo aktiviran.", managedUser));
+
+        _controller.ControllerContext = BuildAuthorizedControllerContext(userId: 1);
+
+        var result = await _controller.ActivateUser(2);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Contains("Korisnik je ponovo aktiviran.", okResult.Value?.ToString());
+    }
+
+    [Fact]
+    public async Task VerifyToken_WithInactiveUser_ReturnsUnauthorized()
+    {
+        var jwtService = CreateJwtService();
+        var token = jwtService.GenerateToken("3", "testuser", "Admin");
+        var principal = jwtService.ValidateToken(token);
+
+        _authServiceMock.Setup(s => s.ValidateToken(token)).Returns(principal);
+        _authServiceMock.Setup(s => s.IsUserActiveAsync(3)).ReturnsAsync(false);
+
+        var result = await _controller.VerifyToken(new VerifyTokenRequestDto
+        {
+            Token = token
+        });
+
+        Assert.IsType<UnauthorizedObjectResult>(result);
+    }
+
+    [Fact]
     public async Task Logout_WithMissingJti_ReturnsBadRequest()
     {
         var identity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, "TestUser") }, "TestAuth");
@@ -90,14 +196,7 @@ public class AuthControllerTests
     [Fact]
     public async Task Logout_WithValidTokenAndRefreshToken_RevokesAccessAndRefreshTokens()
     {
-        var jwtService = new JwtService(new JwtSettings
-        {
-            Key = "TestSuperSecretKeyThatMustBeLongEnough123!",
-            Issuer = "TestIssuer",
-            Audience = "TestAudience",
-            ExpireMinutes = 60,
-            RefreshExpireDays = 7
-        });
+        var jwtService = CreateJwtService();
 
         var token = jwtService.GenerateToken("1", "testuser", "Admin");
         var principal = jwtService.ValidateToken(token)!;
@@ -131,5 +230,34 @@ public class AuthControllerTests
             s => s.RevokeAsync(jti, It.IsAny<DateTime>(), It.IsAny<CancellationToken>()),
             Times.Once);
         _authServiceMock.Verify(s => s.RevokeRefreshTokenAsync("refresh-token"), Times.Once);
+    }
+
+    private static ControllerContext BuildAuthorizedControllerContext(int userId)
+    {
+        var identity = new ClaimsIdentity(
+        [
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            new Claim(ClaimTypes.Role, "Admin")
+        ], "TestAuth");
+
+        return new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(identity)
+            }
+        };
+    }
+
+    private static JwtService CreateJwtService()
+    {
+        return new JwtService(new JwtSettings
+        {
+            Key = "TestSuperSecretKeyThatMustBeLongEnough123!",
+            Issuer = "TestIssuer",
+            Audience = "TestAudience",
+            ExpireMinutes = 60,
+            RefreshExpireDays = 7
+        });
     }
 }
