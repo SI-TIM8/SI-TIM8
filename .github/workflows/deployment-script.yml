@@ -67,8 +67,18 @@ jobs:
               echo "No running labsistem-frontend container detected. Starting the service."
             fi
 
-            docker compose -f docker-compose.prod.yml up -d db
-            docker compose -f docker-compose.prod.yml up -d --no-deps --force-recreate labsistem.api
-            docker compose -f docker-compose.prod.yml up -d --no-deps --force-recreate labsistem.frontend
+            if docker ps -a --format '{{.Names}}' | grep -Fxq labsistem-db; then
+              echo "Existing labsistem-db container detected. Reusing it."
+              docker start labsistem-db >/dev/null 2>&1 || true
+            else
+              echo "No existing labsistem-db container detected. Creating it."
+              docker compose -f docker-compose.prod.yml up -d db
+            fi
+
+            docker rm -f labsistem-api >/dev/null 2>&1 || true
+            docker rm -f labsistem-frontend >/dev/null 2>&1 || true
+
+            docker compose -f docker-compose.prod.yml up -d --no-deps labsistem.api
+            docker compose -f docker-compose.prod.yml up -d --no-deps labsistem.frontend
 
             docker image prune -f
