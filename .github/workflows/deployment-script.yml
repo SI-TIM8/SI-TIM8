@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ "chore/container-switch-in-cicd" ]
+    branches: [ "main" ]
 
 jobs:
   deploy:
