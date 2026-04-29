@@ -81,14 +81,12 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<LabSistemDbContext>();
-        if (!app.Environment.IsEnvironment("Testing")) { 
-        context.Database.Migrate();
-        if (app.Environment.IsDevelopment())
+        if (!app.Environment.IsEnvironment("Testing"))
         {
+            context.Database.Migrate();
             await LabSistemDbSeeder.SeedDefaultUsersAsync(context);
+            Console.WriteLine("Migracije su uspjesno provjerene/primijenjene.");
         }
-        Console.WriteLine("Migracije su uspjesno provjerene/primijenjene.");
-    }
     }
     catch (Exception ex)
     {
