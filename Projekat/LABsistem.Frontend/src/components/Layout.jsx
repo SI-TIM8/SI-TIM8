@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { NAVIGATION_BY_ROLE, ROLE_LABELS, getCurrentRole } from "../auth/routeAccess";
 import api from "../api/client";
+import { clearSession, getRefreshToken } from "../auth/session";
 
 function Layout({ children }) {
   const navigate = useNavigate();
@@ -74,15 +75,13 @@ function Layout({ children }) {
 
   const handleOdjava = async () => {
     try {
-      await api.post("/Auth/logout");
+      await api.post("/Auth/logout", {
+        refreshToken: getRefreshToken(),
+      });
     } catch {
       // Client-side cleanup still happens even if the backend logout fails.
     } finally {
-      localStorage.removeItem("token");
-      localStorage.removeItem("tokenExpiry");
-      localStorage.removeItem("uloga");
-      localStorage.removeItem("korisnik");
-      localStorage.removeItem("korisnikEmail");
+      clearSession();
       navigate("/login");
     }
   };

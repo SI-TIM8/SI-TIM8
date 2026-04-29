@@ -4,7 +4,7 @@ namespace LABsistem.Bll.Services
 {
     public interface IRevokedTokenStore
     {
-        bool IsRevoked(string jti);
-        void Revoke(string jti, DateTime expiresAtUtc);
+        Task<bool> IsRevokedAsync(string jti, CancellationToken cancellationToken = default);
+        Task RevokeAsync(string jti, DateTime expiresAtUtc, CancellationToken cancellationToken = default);
     }
 }

@@ -43,6 +43,8 @@ namespace LABsistem.Domain.Entities
 
         public ICollection<KorisnikObjekat> KorisnikObjekti { get; set; }
 
+        public ICollection<RefreshToken> RefreshTokens { get; set; }
+
 
     }
 }

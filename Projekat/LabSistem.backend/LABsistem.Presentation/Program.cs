@@ -24,7 +24,7 @@ if (!builder.Environment.IsEnvironment("Testing"))
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddSingleton<IRevokedTokenStore, InMemoryRevokedTokenStore>();
+builder.Services.AddScoped<IRevokedTokenStore, DatabaseRevokedTokenStore>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services
@@ -50,7 +50,8 @@ builder.Services
                 var revokedTokenStore = context.HttpContext.RequestServices.GetRequiredService<IRevokedTokenStore>();
                 var jti = context.Principal?.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
 
-                if (!string.IsNullOrWhiteSpace(jti) && revokedTokenStore.IsRevoked(jti))
+                if (!string.IsNullOrWhiteSpace(jti) &&
+                    revokedTokenStore.IsRevokedAsync(jti, context.HttpContext.RequestAborted).GetAwaiter().GetResult())
                 {
                     context.Fail("Token has been revoked.");
                 }

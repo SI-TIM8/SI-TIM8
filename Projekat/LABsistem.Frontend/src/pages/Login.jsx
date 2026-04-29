@@ -1,20 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../api/client";
-
-function getTokenExpiry(token) {
-  try {
-    const [, payload] = token.split(".");
-    const decodedPayload = JSON.parse(atob(payload));
-    if (!decodedPayload.exp) {
-      return null;
-    }
-
-    return decodedPayload.exp * 1000;
-  } catch {
-    return null;
-  }
-}
+import { hasActiveAccessToken, persistSession } from "../auth/session";
 
 function Login() {
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
@@ -26,9 +13,7 @@ function Login() {
   const sesijaIstekla = new URLSearchParams(location.search).get("sesija") === "istekla";
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const expiry = localStorage.getItem("tokenExpiry");
-    if (token && expiry && Date.now() < Number.parseInt(expiry, 10)) {
+    if (hasActiveAccessToken()) {
       navigate("/dashboard");
     }
   }, [navigate]);
@@ -48,18 +33,10 @@ function Login() {
         password,
       });
 
-      const { token, role, username: authenticatedUsername } = response.data;
-      const expiry = getTokenExpiry(token);
-
-      localStorage.setItem("token", token);
-      if (expiry) {
-        localStorage.setItem("tokenExpiry", expiry.toString());
-      } else {
-        localStorage.removeItem("tokenExpiry");
-      }
-      localStorage.setItem("uloga", role.toLowerCase());
-      localStorage.setItem("korisnik", authenticatedUsername);
+      const { username: authenticatedUsername } = response.data;
+      persistSession(response.data);
       localStorage.setItem("korisnikEmail", usernameOrEmail.includes("@") ? usernameOrEmail : "");
+      localStorage.setItem("korisnik", authenticatedUsername);
 
       navigate("/dashboard");
     } catch (error) {

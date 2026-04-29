@@ -25,10 +25,31 @@ namespace LABsistem.Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            var response = await _authService.LoginAsync(request);
+            var response = await _authService.LoginAsync(
+                request,
+                HttpContext.Connection.RemoteIpAddress?.ToString(),
+                Request.Headers.UserAgent.ToString());
+
             if (response == null)
             {
                 return Unauthorized(new { Message = "Pogresni kredencijali." });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost("refresh")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequestDto request)
+        {
+            var response = await _authService.RefreshAsync(
+                request.RefreshToken,
+                HttpContext.Connection.RemoteIpAddress?.ToString(),
+                Request.Headers.UserAgent.ToString());
+
+            if (response is null)
+            {
+                return Unauthorized(new { Message = "Refresh token nije validan." });
             }
 
             return Ok(response);
@@ -133,7 +154,8 @@ namespace LABsistem.Presentation.Controllers
             }
 
             var jti = principal.FindFirstValue(JwtRegisteredClaimNames.Jti);
-            if (!string.IsNullOrWhiteSpace(jti) && _revokedTokenStore.IsRevoked(jti))
+            if (!string.IsNullOrWhiteSpace(jti) &&
+                _revokedTokenStore.IsRevokedAsync(jti).GetAwaiter().GetResult())
             {
                 return Unauthorized(new { Valid = false });
             }
@@ -149,7 +171,7 @@ namespace LABsistem.Presentation.Controllers
 
         [HttpPost("logout")]
         [Authorize]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout([FromBody] LogoutRequestDto? request)
         {
             var jti = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
             if (string.IsNullOrWhiteSpace(jti))
@@ -174,7 +196,13 @@ namespace LABsistem.Presentation.Controllers
             var jwtToken = tokenHandler.ReadJwtToken(token);
             var expiresAtUtc = jwtToken.ValidTo;
 
-            _revokedTokenStore.Revoke(jti, expiresAtUtc);
+            await _revokedTokenStore.RevokeAsync(jti, expiresAtUtc);
+
+            if (!string.IsNullOrWhiteSpace(request?.RefreshToken))
+            {
+                await _authService.RevokeRefreshTokenAsync(request.RefreshToken);
+            }
+
             return Ok(new { Message = "Odjava uspjesna." });
         }
 

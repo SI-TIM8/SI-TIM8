@@ -28,6 +28,8 @@ namespace LABsistem.Dal.Db
         public DbSet<Obavijest> Obavijesti { get; set; }
         public DbSet<Recenzija> Recenzije { get; set; }
         public DbSet<Historija> Historije { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<RevokedAccessToken> RevokedAccessTokens { get; set; }
 
         // Spojne tabele za Many-to-Many veze
         public DbSet<KorisnikObjekat> KorisnikObjekti { get; set; }
@@ -42,6 +44,28 @@ namespace LABsistem.Dal.Db
             modelBuilder.Entity<Korisnik>()
                 .Property(u => u.Uloga)
                 .HasConversion<int>(); // Sprema Enum kao integer u bazu za US30
+
+            modelBuilder.Entity<Korisnik>()
+                .HasIndex(x => x.Username)
+                .IsUnique();
+
+            modelBuilder.Entity<Korisnik>()
+                .HasIndex(x => x.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<RefreshToken>()
+                .HasIndex(x => x.TokenHash)
+                .IsUnique();
+
+            modelBuilder.Entity<RefreshToken>()
+                .HasOne(x => x.Korisnik)
+                .WithMany(x => x.RefreshTokens)
+                .HasForeignKey(x => x.KorisnikID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<RevokedAccessToken>()
+                .HasIndex(x => x.Jti)
+                .IsUnique();
 
             // Ovdje možeš dodati Fluent API konfiguracije za strane ključeve ako konvencije nisu dovoljne
         }

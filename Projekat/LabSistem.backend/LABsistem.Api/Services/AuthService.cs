@@ -1,10 +1,13 @@
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using LABsistem.Bll.DTOs.Auth;
+using LABsistem.Bll.Models;
 using LABsistem.Dal.Db;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 
 namespace LABsistem.Bll.Services
 {
@@ -13,14 +16,16 @@ namespace LABsistem.Bll.Services
         private static readonly Regex UsernameRegex = new("^[A-Za-z0-9]+$", RegexOptions.Compiled);
         private readonly LabSistemDbContext _dbContext;
         private readonly IJwtService _jwtService;
+        private readonly JwtSettings _jwtSettings;
 
-        public AuthService(LabSistemDbContext dbContext, IJwtService jwtService)
+        public AuthService(LabSistemDbContext dbContext, IJwtService jwtService, JwtSettings jwtSettings)
         {
             _dbContext = dbContext;
             _jwtService = jwtService;
+            _jwtSettings = jwtSettings;
         }
 
-        public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request)
+        public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, string? ipAddress = null, string? deviceInfo = null)
         {
             if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
             {
@@ -39,39 +44,73 @@ namespace LABsistem.Bll.Services
                 return null;
             }
 
-            var isPasswordValid = false;
-
-            try
-            {
-                isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, korisnik.Password);
-            }
-            catch (BCrypt.Net.SaltParseException)
-            {
-                if (korisnik.Password == request.Password)
-                {
-                    isPasswordValid = true;
-                    korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
-                    await _dbContext.SaveChangesAsync();
-                }
-            }
-
-            if (!isPasswordValid)
+            if (!VerifyPassword(korisnik, request.Password))
             {
                 return null;
             }
 
-            var token = _jwtService.GenerateToken(
-                korisnik.ID.ToString(),
-                korisnik.Username,
-                korisnik.Uloga.ToString());
-
-            return new LoginResponseDto
+            if (NeedsPasswordUpgrade(korisnik.Password))
             {
-                Token = token,
-                UserId = korisnik.ID,
-                Username = korisnik.Username,
-                Role = korisnik.Uloga.ToString()
-            };
+                korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            return await IssueSessionAsync(korisnik, ipAddress, deviceInfo);
+        }
+
+        public async Task<LoginResponseDto?> RefreshAsync(string refreshToken, string? ipAddress = null, string? deviceInfo = null)
+        {
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return null;
+            }
+
+            var refreshTokenHash = HashToken(refreshToken);
+
+            var existingRefreshToken = await _dbContext.RefreshTokens
+                .Include(x => x.Korisnik)
+                .FirstOrDefaultAsync(x => x.TokenHash == refreshTokenHash);
+
+            if (existingRefreshToken is null ||
+                existingRefreshToken.RevokedAtUtc.HasValue ||
+                existingRefreshToken.ExpiresAtUtc <= DateTime.UtcNow)
+            {
+                return null;
+            }
+
+            existingRefreshToken.LastUsedAtUtc = DateTime.UtcNow;
+            existingRefreshToken.RevokedAtUtc = DateTime.UtcNow;
+
+            var response = await IssueSessionAsync(
+                existingRefreshToken.Korisnik,
+                ipAddress,
+                deviceInfo,
+                existingRefreshToken);
+
+            return response;
+        }
+
+        public async Task<bool> RevokeRefreshTokenAsync(string refreshToken)
+        {
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return false;
+            }
+
+            var refreshTokenHash = HashToken(refreshToken);
+
+            var existingRefreshToken = await _dbContext.RefreshTokens
+                .FirstOrDefaultAsync(x => x.TokenHash == refreshTokenHash);
+
+            if (existingRefreshToken is null || existingRefreshToken.RevokedAtUtc.HasValue)
+            {
+                return false;
+            }
+
+            existingRefreshToken.RevokedAtUtc = DateTime.UtcNow;
+            existingRefreshToken.LastUsedAtUtc = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
         public async Task<ProfileResponseDto?> GetProfileAsync(int userId)
@@ -200,12 +239,15 @@ namespace LABsistem.Bll.Services
                 return (false, "Lozinka mora imati najmanje 8 znakova, jedno veliko slovo, jedan broj i jedan specijalni znak.");
             }
 
-            if (await _dbContext.Korisnici.AnyAsync(x => x.Username == request.Username))
+            var normalizedUsername = request.Username.Trim();
+            var normalizedEmail = request.Email.Trim();
+
+            if (await _dbContext.Korisnici.AnyAsync(x => x.Username == normalizedUsername))
             {
                 return (false, "Username je vec zauzet.");
             }
 
-            if (await _dbContext.Korisnici.AnyAsync(x => x.Email == request.Email))
+            if (await _dbContext.Korisnici.AnyAsync(x => x.Email == normalizedEmail))
             {
                 return (false, "Email je vec zauzet.");
             }
@@ -213,8 +255,8 @@ namespace LABsistem.Bll.Services
             var noviKorisnik = new Korisnik
             {
                 ImePrezime = request.ImePrezime.Trim(),
-                Email = request.Email.Trim(),
-                Username = request.Username.Trim(),
+                Email = normalizedEmail,
+                Username = normalizedUsername,
                 Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Uloga = uloga
             };
@@ -230,11 +272,97 @@ namespace LABsistem.Bll.Services
             return _jwtService.ValidateToken(token);
         }
 
+        private async Task<LoginResponseDto> IssueSessionAsync(
+            Korisnik korisnik,
+            string? ipAddress,
+            string? deviceInfo,
+            RefreshToken? previousRefreshToken = null)
+        {
+            var accessToken = _jwtService.GenerateToken(
+                korisnik.ID.ToString(),
+                korisnik.Username,
+                korisnik.Uloga.ToString());
+
+            var accessTokenExpiresAtUtc = _jwtService.GetTokenExpirationUtc(accessToken);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+            var refreshTokenExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtSettings.RefreshExpireDays);
+            var refreshTokenHash = HashToken(refreshToken);
+
+            if (previousRefreshToken is not null)
+            {
+                previousRefreshToken.ReplacedByTokenHash = refreshTokenHash;
+            }
+
+            _dbContext.RefreshTokens.Add(new RefreshToken
+            {
+                KorisnikID = korisnik.ID,
+                TokenHash = refreshTokenHash,
+                CreatedAtUtc = DateTime.UtcNow,
+                ExpiresAtUtc = refreshTokenExpiresAtUtc,
+                LastUsedAtUtc = DateTime.UtcNow,
+                DeviceInfo = TrimToLength(deviceInfo, 256),
+                IpAddress = TrimToLength(ipAddress, 64)
+            });
+
+            await _dbContext.SaveChangesAsync();
+
+            return new LoginResponseDto
+            {
+                Token = accessToken,
+                AccessTokenExpiresAtUtc = accessTokenExpiresAtUtc,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiresAtUtc = refreshTokenExpiresAtUtc,
+                UserId = korisnik.ID,
+                Username = korisnik.Username,
+                Role = korisnik.Uloga.ToString()
+            };
+        }
+
+        private static string HashToken(string value)
+        {
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(value.Trim()));
+            return Convert.ToHexString(bytes);
+        }
+
+        private static string? TrimToLength(string? value, int maxLength)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
+            var trimmedValue = value.Trim();
+            return trimmedValue.Length <= maxLength
+                ? trimmedValue
+                : trimmedValue[..maxLength];
+        }
+
+        private static bool NeedsPasswordUpgrade(string storedPassword)
+        {
+            try
+            {
+                BCrypt.Net.BCrypt.InterrogateHash(storedPassword);
+                return false;
+            }
+            catch (BCrypt.Net.HashInformationException)
+            {
+                return true;
+            }
+            catch (BCrypt.Net.SaltParseException)
+            {
+                return true;
+            }
+        }
+
         private static bool VerifyPassword(Korisnik korisnik, string password)
         {
             try
             {
                 return BCrypt.Net.BCrypt.Verify(password, korisnik.Password);
+            }
+            catch (BCrypt.Net.HashInformationException)
+            {
+                return korisnik.Password == password;
             }
             catch (BCrypt.Net.SaltParseException)
             {

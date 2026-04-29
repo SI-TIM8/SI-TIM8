@@ -12,21 +12,21 @@ namespace LABsistem.Bll.Services
             _cache = cache;
         }
 
-        public bool IsRevoked(string jti)
+        public Task<bool> IsRevokedAsync(string jti, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(jti))
             {
-                return false;
+                return Task.FromResult(false);
             }
 
-            return _cache.TryGetValue(GetCacheKey(jti), out _);
+            return Task.FromResult(_cache.TryGetValue(GetCacheKey(jti), out _));
         }
 
-        public void Revoke(string jti, DateTime expiresAtUtc)
+        public Task RevokeAsync(string jti, DateTime expiresAtUtc, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(jti))
             {
-                return;
+                return Task.CompletedTask;
             }
 
             var effectiveExpiration = expiresAtUtc <= DateTime.UtcNow
@@ -40,6 +40,8 @@ namespace LABsistem.Bll.Services
                 {
                     AbsoluteExpiration = effectiveExpiration
                 });
+
+            return Task.CompletedTask;
         }
 
         private static string GetCacheKey(string jti) => $"revoked-token:{jti}";
