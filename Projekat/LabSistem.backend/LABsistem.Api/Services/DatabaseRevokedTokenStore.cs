@@ -33,29 +33,51 @@ namespace LABsistem.Bll.Services
                 return;
             }
 
+            var revokedAtUtc = DateTime.UtcNow;
+            var normalizedExpiresAtUtc = expiresAtUtc <= revokedAtUtc
+                ? revokedAtUtc.AddMinutes(1)
+                : expiresAtUtc;
+
             var existingToken = await _dbContext.RevokedAccessTokens
                 .FirstOrDefaultAsync(x => x.Jti == jti, cancellationToken);
 
             if (existingToken is not null)
             {
-                existingToken.RevokedAtUtc = DateTime.UtcNow;
-                existingToken.ExpiresAtUtc = expiresAtUtc <= DateTime.UtcNow
-                    ? DateTime.UtcNow.AddMinutes(1)
-                    : expiresAtUtc;
+                existingToken.RevokedAtUtc = revokedAtUtc;
+                existingToken.ExpiresAtUtc = normalizedExpiresAtUtc;
                 await _dbContext.SaveChangesAsync(cancellationToken);
                 return;
             }
 
-            _dbContext.RevokedAccessTokens.Add(new RevokedAccessToken
+            var revokedToken = new RevokedAccessToken
             {
                 Jti = jti,
-                RevokedAtUtc = DateTime.UtcNow,
-                ExpiresAtUtc = expiresAtUtc <= DateTime.UtcNow
-                    ? DateTime.UtcNow.AddMinutes(1)
-                    : expiresAtUtc
-            });
+                RevokedAtUtc = revokedAtUtc,
+                ExpiresAtUtc = normalizedExpiresAtUtc
+            };
 
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            _dbContext.RevokedAccessTokens.Add(revokedToken);
+
+            try
+            {
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException)
+            {
+                _dbContext.Entry(revokedToken).State = EntityState.Detached;
+
+                existingToken = await _dbContext.RevokedAccessTokens
+                    .FirstOrDefaultAsync(x => x.Jti == jti, cancellationToken);
+
+                if (existingToken is null)
+                {
+                    throw;
+                }
+
+                existingToken.RevokedAtUtc = revokedAtUtc;
+                existingToken.ExpiresAtUtc = normalizedExpiresAtUtc;
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
         }
     }
 }
