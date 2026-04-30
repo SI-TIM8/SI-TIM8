@@ -621,6 +621,10 @@ tbody td {
   gap: 24px;
 }
 
+.profil-password-modal {
+  width: min(520px, 100%);
+}
+
 .profil-actions {
   display: flex;
   gap: 12px;

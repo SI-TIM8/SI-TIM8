@@ -248,9 +248,10 @@ namespace LABsistem.Bll.Services
 
             if (!string.IsNullOrWhiteSpace(request.NewPassword))
             {
-                if (!IsPasswordValid(request.NewPassword))
+                var passwordValidationMessage = ValidatePassword(request.NewPassword);
+                if (passwordValidationMessage is not null)
                 {
-                    return (false, "Lozinka mora imati najmanje 8 znakova.", null);
+                    return (false, passwordValidationMessage, null);
                 }
 
                 korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
@@ -348,9 +349,10 @@ namespace LABsistem.Bll.Services
                 return (false, "Trenutna lozinka nije ispravna.");
             }
 
-            if (!IsPasswordValid(request.NewPassword))
+            var passwordValidationMessage = ValidatePassword(request.NewPassword);
+            if (passwordValidationMessage is not null)
             {
-                return (false, "Lozinka mora imati najmanje 8 znakova.");
+                return (false, passwordValidationMessage);
             }
 
             korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
@@ -367,9 +369,10 @@ namespace LABsistem.Bll.Services
                 return (false, validationMessage);
             }
 
-            if (!IsPasswordValid(request.Password))
+            var passwordValidationMessage = ValidatePassword(request.Password);
+            if (passwordValidationMessage is not null)
             {
-                return (false, "Lozinka mora imati najmanje 8 znakova.");
+                return (false, passwordValidationMessage);
             }
 
             var normalizedUsername = request.Username.Trim();
@@ -646,15 +649,25 @@ namespace LABsistem.Bll.Services
             return null;
         }
 
-        private static bool IsPasswordValid(string password)
+        private static string? ValidatePassword(string password)
         {
             if (string.IsNullOrWhiteSpace(password))
             {
-                return false;
+                return "Lozinka je obavezna.";
             }
 
             var normalizedPassword = password.Trim();
-            return normalizedPassword.Length >= 8 && normalizedPassword.Length <= 64;
+            if (normalizedPassword.Length < 8)
+            {
+                return "Lozinka mora imati najmanje 8 znakova.";
+            }
+
+            if (normalizedPassword.Length > 64)
+            {
+                return "Lozinka moze imati najvise 64 karaktera.";
+            }
+
+            return null;
         }
 
         private static bool IsEmailValid(string email)
