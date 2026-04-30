@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Net.Mail;
+using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
 using LABsistem.Bll.DTOs.Auth;
@@ -67,7 +68,36 @@ namespace LABsistem.Bll.Services
                 return null;
             }
 
+            var now = DateTime.UtcNow;
             var refreshTokenHash = HashToken(refreshToken);
+            var useTransactionalRefreshRotation = _dbContext.Database.IsRelational();
+
+            if (useTransactionalRefreshRotation)
+            {
+                await using var transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+
+                var refreshResult = await TryRefreshSessionAsync(refreshTokenHash, now, ipAddress, deviceInfo);
+                if (refreshResult is null)
+                {
+                    await transaction.RollbackAsync();
+                    return null;
+                }
+
+                await transaction.CommitAsync();
+                return refreshResult;
+            }
+
+            return await TryRefreshSessionAsync(refreshTokenHash, now, ipAddress, deviceInfo);
+        }
+
+        private async Task<LoginResponseDto?> TryRefreshSessionAsync(
+            string refreshTokenHash,
+            DateTime now,
+            string? ipAddress,
+            string? deviceInfo)
+        {
+            var trimmedIpAddress = TrimToLength(ipAddress, 64);
+            var trimmedDeviceInfo = TrimToLength(deviceInfo, 256);
 
             var existingRefreshToken = await _dbContext.RefreshTokens
                 .Include(x => x.Korisnik)
@@ -75,27 +105,55 @@ namespace LABsistem.Bll.Services
 
             if (existingRefreshToken is null ||
                 existingRefreshToken.RevokedAtUtc.HasValue ||
-                existingRefreshToken.ExpiresAtUtc <= DateTime.UtcNow)
+                existingRefreshToken.ExpiresAtUtc <= now)
             {
                 return null;
             }
 
             if (!existingRefreshToken.Korisnik.IsActive)
             {
-                existingRefreshToken.LastUsedAtUtc = DateTime.UtcNow;
-                existingRefreshToken.RevokedAtUtc ??= DateTime.UtcNow;
-                await _dbContext.SaveChangesAsync();
+                await RevokeRefreshTokenRecordAsync(existingRefreshToken.ID, now);
                 return null;
             }
 
-            existingRefreshToken.LastUsedAtUtc = DateTime.UtcNow;
-            existingRefreshToken.RevokedAtUtc = DateTime.UtcNow;
+            var accessToken = _jwtService.GenerateToken(
+                existingRefreshToken.Korisnik.ID.ToString(),
+                existingRefreshToken.Korisnik.Username,
+                existingRefreshToken.Korisnik.Uloga.ToString());
+            var accessTokenExpiresAtUtc = _jwtService.GetTokenExpirationUtc(accessToken);
+            var newRefreshToken = _jwtService.GenerateRefreshToken();
+            var newRefreshTokenExpiresAtUtc = now.AddDays(_jwtSettings.RefreshExpireDays);
+            var newRefreshTokenHash = HashToken(newRefreshToken);
 
-            return await IssueSessionAsync(
-                existingRefreshToken.Korisnik,
-                ipAddress,
-                deviceInfo,
-                existingRefreshToken);
+            var revoked = await RevokeRefreshTokenRecordAsync(existingRefreshToken.ID, now, newRefreshTokenHash);
+            if (!revoked)
+            {
+                return null;
+            }
+
+            _dbContext.RefreshTokens.Add(new RefreshToken
+            {
+                KorisnikID = existingRefreshToken.Korisnik.ID,
+                TokenHash = newRefreshTokenHash,
+                CreatedAtUtc = now,
+                ExpiresAtUtc = newRefreshTokenExpiresAtUtc,
+                LastUsedAtUtc = now,
+                DeviceInfo = trimmedDeviceInfo,
+                IpAddress = trimmedIpAddress
+            });
+
+            await _dbContext.SaveChangesAsync();
+
+            return new LoginResponseDto
+            {
+                Token = accessToken,
+                AccessTokenExpiresAtUtc = accessTokenExpiresAtUtc,
+                RefreshToken = newRefreshToken,
+                RefreshTokenExpiresAtUtc = newRefreshTokenExpiresAtUtc,
+                UserId = existingRefreshToken.Korisnik.ID,
+                Username = existingRefreshToken.Korisnik.Username,
+                Role = existingRefreshToken.Korisnik.Uloga.ToString()
+            };
         }
 
         public async Task<bool> RevokeRefreshTokenAsync(string refreshToken)
@@ -117,6 +175,43 @@ namespace LABsistem.Bll.Services
 
             existingRefreshToken.RevokedAtUtc = DateTime.UtcNow;
             existingRefreshToken.LastUsedAtUtc = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        private async Task<bool> RevokeRefreshTokenRecordAsync(int refreshTokenId, DateTime now, string? replacedByTokenHash = null)
+        {
+            if (_dbContext.Database.IsRelational())
+            {
+                var query = _dbContext.RefreshTokens
+                    .Where(x => x.ID == refreshTokenId && !x.RevokedAtUtc.HasValue);
+
+                var affectedRows = string.IsNullOrWhiteSpace(replacedByTokenHash)
+                    ? await query.ExecuteUpdateAsync(setters => setters
+                        .SetProperty(x => x.LastUsedAtUtc, now)
+                        .SetProperty(x => x.RevokedAtUtc, now))
+                    : await query.ExecuteUpdateAsync(setters => setters
+                        .SetProperty(x => x.LastUsedAtUtc, now)
+                        .SetProperty(x => x.RevokedAtUtc, now)
+                        .SetProperty(x => x.ReplacedByTokenHash, replacedByTokenHash));
+
+                return affectedRows == 1;
+            }
+
+            var trackedRefreshToken = await _dbContext.RefreshTokens.FirstOrDefaultAsync(x => x.ID == refreshTokenId);
+            if (trackedRefreshToken is null || trackedRefreshToken.RevokedAtUtc.HasValue)
+            {
+                return false;
+            }
+
+            trackedRefreshToken.LastUsedAtUtc = now;
+            trackedRefreshToken.RevokedAtUtc = now;
+
+            if (!string.IsNullOrWhiteSpace(replacedByTokenHash))
+            {
+                trackedRefreshToken.ReplacedByTokenHash = replacedByTokenHash;
+            }
+
             await _dbContext.SaveChangesAsync();
             return true;
         }

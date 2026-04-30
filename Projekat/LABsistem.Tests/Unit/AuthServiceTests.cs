@@ -214,6 +214,45 @@ public class AuthServiceTests
     }
 
     [Fact]
+    public async Task RefreshAsync_WithAlreadyRotatedRefreshToken_ReturnsNullOnSecondUse()
+    {
+        using var context = GetInMemoryDbContext();
+        const string rawPassword = "RefreshReplay123!";
+
+        var korisnik = BuildUser(
+            "RefreshReplayUser",
+            "refresh.replay@test.com",
+            BCrypt.Net.BCrypt.HashPassword(rawPassword));
+
+        context.Korisnici.Add(korisnik);
+        await context.SaveChangesAsync();
+
+        _jwtServiceMock.SetupSequence(x => x.GenerateToken(korisnik.ID.ToString(), korisnik.Username, korisnik.Uloga.ToString()))
+            .Returns("access-token-1")
+            .Returns("access-token-2");
+        _jwtServiceMock.SetupSequence(x => x.GetTokenExpirationUtc(It.IsAny<string>()))
+            .Returns(new DateTime(2030, 1, 1, 12, 0, 0, DateTimeKind.Utc))
+            .Returns(new DateTime(2030, 1, 1, 13, 0, 0, DateTimeKind.Utc));
+        _jwtServiceMock.SetupSequence(x => x.GenerateRefreshToken())
+            .Returns("refresh-token-1")
+            .Returns("refresh-token-2");
+
+        var service = CreateService(context);
+
+        var loginResponse = await service.LoginAsync(new LoginRequestDto
+        {
+            Username = korisnik.Username,
+            Password = rawPassword
+        });
+
+        var firstRefresh = await service.RefreshAsync(loginResponse!.RefreshToken, "127.0.0.1", "RefreshAgent");
+        var secondRefresh = await service.RefreshAsync(loginResponse.RefreshToken, "127.0.0.1", "RefreshAgent");
+
+        Assert.NotNull(firstRefresh);
+        Assert.Null(secondRefresh);
+    }
+
+    [Fact]
     public async Task RefreshAsync_WithInactiveUser_ReturnsNullAndRevokesToken()
     {
         using var context = GetInMemoryDbContext();
