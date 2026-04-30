@@ -571,13 +571,15 @@ tbody td {
 
 .profil-layout {
   display: grid;
-  grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+  grid-template-columns: minmax(320px, 360px) minmax(0, 1fr);
   gap: 24px;
+  align-items: stretch;
 }
 
 .profil-summary-card {
   text-align: center;
-  height: fit-content;
+  min-height: 100%;
+  padding: 28px 28px 30px;
 }
 
 .profil-summary-card h2 {
@@ -615,10 +617,14 @@ tbody td {
   color: #475569;
 }
 
-.profil-content {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+.profil-main-card {
+  min-height: 100%;
+}
+
+.profil-activity-card {
+  grid-column: 1 / -1;
+  margin-bottom: 18px;
+  padding-bottom: 30px;
 }
 
 .profil-password-modal {

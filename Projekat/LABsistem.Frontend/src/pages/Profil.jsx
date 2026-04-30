@@ -367,7 +367,6 @@ function Profil() {
     <Layout>
       <div className="page-header">
         <h1>Moj profil</h1>
-        <p>Pregledajte i azurirajte podatke svog korisnickog naloga.</p>
       </div>
 
       <div className="profil-layout">
@@ -388,117 +387,115 @@ function Profil() {
           </div>
         </div>
 
-        <div className="profil-content">
-          <div className="card">
-            <h2 style={{ fontSize: 16, marginBottom: 20 }}>Osnovni podaci</h2>
+        <div className="card profil-main-card">
+          <h2 style={{ fontSize: 16, marginBottom: 20 }}>Osnovni podaci</h2>
 
-            {uspjeh && <p className="form-success">{uspjeh}</p>}
-            {greska && <p className="form-error">{greska}</p>}
+          {uspjeh && <p className="form-success">{uspjeh}</p>}
+          {greska && <p className="form-error">{greska}</p>}
 
-            <form onSubmit={handleSacuvaj} noValidate>
-              <div className="form-group">
-                <label htmlFor="imePrezime">Ime i prezime</label>
-                <input
-                  id="imePrezime"
-                  name="imePrezime"
-                  type="text"
-                  value={osnovniPodaci.imePrezime}
-                  onChange={handleOsnovniPodaciChange}
-                  onBlur={handleProfileBlur}
-                  minLength={FULL_NAME_MIN_LENGTH}
-                  maxLength={FULL_NAME_MAX_LENGTH}
-                  className={profileTouched.imePrezime || profileSubmitted ? (profileErrors.imePrezime ? "input-error" : "") : ""}
-                />
-                {(profileTouched.imePrezime || profileSubmitted) && profileErrors.imePrezime && (
-                  <p className="field-error">{profileErrors.imePrezime}</p>
-                )}
-              </div>
+          <form onSubmit={handleSacuvaj} noValidate>
+            <div className="form-group">
+              <label htmlFor="imePrezime">Ime i prezime</label>
+              <input
+                id="imePrezime"
+                name="imePrezime"
+                type="text"
+                value={osnovniPodaci.imePrezime}
+                onChange={handleOsnovniPodaciChange}
+                onBlur={handleProfileBlur}
+                minLength={FULL_NAME_MIN_LENGTH}
+                maxLength={FULL_NAME_MAX_LENGTH}
+                className={profileTouched.imePrezime || profileSubmitted ? (profileErrors.imePrezime ? "input-error" : "") : ""}
+              />
+              {(profileTouched.imePrezime || profileSubmitted) && profileErrors.imePrezime && (
+                <p className="field-error">{profileErrors.imePrezime}</p>
+              )}
+            </div>
 
-              <div className="form-group">
-                <label htmlFor="email">Email adresa</label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={osnovniPodaci.email}
-                  onChange={handleOsnovniPodaciChange}
-                  onBlur={handleProfileBlur}
-                  minLength={EMAIL_MIN_LENGTH}
-                  maxLength={EMAIL_MAX_LENGTH}
-                  className={profileTouched.email || profileSubmitted ? (profileErrors.email ? "input-error" : "") : ""}
-                />
-                {(profileTouched.email || profileSubmitted) && profileErrors.email && (
-                  <p className="field-error">{profileErrors.email}</p>
-                )}
-              </div>
+            <div className="form-group">
+              <label htmlFor="email">Email adresa</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                value={osnovniPodaci.email}
+                onChange={handleOsnovniPodaciChange}
+                onBlur={handleProfileBlur}
+                minLength={EMAIL_MIN_LENGTH}
+                maxLength={EMAIL_MAX_LENGTH}
+                className={profileTouched.email || profileSubmitted ? (profileErrors.email ? "input-error" : "") : ""}
+              />
+              {(profileTouched.email || profileSubmitted) && profileErrors.email && (
+                <p className="field-error">{profileErrors.email}</p>
+              )}
+            </div>
 
-              <div className="form-group">
-                <label htmlFor="username">Korisnicko ime</label>
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  value={osnovniPodaci.username}
-                  onChange={handleOsnovniPodaciChange}
-                  onBlur={handleProfileBlur}
-                  inputMode="text"
-                  minLength={USERNAME_MIN_LENGTH}
-                  maxLength={USERNAME_MAX_LENGTH}
-                  pattern="[A-Za-z0-9]+"
-                  title="Koristite samo slova i brojeve, bez razmaka."
-                  className={profileTouched.username || profileSubmitted ? (profileErrors.username ? "input-error" : "") : ""}
-                />
-                {(profileTouched.username || profileSubmitted) && profileErrors.username && (
-                  <p className="field-error">{profileErrors.username}</p>
-                )}
-              </div>
+            <div className="form-group">
+              <label htmlFor="username">Korisničko ime</label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                value={osnovniPodaci.username}
+                onChange={handleOsnovniPodaciChange}
+                onBlur={handleProfileBlur}
+                inputMode="text"
+                minLength={USERNAME_MIN_LENGTH}
+                maxLength={USERNAME_MAX_LENGTH}
+                pattern="[A-Za-z0-9]+"
+                title="Koristite samo slova i brojeve, bez razmaka."
+                className={profileTouched.username || profileSubmitted ? (profileErrors.username ? "input-error" : "") : ""}
+              />
+              {(profileTouched.username || profileSubmitted) && profileErrors.username && (
+                <p className="field-error">{profileErrors.username}</p>
+              )}
+            </div>
 
-              <div className="form-group">
-                <label>Uloga</label>
-                <input
-                  type="text"
-                  value={prikazanaUloga}
-                  disabled
-                  style={{ background: "#f8fafc", color: "#94a3b8", cursor: "not-allowed" }}
-                />
-              </div>
+            <div className="form-group">
+              <label>Uloga</label>
+              <input
+                type="text"
+                value={prikazanaUloga}
+                disabled
+                style={{ background: "#f8fafc", color: "#94a3b8", cursor: "not-allowed" }}
+              />
+            </div>
 
-              <div className="profil-actions">
-                <button className="button" type="submit" disabled={savingProfile || profileFormInvalid}>
-                  {savingProfile ? "Cuvanje..." : "Sačuvaj"}
-                </button>
-                <button
-                  className="button sekundarno"
-                  type="button"
-                  onClick={() => setShowPasswordModal(true)}
-                >
-                  Promijeni lozinku
-                </button>
-              </div>
-            </form>
-          </div>
+            <div className="profil-actions">
+              <button className="button" type="submit" disabled={savingProfile || profileFormInvalid}>
+                {savingProfile ? "Cuvanje..." : "Sačuvaj"}
+              </button>
+              <button
+                className="button sekundarno"
+                type="button"
+                onClick={() => setShowPasswordModal(true)}
+              >
+                Promijeni lozinku
+              </button>
+            </div>
+          </form>
+        </div>
 
-          <div className="card">
-            <h2 style={{ fontSize: 16, marginBottom: 20 }}>Nedavna aktivnost</h2>
-            {profil.recentActivities?.length ? (
-              <div className="activity-list">
-                {profil.recentActivities.map((activity, index) => (
-                  <div key={`${activity.title}-${index}`} className="activity-item">
-                    <div className="activity-dot" />
-                    <div>
-                      <strong>{activity.title}</strong>
-                      <p>{activity.description}</p>
-                      <span>{activity.meta}</span>
-                    </div>
+        <div className="card profil-activity-card">
+          <h2 style={{ fontSize: 16, marginBottom: 20 }}>Nedavna aktivnost</h2>
+          {profil.recentActivities?.length ? (
+            <div className="activity-list">
+              {profil.recentActivities.map((activity, index) => (
+                <div key={`${activity.title}-${index}`} className="activity-item">
+                  <div className="activity-dot" />
+                  <div>
+                    <strong>{activity.title}</strong>
+                    <p>{activity.description}</p>
+                    <span>{activity.meta}</span>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p style={{ color: "#64748b" }}>
-                Trenutno nema zabiljezene aktivnosti za prikaz.
-              </p>
-            )}
-          </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p style={{ color: "#64748b" }}>
+              Trenutno nema zabiljezene aktivnosti za prikaz.
+            </p>
+          )}
         </div>
       </div>
 
