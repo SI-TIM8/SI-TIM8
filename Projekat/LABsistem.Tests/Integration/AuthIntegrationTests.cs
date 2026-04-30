@@ -247,6 +247,81 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
     }
 
     [Fact]
+    public async Task UpdateProfileEndpoint_WithValidPayload_UpdatesProfileData()
+    {
+        await SeedUserAsync("profileintegration", "profile.integration@test.com", "ValidPassword123!");
+
+        var loginResponse = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "profileintegration",
+            Password = "ValidPassword123!"
+        });
+        loginResponse.EnsureSuccessStatusCode();
+        var loginPayload = await loginResponse.Content.ReadFromJsonAsync<LoginResponseDto>();
+
+        using var updateRequest = new HttpRequestMessage(HttpMethod.Put, "/api/Auth/profile")
+        {
+            Content = JsonContent.Create(new UpdateProfileRequestDto
+            {
+                ImePrezime = "Profile Integration Updated",
+                Email = "profile.updated@test.com",
+                Username = "profileupdated"
+            })
+        };
+        updateRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginPayload!.Token);
+
+        var updateResponse = await _client.SendAsync(updateRequest);
+
+        updateResponse.EnsureSuccessStatusCode();
+        var payload = await updateResponse.Content.ReadAsStringAsync();
+        Assert.Contains("Profil je uspjesno azuriran.", payload);
+        Assert.Contains("profileupdated", payload);
+    }
+
+    [Fact]
+    public async Task ChangePasswordEndpoint_WithValidPayload_AllowsLoginWithNewPassword()
+    {
+        await SeedUserAsync("changepasswordintegration", "change.password@test.com", "ValidPassword123!");
+
+        var loginResponse = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "changepasswordintegration",
+            Password = "ValidPassword123!"
+        });
+        loginResponse.EnsureSuccessStatusCode();
+        var loginPayload = await loginResponse.Content.ReadFromJsonAsync<LoginResponseDto>();
+
+        using var changePasswordRequest = new HttpRequestMessage(HttpMethod.Post, "/api/Auth/change-password")
+        {
+            Content = JsonContent.Create(new ChangePasswordRequestDto
+            {
+                CurrentPassword = "ValidPassword123!",
+                NewPassword = "NovaValidna123!",
+                ConfirmPassword = "NovaValidna123!"
+            })
+        };
+        changePasswordRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginPayload!.Token);
+
+        var changePasswordResponse = await _client.SendAsync(changePasswordRequest);
+        changePasswordResponse.EnsureSuccessStatusCode();
+
+        var oldLoginResponse = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "changepasswordintegration",
+            Password = "ValidPassword123!"
+        });
+
+        var newLoginResponse = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "changepasswordintegration",
+            Password = "NovaValidna123!"
+        });
+
+        Assert.Equal(HttpStatusCode.Unauthorized, oldLoginResponse.StatusCode);
+        newLoginResponse.EnsureSuccessStatusCode();
+    }
+
+    [Fact]
     public async Task VerifyTokenEndpoint_WithInvalidToken_ReturnsUnauthorized()
     {
         var response = await _client.PostAsJsonAsync("/api/Auth/verify-token", new VerifyTokenRequestDto

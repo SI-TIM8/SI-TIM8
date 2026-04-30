@@ -311,6 +311,29 @@ public class AuthServiceTests
     }
 
     [Fact]
+    public async Task UpdateProfileAsync_WithEmailOverMaxLength_ReturnsFalse()
+    {
+        using var context = GetInMemoryDbContext();
+
+        var user = BuildUser("ProfileUser123", "profile.user@test.com", BCrypt.Net.BCrypt.HashPassword("Valid123!"));
+        context.Korisnici.Add(user);
+        await context.SaveChangesAsync();
+
+        var service = CreateService(context);
+        var tooLongEmail = $"{new string('a', 246)}@test.com";
+
+        var result = await service.UpdateProfileAsync(user.ID, new UpdateProfileRequestDto
+        {
+            ImePrezime = "Profile User",
+            Email = tooLongEmail,
+            Username = "ProfileUser123"
+        });
+
+        Assert.False(result.Success);
+        Assert.Equal("Email moze imati najvise 254 karaktera.", result.Message);
+    }
+
+    [Fact]
     public async Task UpdateUserAsync_WithCurrentUser_ReturnsFalse()
     {
         using var context = GetInMemoryDbContext();
@@ -492,6 +515,55 @@ public class AuthServiceTests
     }
 
     [Fact]
+    public async Task ChangePasswordAsync_WithPasswordOverMaxLength_ReturnsFalse()
+    {
+        using var context = GetInMemoryDbContext();
+        const string currentPassword = "CurrentPassword123!";
+        var user = BuildUser("PasswordUser", "password.user@test.com", BCrypt.Net.BCrypt.HashPassword(currentPassword));
+        context.Korisnici.Add(user);
+        await context.SaveChangesAsync();
+
+        var service = CreateService(context);
+        var tooLongPassword = new string('A', 65);
+
+        var result = await service.ChangePasswordAsync(user.ID, new ChangePasswordRequestDto
+        {
+            CurrentPassword = currentPassword,
+            NewPassword = tooLongPassword,
+            ConfirmPassword = tooLongPassword
+        });
+
+        Assert.False(result.Success);
+        Assert.Equal("Lozinka moze imati najvise 64 karaktera.", result.Message);
+    }
+
+    [Fact]
+    public async Task ChangePasswordAsync_WithValidPassword_UpdatesStoredHash()
+    {
+        using var context = GetInMemoryDbContext();
+        const string currentPassword = "CurrentPassword123!";
+        const string newPassword = "NewPassword123!";
+        var user = BuildUser("PasswordUpdateUser", "password.update@test.com", BCrypt.Net.BCrypt.HashPassword(currentPassword));
+        context.Korisnici.Add(user);
+        await context.SaveChangesAsync();
+
+        var service = CreateService(context);
+
+        var result = await service.ChangePasswordAsync(user.ID, new ChangePasswordRequestDto
+        {
+            CurrentPassword = currentPassword,
+            NewPassword = newPassword,
+            ConfirmPassword = newPassword
+        });
+
+        Assert.True(result.Success);
+
+        var updatedUser = await context.Korisnici.FindAsync(user.ID);
+        Assert.NotNull(updatedUser);
+        Assert.True(BCrypt.Net.BCrypt.Verify(newPassword, updatedUser.Password));
+    }
+
+    [Fact]
     public async Task CreateUserAsync_WithInvalidPassword_ReturnsFalse()
     {
         using var context = GetInMemoryDbContext();
@@ -528,7 +600,7 @@ public class AuthServiceTests
         var result = await service.CreateUserAsync(request, UlogaKorisnika.Student);
 
         Assert.False(result.Success);
-        Assert.Equal("Lozinka mora imati najmanje 8 znakova.", result.Message);
+        Assert.Equal("Lozinka moze imati najvise 64 karaktera.", result.Message);
     }
 
     [Fact]
