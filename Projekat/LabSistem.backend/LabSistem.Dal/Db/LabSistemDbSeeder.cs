@@ -72,7 +72,6 @@ namespace LABsistem.Dal.Db
                 existingUser.Username = user.Username;
                 existingUser.Password = user.Password;
                 existingUser.Uloga = user.Uloga;
-                existingUser.IsActive = true;
                 existingUser.DeactivatedAt = null;
             }
 

@@ -1,3 +1,5 @@
+using System;
+
 namespace LABsistem.Bll.DTOs.Auth
 {
     public class ProfileResponseDto
@@ -7,7 +9,7 @@ namespace LABsistem.Bll.DTOs.Auth
         public string Email { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
-        public bool IsActive { get; set; }
+        public DateTime? DeactivatedAt { get; set; }
         public string Status { get; set; } = string.Empty;
         public List<RecentActivityDto> RecentActivities { get; set; } = new();
     }

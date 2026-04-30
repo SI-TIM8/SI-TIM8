@@ -88,7 +88,7 @@ public class AuthControllerTests
             Email = request.Email,
             Username = request.Username,
             Role = "Profesor",
-            IsActive = true,
+            DeactivatedAt = null,
             Status = "Aktivan"
         };
 
@@ -114,7 +114,7 @@ public class AuthControllerTests
             Email = "target@test.com",
             Username = "targetuser",
             Role = "Student",
-            IsActive = false,
+            DeactivatedAt = DateTime.UtcNow,
             Status = "Deaktiviran"
         };
 
@@ -140,7 +140,7 @@ public class AuthControllerTests
             Email = "target@test.com",
             Username = "targetuser",
             Role = "Student",
-            IsActive = true,
+            DeactivatedAt = null,
             Status = "Aktivan"
         };
 

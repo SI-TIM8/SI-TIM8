@@ -29,8 +29,6 @@ namespace LABsistem.Domain.Entities
         [Required, StringLength(64, MinimumLength = 8)]
         public string Password { get; set; }
 
-        public bool IsActive { get; set; } = true;
-
         public DateTime? DeactivatedAt { get; set; }
 
 

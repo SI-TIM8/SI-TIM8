@@ -77,8 +77,12 @@ function getRoleLabel(role) {
   return ROLE_LABELS[role] || role;
 }
 
+function isUserActive(user) {
+  return !user?.deactivatedAt;
+}
+
 function getUserStatusLabel(user) {
-  return user?.isActive ? "Aktivan" : "Deaktiviran";
+  return isUserActive(user) ? "Aktivan" : "Deaktiviran";
 }
 
 function validateUserForm(formState, modalMode) {
@@ -296,11 +300,11 @@ function Korisnici() {
       return "Ne mozete deaktivirati svoj nalog.";
     }
 
-    if (user.role === "Admin" && user.isActive) {
+    if (user.role === "Admin" && isUserActive(user)) {
       return "Prvo uklonite administratorsku ulogu prije deaktivacije korisnika.";
     }
 
-    return user.isActive ? "Deaktiviraj korisnika" : "Aktiviraj korisnika";
+    return isUserActive(user) ? "Deaktiviraj korisnika" : "Aktiviraj korisnika";
   }
 
   function shouldShowFieldError(fieldName) {
@@ -452,7 +456,7 @@ function Korisnici() {
   }
 
   function handleDeactivateOrActivate(user) {
-    if (user.isActive) {
+    if (isUserActive(user)) {
       openConfirm("deactivate", { user });
       return;
     }
@@ -469,8 +473,8 @@ function Korisnici() {
 
       const statusMatches =
         statusFilter === "all" ||
-        (statusFilter === "active" && user.isActive) ||
-        (statusFilter === "inactive" && !user.isActive);
+        (statusFilter === "active" && isUserActive(user)) ||
+        (statusFilter === "inactive" && !isUserActive(user));
 
       const searchMatches =
         !normalizedSearch ||
@@ -630,11 +634,12 @@ function Korisnici() {
               {filteredUsers.map((user) => {
                 const selfUser = isCurrentUser(user);
                 const editDisabled = selfUser;
-                const deactivateDisabled = selfUser || (user.role === "Admin" && user.isActive);
+                const activeUser = isUserActive(user);
+                const deactivateDisabled = selfUser || (user.role === "Admin" && activeUser);
 
                 return (
                   <div
-                    className={`users-list-row users-list-item${user.isActive ? "" : " is-muted"}`}
+                    className={`users-list-row users-list-item${activeUser ? "" : " is-muted"}`}
                     key={user.userId}
                   >
                     <span>{user.imePrezime}</span>
@@ -646,7 +651,7 @@ function Korisnici() {
                       </span>
                     </span>
                     <span>
-                      <span className={`badge ${user.isActive ? "zeleno" : "crveno"}`}>
+                      <span className={`badge ${activeUser ? "zeleno" : "crveno"}`}>
                         {getUserStatusLabel(user)}
                       </span>
                     </span>
@@ -664,13 +669,13 @@ function Korisnici() {
                         </button>
                         <button
                           type="button"
-                          className={`users-action-btn ${user.isActive ? "warn" : "success"}`}
+                          className={`users-action-btn ${activeUser ? "warn" : "success"}`}
                           title={getDeactivateTooltip(user)}
                           disabled={deactivateDisabled}
                           onClick={() => handleDeactivateOrActivate(user)}
                         >
-                          <span aria-hidden="true">{user.isActive ? "⛔" : "↺"}</span>
-                          {user.isActive ? "Deaktiviraj" : "Aktiviraj"}
+                          <span aria-hidden="true">{activeUser ? "⛔" : "↺"}</span>
+                          {activeUser ? "Deaktiviraj" : "Aktiviraj"}
                         </button>
                       </div>
                     </span>

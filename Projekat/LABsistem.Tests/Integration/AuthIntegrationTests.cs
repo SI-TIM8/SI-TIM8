@@ -57,7 +57,6 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
             existingUser.Password = BCrypt.Net.BCrypt.HashPassword(password);
             existingUser.Email = email;
             existingUser.Uloga = role;
-            existingUser.IsActive = isActive;
             existingUser.DeactivatedAt = isActive ? null : DateTime.UtcNow;
             await context.SaveChangesAsync();
             return existingUser.ID;
@@ -70,7 +69,6 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
             Username = username,
             Password = BCrypt.Net.BCrypt.HashPassword(password),
             Uloga = role,
-            IsActive = isActive,
             DeactivatedAt = isActive ? null : DateTime.UtcNow
         };
 
@@ -197,7 +195,6 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
         {
             var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
             var user = await context.Korisnici.SingleAsync(x => x.ID == userId);
-            user.IsActive = false;
             user.DeactivatedAt = DateTime.UtcNow;
             await context.SaveChangesAsync();
         }

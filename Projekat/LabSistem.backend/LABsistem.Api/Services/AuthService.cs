@@ -42,7 +42,7 @@ namespace LABsistem.Bll.Services
                     x.Username == korisnickiIdentifikator ||
                     x.Email == korisnickiIdentifikator);
 
-            if (korisnik is null || !korisnik.IsActive)
+            if (korisnik is null || korisnik.DeactivatedAt.HasValue)
             {
                 return null;
             }
@@ -110,7 +110,7 @@ namespace LABsistem.Bll.Services
                 return null;
             }
 
-            if (!existingRefreshToken.Korisnik.IsActive)
+            if (existingRefreshToken.Korisnik.DeactivatedAt.HasValue)
             {
                 await RevokeRefreshTokenRecordAsync(existingRefreshToken.ID, now);
                 return null;
@@ -220,7 +220,7 @@ namespace LABsistem.Bll.Services
         {
             return await _dbContext.Korisnici
                 .Where(x => x.ID == userId)
-                .Select(x => x.IsActive)
+                .Select(x => x.DeactivatedAt == null)
                 .FirstOrDefaultAsync();
         }
 
@@ -235,8 +235,8 @@ namespace LABsistem.Bll.Services
                     Email = x.Email,
                     Username = x.Username,
                     Role = x.Uloga.ToString(),
-                    IsActive = x.IsActive,
-                    Status = x.IsActive ? "Aktivan" : "Deaktiviran"
+                    DeactivatedAt = x.DeactivatedAt,
+                    Status = x.DeactivatedAt == null ? "Aktivan" : "Deaktiviran"
                 })
                 .FirstOrDefaultAsync();
 
@@ -260,8 +260,8 @@ namespace LABsistem.Bll.Services
                     Email = x.Email,
                     Username = x.Username,
                     Role = x.Uloga.ToString(),
-                    IsActive = x.IsActive,
-                    Status = x.IsActive ? "Aktivan" : "Deaktiviran"
+                    DeactivatedAt = x.DeactivatedAt,
+                    Status = x.DeactivatedAt == null ? "Aktivan" : "Deaktiviran"
                 })
                 .ToListAsync();
         }
@@ -370,12 +370,11 @@ namespace LABsistem.Bll.Services
                 return (false, "Korisnik nije pronadjen.", null);
             }
 
-            if (korisnik.IsActive)
+            if (!korisnik.DeactivatedAt.HasValue)
             {
                 return (false, "Korisnik je vec aktivan.", null);
             }
 
-            korisnik.IsActive = true;
             korisnik.DeactivatedAt = null;
 
             await _dbContext.SaveChangesAsync();
@@ -399,7 +398,7 @@ namespace LABsistem.Bll.Services
                 return (false, "Korisnik nije pronadjen.", null);
             }
 
-            if (!korisnik.IsActive)
+            if (korisnik.DeactivatedAt.HasValue)
             {
                 return (false, "Korisnik je vec deaktiviran.", null);
             }
@@ -409,7 +408,6 @@ namespace LABsistem.Bll.Services
                 return (false, "Prvo uklonite administratorsku ulogu prije deaktivacije korisnika.", null);
             }
 
-            korisnik.IsActive = false;
             korisnik.DeactivatedAt = DateTime.UtcNow;
             RevokeUserRefreshTokens(korisnik.RefreshTokens);
 
@@ -490,7 +488,6 @@ namespace LABsistem.Bll.Services
                 Username = normalizedUsername,
                 Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Uloga = uloga,
-                IsActive = true,
                 DeactivatedAt = null
             };
 
@@ -569,8 +566,8 @@ namespace LABsistem.Bll.Services
                 Email = korisnik.Email,
                 Username = korisnik.Username,
                 Role = korisnik.Uloga.ToString(),
-                IsActive = korisnik.IsActive,
-                Status = korisnik.IsActive ? "Aktivan" : "Deaktiviran"
+                DeactivatedAt = korisnik.DeactivatedAt,
+                Status = korisnik.DeactivatedAt == null ? "Aktivan" : "Deaktiviran"
             };
         }
 

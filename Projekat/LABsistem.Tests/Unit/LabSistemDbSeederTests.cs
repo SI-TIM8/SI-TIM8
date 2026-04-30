@@ -27,7 +27,6 @@ public class LabSistemDbSeederTests
                 Username = "admin",
                 Password = BCrypt.Net.BCrypt.HashPassword("staraadminlozinka"),
                 Uloga = UlogaKorisnika.Student,
-                IsActive = false,
                 DeactivatedAt = DateTime.UtcNow
             },
             new Korisnik
@@ -37,7 +36,6 @@ public class LabSistemDbSeederTests
                 Username = "profesor",
                 Password = BCrypt.Net.BCrypt.HashPassword("staraprofesorlozinka"),
                 Uloga = UlogaKorisnika.Student,
-                IsActive = false,
                 DeactivatedAt = DateTime.UtcNow
             },
             new Korisnik
@@ -47,7 +45,6 @@ public class LabSistemDbSeederTests
                 Username = "adminkonflikt",
                 Password = BCrypt.Net.BCrypt.HashPassword("konfliktadmin"),
                 Uloga = UlogaKorisnika.Tehnicar,
-                IsActive = false,
                 DeactivatedAt = DateTime.UtcNow
             },
             new Korisnik
@@ -57,7 +54,6 @@ public class LabSistemDbSeederTests
                 Username = "profesorkonflikt",
                 Password = BCrypt.Net.BCrypt.HashPassword("konfliktprofesor"),
                 Uloga = UlogaKorisnika.Admin,
-                IsActive = false,
                 DeactivatedAt = DateTime.UtcNow
             });
 
@@ -75,7 +71,6 @@ public class LabSistemDbSeederTests
         Assert.Equal("Admin Korisnik", admin.ImePrezime);
         Assert.Equal("admin@labsistem.local", admin.Email);
         Assert.Equal(UlogaKorisnika.Admin, admin.Uloga);
-        Assert.True(admin.IsActive);
         Assert.Null(admin.DeactivatedAt);
         Assert.True(BCrypt.Net.BCrypt.Verify("admin123", admin.Password));
 
@@ -83,7 +78,6 @@ public class LabSistemDbSeederTests
         Assert.Equal("Profesor Korisnik", profesor.ImePrezime);
         Assert.Equal("profesor@labsistem.local", profesor.Email);
         Assert.Equal(UlogaKorisnika.Profesor, profesor.Uloga);
-        Assert.True(profesor.IsActive);
         Assert.Null(profesor.DeactivatedAt);
         Assert.True(BCrypt.Net.BCrypt.Verify("profesor123", profesor.Password));
 

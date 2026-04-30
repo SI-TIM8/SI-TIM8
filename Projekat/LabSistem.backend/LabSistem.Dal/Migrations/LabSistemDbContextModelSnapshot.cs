@@ -142,11 +142,6 @@ namespace LabSistem.Dal.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
-                    b.Property<bool>("IsActive")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasMaxLength(64)

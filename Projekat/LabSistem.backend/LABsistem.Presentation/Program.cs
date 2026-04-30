@@ -66,12 +66,12 @@ builder.Services
                 }
 
                 var dbContext = context.HttpContext.RequestServices.GetRequiredService<LabSistemDbContext>();
-                var isActive = await dbContext.Korisnici
+                var userState = await dbContext.Korisnici
                     .Where(x => x.ID == userId)
-                    .Select(x => (bool?)x.IsActive)
+                    .Select(x => new { x.DeactivatedAt })
                     .FirstOrDefaultAsync(context.HttpContext.RequestAborted);
 
-                if (isActive != true)
+                if (userState is null || userState.DeactivatedAt.HasValue)
                 {
                     context.Fail("User account is inactive.");
                 }

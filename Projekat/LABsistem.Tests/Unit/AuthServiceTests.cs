@@ -57,7 +57,6 @@ public class AuthServiceTests
             .With(k => k.Email, email)
             .With(k => k.Password, password)
             .With(k => k.Uloga, role)
-            .With(k => k.IsActive, isActive)
             .With(k => k.DeactivatedAt, isActive ? null : DateTime.UtcNow)
             .With(k => k.RefreshTokens, new List<RefreshToken>())
             .Create();
@@ -280,7 +279,6 @@ public class AuthServiceTests
             Password = rawPassword
         });
 
-        korisnik.IsActive = false;
         korisnik.DeactivatedAt = DateTime.UtcNow;
         await context.SaveChangesAsync();
 
@@ -488,7 +486,6 @@ public class AuthServiceTests
 
         var updatedUser = await context.Korisnici.FindAsync(targetUser.ID);
         Assert.NotNull(updatedUser);
-        Assert.False(updatedUser.IsActive);
         Assert.NotNull(updatedUser.DeactivatedAt);
 
         var storedToken = await context.RefreshTokens.SingleAsync();
@@ -549,7 +546,6 @@ public class AuthServiceTests
 
         var updatedUser = await context.Korisnici.FindAsync(targetUser.ID);
         Assert.NotNull(updatedUser);
-        Assert.True(updatedUser.IsActive);
         Assert.Null(updatedUser.DeactivatedAt);
     }
 
