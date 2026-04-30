@@ -1,5 +1,4 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import AccessDenied from "./pages/AccessDenied";
 import AboutApp from "./pages/AboutApp";
 import Dashboard from "./pages/Dashboard";
@@ -8,9 +7,7 @@ import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Profil from "./pages/Profil";
 import { ALLOWED_ROLES_BY_ROUTE, getCurrentRole } from "./auth/routeAccess";
-import { clearSession, getAccessToken, getAccessTokenExpiry, hasActiveAccessToken } from "./auth/session";
-
-const UPOZORENJE_MS = 5 * 60 * 1000;
+import { clearSession, hasActiveAccessToken } from "./auth/session";
 
 function ZasticenaRuta({ children, allowedRoles }) {
   const location = useLocation();
@@ -32,53 +29,6 @@ function ZasticenaRuta({ children, allowedRoles }) {
   }
 
   return children;
-}
-
-function SesijaTimer() {
-  const navigate = useNavigate();
-  const [upozorenje, setUpozorenje] = useState(false);
-  const [preostaloSekundi, setPreostaloSekundi] = useState(null);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const token = getAccessToken();
-      const expiry = getAccessTokenExpiry();
-
-      if (!token || !expiry) {
-        setUpozorenje(false);
-        setPreostaloSekundi(null);
-        return;
-      }
-
-      const preostalo = expiry - Date.now();
-
-      if (preostalo <= 0) {
-        clearInterval(interval);
-        clearSession();
-        navigate("/login?sesija=istekla", { replace: true });
-      } else if (preostalo <= UPOZORENJE_MS) {
-        setUpozorenje(true);
-        setPreostaloSekundi(Math.floor(preostalo / 1000));
-      } else {
-        setUpozorenje(false);
-        setPreostaloSekundi(null);
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, [navigate]);
-
-  if (!upozorenje) {
-    return null;
-  }
-
-  return (
-    <div className="sesija-upozorenje">
-      Sesija istice za <strong>{preostaloSekundi}</strong> sekundi.
-    </div>
-  );
 }
 
 function PlaceholderStranica({ naslov, opis }) {
@@ -108,7 +58,6 @@ function ProtectedPage({ path, children }) {
 function App() {
   return (
     <BrowserRouter>
-      <SesijaTimer />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
