@@ -17,17 +17,19 @@
 
 ---
 
-### USER STORY – Brisanje korisnika
+### USER STORY – Deaktivacija i aktivacija korisnika
 **ID storyja:** US02  
-**Naziv storyja:** Brisanje korisnika  
-**Opis:** Kao administrator, želim da brišem korisnike, kako bi se smanjio broj korisnika koji ne koriste sistem.  
-**Poslovna vrijednost:** Održavanje ažurirane i sigurne baze korisnika.  
+**Naziv storyja:** Deaktivacija i aktivacija korisnika  
+**Opis:** Kao administrator, želim deaktivirati korisnike koji više ne koriste sistem i po potrebi ih ponovo aktivirati, kako bi se baza održavala ažurnom bez gubitka historije i povezanih podataka.  
+**Poslovna vrijednost:** Održavanje ažurne i sigurne baze korisnika uz očuvanje historije i relacija u sistemu.  
 **Prioritet:** High  
 **Veze:** US01  
 **Acceptance Criteria:** 1. Prikaz liste svih korisnika.
-2. Dugme za brisanje korisnika pored svakog unosa.
-3. Potvrda brisanja (Confirmation dialog).
-4. Korisnik je trajno uklonjen iz sistema.  
+2. Dugme za deaktivaciju korisnika pored svakog aktivnog unosa.
+3. Potvrda deaktivacije (confirmation dialog).
+4. Deaktivirani korisnik se više ne može prijaviti u sistem.
+5. Podaci korisnika i povezana historija ostaju sačuvani.
+6. Deaktivirani korisnik može biti ponovo aktiviran kroz admin panel.  
 **Sprint:** 6   
 **Veza sa Product Backlogom:** 21
 

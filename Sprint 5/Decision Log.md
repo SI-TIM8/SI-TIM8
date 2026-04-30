@@ -15,6 +15,4 @@
 |DL-5.11|22.04.2026|Razmatranje session-based autentifikacije|Razmatrana mogućnost korištenja session-based autentifikacije.|Session-based autentifikacija; JWT autentifikacija|JWT autentifikacija|Session-based pristup bi zahtijevao server-side stanje.|Povećana složenost skaliranja.|Neusvojena|
 |DL-5.12|22.04.2026|Razmatranje localStorage za token|Razmatrana mogućnost čuvanja tokena u localStorage.|localStorage; memorija aplikacije|Memorija aplikacije|localStorage je podložan XSS napadima.|Povećani sigurnosni rizici.|Neusvojena|
 |DL-5.13|22.04.2026|Razmatranje direktnih SQL upita|Razmatrana mogućnost direktnog pristupa bazi iz kontrolera.|Direktni SQL; Repository pattern|Repository pattern|Direktni SQL otežava održavanje i testiranje.|Dupliranje koda.|Neusvojena|
-
-
-
+|DL-5.14|30.04.2026|Soft delete korisnika kroz deaktivaciju|Razmatran je način uklanjanja korisnika iz aktivne upotrebe sistema.|Trajno brisanje korisnika; soft delete kroz deaktivaciju i ponovnu aktivaciju|Soft delete kroz deaktivaciju i aktivaciju|Očuvava historiju, relacije i sigurnosna pravila vezana za sesije i pristup sistemu.|Korisnici se ne brišu trajno; stanje korisnika vodi se preko `DeactivatedAt` timestampa, a deaktivirani korisnici ne mogu login, refresh niti pristup zaštićenim endpointima.|Usvojena|
