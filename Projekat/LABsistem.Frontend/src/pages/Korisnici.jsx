@@ -31,6 +31,14 @@ const INITIAL_FORM_STATE = {
   uloga: "2",
 };
 
+const INITIAL_TOUCHED_STATE = {
+  imePrezime: false,
+  email: false,
+  username: false,
+  uloga: false,
+  newPassword: false,
+};
+
 function extractErrorMessage(error, fallbackMessage) {
   const responseData = error?.response?.data;
 
@@ -49,6 +57,14 @@ function isValidUsername(value) {
   return /^[A-Za-z0-9]+$/.test(value);
 }
 
+function isValidFullName(value) {
+  return /^\p{L}+(?:\s+\p{L}+)*$/u.test(value);
+}
+
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
 function getRoleKey(role) {
   return (role || "").toLowerCase();
 }
@@ -65,6 +81,64 @@ function getUserStatusLabel(user) {
   return user?.isActive ? "Aktivan" : "Deaktiviran";
 }
 
+function validateUserForm(formState, modalMode) {
+  const errors = {};
+  const fullName = formState.imePrezime.trim();
+  const email = formState.email.trim();
+  const username = formState.username.trim();
+  const password = formState.newPassword;
+
+  if (!fullName) {
+    errors.imePrezime = "Ime i prezime je obavezno";
+  } else if (fullName.length < 2) {
+    errors.imePrezime = "Ime mora imati najmanje 2 karaktera";
+  } else if (fullName.length > 100) {
+    errors.imePrezime = "Ime i prezime moze imati najvise 100 karaktera";
+  } else if (!isValidFullName(fullName)) {
+    errors.imePrezime = "Dozvoljena su samo slova i razmaci";
+  }
+
+  if (!email) {
+    errors.email = "Email adresa je obavezna";
+  } else if (email.length < 5) {
+    errors.email = "Email mora imati najmanje 5 karaktera";
+  } else if (email.length > 254) {
+    errors.email = "Email moze imati najvise 254 karaktera";
+  } else if (!isValidEmail(email)) {
+    errors.email = "Email nije ispravan";
+  }
+
+  if (!username) {
+    errors.username = "Korisnicko ime je obavezno";
+  } else if (username.length < 3) {
+    errors.username = "Korisnicko ime mora imati najmanje 3 karaktera";
+  } else if (username.length > 30) {
+    errors.username = "Korisnicko ime moze imati najvise 30 karaktera";
+  } else if (!isValidUsername(username)) {
+    errors.username = "Dozvoljena su samo slova i brojevi bez razmaka";
+  }
+
+  if (!formState.uloga || !ROLE_OPTIONS.some((role) => role.value === formState.uloga)) {
+    errors.uloga = "Uloga je obavezna";
+  }
+
+  if (modalMode === "create") {
+    if (!password.trim()) {
+      errors.newPassword = "Lozinka je obavezna";
+    } else if (password.trim().length < 8) {
+      errors.newPassword = "Lozinka mora imati najmanje 8 karaktera";
+    } else if (password.trim().length > 64) {
+      errors.newPassword = "Lozinka moze imati najvise 64 karaktera";
+    }
+  } else if (password.trim() && password.trim().length < 8) {
+    errors.newPassword = "Lozinka mora imati najmanje 8 karaktera";
+  } else if (password.trim() && password.trim().length > 64) {
+    errors.newPassword = "Lozinka moze imati najvise 64 karaktera";
+  }
+
+  return errors;
+}
+
 function Korisnici() {
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -76,6 +150,7 @@ function Korisnici() {
   const [editingUser, setEditingUser] = useState(null);
   const [savingUser, setSavingUser] = useState(false);
   const [formState, setFormState] = useState(INITIAL_FORM_STATE);
+  const [formTouched, setFormTouched] = useState(INITIAL_TOUCHED_STATE);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [formMessage, setFormMessage] = useState({ type: "", text: "" });
   const [confirmState, setConfirmState] = useState({
@@ -83,9 +158,12 @@ function Korisnici() {
     type: "",
     payload: null,
   });
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const currentUserId = getCurrentUserId();
   const currentUsername = localStorage.getItem("korisnik");
+  const formErrors = useMemo(() => validateUserForm(formState, modalMode), [formState, modalMode]);
+  const isFormSubmittable = Object.keys(formErrors).length === 0;
 
   useEffect(() => {
     loadUsers();
@@ -136,7 +214,9 @@ function Korisnici() {
 
   function resetFormState() {
     setFormState(INITIAL_FORM_STATE);
+    setFormTouched(INITIAL_TOUCHED_STATE);
     setFormMessage({ type: "", text: "" });
+    setHasSubmitted(false);
   }
 
   function openCreateModal() {
@@ -149,7 +229,9 @@ function Korisnici() {
   function openEditModal(user) {
     setModalMode("edit");
     setEditingUser(user);
+    setFormTouched(INITIAL_TOUCHED_STATE);
     setFormMessage({ type: "", text: "" });
+    setHasSubmitted(false);
     setFormState({
       imePrezime: user.imePrezime,
       email: user.email,
@@ -189,6 +271,11 @@ function Korisnici() {
     setFormMessage({ type: "", text: "" });
   }
 
+  function handleFieldBlur(event) {
+    const { name } = event.target;
+    setFormTouched((current) => ({ ...current, [name]: true }));
+  }
+
   function isCurrentUser(user) {
     return (
       (currentUserId !== null && user.userId === currentUserId) ||
@@ -206,7 +293,7 @@ function Korisnici() {
 
   function getDeactivateTooltip(user) {
     if (isCurrentUser(user)) {
-      return "Ne mozete deaktivirati trenutno prijavljeni nalog.";
+      return "Ne mozete deaktivirati svoj nalog.";
     }
 
     if (user.role === "Admin" && user.isActive) {
@@ -216,11 +303,15 @@ function Korisnici() {
     return user.isActive ? "Deaktiviraj korisnika" : "Aktiviraj korisnika";
   }
 
+  function shouldShowFieldError(fieldName) {
+    return Boolean(formErrors[fieldName]) && (formTouched[fieldName] || hasSubmitted);
+  }
+
   async function submitCreate() {
     await api.post(`/Auth/create-user?uloga=${formState.uloga}`, {
-      imePrezime: formState.imePrezime,
-      email: formState.email,
-      username: formState.username,
+      imePrezime: formState.imePrezime.trim(),
+      email: formState.email.trim(),
+      username: formState.username.trim(),
       password: formState.newPassword,
     });
 
@@ -233,9 +324,9 @@ function Korisnici() {
 
   async function submitEdit() {
     const response = await api.put(`/Auth/users/${editingUser.userId}`, {
-      imePrezime: formState.imePrezime,
-      email: formState.email,
-      username: formState.username,
+      imePrezime: formState.imePrezime.trim(),
+      email: formState.email.trim(),
+      username: formState.username.trim(),
       uloga: Number.parseInt(formState.uloga, 10),
       newPassword: formState.newPassword,
     });
@@ -252,22 +343,21 @@ function Korisnici() {
 
   async function handleCreateOrEdit(event) {
     event.preventDefault();
+    setHasSubmitted(true);
+    setFormTouched({
+      imePrezime: true,
+      email: true,
+      username: true,
+      uloga: true,
+      newPassword: true,
+    });
     setSavingUser(true);
     setFormMessage({ type: "", text: "" });
 
-    if (!isValidUsername(formState.username.trim())) {
+    if (Object.keys(formErrors).length > 0) {
       setFormMessage({
         type: "error",
-        text: "Korisnicko ime moze sadrzavati samo slova i brojeve, bez razmaka i specijalnih znakova.",
-      });
-      setSavingUser(false);
-      return;
-    }
-
-    if (modalMode === "create" && !formState.newPassword.trim()) {
-      setFormMessage({
-        type: "error",
-        text: "Lozinka je obavezna pri kreiranju korisnika.",
+        text: "Molimo ispravite oznacena polja.",
       });
       setSavingUser(false);
       return;
@@ -641,8 +731,15 @@ function Korisnici() {
                   type="text"
                   value={formState.imePrezime}
                   onChange={handleFormChange}
+                  onBlur={handleFieldBlur}
+                  className={shouldShowFieldError("imePrezime") ? "input-error" : ""}
+                  minLength={2}
+                  maxLength={100}
                   required
                 />
+                {shouldShowFieldError("imePrezime") && (
+                  <p className="field-error">{formErrors.imePrezime}</p>
+                )}
               </div>
 
               <div className="form-group">
@@ -653,8 +750,15 @@ function Korisnici() {
                   type="email"
                   value={formState.email}
                   onChange={handleFormChange}
+                  onBlur={handleFieldBlur}
+                  className={shouldShowFieldError("email") ? "input-error" : ""}
+                  minLength={5}
+                  maxLength={254}
                   required
                 />
+                {shouldShowFieldError("email") && (
+                  <p className="field-error">{formErrors.email}</p>
+                )}
               </div>
 
               <div className="form-group">
@@ -665,11 +769,16 @@ function Korisnici() {
                   type="text"
                   value={formState.username}
                   onChange={handleFormChange}
+                  onBlur={handleFieldBlur}
                   inputMode="text"
-                  pattern="[A-Za-z0-9]+"
-                  title="Koristite samo slova i brojeve, bez razmaka."
+                  className={shouldShowFieldError("username") ? "input-error" : ""}
+                  minLength={3}
+                  maxLength={30}
                   required
                 />
+                {shouldShowFieldError("username") && (
+                  <p className="field-error">{formErrors.username}</p>
+                )}
               </div>
 
               <div className="form-group">
@@ -679,6 +788,8 @@ function Korisnici() {
                   name="uloga"
                   value={formState.uloga}
                   onChange={handleFormChange}
+                  onBlur={handleFieldBlur}
+                  className={shouldShowFieldError("uloga") ? "input-error" : ""}
                 >
                   {ROLE_OPTIONS.map((role) => (
                     <option key={role.value} value={role.value}>
@@ -686,6 +797,9 @@ function Korisnici() {
                     </option>
                   ))}
                 </select>
+                {shouldShowFieldError("uloga") && (
+                  <p className="field-error">{formErrors.uloga}</p>
+                )}
               </div>
 
               <div className="form-group">
@@ -698,22 +812,29 @@ function Korisnici() {
                   type="password"
                   value={formState.newPassword}
                   onChange={handleFormChange}
+                  onBlur={handleFieldBlur}
+                  className={shouldShowFieldError("newPassword") ? "input-error" : ""}
                   required={modalMode === "create"}
+                  minLength={modalMode === "create" ? 8 : undefined}
+                  maxLength={64}
                   placeholder={
                     modalMode === "create"
-                      ? "Min. 8 znakova, veliko slovo, broj i specijalan znak"
+                      ? "Minimalno 8 karaktera"
                       : "Ostavite prazno ako ne zelite promijeniti lozinku"
                   }
                 />
-                {modalMode === "edit" && (
+                {modalMode === "edit" && !shouldShowFieldError("newPassword") && (
                   <p className="users-field-hint">
                     Ostavite prazno ako ne zelite promijeniti lozinku.
                   </p>
                 )}
+                {shouldShowFieldError("newPassword") && (
+                  <p className="field-error">{formErrors.newPassword}</p>
+                )}
               </div>
 
               <div className="users-modal-actions">
-                <button className="button" type="submit" disabled={savingUser}>
+                <button className="button" type="submit" disabled={savingUser || !isFormSubmittable}>
                   {savingUser
                     ? modalMode === "create"
                       ? "Kreiranje..."

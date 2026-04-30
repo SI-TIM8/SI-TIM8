@@ -446,7 +446,7 @@ public class AuthServiceTests
         var result = await service.DeactivateUserAsync(admin.ID, admin.ID);
 
         Assert.False(result.Success);
-        Assert.Equal("Ne mozete deaktivirati trenutno prijavljeni nalog.", result.Message);
+        Assert.Equal("Ne mozete deaktivirati svoj nalog.", result.Message);
     }
 
     [Fact]
@@ -497,9 +497,10 @@ public class AuthServiceTests
         using var context = GetInMemoryDbContext();
 
         var request = _fixture.Build<RegisterRequestDto>()
+            .With(r => r.ImePrezime, "Validno Ime")
             .With(r => r.Username, "ValidUser123")
             .With(r => r.Email, "valid.user123@test.com")
-            .With(r => r.Password, "weakpass")
+            .With(r => r.Password, "weak12")
             .Create();
 
         var service = CreateService(context);
@@ -508,5 +509,51 @@ public class AuthServiceTests
 
         Assert.False(result.Success);
         Assert.Contains("Lozinka mora imati najmanje 8 znakova", result.Message);
+    }
+
+    [Fact]
+    public async Task CreateUserAsync_WithPasswordOverMaxLength_ReturnsFalse()
+    {
+        using var context = GetInMemoryDbContext();
+
+        var request = new RegisterRequestDto
+        {
+            ImePrezime = "Validno Ime",
+            Email = "valid.user@test.com",
+            Username = "ValidUser123",
+            Password = new string('A', 65)
+        };
+
+        var service = CreateService(context);
+        var result = await service.CreateUserAsync(request, UlogaKorisnika.Student);
+
+        Assert.False(result.Success);
+        Assert.Equal("Lozinka mora imati najmanje 8 znakova.", result.Message);
+    }
+
+    [Fact]
+    public async Task UpdateUserAsync_WithEmailOverMaxLength_ReturnsFalse()
+    {
+        using var context = GetInMemoryDbContext();
+        var admin = BuildUser("AdminUser", "admin@test.com", BCrypt.Net.BCrypt.HashPassword("AdminPassword123!"), UlogaKorisnika.Admin);
+        var targetUser = BuildUser("ManagedUser", "managed@test.com", BCrypt.Net.BCrypt.HashPassword("CurrentPassword123!"));
+
+        context.Korisnici.AddRange(admin, targetUser);
+        await context.SaveChangesAsync();
+
+        var service = CreateService(context);
+        var tooLongEmail = $"{new string('a', 246)}@test.com";
+
+        var result = await service.UpdateUserAsync(admin.ID, targetUser.ID, new UpdateManagedUserRequestDto
+        {
+            ImePrezime = "Managed User",
+            Email = tooLongEmail,
+            Username = "ManagedUser",
+            Uloga = UlogaKorisnika.Student,
+            NewPassword = string.Empty
+        });
+
+        Assert.False(result.Success);
+        Assert.Equal("Email moze imati najvise 254 karaktera.", result.Message);
     }
 }

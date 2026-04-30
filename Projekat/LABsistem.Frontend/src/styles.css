@@ -423,6 +423,20 @@ tbody td {
   border-color: #0f766e;
 }
 
+.form-group input.input-error,
+.form-group select.input-error,
+.form-group textarea.input-error {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
+.field-error {
+  margin-top: 6px;
+  color: #dc2626;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 /* ─── DUGMAD ─────────────────────────────────────── */
 .button {
   border: none;
@@ -747,7 +761,7 @@ tbody td {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  margin-left: 28px;
+  margin-left: 56px;
 }
 
 .users-chip {

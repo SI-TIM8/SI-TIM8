@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using LABsistem.Bll.DTOs.Auth;
@@ -14,6 +15,7 @@ namespace LABsistem.Bll.Services
     public class AuthService : IAuthService
     {
         private static readonly Regex UsernameRegex = new("^[A-Za-z0-9]+$", RegexOptions.Compiled);
+        private static readonly Regex FullNameRegex = new(@"^\p{L}+(?:\s+\p{L}+)*$", RegexOptions.Compiled);
         private readonly LabSistemDbContext _dbContext;
         private readonly IJwtService _jwtService;
         private readonly JwtSettings _jwtSettings;
@@ -248,7 +250,7 @@ namespace LABsistem.Bll.Services
             {
                 if (!IsPasswordValid(request.NewPassword))
                 {
-                    return (false, "Lozinka mora imati najmanje 8 znakova, jedno veliko slovo, jedan broj i jedan specijalni znak.", null);
+                    return (false, "Lozinka mora imati najmanje 8 znakova.", null);
                 }
 
                 korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
@@ -289,7 +291,7 @@ namespace LABsistem.Bll.Services
         {
             if (currentUserId == targetUserId)
             {
-                return (false, "Ne mozete deaktivirati trenutno prijavljeni nalog.", null);
+                return (false, "Ne mozete deaktivirati svoj nalog.", null);
             }
 
             var korisnik = await _dbContext.Korisnici
@@ -348,7 +350,7 @@ namespace LABsistem.Bll.Services
 
             if (!IsPasswordValid(request.NewPassword))
             {
-                return (false, "Lozinka mora imati najmanje 8 znakova, jedno veliko slovo, jedan broj i jedan specijalni znak.");
+                return (false, "Lozinka mora imati najmanje 8 znakova.");
             }
 
             korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
@@ -367,7 +369,7 @@ namespace LABsistem.Bll.Services
 
             if (!IsPasswordValid(request.Password))
             {
-                return (false, "Lozinka mora imati najmanje 8 znakova, jedno veliko slovo, jedan broj i jedan specijalni znak.");
+                return (false, "Lozinka mora imati najmanje 8 znakova.");
             }
 
             var normalizedUsername = request.Username.Trim();
@@ -561,22 +563,66 @@ namespace LABsistem.Bll.Services
 
         private static string? ValidateProfileFields(string imePrezime, string email, string username)
         {
-            if (string.IsNullOrWhiteSpace(imePrezime))
+            var normalizedFullName = imePrezime?.Trim() ?? string.Empty;
+            var normalizedEmail = email?.Trim() ?? string.Empty;
+            var normalizedUsername = username?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(normalizedFullName))
             {
                 return "Ime i prezime je obavezno.";
             }
 
-            if (string.IsNullOrWhiteSpace(email))
+            if (normalizedFullName.Length < 2)
+            {
+                return "Ime i prezime mora imati najmanje 2 karaktera.";
+            }
+
+            if (normalizedFullName.Length > 100)
+            {
+                return "Ime i prezime moze imati najvise 100 karaktera.";
+            }
+
+            if (!FullNameRegex.IsMatch(normalizedFullName))
+            {
+                return "Ime i prezime moze sadrzavati samo slova i razmake.";
+            }
+
+            if (string.IsNullOrWhiteSpace(normalizedEmail))
             {
                 return "Email je obavezan.";
             }
 
-            if (string.IsNullOrWhiteSpace(username))
+            if (normalizedEmail.Length < 5)
+            {
+                return "Email mora imati najmanje 5 karaktera.";
+            }
+
+            if (normalizedEmail.Length > 254)
+            {
+                return "Email moze imati najvise 254 karaktera.";
+            }
+
+            if (!IsEmailValid(normalizedEmail))
+            {
+                return "Email nije ispravan.";
+            }
+
+            if (string.IsNullOrWhiteSpace(normalizedUsername))
             {
                 return "Username je obavezan.";
             }
 
-            if (!UsernameRegex.IsMatch(username.Trim()))
+            if (normalizedUsername.Length < 3)
+            {
+                return "Korisnicko ime mora imati najmanje 3 karaktera.";
+            }
+
+            if (normalizedUsername.Length > 30)
+            {
+                return "Korisnicko ime moze imati najvise 30 karaktera.";
+            }
+
+            if (!UsernameRegex.IsMatch(normalizedUsername))
             {
                 return "Korisnicko ime moze sadrzavati samo slova i brojeve, bez razmaka i specijalnih znakova.";
             }
@@ -602,11 +648,26 @@ namespace LABsistem.Bll.Services
 
         private static bool IsPasswordValid(string password)
         {
-            if (string.IsNullOrWhiteSpace(password) || password.Length < 8) return false;
-            if (!password.Any(char.IsUpper)) return false;
-            if (!password.Any(char.IsDigit)) return false;
-            if (!password.Any(c => !char.IsLetterOrDigit(c))) return false;
-            return true;
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                return false;
+            }
+
+            var normalizedPassword = password.Trim();
+            return normalizedPassword.Length >= 8 && normalizedPassword.Length <= 64;
+        }
+
+        private static bool IsEmailValid(string email)
+        {
+            try
+            {
+                var parsedEmail = new MailAddress(email);
+                return parsedEmail.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -14,19 +14,19 @@ namespace LABsistem.Domain.Entities
         public int ID { get; set; }
         
 
-        [Required, StringLength(100)]
+        [Required, StringLength(100, MinimumLength = 2)]
         public string ImePrezime { get; set; }
        
 
-        [Required, StringLength(100)]
+        [Required, StringLength(254, MinimumLength = 5)]
         public string Email { get; set; }
         
 
-        [Required, StringLength(50)]
+        [Required, StringLength(30, MinimumLength = 3)]
         public string Username { get; set; }
         
 
-        [Required, StringLength(100)]
+        [Required, StringLength(64, MinimumLength = 8)]
         public string Password { get; set; }
 
         public bool IsActive { get; set; } = true;
