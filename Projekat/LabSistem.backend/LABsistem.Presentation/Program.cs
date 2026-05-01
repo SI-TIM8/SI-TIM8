@@ -3,7 +3,13 @@ using System.Security.Claims;
 using System.Text;
 using LABsistem.Bll.Models;
 using LABsistem.Bll.Services;
+using LABsistem.Bll.Interfaces;
 using LABsistem.Dal.Db;
+using LABsistem.Dal.Interfaces;    // Za IOpremaRepository
+using LABsistem.Dal.Repositories;  // Za OpremaRepository
+using LABsistem.Api.Services;      // Za IOpremaService i OpremaService
+// Ako ti i dalje baca grešku za DTOs u ovom fajlu, dodaj i:
+using LABSistem.Bll.DTOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -27,6 +33,8 @@ builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IRevokedTokenStore, DatabaseRevokedTokenStore>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IOpremaRepository, OpremaRepository>();
+builder.Services.AddScoped<IOpremaService, OpremaService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
