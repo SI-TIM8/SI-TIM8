@@ -1,12 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using LABsistem.Bll.Models;
-using LABsistem.Bll.Services;
+using LABsistem.Application.Models;
+using LABsistem.Application.Services;
 using LABsistem.Dal.Db;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
+using LABsistem.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IRevokedTokenStore, DatabaseRevokedTokenStore>();
+builder.Services.AddScoped<AuthBusinessRules>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services

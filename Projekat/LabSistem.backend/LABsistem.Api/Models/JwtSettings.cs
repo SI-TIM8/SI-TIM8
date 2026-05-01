@@ -1,4 +1,4 @@
-namespace LABsistem.Bll.Models
+namespace LABsistem.Application.Models
 {
     public class JwtSettings
     {

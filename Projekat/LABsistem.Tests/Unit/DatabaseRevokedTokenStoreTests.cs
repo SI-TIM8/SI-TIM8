@@ -1,4 +1,4 @@
-using LABsistem.Bll.Services;
+using LABsistem.Application.Services;
 using LABsistem.Dal.Db;
 using Microsoft.EntityFrameworkCore;
 

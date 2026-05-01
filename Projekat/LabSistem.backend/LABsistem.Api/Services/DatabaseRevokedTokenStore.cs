@@ -2,7 +2,7 @@ using LABsistem.Dal.Db;
 using LABsistem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace LABsistem.Bll.Services
+namespace LABsistem.Application.Services
 {
     public class DatabaseRevokedTokenStore : IRevokedTokenStore
     {

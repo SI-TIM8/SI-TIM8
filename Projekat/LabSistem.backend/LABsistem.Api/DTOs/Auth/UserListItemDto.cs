@@ -1,6 +1,6 @@
 using System;
 
-namespace LABsistem.Bll.DTOs.Auth
+namespace LABsistem.Application.DTOs.Auth
 {
     public class UserListItemDto
     {

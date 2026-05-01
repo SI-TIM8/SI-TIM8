@@ -1,4 +1,4 @@
-﻿using LABsistem.Domain.Enums;
+using LABsistem.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
