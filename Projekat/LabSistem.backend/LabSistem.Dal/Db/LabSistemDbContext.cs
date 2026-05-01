@@ -1,4 +1,4 @@
-﻿
+
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -40,7 +40,7 @@ namespace LABsistem.Dal.Db
         {
             base.OnModelCreating(modelBuilder);
 
-            // Konfiguracija Enuma za bazu (opciono, ali preporučeno)
+            // Konfiguracija Enuma za bazu (opciono, ali preporuceno)
             modelBuilder.Entity<Korisnik>()
                 .Property(u => u.Uloga)
                 .HasConversion<int>(); // Sprema Enum kao integer u bazu za US30
@@ -67,7 +67,7 @@ namespace LABsistem.Dal.Db
                 .HasIndex(x => x.Jti)
                 .IsUnique();
 
-            // Ovdje možeš dodati Fluent API konfiguracije za strane ključeve ako konvencije nisu dovoljne
+            // Ovdje mo�e� dodati Fluent API konfiguracije za strane kljuceve ako konvencije nisu dovoljne
         }
     }
 }

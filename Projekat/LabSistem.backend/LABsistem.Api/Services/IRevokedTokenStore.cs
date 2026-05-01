@@ -1,6 +1,6 @@
 using System;
 
-namespace LABsistem.Bll.Services
+namespace LABsistem.Application.Services
 {
     public interface IRevokedTokenStore
     {

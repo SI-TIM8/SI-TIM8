@@ -1,8 +1,8 @@
 using System.Security.Claims;
-using LABsistem.Bll.DTOs.Auth;
+using LABsistem.Application.DTOs.Auth;
 using LABsistem.Domain.Enums;
 
-namespace LABsistem.Bll.Services
+namespace LABsistem.Application.Services
 {
     public interface IAuthService
     {

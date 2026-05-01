@@ -4,28 +4,29 @@ using System.Net.Mail;
 using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
-using LABsistem.Bll.DTOs.Auth;
-using LABsistem.Bll.Models;
+using LABsistem.Application.DTOs.Auth;
+using LABsistem.Application.Models;
 using LABsistem.Dal.Db;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using LABsistem.Application.Validators;
 
-namespace LABsistem.Bll.Services
+namespace LABsistem.Application.Services
 {
     public class AuthService : IAuthService
     {
-        private static readonly Regex UsernameRegex = new("^[A-Za-z0-9]+$", RegexOptions.Compiled);
-        private static readonly Regex FullNameRegex = new(@"^\p{L}+(?:\s+\p{L}+)*$", RegexOptions.Compiled);
         private readonly LabSistemDbContext _dbContext;
         private readonly IJwtService _jwtService;
         private readonly JwtSettings _jwtSettings;
+        private readonly AuthBusinessRules _businessRules;
 
-        public AuthService(LabSistemDbContext dbContext, IJwtService jwtService, JwtSettings jwtSettings)
+        public AuthService(LabSistemDbContext dbContext, IJwtService jwtService, JwtSettings jwtSettings, AuthBusinessRules businessRules)
         {
             _dbContext = dbContext;
             _jwtService = jwtService;
             _jwtSettings = jwtSettings;
+            _businessRules = businessRules;
         }
 
         public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, string? ipAddress = null, string? deviceInfo = null)
@@ -275,28 +276,27 @@ namespace LABsistem.Bll.Services
                 return (false, "Korisnik nije pronadjen.", null);
             }
 
-            var validationMessage = ValidateProfileFields(request.ImePrezime, request.Email, request.Username);
+            var validationMessage = _businessRules.ValidateProfileFields(request.ImePrezime, request.Email, request.Username);
             if (validationMessage is not null)
             {
                 return (false, validationMessage, null);
             }
 
-            var normalizedUsername = request.Username.Trim();
-            var normalizedEmail = request.Email.Trim();
-
-            if (await _dbContext.Korisnici.AnyAsync(x => x.ID != userId && x.Username == normalizedUsername))
+            var usernameTakenMessage = await _businessRules.CheckIfUsernameTakenAsync(request.Username, userId);
+            if (usernameTakenMessage is not null)
             {
-                return (false, "Username je vec zauzet.", null);
+                return (false, usernameTakenMessage, null);
             }
 
-            if (await _dbContext.Korisnici.AnyAsync(x => x.ID != userId && x.Email == normalizedEmail))
+            var emailTakenMessage = await _businessRules.CheckIfEmailTakenAsync(request.Email, userId);
+            if (emailTakenMessage is not null)
             {
-                return (false, "Email je vec zauzet.", null);
+                return (false, emailTakenMessage, null);
             }
 
             korisnik.ImePrezime = request.ImePrezime.Trim();
-            korisnik.Email = normalizedEmail;
-            korisnik.Username = normalizedUsername;
+            korisnik.Email = request.Email.Trim();
+            korisnik.Username = request.Username.Trim();
 
             await _dbContext.SaveChangesAsync();
 
@@ -317,33 +317,32 @@ namespace LABsistem.Bll.Services
                 return (false, "Korisnik nije pronadjen.", null);
             }
 
-            var validationMessage = ValidateProfileFields(request.ImePrezime, request.Email, request.Username);
+            var validationMessage = _businessRules.ValidateProfileFields(request.ImePrezime, request.Email, request.Username);
             if (validationMessage is not null)
             {
                 return (false, validationMessage, null);
             }
 
-            var normalizedUsername = request.Username.Trim();
-            var normalizedEmail = request.Email.Trim();
-
-            if (await _dbContext.Korisnici.AnyAsync(x => x.ID != targetUserId && x.Username == normalizedUsername))
+            var usernameTakenMessage = await _businessRules.CheckIfUsernameTakenAsync(request.Username, targetUserId);
+            if (usernameTakenMessage is not null)
             {
-                return (false, "Username je vec zauzet.", null);
+                return (false, usernameTakenMessage, null);
             }
 
-            if (await _dbContext.Korisnici.AnyAsync(x => x.ID != targetUserId && x.Email == normalizedEmail))
+            var emailTakenMessage = await _businessRules.CheckIfEmailTakenAsync(request.Email, targetUserId);
+            if (emailTakenMessage is not null)
             {
-                return (false, "Email je vec zauzet.", null);
+                return (false, emailTakenMessage, null);
             }
 
             korisnik.ImePrezime = request.ImePrezime.Trim();
-            korisnik.Email = normalizedEmail;
-            korisnik.Username = normalizedUsername;
+            korisnik.Email = request.Email.Trim();
+            korisnik.Username = request.Username.Trim();
             korisnik.Uloga = request.Uloga;
 
             if (!string.IsNullOrWhiteSpace(request.NewPassword))
             {
-                var passwordValidationMessage = ValidatePassword(request.NewPassword);
+                var passwordValidationMessage = _businessRules.ValidatePassword(request.NewPassword);
                 if (passwordValidationMessage is not null)
                 {
                     return (false, passwordValidationMessage, null);
@@ -442,7 +441,7 @@ namespace LABsistem.Bll.Services
                 return (false, "Trenutna lozinka nije ispravna.");
             }
 
-            var passwordValidationMessage = ValidatePassword(request.NewPassword);
+            var passwordValidationMessage = _businessRules.ValidatePassword(request.NewPassword);
             if (passwordValidationMessage is not null)
             {
                 return (false, passwordValidationMessage);
@@ -456,36 +455,35 @@ namespace LABsistem.Bll.Services
 
         public async Task<(bool Success, string Message)> CreateUserAsync(RegisterRequestDto request, UlogaKorisnika uloga)
         {
-            var validationMessage = ValidateRequiredFields(request);
+            var validationMessage = _businessRules.ValidateProfileFields(request.ImePrezime, request.Email, request.Username);
             if (validationMessage is not null)
             {
                 return (false, validationMessage);
             }
 
-            var passwordValidationMessage = ValidatePassword(request.Password);
+            var passwordValidationMessage = _businessRules.ValidatePassword(request.Password);
             if (passwordValidationMessage is not null)
             {
                 return (false, passwordValidationMessage);
             }
 
-            var normalizedUsername = request.Username.Trim();
-            var normalizedEmail = request.Email.Trim();
-
-            if (await _dbContext.Korisnici.AnyAsync(x => x.Username == normalizedUsername))
+            var usernameTakenMessage = await _businessRules.CheckIfUsernameTakenAsync(request.Username);
+            if (usernameTakenMessage is not null)
             {
-                return (false, "Username je vec zauzet.");
+                return (false, usernameTakenMessage);
             }
 
-            if (await _dbContext.Korisnici.AnyAsync(x => x.Email == normalizedEmail))
+            var emailTakenMessage = await _businessRules.CheckIfEmailTakenAsync(request.Email);
+            if (emailTakenMessage is not null)
             {
-                return (false, "Email je vec zauzet.");
+                return (false, emailTakenMessage);
             }
 
             var noviKorisnik = new Korisnik
             {
                 ImePrezime = request.ImePrezime.Trim(),
-                Email = normalizedEmail,
-                Username = normalizedUsername,
+                Email = request.Email.Trim(),
+                Username = request.Username.Trim(),
                 Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Uloga = uloga,
                 DeactivatedAt = null
@@ -656,123 +654,5 @@ namespace LABsistem.Bll.Services
                 .ToList();
         }
 
-        private static string? ValidateProfileFields(string imePrezime, string email, string username)
-        {
-            var normalizedFullName = imePrezime?.Trim() ?? string.Empty;
-            var normalizedEmail = email?.Trim() ?? string.Empty;
-            var normalizedUsername = username?.Trim() ?? string.Empty;
-
-            if (string.IsNullOrWhiteSpace(normalizedFullName))
-            {
-                return "Ime i prezime je obavezno.";
-            }
-
-            if (normalizedFullName.Length < 2)
-            {
-                return "Ime i prezime mora imati najmanje 2 karaktera.";
-            }
-
-            if (normalizedFullName.Length > 100)
-            {
-                return "Ime i prezime moze imati najvise 100 karaktera.";
-            }
-
-            if (!FullNameRegex.IsMatch(normalizedFullName))
-            {
-                return "Ime i prezime moze sadrzavati samo slova i razmake.";
-            }
-
-            if (string.IsNullOrWhiteSpace(normalizedEmail))
-            {
-                return "Email je obavezan.";
-            }
-
-            if (normalizedEmail.Length < 5)
-            {
-                return "Email mora imati najmanje 5 karaktera.";
-            }
-
-            if (normalizedEmail.Length > 254)
-            {
-                return "Email moze imati najvise 254 karaktera.";
-            }
-
-            if (!IsEmailValid(normalizedEmail))
-            {
-                return "Email nije ispravan.";
-            }
-
-            if (string.IsNullOrWhiteSpace(normalizedUsername))
-            {
-                return "Username je obavezan.";
-            }
-
-            if (normalizedUsername.Length < 3)
-            {
-                return "Korisnicko ime mora imati najmanje 3 karaktera.";
-            }
-
-            if (normalizedUsername.Length > 30)
-            {
-                return "Korisnicko ime moze imati najvise 30 karaktera.";
-            }
-
-            if (!UsernameRegex.IsMatch(normalizedUsername))
-            {
-                return "Korisnicko ime moze sadrzavati samo slova i brojeve, bez razmaka i specijalnih znakova.";
-            }
-
-            return null;
-        }
-
-        private static string? ValidateRequiredFields(RegisterRequestDto request)
-        {
-            var profileValidationMessage = ValidateProfileFields(request.ImePrezime, request.Email, request.Username);
-            if (profileValidationMessage is not null)
-            {
-                return profileValidationMessage;
-            }
-
-            if (string.IsNullOrWhiteSpace(request.Password))
-            {
-                return "Lozinka je obavezna.";
-            }
-
-            return null;
-        }
-
-        private static string? ValidatePassword(string password)
-        {
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                return "Lozinka je obavezna.";
-            }
-
-            var normalizedPassword = password.Trim();
-            if (normalizedPassword.Length < 8)
-            {
-                return "Lozinka mora imati najmanje 8 znakova.";
-            }
-
-            if (normalizedPassword.Length > 64)
-            {
-                return "Lozinka moze imati najvise 64 karaktera.";
-            }
-
-            return null;
-        }
-
-        private static bool IsEmailValid(string email)
-        {
-            try
-            {
-                var parsedEmail = new MailAddress(email);
-                return parsedEmail.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }
     }
 }

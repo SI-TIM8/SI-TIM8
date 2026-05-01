@@ -1,6 +1,6 @@
 using System.Security.Claims;
 
-namespace LABsistem.Bll.Services
+namespace LABsistem.Application.Services
 {
     public interface IJwtService
     {
