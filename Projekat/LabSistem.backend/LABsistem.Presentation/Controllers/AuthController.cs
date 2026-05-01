@@ -25,10 +25,31 @@ namespace LABsistem.Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            var response = await _authService.LoginAsync(request);
+            var response = await _authService.LoginAsync(
+                request,
+                HttpContext.Connection.RemoteIpAddress?.ToString(),
+                Request.Headers.UserAgent.ToString());
+
             if (response == null)
             {
                 return Unauthorized(new { Message = "Pogresni kredencijali." });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost("refresh")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequestDto request)
+        {
+            var response = await _authService.RefreshAsync(
+                request.RefreshToken,
+                HttpContext.Connection.RemoteIpAddress?.ToString(),
+                Request.Headers.UserAgent.ToString());
+
+            if (response is null)
+            {
+                return Unauthorized(new { Message = "Refresh token nije validan." });
             }
 
             return Ok(response);
@@ -53,6 +74,60 @@ namespace LABsistem.Presentation.Controllers
         {
             var users = await _authService.GetUsersAsync();
             return Ok(users);
+        }
+
+        [HttpPut("users/{userId:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateUser(int userId, [FromBody] UpdateManagedUserRequestDto request)
+        {
+            if (!TryGetCurrentUserId(out var currentUserId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var result = await _authService.UpdateUserAsync(currentUserId, userId, request);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message, User = result.User });
+        }
+
+        [HttpPost("users/{userId:int}/deactivate")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeactivateUser(int userId)
+        {
+            if (!TryGetCurrentUserId(out var currentUserId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var result = await _authService.DeactivateUserAsync(currentUserId, userId);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message, User = result.User });
+        }
+
+        [HttpPost("users/{userId:int}/activate")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ActivateUser(int userId)
+        {
+            if (!TryGetCurrentUserId(out var currentUserId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var result = await _authService.ActivateUserAsync(currentUserId, userId);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message, User = result.User });
         }
 
         [HttpGet("verify")]
@@ -124,7 +199,7 @@ namespace LABsistem.Presentation.Controllers
 
         [HttpPost("verify-token")]
         [AllowAnonymous]
-        public IActionResult VerifyToken([FromBody] VerifyTokenRequestDto request)
+        public async Task<IActionResult> VerifyToken([FromBody] VerifyTokenRequestDto request)
         {
             var principal = _authService.ValidateToken(request.Token);
             if (principal is null)
@@ -132,8 +207,15 @@ namespace LABsistem.Presentation.Controllers
                 return Unauthorized(new { Valid = false });
             }
 
+            var userIdClaim = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdClaim, out var userId) || !await _authService.IsUserActiveAsync(userId))
+            {
+                return Unauthorized(new { Valid = false });
+            }
+
             var jti = principal.FindFirstValue(JwtRegisteredClaimNames.Jti);
-            if (!string.IsNullOrWhiteSpace(jti) && _revokedTokenStore.IsRevoked(jti))
+            if (!string.IsNullOrWhiteSpace(jti) &&
+                await _revokedTokenStore.IsRevokedAsync(jti))
             {
                 return Unauthorized(new { Valid = false });
             }
@@ -149,7 +231,7 @@ namespace LABsistem.Presentation.Controllers
 
         [HttpPost("logout")]
         [Authorize]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout([FromBody] LogoutRequestDto? request)
         {
             var jti = User.FindFirstValue(JwtRegisteredClaimNames.Jti);
             if (string.IsNullOrWhiteSpace(jti))
@@ -174,7 +256,13 @@ namespace LABsistem.Presentation.Controllers
             var jwtToken = tokenHandler.ReadJwtToken(token);
             var expiresAtUtc = jwtToken.ValidTo;
 
-            _revokedTokenStore.Revoke(jti, expiresAtUtc);
+            await _revokedTokenStore.RevokeAsync(jti, expiresAtUtc);
+
+            if (!string.IsNullOrWhiteSpace(request?.RefreshToken))
+            {
+                await _authService.RevokeRefreshTokenAsync(request.RefreshToken);
+            }
+
             return Ok(new { Message = "Odjava uspjesna." });
         }
 

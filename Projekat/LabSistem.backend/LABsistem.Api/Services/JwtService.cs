@@ -1,5 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Cryptography;
 using System.Security.Claims;
 using System.Text;
 using LABsistem.Bll.Models;
@@ -38,6 +39,22 @@ namespace LABsistem.Bll.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public string GenerateRefreshToken()
+        {
+            return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        }
+
+        public DateTime GetTokenExpirationUtc(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var cleanedToken = token.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase)
+                ? token[7..].Trim()
+                : token.Trim();
+
+            var jwtToken = tokenHandler.ReadJwtToken(cleanedToken);
+            return jwtToken.ValidTo;
         }
 
         public ClaimsPrincipal? ValidateToken(string token)

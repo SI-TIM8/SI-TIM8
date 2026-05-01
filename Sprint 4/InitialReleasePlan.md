@@ -73,7 +73,7 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
 |----|-------------|------|-----|-----------|-----------|--------|
-| US01 / US02 | Kreiranje i brisanje korisnika | Administrator kreira i briše korisničke naloge; brisanje zahtijeva confirmation dialog | Feature | 5 | High | To Do |
+| US01 / US02 | Kreiranje, deaktivacija i aktivacija korisnika | Administrator kreira korisničke naloge, deaktivira neaktivne korisnike i po potrebi ih ponovo aktivira; deaktivacija zahtijeva confirmation dialog | Feature | 5 | High | To Do |
 | US22 | Dodavanje i uređivanje kabineta | Administrator dodaje i uređuje prostorije; prikaz liste svih kabineta | Feature | 3 | High | To Do |
 | US23 | Blokiranje perioda u kabinetu | Administrator blokira termine u kabinetu; blokiran period vizuelno označen u kalendaru | Feature | 3 | Medium | To Do |
 | US06 / US07 | Dodavanje i brisanje opreme | Tehničar unosi novu opremu u bazu i briše opremu koja se više ne koristi | Feature | 5 | High | To Do |
@@ -86,7 +86,7 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 | Član | Oblast odgovornosti |
 |------|---------------------|
 | M1 | Korisnici CRUD – frontend (US01/02) |
-| M2 | Korisnici CRUD – backend i baza |
+| M2 | Korisnici CRUD – backend i baza, uključujući deaktivaciju i aktivaciju |
 | M3 | Kabineti + blokiranje perioda (US22/23) |
 | M4 | Oprema CRUD – frontend (US06/07) |
 | M5 | Status opreme – backend logika (US08) |
@@ -94,7 +94,7 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 | M7 | Termini – definisanje, izmjena, brisanje (US18/19/20) |
 | M8 | Integracijski testovi za sve CRUD operacije |
 
-> **Sažetak releasea:** Sprint 6 je najopterećeniji u cijelom projektu. Ključ uspjeha je da svaki član ima strogo odvojenu oblast. M8 je dedikovan za testiranje dok ostali razvijaju. Na kraju sprinta administrator može upravljati korisnicima, kabinetima i opremom, a tehničar može definisati termine i radno vrijeme. Ovo je preduslov za funkcionisanje rezervacijskog sistema.
+> **Sažetak releasea:** Sprint 6 je najopterećeniji u cijelom projektu. Ključ uspjeha je da svaki član ima strogo odvojenu oblast. M8 je dedikovan za testiranje dok ostali razvijaju. Na kraju sprinta administrator može upravljati korisnicima, kabinetima i opremom, pri čemu se korisnici ne brišu trajno nego aktiviraju/deaktiviraju, a tehničar može definisati termine i radno vrijeme. Ovo je preduslov za funkcionisanje rezervacijskog sistema.
 
 ---
 

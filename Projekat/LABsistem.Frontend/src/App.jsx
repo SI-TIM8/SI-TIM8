@@ -1,5 +1,4 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
 import AccessDenied from "./pages/AccessDenied";
 import AboutApp from "./pages/AboutApp";
 import Dashboard from "./pages/Dashboard";
@@ -7,25 +6,13 @@ import Korisnici from "./pages/Korisnici";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Profil from "./pages/Profil";
-import { ALLOWED_ROLES_BY_ROUTE, canAccessRoute, getCurrentRole } from "./auth/routeAccess";
-
-const SESSION_DURATION_MS = 30 * 60 * 1000;
-const UPOZORENJE_MS = 5 * 60 * 1000;
-
-function clearSession() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("tokenExpiry");
-  localStorage.removeItem("uloga");
-  localStorage.removeItem("korisnik");
-}
+import { ALLOWED_ROLES_BY_ROUTE, getCurrentRole } from "./auth/routeAccess";
+import { clearSession, hasActiveAccessToken } from "./auth/session";
 
 function ZasticenaRuta({ children, allowedRoles }) {
-  const token = localStorage.getItem("token");
-  const expiry = localStorage.getItem("tokenExpiry");
   const location = useLocation();
-  const aktivna = token && expiry && Date.now() < parseInt(expiry, 10);
 
-  if (!aktivna) {
+  if (!hasActiveAccessToken()) {
     clearSession();
     return <Navigate to="/login?sesija=istekla" replace />;
   }
@@ -42,60 +29,6 @@ function ZasticenaRuta({ children, allowedRoles }) {
   }
 
   return children;
-}
-
-function SesijaTimer() {
-  const navigate = useNavigate();
-  const [upozorenje, setUpozorenje] = useState(false);
-  const [preostaloSekundi, setPreostaloSekundi] = useState(null);
-
-  const resetujTimer = useCallback(() => {
-    const expiry = localStorage.getItem("tokenExpiry");
-    if (!expiry) {
-      return;
-    }
-
-    localStorage.setItem("tokenExpiry", (Date.now() + SESSION_DURATION_MS).toString());
-    setUpozorenje(false);
-  }, []);
-
-  useEffect(() => {
-    const dogadjaji = ["mousemove", "keydown", "click", "scroll", "touchstart"];
-    dogadjaji.forEach((dogadjaj) => window.addEventListener(dogadjaj, resetujTimer));
-
-    const interval = setInterval(() => {
-      const expiry = localStorage.getItem("tokenExpiry");
-      if (!expiry) {
-        return;
-      }
-
-      const preostalo = parseInt(expiry, 10) - Date.now();
-
-      if (preostalo <= 0) {
-        clearInterval(interval);
-        clearSession();
-        navigate("/login?sesija=istekla");
-      } else if (preostalo <= UPOZORENJE_MS) {
-        setUpozorenje(true);
-        setPreostaloSekundi(Math.floor(preostalo / 1000));
-      }
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-      dogadjaji.forEach((dogadjaj) => window.removeEventListener(dogadjaj, resetujTimer));
-    };
-  }, [navigate, resetujTimer]);
-
-  if (!upozorenje) {
-    return null;
-  }
-
-  return (
-    <div className="sesija-upozorenje">
-      Sesija istice za <strong>{preostaloSekundi}</strong> sekundi zbog neaktivnosti.
-    </div>
-  );
 }
 
 function PlaceholderStranica({ naslov, opis }) {
@@ -125,7 +58,6 @@ function ProtectedPage({ path, children }) {
 function App() {
   return (
     <BrowserRouter>
-      <SesijaTimer />
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Navigate to="/login" replace />} />

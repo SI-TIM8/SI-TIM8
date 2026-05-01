@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 using LABsistem.Bll.Models;
 using LABsistem.Bll.Services;
@@ -24,7 +25,7 @@ if (!builder.Environment.IsEnvironment("Testing"))
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddSingleton<IRevokedTokenStore, InMemoryRevokedTokenStore>();
+builder.Services.AddScoped<IRevokedTokenStore, DatabaseRevokedTokenStore>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services
@@ -45,17 +46,35 @@ builder.Services
 
         options.Events = new JwtBearerEvents
         {
-            OnTokenValidated = context =>
+            OnTokenValidated = async context =>
             {
                 var revokedTokenStore = context.HttpContext.RequestServices.GetRequiredService<IRevokedTokenStore>();
                 var jti = context.Principal?.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
 
-                if (!string.IsNullOrWhiteSpace(jti) && revokedTokenStore.IsRevoked(jti))
+                if (!string.IsNullOrWhiteSpace(jti) &&
+                    await revokedTokenStore.IsRevokedAsync(jti, context.HttpContext.RequestAborted))
                 {
                     context.Fail("Token has been revoked.");
+                    return;
                 }
 
-                return Task.CompletedTask;
+                var userIdClaim = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (!int.TryParse(userIdClaim, out var userId))
+                {
+                    context.Fail("User identifier claim is missing.");
+                    return;
+                }
+
+                var dbContext = context.HttpContext.RequestServices.GetRequiredService<LabSistemDbContext>();
+                var userState = await dbContext.Korisnici
+                    .Where(x => x.ID == userId)
+                    .Select(x => new { x.DeactivatedAt })
+                    .FirstOrDefaultAsync(context.HttpContext.RequestAborted);
+
+                if (userState is null || userState.DeactivatedAt.HasValue)
+                {
+                    context.Fail("User account is inactive.");
+                }
             }
         };
     });

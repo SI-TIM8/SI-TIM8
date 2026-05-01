@@ -48,14 +48,31 @@ namespace LABsistem.Dal.Db
 
             foreach (var user in defaultUsers)
             {
-                var exists = await dbContext.Korisnici.AnyAsync(
-                    x => x.Username == user.Username,
-                    cancellationToken);
+                var conflictingUsers = await dbContext.Korisnici
+                    .Where(x => x.Username == user.Username || x.Email == user.Email)
+                    .OrderBy(x => x.ID)
+                    .ToListAsync(cancellationToken);
 
-                if (!exists)
+                var existingUser = conflictingUsers.FirstOrDefault();
+
+                if (conflictingUsers.Count > 1)
+                {
+                    var duplicateUsers = conflictingUsers.Skip(1).ToList();
+                    dbContext.Korisnici.RemoveRange(duplicateUsers);
+                }
+
+                if (existingUser is null)
                 {
                     dbContext.Korisnici.Add(user);
+                    continue;
                 }
+
+                existingUser.ImePrezime = user.ImePrezime;
+                existingUser.Email = user.Email;
+                existingUser.Username = user.Username;
+                existingUser.Password = user.Password;
+                existingUser.Uloga = user.Uloga;
+                existingUser.DeactivatedAt = null;
             }
 
             await dbContext.SaveChangesAsync(cancellationToken);

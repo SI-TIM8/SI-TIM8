@@ -1,26 +1,34 @@
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Net.Mail;
+using System.Data;
+using System.Text;
+using System.Text.RegularExpressions;
 using LABsistem.Bll.DTOs.Auth;
+using LABsistem.Bll.Models;
 using LABsistem.Dal.Db;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System.Text.RegularExpressions;
 
 namespace LABsistem.Bll.Services
 {
     public class AuthService : IAuthService
     {
         private static readonly Regex UsernameRegex = new("^[A-Za-z0-9]+$", RegexOptions.Compiled);
+        private static readonly Regex FullNameRegex = new(@"^\p{L}+(?:\s+\p{L}+)*$", RegexOptions.Compiled);
         private readonly LabSistemDbContext _dbContext;
         private readonly IJwtService _jwtService;
+        private readonly JwtSettings _jwtSettings;
 
-        public AuthService(LabSistemDbContext dbContext, IJwtService jwtService)
+        public AuthService(LabSistemDbContext dbContext, IJwtService jwtService, JwtSettings jwtSettings)
         {
             _dbContext = dbContext;
             _jwtService = jwtService;
+            _jwtSettings = jwtSettings;
         }
 
-        public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request)
+        public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, string? ipAddress = null, string? deviceInfo = null)
         {
             if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
             {
@@ -34,44 +42,186 @@ namespace LABsistem.Bll.Services
                     x.Username == korisnickiIdentifikator ||
                     x.Email == korisnickiIdentifikator);
 
-            if (korisnik is null)
+            if (korisnik is null || korisnik.DeactivatedAt.HasValue)
             {
                 return null;
             }
 
-            var isPasswordValid = false;
-
-            try
+            if (!VerifyPassword(korisnik, request.Password))
             {
-                isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, korisnik.Password);
+                return null;
             }
-            catch (BCrypt.Net.SaltParseException)
+
+            if (NeedsPasswordUpgrade(korisnik.Password))
             {
-                if (korisnik.Password == request.Password)
+                korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            return await IssueSessionAsync(korisnik, ipAddress, deviceInfo);
+        }
+
+        public async Task<LoginResponseDto?> RefreshAsync(string refreshToken, string? ipAddress = null, string? deviceInfo = null)
+        {
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return null;
+            }
+
+            var now = DateTime.UtcNow;
+            var refreshTokenHash = HashToken(refreshToken);
+            var useTransactionalRefreshRotation = _dbContext.Database.IsRelational();
+
+            if (useTransactionalRefreshRotation)
+            {
+                await using var transaction = await _dbContext.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+
+                var refreshResult = await TryRefreshSessionAsync(refreshTokenHash, now, ipAddress, deviceInfo);
+                if (refreshResult is null)
                 {
-                    isPasswordValid = true;
-                    korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
-                    await _dbContext.SaveChangesAsync();
+                    await transaction.RollbackAsync();
+                    return null;
                 }
+
+                await transaction.CommitAsync();
+                return refreshResult;
             }
 
-            if (!isPasswordValid)
+            return await TryRefreshSessionAsync(refreshTokenHash, now, ipAddress, deviceInfo);
+        }
+
+        private async Task<LoginResponseDto?> TryRefreshSessionAsync(
+            string refreshTokenHash,
+            DateTime now,
+            string? ipAddress,
+            string? deviceInfo)
+        {
+            var trimmedIpAddress = TrimToLength(ipAddress, 64);
+            var trimmedDeviceInfo = TrimToLength(deviceInfo, 256);
+
+            var existingRefreshToken = await _dbContext.RefreshTokens
+                .Include(x => x.Korisnik)
+                .FirstOrDefaultAsync(x => x.TokenHash == refreshTokenHash);
+
+            if (existingRefreshToken is null ||
+                existingRefreshToken.RevokedAtUtc.HasValue ||
+                existingRefreshToken.ExpiresAtUtc <= now)
             {
                 return null;
             }
 
-            var token = _jwtService.GenerateToken(
-                korisnik.ID.ToString(),
-                korisnik.Username,
-                korisnik.Uloga.ToString());
+            if (existingRefreshToken.Korisnik.DeactivatedAt.HasValue)
+            {
+                await RevokeRefreshTokenRecordAsync(existingRefreshToken.ID, now);
+                return null;
+            }
+
+            var accessToken = _jwtService.GenerateToken(
+                existingRefreshToken.Korisnik.ID.ToString(),
+                existingRefreshToken.Korisnik.Username,
+                existingRefreshToken.Korisnik.Uloga.ToString());
+            var accessTokenExpiresAtUtc = _jwtService.GetTokenExpirationUtc(accessToken);
+            var newRefreshToken = _jwtService.GenerateRefreshToken();
+            var newRefreshTokenExpiresAtUtc = now.AddDays(_jwtSettings.RefreshExpireDays);
+            var newRefreshTokenHash = HashToken(newRefreshToken);
+
+            var revoked = await RevokeRefreshTokenRecordAsync(existingRefreshToken.ID, now, newRefreshTokenHash);
+            if (!revoked)
+            {
+                return null;
+            }
+
+            _dbContext.RefreshTokens.Add(new RefreshToken
+            {
+                KorisnikID = existingRefreshToken.Korisnik.ID,
+                TokenHash = newRefreshTokenHash,
+                CreatedAtUtc = now,
+                ExpiresAtUtc = newRefreshTokenExpiresAtUtc,
+                LastUsedAtUtc = now,
+                DeviceInfo = trimmedDeviceInfo,
+                IpAddress = trimmedIpAddress
+            });
+
+            await _dbContext.SaveChangesAsync();
 
             return new LoginResponseDto
             {
-                Token = token,
-                UserId = korisnik.ID,
-                Username = korisnik.Username,
-                Role = korisnik.Uloga.ToString()
+                Token = accessToken,
+                AccessTokenExpiresAtUtc = accessTokenExpiresAtUtc,
+                RefreshToken = newRefreshToken,
+                RefreshTokenExpiresAtUtc = newRefreshTokenExpiresAtUtc,
+                UserId = existingRefreshToken.Korisnik.ID,
+                Username = existingRefreshToken.Korisnik.Username,
+                Role = existingRefreshToken.Korisnik.Uloga.ToString()
             };
+        }
+
+        public async Task<bool> RevokeRefreshTokenAsync(string refreshToken)
+        {
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return false;
+            }
+
+            var refreshTokenHash = HashToken(refreshToken);
+
+            var existingRefreshToken = await _dbContext.RefreshTokens
+                .FirstOrDefaultAsync(x => x.TokenHash == refreshTokenHash);
+
+            if (existingRefreshToken is null || existingRefreshToken.RevokedAtUtc.HasValue)
+            {
+                return false;
+            }
+
+            existingRefreshToken.RevokedAtUtc = DateTime.UtcNow;
+            existingRefreshToken.LastUsedAtUtc = DateTime.UtcNow;
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        private async Task<bool> RevokeRefreshTokenRecordAsync(int refreshTokenId, DateTime now, string? replacedByTokenHash = null)
+        {
+            if (_dbContext.Database.IsRelational())
+            {
+                var query = _dbContext.RefreshTokens
+                    .Where(x => x.ID == refreshTokenId && !x.RevokedAtUtc.HasValue);
+
+                var affectedRows = string.IsNullOrWhiteSpace(replacedByTokenHash)
+                    ? await query.ExecuteUpdateAsync(setters => setters
+                        .SetProperty(x => x.LastUsedAtUtc, now)
+                        .SetProperty(x => x.RevokedAtUtc, now))
+                    : await query.ExecuteUpdateAsync(setters => setters
+                        .SetProperty(x => x.LastUsedAtUtc, now)
+                        .SetProperty(x => x.RevokedAtUtc, now)
+                        .SetProperty(x => x.ReplacedByTokenHash, replacedByTokenHash));
+
+                return affectedRows == 1;
+            }
+
+            var trackedRefreshToken = await _dbContext.RefreshTokens.FirstOrDefaultAsync(x => x.ID == refreshTokenId);
+            if (trackedRefreshToken is null || trackedRefreshToken.RevokedAtUtc.HasValue)
+            {
+                return false;
+            }
+
+            trackedRefreshToken.LastUsedAtUtc = now;
+            trackedRefreshToken.RevokedAtUtc = now;
+
+            if (!string.IsNullOrWhiteSpace(replacedByTokenHash))
+            {
+                trackedRefreshToken.ReplacedByTokenHash = replacedByTokenHash;
+            }
+
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> IsUserActiveAsync(int userId)
+        {
+            return await _dbContext.Korisnici
+                .Where(x => x.ID == userId)
+                .Select(x => x.DeactivatedAt == null)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<ProfileResponseDto?> GetProfileAsync(int userId)
@@ -84,7 +234,9 @@ namespace LABsistem.Bll.Services
                     ImePrezime = x.ImePrezime,
                     Email = x.Email,
                     Username = x.Username,
-                    Role = x.Uloga.ToString()
+                    Role = x.Uloga.ToString(),
+                    DeactivatedAt = x.DeactivatedAt,
+                    Status = x.DeactivatedAt == null ? "Aktivan" : "Deaktiviran"
                 })
                 .FirstOrDefaultAsync();
 
@@ -107,7 +259,9 @@ namespace LABsistem.Bll.Services
                     ImePrezime = x.ImePrezime,
                     Email = x.Email,
                     Username = x.Username,
-                    Role = x.Uloga.ToString()
+                    Role = x.Uloga.ToString(),
+                    DeactivatedAt = x.DeactivatedAt,
+                    Status = x.DeactivatedAt == null ? "Aktivan" : "Deaktiviran"
                 })
                 .ToListAsync();
         }
@@ -150,6 +304,118 @@ namespace LABsistem.Bll.Services
             return (true, "Profil je uspjesno azuriran.", updatedProfile);
         }
 
+        public async Task<(bool Success, string Message, UserListItemDto? User)> UpdateUserAsync(int currentUserId, int targetUserId, UpdateManagedUserRequestDto request)
+        {
+            if (currentUserId == targetUserId)
+            {
+                return (false, "Ne mozete uredjivati vlastiti nalog kroz ovaj panel.", null);
+            }
+
+            var korisnik = await _dbContext.Korisnici.FirstOrDefaultAsync(x => x.ID == targetUserId);
+            if (korisnik is null)
+            {
+                return (false, "Korisnik nije pronadjen.", null);
+            }
+
+            var validationMessage = ValidateProfileFields(request.ImePrezime, request.Email, request.Username);
+            if (validationMessage is not null)
+            {
+                return (false, validationMessage, null);
+            }
+
+            var normalizedUsername = request.Username.Trim();
+            var normalizedEmail = request.Email.Trim();
+
+            if (await _dbContext.Korisnici.AnyAsync(x => x.ID != targetUserId && x.Username == normalizedUsername))
+            {
+                return (false, "Username je vec zauzet.", null);
+            }
+
+            if (await _dbContext.Korisnici.AnyAsync(x => x.ID != targetUserId && x.Email == normalizedEmail))
+            {
+                return (false, "Email je vec zauzet.", null);
+            }
+
+            korisnik.ImePrezime = request.ImePrezime.Trim();
+            korisnik.Email = normalizedEmail;
+            korisnik.Username = normalizedUsername;
+            korisnik.Uloga = request.Uloga;
+
+            if (!string.IsNullOrWhiteSpace(request.NewPassword))
+            {
+                var passwordValidationMessage = ValidatePassword(request.NewPassword);
+                if (passwordValidationMessage is not null)
+                {
+                    return (false, passwordValidationMessage, null);
+                }
+
+                korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return (true, "Korisnik je uspjesno azuriran.", MapUserListItem(korisnik));
+        }
+
+        public async Task<(bool Success, string Message, UserListItemDto? User)> ActivateUserAsync(int currentUserId, int targetUserId)
+        {
+            if (currentUserId == targetUserId)
+            {
+                return (false, "Ne mozete aktivirati vlastiti nalog kroz ovaj panel.", null);
+            }
+
+            var korisnik = await _dbContext.Korisnici.FirstOrDefaultAsync(x => x.ID == targetUserId);
+            if (korisnik is null)
+            {
+                return (false, "Korisnik nije pronadjen.", null);
+            }
+
+            if (!korisnik.DeactivatedAt.HasValue)
+            {
+                return (false, "Korisnik je vec aktivan.", null);
+            }
+
+            korisnik.DeactivatedAt = null;
+
+            await _dbContext.SaveChangesAsync();
+
+            return (true, "Korisnik je uspjesno aktiviran.", MapUserListItem(korisnik));
+        }
+
+        public async Task<(bool Success, string Message, UserListItemDto? User)> DeactivateUserAsync(int currentUserId, int targetUserId)
+        {
+            if (currentUserId == targetUserId)
+            {
+                return (false, "Ne mozete deaktivirati svoj nalog.", null);
+            }
+
+            var korisnik = await _dbContext.Korisnici
+                .Include(x => x.RefreshTokens)
+                .FirstOrDefaultAsync(x => x.ID == targetUserId);
+
+            if (korisnik is null)
+            {
+                return (false, "Korisnik nije pronadjen.", null);
+            }
+
+            if (korisnik.DeactivatedAt.HasValue)
+            {
+                return (false, "Korisnik je vec deaktiviran.", null);
+            }
+
+            if (korisnik.Uloga == UlogaKorisnika.Admin)
+            {
+                return (false, "Prvo uklonite administratorsku ulogu prije deaktivacije korisnika.", null);
+            }
+
+            korisnik.DeactivatedAt = DateTime.UtcNow;
+            RevokeUserRefreshTokens(korisnik.RefreshTokens);
+
+            await _dbContext.SaveChangesAsync();
+
+            return (true, "Korisnik je uspjesno deaktiviran.", MapUserListItem(korisnik));
+        }
+
         public async Task<(bool Success, string Message)> ChangePasswordAsync(int userId, ChangePasswordRequestDto request)
         {
             var korisnik = await _dbContext.Korisnici.FirstOrDefaultAsync(x => x.ID == userId);
@@ -176,9 +442,10 @@ namespace LABsistem.Bll.Services
                 return (false, "Trenutna lozinka nije ispravna.");
             }
 
-            if (!IsPasswordValid(request.NewPassword))
+            var passwordValidationMessage = ValidatePassword(request.NewPassword);
+            if (passwordValidationMessage is not null)
             {
-                return (false, "Lozinka mora imati najmanje 8 znakova, jedno veliko slovo, jedan broj i jedan specijalni znak.");
+                return (false, passwordValidationMessage);
             }
 
             korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
@@ -195,17 +462,21 @@ namespace LABsistem.Bll.Services
                 return (false, validationMessage);
             }
 
-            if (!IsPasswordValid(request.Password))
+            var passwordValidationMessage = ValidatePassword(request.Password);
+            if (passwordValidationMessage is not null)
             {
-                return (false, "Lozinka mora imati najmanje 8 znakova, jedno veliko slovo, jedan broj i jedan specijalni znak.");
+                return (false, passwordValidationMessage);
             }
 
-            if (await _dbContext.Korisnici.AnyAsync(x => x.Username == request.Username))
+            var normalizedUsername = request.Username.Trim();
+            var normalizedEmail = request.Email.Trim();
+
+            if (await _dbContext.Korisnici.AnyAsync(x => x.Username == normalizedUsername))
             {
                 return (false, "Username je vec zauzet.");
             }
 
-            if (await _dbContext.Korisnici.AnyAsync(x => x.Email == request.Email))
+            if (await _dbContext.Korisnici.AnyAsync(x => x.Email == normalizedEmail))
             {
                 return (false, "Email je vec zauzet.");
             }
@@ -213,10 +484,11 @@ namespace LABsistem.Bll.Services
             var noviKorisnik = new Korisnik
             {
                 ImePrezime = request.ImePrezime.Trim(),
-                Email = request.Email.Trim(),
-                Username = request.Username.Trim(),
+                Email = normalizedEmail,
+                Username = normalizedUsername,
                 Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                Uloga = uloga
+                Uloga = uloga,
+                DeactivatedAt = null
             };
 
             _dbContext.Korisnici.Add(noviKorisnik);
@@ -230,11 +502,120 @@ namespace LABsistem.Bll.Services
             return _jwtService.ValidateToken(token);
         }
 
+        private async Task<LoginResponseDto> IssueSessionAsync(
+            Korisnik korisnik,
+            string? ipAddress,
+            string? deviceInfo,
+            RefreshToken? previousRefreshToken = null)
+        {
+            var accessToken = _jwtService.GenerateToken(
+                korisnik.ID.ToString(),
+                korisnik.Username,
+                korisnik.Uloga.ToString());
+
+            var accessTokenExpiresAtUtc = _jwtService.GetTokenExpirationUtc(accessToken);
+            var refreshToken = _jwtService.GenerateRefreshToken();
+            var refreshTokenExpiresAtUtc = DateTime.UtcNow.AddDays(_jwtSettings.RefreshExpireDays);
+            var refreshTokenHash = HashToken(refreshToken);
+
+            if (previousRefreshToken is not null)
+            {
+                previousRefreshToken.ReplacedByTokenHash = refreshTokenHash;
+            }
+
+            _dbContext.RefreshTokens.Add(new RefreshToken
+            {
+                KorisnikID = korisnik.ID,
+                TokenHash = refreshTokenHash,
+                CreatedAtUtc = DateTime.UtcNow,
+                ExpiresAtUtc = refreshTokenExpiresAtUtc,
+                LastUsedAtUtc = DateTime.UtcNow,
+                DeviceInfo = TrimToLength(deviceInfo, 256),
+                IpAddress = TrimToLength(ipAddress, 64)
+            });
+
+            await _dbContext.SaveChangesAsync();
+
+            return new LoginResponseDto
+            {
+                Token = accessToken,
+                AccessTokenExpiresAtUtc = accessTokenExpiresAtUtc,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiresAtUtc = refreshTokenExpiresAtUtc,
+                UserId = korisnik.ID,
+                Username = korisnik.Username,
+                Role = korisnik.Uloga.ToString()
+            };
+        }
+
+        private void RevokeUserRefreshTokens(IEnumerable<RefreshToken> refreshTokens)
+        {
+            foreach (var refreshToken in refreshTokens.Where(x => !x.RevokedAtUtc.HasValue))
+            {
+                refreshToken.RevokedAtUtc = DateTime.UtcNow;
+                refreshToken.LastUsedAtUtc = DateTime.UtcNow;
+            }
+        }
+
+        private static UserListItemDto MapUserListItem(Korisnik korisnik)
+        {
+            return new UserListItemDto
+            {
+                UserId = korisnik.ID,
+                ImePrezime = korisnik.ImePrezime,
+                Email = korisnik.Email,
+                Username = korisnik.Username,
+                Role = korisnik.Uloga.ToString(),
+                DeactivatedAt = korisnik.DeactivatedAt,
+                Status = korisnik.DeactivatedAt == null ? "Aktivan" : "Deaktiviran"
+            };
+        }
+
+        private static string HashToken(string value)
+        {
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(value.Trim()));
+            return Convert.ToHexString(bytes);
+        }
+
+        private static string? TrimToLength(string? value, int maxLength)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
+            var trimmedValue = value.Trim();
+            return trimmedValue.Length <= maxLength
+                ? trimmedValue
+                : trimmedValue[..maxLength];
+        }
+
+        private static bool NeedsPasswordUpgrade(string storedPassword)
+        {
+            try
+            {
+                BCrypt.Net.BCrypt.InterrogateHash(storedPassword);
+                return false;
+            }
+            catch (BCrypt.Net.HashInformationException)
+            {
+                return true;
+            }
+            catch (BCrypt.Net.SaltParseException)
+            {
+                return true;
+            }
+        }
+
         private static bool VerifyPassword(Korisnik korisnik, string password)
         {
             try
             {
                 return BCrypt.Net.BCrypt.Verify(password, korisnik.Password);
+            }
+            catch (BCrypt.Net.HashInformationException)
+            {
+                return korisnik.Password == password;
             }
             catch (BCrypt.Net.SaltParseException)
             {
@@ -277,22 +658,66 @@ namespace LABsistem.Bll.Services
 
         private static string? ValidateProfileFields(string imePrezime, string email, string username)
         {
-            if (string.IsNullOrWhiteSpace(imePrezime))
+            var normalizedFullName = imePrezime?.Trim() ?? string.Empty;
+            var normalizedEmail = email?.Trim() ?? string.Empty;
+            var normalizedUsername = username?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(normalizedFullName))
             {
                 return "Ime i prezime je obavezno.";
             }
 
-            if (string.IsNullOrWhiteSpace(email))
+            if (normalizedFullName.Length < 2)
+            {
+                return "Ime i prezime mora imati najmanje 2 karaktera.";
+            }
+
+            if (normalizedFullName.Length > 100)
+            {
+                return "Ime i prezime moze imati najvise 100 karaktera.";
+            }
+
+            if (!FullNameRegex.IsMatch(normalizedFullName))
+            {
+                return "Ime i prezime moze sadrzavati samo slova i razmake.";
+            }
+
+            if (string.IsNullOrWhiteSpace(normalizedEmail))
             {
                 return "Email je obavezan.";
             }
 
-            if (string.IsNullOrWhiteSpace(username))
+            if (normalizedEmail.Length < 5)
+            {
+                return "Email mora imati najmanje 5 karaktera.";
+            }
+
+            if (normalizedEmail.Length > 254)
+            {
+                return "Email moze imati najvise 254 karaktera.";
+            }
+
+            if (!IsEmailValid(normalizedEmail))
+            {
+                return "Email nije ispravan.";
+            }
+
+            if (string.IsNullOrWhiteSpace(normalizedUsername))
             {
                 return "Username je obavezan.";
             }
 
-            if (!UsernameRegex.IsMatch(username.Trim()))
+            if (normalizedUsername.Length < 3)
+            {
+                return "Korisnicko ime mora imati najmanje 3 karaktera.";
+            }
+
+            if (normalizedUsername.Length > 30)
+            {
+                return "Korisnicko ime moze imati najvise 30 karaktera.";
+            }
+
+            if (!UsernameRegex.IsMatch(normalizedUsername))
             {
                 return "Korisnicko ime moze sadrzavati samo slova i brojeve, bez razmaka i specijalnih znakova.";
             }
@@ -316,13 +741,38 @@ namespace LABsistem.Bll.Services
             return null;
         }
 
-        private static bool IsPasswordValid(string password)
+        private static string? ValidatePassword(string password)
         {
-            if (string.IsNullOrWhiteSpace(password) || password.Length < 8) return false;
-            if (!password.Any(char.IsUpper)) return false;
-            if (!password.Any(char.IsDigit)) return false;
-            if (!password.Any(c => !char.IsLetterOrDigit(c))) return false;
-            return true;
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                return "Lozinka je obavezna.";
+            }
+
+            var normalizedPassword = password.Trim();
+            if (normalizedPassword.Length < 8)
+            {
+                return "Lozinka mora imati najmanje 8 znakova.";
+            }
+
+            if (normalizedPassword.Length > 64)
+            {
+                return "Lozinka moze imati najvise 64 karaktera.";
+            }
+
+            return null;
+        }
+
+        private static bool IsEmailValid(string email)
+        {
+            try
+            {
+                var parsedEmail = new MailAddress(email);
+                return parsedEmail.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

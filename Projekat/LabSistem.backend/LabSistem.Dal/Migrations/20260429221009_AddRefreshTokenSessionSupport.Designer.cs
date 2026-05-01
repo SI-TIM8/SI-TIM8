@@ -3,6 +3,7 @@ using System;
 using LABsistem.Dal.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LabSistem.Dal.Migrations
 {
     [DbContext(typeof(LabSistemDbContext))]
-    partial class LabSistemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260429221009_AddRefreshTokenSessionSupport")]
+    partial class AddRefreshTokenSessionSupport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,13 +132,10 @@ namespace LabSistem.Dal.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
-                    b.Property<DateTime?>("DeactivatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(254)
-                        .HasColumnType("character varying(254)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("ImePrezime")
                         .IsRequired()
@@ -144,16 +144,16 @@ namespace LabSistem.Dal.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("character varying(64)");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("Uloga")
                         .HasColumnType("integer");
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("character varying(30)");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("ID");
 

@@ -21,7 +21,7 @@
 | 016 | Razrada modela podataka sistema | Definisati strukturu baze i relacije između entiteta | Documentation | Srednji (P2) | 3 | To Do | Sprint 3 |  |
 | 017 | Postavka tehničkog skeletona sistema | Inicijalizacija projekta, repozitorija i osnovne strukture sistema | Technical Task | Visok (P1) | 5 | To Do | Sprint 4 |  |
 | 018 | Autentifikacijski sistem | Implementirati login i odjavu korisnika na osnovu uloga | Feature | Visok (P0) | 8 | To Do |  |  |
-| 019 | Upravljanje korisnicima | Administrator kreira i upravlja korisnicima | Feature | Visok (P1) | 5 | To Do |  | Neophodno da bi sistem imao korisnike |
+| 019 | Upravljanje korisnicima | Administrator kreira, uređuje, aktivira i deaktivira korisnike | Feature | Visok (P1) | 5 | To Do |  | Korisnici se ne brišu trajno nego se vode kroz aktivno/deaktivirano stanje |
 | 020 | Upravljanje kabinetima | Administrator vrši dodavanje i upravljanje kabinetima | Feature | Visok (P1) | 3 | To Do |  |  |
 | 021 | Upravljanje inventarom opreme | Administrator vrši CRUD operacije nad laboratorijskom opremom | Feature | Visok (P1) | 5 | To Do |  |  |
 | 022 | Definisanje termina i radnog vremena | Administrator definiše radno vrijeme i trajanje termina | Feature | Visok (P1) | 5 | To Do |  | Sistem generiše raspored na osnovu definisanih parametara |
