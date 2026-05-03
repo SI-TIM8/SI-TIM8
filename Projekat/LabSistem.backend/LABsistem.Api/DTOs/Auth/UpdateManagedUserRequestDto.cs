@@ -1,6 +1,6 @@
 using LABsistem.Domain.Enums;
 
-namespace LABsistem.Bll.DTOs.Auth
+namespace LABsistem.Application.DTOs.Auth
 {
     public class UpdateManagedUserRequestDto
     {

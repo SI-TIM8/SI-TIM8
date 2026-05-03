@@ -1,9 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using AutoFixture;
-using LABsistem.Bll.DTOs.Auth;
-using LABsistem.Bll.Models;
-using LABsistem.Bll.Services;
+using LABsistem.Application.DTOs.Auth;
+using LABsistem.Application.Models;
+using LABsistem.Application.Services;
 using LABsistem.Domain.Enums;
 using LABsistem.Presentation.Controllers;
 using Microsoft.AspNetCore.Http;

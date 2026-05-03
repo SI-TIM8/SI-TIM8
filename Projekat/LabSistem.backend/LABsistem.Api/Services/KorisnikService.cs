@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LABsistem.Bll.Services
+namespace LABsistem.Application.Services
 {
     internal class KorisnikService
     {

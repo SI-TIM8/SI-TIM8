@@ -1,12 +1,13 @@
 using AutoFixture;
-using LABsistem.Bll.DTOs.Auth;
-using LABsistem.Bll.Models;
-using LABsistem.Bll.Services;
+using LABsistem.Application.DTOs.Auth;
+using LABsistem.Application.Models;
+using LABsistem.Application.Services;
 using LABsistem.Dal.Db;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using LABsistem.Application.Validators;
 
 public class AuthServiceTests
 {
@@ -42,7 +43,8 @@ public class AuthServiceTests
 
     private AuthService CreateService(LabSistemDbContext context)
     {
-        return new AuthService(context, _jwtServiceMock.Object, _jwtSettings);
+        var businessRules = new AuthBusinessRules(context);
+        return new AuthService(context, _jwtServiceMock.Object, _jwtSettings, businessRules);
     }
 
     private Korisnik BuildUser(
