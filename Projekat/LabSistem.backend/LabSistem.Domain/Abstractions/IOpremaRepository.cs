@@ -10,7 +10,7 @@ namespace LABsistem.Dal.Interfaces
         Task<IEnumerable<Oprema>> GetAllAsync();
         Task<Oprema> GetByIdAsync(int id);
         Task AddAsync(Oprema oprema);
-        Task<IEnumerable<(Oprema oprema, string kabinetNaziv)>> GetAllWithKabinetAsync();
+        Task<IEnumerable<(Oprema oprema, string kabinetNaziv, string zgradaNaziv)>> GetAllWithKabinetAsync();
         Task UpdateAsync(Oprema oprema);
         Task DeleteAsync(int id);
     }

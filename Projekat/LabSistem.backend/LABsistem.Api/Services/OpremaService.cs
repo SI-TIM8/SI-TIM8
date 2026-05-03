@@ -46,7 +46,8 @@ namespace LABsistem.Api.Services
                 Stanje = (int)x.oprema.stanje,
                 KabinetID = x.oprema.KabinetID,
                 KreatorID = x.oprema.KreatorID,
-                KabinetNaziv = x.kabinetNaziv
+                KabinetNaziv = x.kabinetNaziv,
+                ZgradaNaziv = x.zgradaNaziv
             }).ToList();
         }
 

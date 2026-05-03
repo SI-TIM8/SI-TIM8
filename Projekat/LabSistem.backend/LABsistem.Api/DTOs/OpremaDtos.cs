@@ -19,5 +19,6 @@ namespace LABSistem.Bll.DTOs
         public string KabinetNaziv { get; set; } = default!;
         public string ObjekatLokacija { get; set; } = default!;
         public int KreatorID { get; set; }
+        public string ZgradaNaziv { get; set; } = "N/A";
     }
 }
