@@ -6,6 +6,7 @@ import Korisnici from "./pages/Korisnici";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Profil from "./pages/Profil";
+import Oprema from "./pages/Oprema";
 import { ALLOWED_ROLES_BY_ROUTE, getCurrentRole } from "./auth/routeAccess";
 import { clearSession, hasActiveAccessToken } from "./auth/session";
 
@@ -107,10 +108,7 @@ function App() {
           path="/oprema"
           element={
             <ProtectedPage path="/oprema">
-              <PlaceholderStranica
-                naslov="Oprema"
-                opis="Lista opreme po laboratorijima."
-              />
+              <Oprema />
             </ProtectedPage>
           }
         />
