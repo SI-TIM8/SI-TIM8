@@ -37,13 +37,16 @@ namespace LABsistem.Api.Services
 
         public async Task<IEnumerable<OpremaDTO>> VratiSvuOpremu()
         {
-            var oprema = await _repo.GetAllAsync();
-
-            return oprema.Select(o => new OpremaDTO 
-            { 
-                ID = o.ID, 
-                Naziv = o.Naziv, 
-                SerijskiBroj = o.SerijskiBroj
+            var rezultat = await _repo.GetAllWithKabinetAsync();
+            return rezultat.Select(x => new OpremaDTO
+            {
+                ID = x.oprema.ID,
+                Naziv = x.oprema.Naziv,
+                SerijskiBroj = x.oprema.SerijskiBroj,
+                Stanje = (int)x.oprema.stanje,
+                KabinetID = x.oprema.KabinetID,
+                KreatorID = x.oprema.KreatorID,
+                KabinetNaziv = x.kabinetNaziv
             }).ToList();
         }
 

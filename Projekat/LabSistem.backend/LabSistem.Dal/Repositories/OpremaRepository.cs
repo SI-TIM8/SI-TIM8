@@ -24,6 +24,16 @@ namespace LABsistem.Dal.Repositories
         await _context.Oprema.AddAsync(oprema);
         await _context.SaveChangesAsync();
     }
+    public async Task<IEnumerable<(Oprema oprema, string kabinetNaziv)>> GetAllWithKabinetAsync()
+    {
+        return await (
+            from o in _context.Oprema
+            join k in _context.Kabineti on o.KabinetID equals k.ID into kGroup
+            from k in kGroup.DefaultIfEmpty()
+            select new { o, KabinetNaziv = k != null ? k.Naziv : "N/A" }
+        ).ToListAsync()
+        .ContinueWith(t => t.Result.Select(x => (x.o, x.KabinetNaziv)));
+    }
 
     public async Task UpdateAsync(Oprema oprema)
     {
