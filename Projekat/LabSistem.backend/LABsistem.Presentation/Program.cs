@@ -34,6 +34,8 @@ builder.Services.AddScoped<IRevokedTokenStore, DatabaseRevokedTokenStore>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOpremaRepository, OpremaRepository>();
 builder.Services.AddScoped<IOpremaService, OpremaService>();
+builder.Services.AddScoped<IEvidencijaRepository, EvidencijaRepository>();
+builder.Services.AddScoped<IEvidencijaService, EvidencijaService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
