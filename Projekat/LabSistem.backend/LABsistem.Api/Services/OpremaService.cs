@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq; // OVO JE FALILO ZA .Select()
+using System.Linq;
 using LABsistem.Dal.Interfaces;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
@@ -19,7 +19,7 @@ namespace LABsistem.Api.Services
             var nova = new Oprema
             {
                 Naziv = dto.Naziv,
-                SerijskiBroj = dto.SerijskiBroj, // Direktna dodjela (int u int)
+                SerijskiBroj = dto.SerijskiBroj,
                 stanje = (StatusOpreme)dto.Stanje,
                 KabinetID = dto.KabinetID,
                 KreatorID = dto.KreatorID
@@ -38,12 +38,12 @@ namespace LABsistem.Api.Services
         public async Task<IEnumerable<OpremaDTO>> VratiSvuOpremu()
         {
             var oprema = await _repo.GetAllAsync();
-            // Dodajemo .ToList() na kraju
+
             return oprema.Select(o => new OpremaDTO 
             { 
                 ID = o.ID, 
                 Naziv = o.Naziv, 
-                SerijskiBroj = o.SerijskiBroj // Direktna dodjela
+                SerijskiBroj = o.SerijskiBroj
             }).ToList();
         }
 
@@ -53,7 +53,7 @@ namespace LABsistem.Api.Services
             if (p == null) return false;
 
             p.Naziv = dto.Naziv;
-            p.SerijskiBroj = dto.SerijskiBroj; // Direktna dodjela
+            p.SerijskiBroj = dto.SerijskiBroj;
             p.stanje = (StatusOpreme)dto.Stanje;
             p.KabinetID = dto.KabinetID;
 

@@ -77,5 +77,39 @@ namespace LABsistem.Dal.Db
 
             await dbContext.SaveChangesAsync(cancellationToken);
         }
+
+        public static async Task SeedDefaultObjektiAsync(LabSistemDbContext dbContext, CancellationToken cancellationToken = default)
+        {
+            if (await dbContext.Objekti.AnyAsync(cancellationToken)) return; // Ako ima išta, preskoči
+
+            var defaultObjekti = new[]
+            {
+                new Objekat { ID = 1, Lokacija = "Zgrada ET", RadnoVrijeme = "08:00 - 20:00" },
+                new Objekat { ID = 2, Lokacija = "Druga zgrada", RadnoVrijeme = "07:00 - 22:00" }
+            };
+
+            dbContext.Objekti.AddRange(defaultObjekti);
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+
+        public static async Task SeedDefaultKabinetiAsync(LabSistemDbContext dbContext, CancellationToken cancellationToken = default)
+        {
+            if (await dbContext.Kabineti.AnyAsync(cancellationToken)) return;
+
+            // Uzimamo ID-eve direktno jer znamo da smo ih gore fixirali na 1 i 4 (tehnicar)
+            var tehnicar = await dbContext.Korisnici.FirstOrDefaultAsync(u => u.Username == "tehnicar", cancellationToken);
+            
+            if (tehnicar == null) return;
+
+            var defaultKabineti = new[]
+            {
+                new Kabinet { ID = 1, Naziv = "Lab 101", KorisnikID = tehnicar.ID, ObjekatID = 1 },
+                new Kabinet { ID = 2, Naziv = "Lab 102", KorisnikID = tehnicar.ID, ObjekatID = 1 }
+            };
+
+            dbContext.Kabineti.AddRange(defaultKabineti);
+            await dbContext.SaveChangesAsync(cancellationToken);
+        }
+
     }
 }

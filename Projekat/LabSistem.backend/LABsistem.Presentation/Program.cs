@@ -5,10 +5,9 @@ using LABsistem.Bll.Models;
 using LABsistem.Bll.Services;
 using LABsistem.Bll.Interfaces;
 using LABsistem.Dal.Db;
-using LABsistem.Dal.Interfaces;    // Za IOpremaRepository
-using LABsistem.Dal.Repositories;  // Za OpremaRepository
-using LABsistem.Api.Services;      // Za IOpremaService i OpremaService
-// Ako ti i dalje baca grešku za DTOs u ovom fajlu, dodaj i:
+using LABsistem.Dal.Interfaces;   
+using LABsistem.Dal.Repositories;  
+using LABsistem.Api.Services;   
 using LABSistem.Bll.DTOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -112,6 +111,8 @@ using (var scope = app.Services.CreateScope())
         {
             context.Database.Migrate();
             await LabSistemDbSeeder.SeedDefaultUsersAsync(context);
+            await LabSistemDbSeeder.SeedDefaultObjektiAsync(context);
+            await LabSistemDbSeeder.SeedDefaultKabinetiAsync(context);
             Console.WriteLine("Migracije su uspjesno provjerene/primijenjene.");
         }
     }
