@@ -1,8 +1,7 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LABsistem.Bll.DTOs;
+using LABsistem.Application.DTOs;
 using LABsistem.Dal.Interfaces;
 using LABsistem.Domain.Entities;
 

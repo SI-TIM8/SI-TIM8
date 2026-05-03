@@ -1,6 +1,6 @@
 using System.Security.Claims;
-using LABsistem.Bll.Models;
-using LABsistem.Bll.Services;
+using LABsistem.Application.Models;
+using LABsistem.Application.Services;
 
 namespace LABsistem.Tests.Unit
 {

@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using LABsistem.Bll.DTOs.Auth;
-using LABsistem.Bll.Services;
+using LABsistem.Application.DTOs.Auth;
+using LABsistem.Application.Services;
 using LABsistem.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

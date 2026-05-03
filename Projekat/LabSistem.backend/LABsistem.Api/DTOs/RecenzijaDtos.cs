@@ -1,4 +1,4 @@
-namespace LABsistem.Bll.DTOs
+namespace LABsistem.Application.DTOs
 {
     public class RecenzijaDtos
     {

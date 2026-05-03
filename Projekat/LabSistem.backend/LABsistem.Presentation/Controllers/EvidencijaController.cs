@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using LABsistem.Api.Services;
-using LABsistem.Bll.DTOs;
+using LABsistem.Application.DTOs;
 
 namespace LABsistem.Presentation.Controllers
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using LABsistem.Bll.DTOs;
+using LABsistem.Application.DTOs;
 
 namespace LABsistem.Api.Services
 {

@@ -1,14 +1,14 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using LABsistem.Bll.Models;
-using LABsistem.Bll.Services;
-using LABsistem.Bll.Interfaces;
+using LABsistem.Application.Models;
+using LABsistem.Application.Services;
+using LABsistem.Application.Validators;
 using LABsistem.Dal.Db;
-using LABsistem.Dal.Interfaces;   
-using LABsistem.Dal.Repositories;  
-using LABsistem.Api.Services;   
-using LABSistem.Bll.DTOs;
+using LABsistem.Dal.Interfaces;
+using LABsistem.Dal.Repositories;
+using LABsistem.Api.Services;
+using LABsistem.Application.DTOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -31,6 +31,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IRevokedTokenStore, DatabaseRevokedTokenStore>();
+builder.Services.AddScoped<AuthBusinessRules>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IOpremaRepository, OpremaRepository>();
 builder.Services.AddScoped<IOpremaService, OpremaService>();
@@ -125,9 +126,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowFrontend");
-
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -137,6 +136,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
-
 app.Run();
 public partial class Program { }

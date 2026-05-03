@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LABsistem.Dal.Db.Configurations
+namespace LABsistem.Application.Interfaces
 {
-    internal class KabinetConfiguration
+    internal interface IOpremaService
     {
     }
 }

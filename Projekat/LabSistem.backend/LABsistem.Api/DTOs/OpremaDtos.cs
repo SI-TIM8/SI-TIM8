@@ -1,9 +1,9 @@
-namespace LABSistem.Bll.DTOs
+namespace LABsistem.Application.DTOs
 {
     public class OpremaCreateDTO
     {
         public string Naziv { get; set; } = default!;
-        public int SerijskiBroj { get; set; } // Promijenjeno u int
+        public int SerijskiBroj { get; set; }
         public int Stanje { get; set; }
         public int KabinetID { get; set; }
         public int KreatorID { get; set; }
@@ -13,12 +13,11 @@ namespace LABSistem.Bll.DTOs
     {
         public int ID { get; set; }
         public string Naziv { get; set; } = default!;
-        public int SerijskiBroj { get; set; } // Promijenjeno u int
+        public int SerijskiBroj { get; set; }
         public int Stanje { get; set; }
         public int KabinetID { get; set; }
         public string KabinetNaziv { get; set; } = default!;
-        public string ObjekatLokacija { get; set; } = default!;
-        public int KreatorID { get; set; }
         public string ZgradaNaziv { get; set; } = "N/A";
+        public int KreatorID { get; set; }
     }
 }

@@ -1,11 +1,10 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
+using LABsistem.Application.DTOs;
 using LABsistem.Dal.Interfaces;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
-using LABSistem.Bll.DTOs; 
 
 namespace LABsistem.Api.Services
 {
@@ -24,14 +23,12 @@ namespace LABsistem.Api.Services
                 KabinetID = dto.KabinetID,
                 KreatorID = dto.KreatorID
             };
-            
             await _repo.AddAsync(nova);
-            
-            return new OpremaDTO 
-            { 
-                ID = nova.ID, 
-                Naziv = nova.Naziv, 
-                SerijskiBroj = nova.SerijskiBroj 
+            return new OpremaDTO
+            {
+                ID = nova.ID,
+                Naziv = nova.Naziv,
+                SerijskiBroj = nova.SerijskiBroj
             };
         }
 
@@ -55,12 +52,10 @@ namespace LABsistem.Api.Services
         {
             var p = await _repo.GetByIdAsync(id);
             if (p == null) return false;
-
             p.Naziv = dto.Naziv;
             p.SerijskiBroj = dto.SerijskiBroj;
             p.stanje = (StatusOpreme)dto.Stanje;
             p.KabinetID = dto.KabinetID;
-
             await _repo.UpdateAsync(p);
             return true;
         }
@@ -69,7 +64,6 @@ namespace LABsistem.Api.Services
         {
             var postojeca = await _repo.GetByIdAsync(id);
             if (postojeca == null) return false;
-
             await _repo.DeleteAsync(id);
             return true;
         }

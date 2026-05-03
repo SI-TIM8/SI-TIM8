@@ -1,4 +1,4 @@
-﻿namespace LABsistem.Presentation.Middleware
+namespace LABsistem.Presentation.Middleware
 {
     public class ExceptionMiddleware
     {

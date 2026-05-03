@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LABsistem.Application.Interfaces
 {
-    internal interface IZahtjevService
+    internal interface IEvidencijaService
     {
     }
 }

@@ -3,10 +3,10 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Cryptography;
 using System.Security.Claims;
 using System.Text;
-using LABsistem.Bll.Models;
+using LABsistem.Application.Models;
 using Microsoft.IdentityModel.Tokens;
 
-namespace LABsistem.Bll.Services
+namespace LABsistem.Application.Services
 {
     public class JwtService : IJwtService
     {

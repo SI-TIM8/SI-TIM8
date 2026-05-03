@@ -1,7 +1,7 @@
 using System;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace LABsistem.Bll.Services
+namespace LABsistem.Application.Services
 {
     public class InMemoryRevokedTokenStore : IRevokedTokenStore
     {
