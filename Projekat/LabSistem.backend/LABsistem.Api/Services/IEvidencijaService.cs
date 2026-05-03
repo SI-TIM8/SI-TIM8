@@ -9,5 +9,7 @@ namespace LABsistem.Api.Services
     {
         Task<IEnumerable<EvidencijaDTO>> VratiSveEvidencije();
         Task KreirajEvidenciju(EvidencijaCreateDTO dto);
+        Task AzurirajStatus(int id, string status);
+        Task ObrisiEvidenciju(int id);
     }
 }

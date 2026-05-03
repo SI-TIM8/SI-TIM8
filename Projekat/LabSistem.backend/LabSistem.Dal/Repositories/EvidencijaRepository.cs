@@ -30,5 +30,24 @@ namespace LABsistem.Dal.Repositories
             await _context.Evidencije.AddAsync(evidencija);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<Evidencija?> GetByIdAsync(int id) =>
+            await _context.Evidencije.FindAsync(id);
+
+        public async Task UpdateAsync(Evidencija evidencija)
+        {
+            _context.Evidencije.Update(evidencija);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var e = await _context.Evidencije.FindAsync(id);
+            if (e != null)
+            {
+                _context.Evidencije.Remove(e);
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

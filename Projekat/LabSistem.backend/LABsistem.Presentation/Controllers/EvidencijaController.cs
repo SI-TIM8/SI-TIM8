@@ -24,5 +24,19 @@ namespace LABsistem.Presentation.Controllers
             await _service.KreirajEvidenciju(dto);
             return Ok(new { message = "Kvar uspješno prijavljen" });
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] EvidencijaUpdateDTO dto)
+        {
+            await _service.AzurirajStatus(id, dto.Status);
+            return Ok(new { message = "Status ažuriran" });
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _service.ObrisiEvidenciju(id);
+            return Ok(new { message = "Evidencija obrisana" });
+        }
     }
 }

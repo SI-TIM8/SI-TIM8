@@ -39,5 +39,18 @@ namespace LABsistem.Api.Services
             };
             await _repo.AddAsync(nova);
         }
+
+        public async Task AzurirajStatus(int id, string status)
+        {
+            var e = await _repo.GetByIdAsync(id);
+            if (e == null) return;
+            e.Status = status;
+            await _repo.UpdateAsync(e);
+        }
+
+        public async Task ObrisiEvidenciju(int id)
+        {
+            await _repo.DeleteAsync(id);
+        }
     }
 }

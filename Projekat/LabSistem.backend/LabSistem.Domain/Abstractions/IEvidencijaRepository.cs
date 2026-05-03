@@ -10,5 +10,8 @@ namespace LABsistem.Dal.Interfaces
     {
         Task<IEnumerable<(Evidencija evidencija, string opremaNaziv, string korisnikImePrezime)>> GetAllWithDetailsAsync();
         Task AddAsync(Evidencija evidencija);
+        Task<Evidencija?> GetByIdAsync(int id);
+        Task UpdateAsync(Evidencija evidencija);
+        Task DeleteAsync(int id);
     }
 }

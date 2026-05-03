@@ -18,4 +18,9 @@ namespace LABsistem.Bll.DTOs
         public int KorisnikID { get; set; }
         public string KorisnikImePrezime { get; set; } = default!;
     }
+
+    public class EvidencijaUpdateDTO
+    {
+        public string Status { get; set; } = default!;
+    }
 }
