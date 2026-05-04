@@ -1,10 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using LABsistem.Domain.Entities;
 
 namespace LABsistem.Dal.Interfaces
 {
-    internal interface IOpremaRepository
+    public interface IOpremaRepository
     {
+        Task<IEnumerable<Oprema>> GetAllAsync();
+        Task<Oprema> GetByIdAsync(int id);
+        Task AddAsync(Oprema oprema);
+        Task<IEnumerable<(Oprema oprema, string kabinetNaziv, string zgradaNaziv)>> GetAllWithKabinetAsync();
+        Task UpdateAsync(Oprema oprema);
+        Task DeleteAsync(int id);
     }
 }

@@ -3,12 +3,15 @@ using System.Security.Claims;
 using System.Text;
 using LABsistem.Application.Models;
 using LABsistem.Application.Services;
+using LABsistem.Application.Validators;
 using LABsistem.Dal.Db;
+using LABsistem.Dal.Interfaces;
+using LABsistem.Dal.Repositories;
+using LABsistem.Api.Services;
+using LABsistem.Application.DTOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-
-using LABsistem.Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +33,10 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IRevokedTokenStore, DatabaseRevokedTokenStore>();
 builder.Services.AddScoped<AuthBusinessRules>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IOpremaRepository, OpremaRepository>();
+builder.Services.AddScoped<IOpremaService, OpremaService>();
+builder.Services.AddScoped<IEvidencijaRepository, EvidencijaRepository>();
+builder.Services.AddScoped<IEvidencijaService, EvidencijaService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -107,6 +114,8 @@ using (var scope = app.Services.CreateScope())
         {
             context.Database.Migrate();
             await LabSistemDbSeeder.SeedDefaultUsersAsync(context);
+            await LabSistemDbSeeder.SeedDefaultObjektiAsync(context);
+            await LabSistemDbSeeder.SeedDefaultKabinetiAsync(context);
             Console.WriteLine("Migracije su uspjesno provjerene/primijenjene.");
         }
     }
@@ -117,9 +126,7 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
-
 app.UseCors("AllowFrontend");
-
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -129,6 +136,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapControllers();
-
 app.Run();
 public partial class Program { }

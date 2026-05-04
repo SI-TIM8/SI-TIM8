@@ -3,9 +3,11 @@ import AccessDenied from "./pages/AccessDenied";
 import AboutApp from "./pages/AboutApp";
 import Dashboard from "./pages/Dashboard";
 import Korisnici from "./pages/Korisnici";
+import Kvarovi from "./pages/Kvarovi";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Profil from "./pages/Profil";
+import Oprema from "./pages/Oprema";
 import { ALLOWED_ROLES_BY_ROUTE, getCurrentRole } from "./auth/routeAccess";
 import { clearSession, hasActiveAccessToken } from "./auth/session";
 
@@ -107,10 +109,7 @@ function App() {
           path="/oprema"
           element={
             <ProtectedPage path="/oprema">
-              <PlaceholderStranica
-                naslov="Oprema"
-                opis="Lista opreme po laboratorijima."
-              />
+              <Oprema />
             </ProtectedPage>
           }
         />
@@ -164,10 +163,7 @@ function App() {
           path="/kvarovi"
           element={
             <ProtectedPage path="/kvarovi">
-              <PlaceholderStranica
-                naslov="Kvarovi opreme"
-                opis="Pregled prijavljenih kvarova i promjena statusa."
-              />
+              <Kvarovi />
             </ProtectedPage>
           }
         />

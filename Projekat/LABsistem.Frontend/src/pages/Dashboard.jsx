@@ -1,4 +1,6 @@
 import Layout from "../components/Layout";
+import { useEffect, useState } from "react";
+import api from "../api/client";
 
 const DASHBOARD_PO_ULOZI = {
   student: {
@@ -42,16 +44,7 @@ const DASHBOARD_PO_ULOZI = {
     statistike: [
       { label: "Termini danas", vrijednost: "4", klasa: "plavo" },
       { label: "Ukupna oprema", vrijednost: "38", klasa: "" },
-      { label: "Aktivni kvarovi", vrijednost: "2", klasa: "crveno" },
     ],
-    tabela: {
-      naslov: "Prijavljeni kvarovi",
-      kolone: ["Oprema", "Serijski broj", "Prijavio", "Status"],
-      redovi: [
-        ["Mikroskop XR-200", "SN-4421", "Ajla Kovač", "prijavljen"],
-        ["Centrifuga C-10", "SN-8834", "Mirza Ilić", "u popravci"],
-      ],
-    },
   },
   admin: {
     naslov: "Administratorski panel",
@@ -77,6 +70,9 @@ const BADGE_KLASA = {
   "odobreno": "zeleno",
   "na čekanju": "zuto",
   "prijavljen": "crveno",
+  "Kvar": "crveno",
+  "U obradi": "amber",
+  "Riješeno": "zeleno",
   "u popravci": "amber",
   "aktivan": "zeleno",
   "odbijeno": "crveno",
@@ -85,6 +81,47 @@ const BADGE_KLASA = {
 function Dashboard() {
   const uloga = localStorage.getItem("uloga") || "student";
   const podaci = DASHBOARD_PO_ULOZI[uloga];
+  const [evidencije, setEvidencije] = useState([]);
+  const [loadingEvidencije, setLoadingEvidencije] = useState(false);
+
+  useEffect(() => {
+    if (uloga === "tehnicar") {
+      loadEvidencije();
+    }
+  }, []);
+
+  async function loadEvidencije() {
+    setLoadingEvidencije(true);
+    try {
+      const response = await api.get("/Evidencija");
+      setEvidencije(response.data);
+    } catch (error) {
+      console.error("Greška pri učitavanju evidencija:", error);
+    } finally {
+      setLoadingEvidencije(false);
+    }
+  }
+
+  async function handleEvidencijaStatus(id, noviStatus) {
+    try {
+      await api.put(`/Evidencija/${id}`, { status: noviStatus });
+      await loadEvidencije();
+    } catch (error) {
+      console.error("Greška pri ažuriranju statusa:", error);
+    }
+  }
+
+  async function handleEvidencijaDelete(id) {
+    if (!window.confirm("Da li ste sigurni da želite obrisati ovaj kvar?")) return;
+    try {
+      await api.delete(`/Evidencija/${id}`);
+      await loadEvidencije();
+    } catch (error) {
+      console.error("Greška pri brisanju:", error);
+    }
+  }
+
+  const aktivniKvarovi = evidencije.filter((e) => e.status === "Kvar").length;
 
   return (
     <Layout>
@@ -101,38 +138,114 @@ function Dashboard() {
             <div className="stat-label">{stat.label}</div>
           </div>
         ))}
+        {uloga === "tehnicar" && (
+          <div className="stat-card crveno">
+            <div className="stat-value">{aktivniKvarovi}</div>
+            <div className="stat-label">Prijavljeni kvarovi</div>
+          </div>
+        )}
       </div>
 
-      {/* Tabela */}
-      <div className="table-wrapper">
-        <div className="table-header">
-          <h2>{podaci.tabela.naslov}</h2>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              {podaci.tabela.kolone.map((k, i) => (
-                <th key={i}>{k}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {podaci.tabela.redovi.map((red, i) => (
-              <tr key={i}>
-                {red.map((celija, j) => (
-                  <td key={j}>
-                    {BADGE_KLASA[celija] ? (
-                      <span className={`badge ${BADGE_KLASA[celija]}`}>
-                        {celija}
+      {/* Tabela kvarova — samo tehnicar */}
+      {uloga === "tehnicar" && (
+        <div className="table-wrapper">
+          <div className="table-header">
+            <h2>Prijavljeni kvarovi</h2>
+          </div>
+          {loadingEvidencije ? (
+            <p style={{ padding: "16px" }}>Učitavanje...</p>
+          ) : evidencije.length > 0 ? (
+            <table>
+              <thead>
+                <tr>
+                  <th>Oprema</th>
+                  <th>Prijavio</th>
+                  <th>Komentar</th>
+                  <th>Status</th>
+                  <th>Akcije</th>
+                </tr>
+              </thead>
+              <tbody>
+                {evidencije.map((e) => (
+                  <tr key={e.id}>
+                    <td>{e.opremaNaziv}</td>
+                    <td>{e.korisnikImePrezime}</td>
+                    <td>{e.komentar}</td>
+                    <td>
+                      <span className={`badge ${BADGE_KLASA[e.status] || ""}`}>
+                        {e.status}
                       </span>
-                    ) : celija}
-                  </td>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", gap: "6px" }}>
+                        {e.status !== "Riješeno" && (
+                          <button
+                            className="users-action-btn"
+                            onClick={() => handleEvidencijaStatus(e.id, "Riješeno")}
+                          >
+                            ✓ Riješi
+                          </button>
+                        )}
+                        {e.status !== "U obradi" && e.status !== "Riješeno" && (
+                          <button
+                            className="users-action-btn"
+                            onClick={() => handleEvidencijaStatus(e.id, "U obradi")}
+                          >
+                            🔧 Obrada
+                          </button>
+                        )}
+                        <button
+                          className="users-action-btn warn"
+                          onClick={() => handleEvidencijaDelete(e.id)}
+                        >
+                          🗑 Briši
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p style={{ padding: "16px", color: "var(--text-muted)" }}>
+              Nema prijavljenih kvarova.
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Tabela za ostale uloge (student, profesor, admin) */}
+      {uloga !== "tehnicar" && podaci.tabela && (
+        <div className="table-wrapper">
+          <div className="table-header">
+            <h2>{podaci.tabela.naslov}</h2>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                {podaci.tabela.kolone.map((k, i) => (
+                  <th key={i}>{k}</th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {podaci.tabela.redovi.map((red, i) => (
+                <tr key={i}>
+                  {red.map((celija, j) => (
+                    <td key={j}>
+                      {BADGE_KLASA[celija] ? (
+                        <span className={`badge ${BADGE_KLASA[celija]}`}>
+                          {celija}
+                        </span>
+                      ) : celija}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </Layout>
   );
 }
