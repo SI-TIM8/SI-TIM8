@@ -43,7 +43,6 @@ const DASHBOARD_PO_ULOZI = {
     opis: "Pregledajte termine, opremu i prijavljene kvarove.",
     statistike: [
       { label: "Termini danas", vrijednost: "4", klasa: "plavo" },
-      { label: "Ukupna oprema", vrijednost: "38", klasa: "" },
     ],
   },
   admin: {
@@ -83,10 +82,12 @@ function Dashboard() {
   const podaci = DASHBOARD_PO_ULOZI[uloga];
   const [evidencije, setEvidencije] = useState([]);
   const [loadingEvidencije, setLoadingEvidencije] = useState(false);
+  const [ukupnaOprema, setUkupnaOprema] = useState(null);
 
   useEffect(() => {
     if (uloga === "tehnicar") {
       loadEvidencije();
+      loadOprema();
     }
   }, []);
 
@@ -99,6 +100,15 @@ function Dashboard() {
       console.error("Greška pri učitavanju evidencija:", error);
     } finally {
       setLoadingEvidencije(false);
+    }
+  }
+
+  async function loadOprema() {
+    try {
+      const response = await api.get("/Oprema");
+      setUkupnaOprema(response.data.length);
+    } catch (error) {
+      console.error("Greška pri učitavanju opreme:", error);
     }
   }
 
@@ -121,7 +131,7 @@ function Dashboard() {
     }
   }
 
-  const aktivniKvarovi = evidencije.filter((e) => e.status === "Kvar").length;
+  const aktivniKvarovi = evidencije.filter(e => e.status === "Kvar").length;
 
   return (
     <Layout>
@@ -132,17 +142,25 @@ function Dashboard() {
 
       {/* Statistike */}
       <div className="cards-grid">
-        {podaci.statistike.map((stat, i) => (
+        {podaci.statistike?.map((stat, i) => (
           <div key={i} className={`stat-card ${stat.klasa}`}>
             <div className="stat-value">{stat.vrijednost}</div>
             <div className="stat-label">{stat.label}</div>
           </div>
         ))}
+
+        {/* Tehnicar statistike — dinamičke */}
         {uloga === "tehnicar" && (
-          <div className="stat-card crveno">
-            <div className="stat-value">{aktivniKvarovi}</div>
-            <div className="stat-label">Prijavljeni kvarovi</div>
-          </div>
+          <>
+            <div className="stat-card plavo">
+              <div className="stat-value">{ukupnaOprema ?? "..."}</div>
+              <div className="stat-label">Ukupna oprema</div>
+            </div>
+            <div className="stat-card crveno">
+              <div className="stat-value">{aktivniKvarovi}</div>
+              <div className="stat-label">Prijavljeni kvarovi</div>
+            </div>
+          </>
         )}
       </div>
 
@@ -166,7 +184,7 @@ function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {evidencije.map((e) => (
+                {evidencije.map(e => (
                   <tr key={e.id}>
                     <td>{e.opremaNaziv}</td>
                     <td>{e.korisnikImePrezime}</td>
@@ -179,25 +197,16 @@ function Dashboard() {
                     <td>
                       <div style={{ display: "flex", gap: "6px" }}>
                         {e.status !== "Riješeno" && (
-                          <button
-                            className="users-action-btn"
-                            onClick={() => handleEvidencijaStatus(e.id, "Riješeno")}
-                          >
+                          <button className="users-action-btn" onClick={() => handleEvidencijaStatus(e.id, "Riješeno")}>
                             ✓ Riješi
                           </button>
                         )}
                         {e.status !== "U obradi" && e.status !== "Riješeno" && (
-                          <button
-                            className="users-action-btn"
-                            onClick={() => handleEvidencijaStatus(e.id, "U obradi")}
-                          >
+                          <button className="users-action-btn" onClick={() => handleEvidencijaStatus(e.id, "U obradi")}>
                             🔧 Obrada
                           </button>
                         )}
-                        <button
-                          className="users-action-btn warn"
-                          onClick={() => handleEvidencijaDelete(e.id)}
-                        >
+                        <button className="users-action-btn warn" onClick={() => handleEvidencijaDelete(e.id)}>
                           🗑 Briši
                         </button>
                       </div>
@@ -207,14 +216,12 @@ function Dashboard() {
               </tbody>
             </table>
           ) : (
-            <p style={{ padding: "16px", color: "var(--text-muted)" }}>
-              Nema prijavljenih kvarova.
-            </p>
+            <p style={{ padding: "16px", color: "var(--text-muted)" }}>Nema prijavljenih kvarova.</p>
           )}
         </div>
       )}
 
-      {/* Tabela za ostale uloge (student, profesor, admin) */}
+      {/* Tabela za ostale uloge */}
       {uloga !== "tehnicar" && podaci.tabela && (
         <div className="table-wrapper">
           <div className="table-header">
@@ -223,9 +230,7 @@ function Dashboard() {
           <table>
             <thead>
               <tr>
-                {podaci.tabela.kolone.map((k, i) => (
-                  <th key={i}>{k}</th>
-                ))}
+                {podaci.tabela.kolone.map((k, i) => <th key={i}>{k}</th>)}
               </tr>
             </thead>
             <tbody>
@@ -233,11 +238,9 @@ function Dashboard() {
                 <tr key={i}>
                   {red.map((celija, j) => (
                     <td key={j}>
-                      {BADGE_KLASA[celija] ? (
-                        <span className={`badge ${BADGE_KLASA[celija]}`}>
-                          {celija}
-                        </span>
-                      ) : celija}
+                      {BADGE_KLASA[celija]
+                        ? <span className={`badge ${BADGE_KLASA[celija]}`}>{celija}</span>
+                        : celija}
                     </td>
                   ))}
                 </tr>

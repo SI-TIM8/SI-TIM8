@@ -4,6 +4,7 @@ import AboutApp from "./pages/AboutApp";
 import Dashboard from "./pages/Dashboard";
 import Korisnici from "./pages/Korisnici";
 import Kvarovi from "./pages/Kvarovi";
+import Objekti from "./pages/Objekti";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Profil from "./pages/Profil";
@@ -179,10 +180,7 @@ function App() {
           path="/objekti"
           element={
             <ProtectedPage path="/objekti">
-              <PlaceholderStranica
-                naslov="Objekti i kabineti"
-                opis="CRUD za lokacije, laboratorije i radno vrijeme."
-              />
+              <Objekti />
             </ProtectedPage>
           }
         />
