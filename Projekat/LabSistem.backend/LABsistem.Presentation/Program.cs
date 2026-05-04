@@ -37,10 +37,6 @@ builder.Services.AddScoped<IOpremaRepository, OpremaRepository>();
 builder.Services.AddScoped<IOpremaService, OpremaService>();
 builder.Services.AddScoped<IEvidencijaRepository, EvidencijaRepository>();
 builder.Services.AddScoped<IEvidencijaService, EvidencijaService>();
-builder.Services.AddScoped<IObjekatRepository, ObjekatRepository>();
-builder.Services.AddScoped<IObjekatService, ObjekatService>();
-builder.Services.AddScoped<IKabinetRepository, KabinetRepository>();
-builder.Services.AddScoped<IKabinetService, KabinetService>();
 builder.Services.AddScoped<ITerminRepository, TerminRepository>();
 builder.Services.AddScoped<ITerminService, TerminService>();
 
