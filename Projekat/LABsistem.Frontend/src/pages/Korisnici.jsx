@@ -295,17 +295,13 @@ function Korisnici() {
     return "Uredi korisnika";
   }
 
-  function getDeactivateTooltip(user) {
-    if (isCurrentUser(user)) {
-      return "Ne mozete deaktivirati svoj nalog.";
-    }
-
-    if (user.role === "Admin" && isUserActive(user)) {
-      return "Prvo uklonite administratorsku ulogu prije deaktivacije korisnika.";
-    }
-
-    return isUserActive(user) ? "Deaktiviraj korisnika" : "Aktiviraj korisnika";
+function getDeactivateTooltip(user) {
+  if (isCurrentUser(user)) {
+    return "Ne mozete deaktivirati svoj nalog.";
   }
+
+  return isUserActive(user) ? "Deaktiviraj korisnika" : "Aktiviraj korisnika";
+}
 
   function shouldShowFieldError(fieldName) {
     return Boolean(formErrors[fieldName]) && (formTouched[fieldName] || hasSubmitted);
@@ -635,7 +631,7 @@ function Korisnici() {
                 const selfUser = isCurrentUser(user);
                 const editDisabled = selfUser;
                 const activeUser = isUserActive(user);
-                const deactivateDisabled = selfUser || (user.role === "Admin" && activeUser);
+                const deactivateDisabled = selfUser;
 
                 return (
                   <div

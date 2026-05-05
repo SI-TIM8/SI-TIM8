@@ -402,11 +402,6 @@ namespace LABsistem.Application.Services
                 return (false, "Korisnik je vec deaktiviran.", null);
             }
 
-            if (korisnik.Uloga == UlogaKorisnika.Admin)
-            {
-                return (false, "Prvo uklonite administratorsku ulogu prije deaktivacije korisnika.", null);
-            }
-
             korisnik.DeactivatedAt = DateTime.UtcNow;
             RevokeUserRefreshTokens(korisnik.RefreshTokens);
 
