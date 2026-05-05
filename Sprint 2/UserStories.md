@@ -527,3 +527,40 @@
 **Acceptance Criteria:** 1. Sistem bilježi korisničko ime i timestamp svake uspješne i neuspješne prijave. 2. Administrator može pregledati listu tih zapisa.  
 **Sprint:** 10  
 **Veza sa Product Backlogom:** 41
+
+---
+
+### USER STORY – Uređivanje korisnika
+**ID storyja:** US35  
+**Naziv storyja:** Uređivanje korisnika  
+**Opis:** Kao administrator, želim uređivati postojeće korisničke naloge, kako bih mogao ažurirati njihove podatke, ulogu i po potrebi lozinku.  
+**Poslovna vrijednost:** Omogućava održavanje tačnih i ažurnih korisničkih podataka bez potrebe za kreiranjem novog naloga.  
+**Prioritet:** High  
+**Pretpostavke:** Administrator je prijavljen i ima pristup admin panelu.  
+**Veze:** US01, US02  
+**Acceptance Criteria:** 1. Administrator može otvoriti formu za uređivanje postojećeg korisnika.
+2. Prikazuju se trenutni podaci korisnika.
+3. Moguće je izmijeniti ime i prezime, email adresu, korisničko ime i ulogu korisnika.
+4. Nova lozinka je opcionalna i mijenja se samo ako je unesena.
+5. Svi uneseni podaci se validiraju prije spremanja.
+6. Promjene se uspješno spremaju u bazu i odmah su vidljive u listi korisnika.  
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 19
+
+---
+
+### USER STORY – Pretraga i filtriranje korisnika
+**ID storyja:** US36  
+**Naziv storyja:** Pretraga i filtriranje korisnika  
+**Opis:** Kao administrator, želim pretraživati i filtrirati korisnike, kako bih brže pronašao odgovarajuće naloge i efikasnije upravljao listom korisnika.  
+**Poslovna vrijednost:** Olakšava administraciju sistema i ubrzava rad sa većim brojem korisničkih naloga.  
+**Prioritet:** Medium  
+**Pretpostavke:** Administrator je prijavljen i ima pristup listi korisnika u admin panelu.  
+**Veze:** US01, US02, US35  
+**Acceptance Criteria:** 1. Administrator može pretraživati korisnike po imenu i prezimenu, email adresi i korisničkom imenu.
+2. Administrator može filtrirati korisnike po ulozi.
+3. Administrator može filtrirati korisnike po statusu aktivan/deaktiviran.
+4. Moguće je kombinovati više filtera istovremeno.
+5. Administrator može resetovati filtere i vratiti puni prikaz liste korisnika.  
+**Sprint:** 6  
+**Veza sa Product Backlogom:** 36

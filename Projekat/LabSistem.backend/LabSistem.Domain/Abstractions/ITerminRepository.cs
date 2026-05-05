@@ -1,10 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using LABsistem.Domain.Entities;
 
 namespace LABsistem.Dal.Interfaces
 {
-    internal interface ITerminRepository
+    public interface ITerminRepository
     {
+        Task<IEnumerable<(Termin termin, string kreatorIme, string kabinetNaziv)>> GetAllWithDetailsAsync();
+        Task<Termin?> GetByIdAsync(int id);
+        Task AddAsync(Termin termin);
+        Task UpdateAsync(Termin termin);
+        Task DeleteAsync(int id);
     }
 }

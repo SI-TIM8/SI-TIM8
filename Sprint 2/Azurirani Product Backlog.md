@@ -46,3 +46,5 @@
 | 42 | Historija korištenja opreme | Tehničar i administrator imaju uvid u historiju korištenja opreme | feature | Low | 3 | To Do | Sprint 10 | Nije u MVP |
 | 43 | Prijava kvara | Korisnik (student ili profesor/asistent) može prijaviti kvar tehničaru | feature | Medium | 3 | To Do | Sprint 10 | |
 | 44 | Potvrda i obrada kvara | Tehničar obrađuje prijavu kvara | feature | Medium | 3 | To Do | Sprint 10 | Povezano sa statusom opreme |
+| 45 | Pretraga i filtriranje korisnika | Administrator može pretraživati korisnike po imenu, emailu i korisničkom imenu te filtrirati listu po ulozi i statusu aktivan/deaktiviran | Feature | Srednji (P2) | 3 | Done | Sprint 6 / Release 2 | Moguće je kombinovati više filtera istovremeno i resetovati prikaz na kompletnu listu korisnika. |
+

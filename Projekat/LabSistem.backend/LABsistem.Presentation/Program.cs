@@ -1,4 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using LABsistem.Application.Models;
@@ -41,6 +41,8 @@ builder.Services.AddScoped<IObjekatRepository, ObjekatRepository>();
 builder.Services.AddScoped<IObjekatService, ObjekatService>();
 builder.Services.AddScoped<IKabinetRepository, KabinetRepository>();
 builder.Services.AddScoped<IKabinetService, KabinetService>();
+builder.Services.AddScoped<ITerminRepository, TerminRepository>();
+builder.Services.AddScoped<ITerminService, TerminService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
