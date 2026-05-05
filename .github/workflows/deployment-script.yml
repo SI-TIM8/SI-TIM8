@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/add-migrations-to-deployment-scripts" ]
 
 jobs:
   deploy:
@@ -75,10 +75,50 @@ jobs:
               docker compose -f docker-compose.prod.yml up -d db
             fi
 
+            echo "Waiting for labsistem-db to become healthy..."
+            for i in {1..30}; do
+              DB_HEALTH=$(docker inspect -f '{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}' labsistem-db 2>/dev/null || echo "not-found")
+              if [ "$DB_HEALTH" = "healthy" ]; then
+                echo "labsistem-db is healthy."
+                break
+              fi
+
+              if [ "$i" -eq 30 ]; then
+                echo "labsistem-db did not become healthy in time (status: $DB_HEALTH)."
+                exit 1
+              fi
+
+              echo "Current DB health: $DB_HEALTH (attempt $i/30). Retrying in 2s..."
+              sleep 2
+            done
+
             docker rm -f labsistem-api >/dev/null 2>&1 || true
             docker rm -f labsistem-frontend >/dev/null 2>&1 || true
 
             docker compose -f docker-compose.prod.yml up -d --no-deps labsistem.api
+
+            echo "Waiting for migration result from labsistem-api startup..."
+            for i in {1..45}; do
+              if docker logs labsistem-api 2>&1 | grep -Fq "Migracije su uspjesno provjerene/primijenjene."; then
+                echo "Migrations completed successfully."
+                break
+              fi
+
+              if docker logs labsistem-api 2>&1 | grep -Fq "Greska pri migraciji:"; then
+                echo "Migration failed. Recent logs:"
+                docker logs --tail 200 labsistem-api || true
+                exit 1
+              fi
+
+              if [ "$i" -eq 45 ]; then
+                echo "Timed out waiting for migration success log from labsistem-api."
+                docker logs --tail 200 labsistem-api || true
+                exit 1
+              fi
+
+              sleep 2
+            done
+
             docker compose -f docker-compose.prod.yml up -d --no-deps labsistem.frontend
 
             docker image prune -f
