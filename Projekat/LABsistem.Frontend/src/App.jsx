@@ -1,9 +1,15 @@
-import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import AccessDenied from "./pages/AccessDenied";
 import AboutApp from "./pages/AboutApp";
 import Dashboard from "./pages/Dashboard";
 import Korisnici from "./pages/Korisnici";
-import Kvarovi from "./pages/Kvarovi";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Profil from "./pages/Profil";
@@ -155,15 +161,10 @@ function App() {
           path="/termini"
           element={
             <ProtectedPage path="/termini">
-              <PlaceholderStranica naslov="Upravljanje terminima" opis="CRUD okruzenje za termine." />
-            </ProtectedPage>
-          }
-        />
-        <Route
-          path="/kvarovi"
-          element={
-            <ProtectedPage path="/kvarovi">
-              <Kvarovi />
+              <PlaceholderStranica
+                naslov="Upravljanje terminima"
+                opis="CRUD okruzenje za termine."
+              />
             </ProtectedPage>
           }
         />

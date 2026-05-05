@@ -21,7 +21,6 @@ export const NAVIGATION_BY_ROLE = {
   tehnicar: [
     { label: "Upravljanje terminima", path: "/termini" },
     { label: "Upravljanje opremom", path: "/oprema" },
-    { label: "Kvarovi opreme", path: "/kvarovi" },
     { label: "Kalendar termina", path: "/kalendar" },
   ],
   admin: [
@@ -42,7 +41,6 @@ export const ALLOWED_ROLES_BY_ROUTE = {
   "/zahtjevi": ["profesor"],
   "/historija": ["profesor"],
   "/termini": ["tehnicar"],
-  "/kvarovi": ["tehnicar"],
   "/korisnici": ["admin"],
   "/objekti": ["admin"],
 };
