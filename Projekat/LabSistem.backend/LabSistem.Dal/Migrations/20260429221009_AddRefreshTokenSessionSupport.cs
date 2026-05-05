@@ -60,6 +60,21 @@ namespace LabSistem.Dal.Migrations
                 column: "Email",
                 unique: true);
 
+            migrationBuilder.Sql(@"
+                WITH duplicates AS (
+                    SELECT ""ID"", ""Username"",
+                           ROW_NUMBER() OVER (PARTITION BY ""Username"" ORDER BY ""ID"") AS rn
+                    FROM ""Korisnici""
+                )
+                UPDATE ""Korisnici"" k
+                SET ""Username"" =
+                    LEFT(k.""Username"", 30 - LENGTH('_' || k.""ID""::text))
+                    || '_' || k.""ID""::text
+                FROM duplicates d
+                WHERE k.""ID"" = d.""ID""
+                  AND d.rn > 1;
+            ");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Korisnici_Username",
                 table: "Korisnici",
