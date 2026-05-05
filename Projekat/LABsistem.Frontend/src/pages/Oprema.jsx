@@ -3,9 +3,7 @@ import Layout from "../components/Layout";
 import api from "../api/client";
 import { getCurrentUserId } from "../auth/session";
 
-const getLocalRole = () => {
-  return localStorage.getItem("uloga") || "student";
-};
+const getLocalRole = () => localStorage.getItem("uloga") || "student";
 
 const STATUS_OPTIONS = [
   { value: 1, label: "Ispravno", color: "zeleno" },
@@ -37,6 +35,8 @@ function extractErrorMessage(error, fallbackMessage) {
 
 function Oprema() {
   const [opremaList, setOpremaList] = useState([]);
+  const [objekti, setObjekti] = useState([]);
+  const [selectedObjekatID, setSelectedObjekatID] = useState("");
   const [filters, setFilters] = useState(INITIAL_FILTERS);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -46,7 +46,6 @@ function Oprema() {
   const [formState, setFormState] = useState(INITIAL_FORM_STATE);
   const [message, setMessage] = useState({ type: "", text: "" });
 
-  // Kvar modal
   const [kvarModalOpen, setKvarModalOpen] = useState(false);
   const [kvarOprema, setKvarOprema] = useState(null);
   const [kvarKomentar, setKvarKomentar] = useState("");
@@ -56,39 +55,42 @@ function Oprema() {
   const isTehnicar = userRole === "tehnicar" || userRole === "admin";
   const currentUserId = getCurrentUserId();
 
-  useEffect(() => {
-    loadOprema();
-  }, []);
+  useEffect(() => { loadAll(); }, []);
 
-  async function loadOprema() {
+  async function loadAll() {
     setLoading(true);
     try {
-      const response = await api.get("/Oprema");
-      setOpremaList(response.data);
+      const [opremaRes, objektiRes] = await Promise.all([
+        api.get("/Oprema"),
+        api.get("/Objekat"),
+      ]);
+      setOpremaList(opremaRes.data);
+      setObjekti(objektiRes.data);
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: extractErrorMessage(error, "Neuspješno učitavanje opreme."),
-      });
+      setMessage({ type: "error", text: extractErrorMessage(error, "Neuspješno učitavanje opreme.") });
     } finally {
       setLoading(false);
     }
   }
 
+  const kabinetiZaObjekat = useMemo(() => {
+    if (!selectedObjekatID) return [];
+    return objekti.find(o => o.id === Number(selectedObjekatID))?.kabineti || [];
+  }, [selectedObjekatID, objekti]);
+
   const kabinetiOptions = useMemo(() => {
-    const unique = [...new Map(opremaList.map((o) => [o.kabinetNaziv, o.kabinetNaziv])).values()];
+    const unique = [...new Map(opremaList.map(o => [o.kabinetNaziv, o.kabinetNaziv])).values()];
     return unique.filter(Boolean);
   }, [opremaList]);
 
   const zgradaOptions = useMemo(() => {
-    const unique = [...new Map(opremaList.map((o) => [o.zgradaNaziv, o.zgradaNaziv])).values()];
+    const unique = [...new Map(opremaList.map(o => [o.zgradaNaziv, o.zgradaNaziv])).values()];
     return unique.filter(Boolean);
   }, [opremaList]);
 
   const filteredOprema = useMemo(() => {
-    return opremaList.filter((o) => {
-      const termMatch =
-        !filters.searchTerm ||
+    return opremaList.filter(o => {
+      const termMatch = !filters.searchTerm ||
         o.naziv.toLowerCase().includes(filters.searchTerm.toLowerCase().trim()) ||
         o.serijskiBroj.toString().includes(filters.searchTerm.trim());
       const statusMatch = !filters.status || o.stanje === Number(filters.status);
@@ -102,25 +104,22 @@ function Oprema() {
 
   function handleFilterChange(e) {
     const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
+    setFilters(prev => ({ ...prev, [name]: value }));
   }
 
-  function resetFilters() {
-    setFilters(INITIAL_FILTERS);
-  }
+  function resetFilters() { setFilters(INITIAL_FILTERS); }
 
   function handleFormChange(e) {
     const { name, value } = e.target;
-    const processedValue =
-      name === "stanje" || name === "serijskiBroj" || name === "kabinetID"
-        ? Number(value)
-        : value;
-    setFormState((prev) => ({ ...prev, [name]: processedValue }));
+    const processedValue = name === "stanje" || name === "serijskiBroj" || name === "kabinetID"
+      ? Number(value) : value;
+    setFormState(prev => ({ ...prev, [name]: processedValue }));
   }
 
   function openCreateModal() {
     setModalMode("create");
     setFormState(INITIAL_FORM_STATE);
+    setSelectedObjekatID("");
     setMessage({ type: "", text: "" });
     setModalOpen(true);
   }
@@ -134,6 +133,9 @@ function Oprema() {
       stanje: oprema.stanje,
       kabinetID: oprema.kabinetID,
     });
+    // Pronađi objekat koji sadrži ovaj kabinet
+    const obj = objekti.find(o => o.kabineti?.some(k => k.id === oprema.kabinetID));
+    setSelectedObjekatID(obj ? String(obj.id) : "");
     setMessage({ type: "", text: "" });
     setModalOpen(true);
   }
@@ -157,10 +159,7 @@ function Oprema() {
       setKvarModalOpen(false);
       setMessage({ type: "success", text: "Kvar uspješno prijavljen!" });
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: extractErrorMessage(error, "Greška pri prijavi kvara."),
-      });
+      setMessage({ type: "error", text: extractErrorMessage(error, "Greška pri prijavi kvara.") });
       setKvarModalOpen(false);
     } finally {
       setKvarSaving(false);
@@ -183,13 +182,10 @@ function Oprema() {
         });
         setMessage({ type: "success", text: "Izmjene sačuvane!" });
       }
-      await loadOprema();
+      await loadAll();
       setTimeout(() => setModalOpen(false), 800);
     } catch (error) {
-      setMessage({
-        type: "error",
-        text: extractErrorMessage(error, "Greška prilikom čuvanja podataka."),
-      });
+      setMessage({ type: "error", text: extractErrorMessage(error, "Greška prilikom čuvanja podataka.") });
     } finally {
       setSaving(false);
     }
@@ -199,15 +195,14 @@ function Oprema() {
     if (!window.confirm("Da li ste sigurni da želite obrisati ovu opremu?")) return;
     try {
       await api.delete(`/Oprema/${id}`);
-      await loadOprema();
+      await loadAll();
       setMessage({ type: "success", text: "Oprema obrisana." });
     } catch (error) {
       alert(extractErrorMessage(error, "Greška pri brisanju."));
     }
   }
 
-  const getStatusInfo = (val) =>
-    STATUS_OPTIONS.find((s) => s.value === Number(val)) || STATUS_OPTIONS[0];
+  const getStatusInfo = val => STATUS_OPTIONS.find(s => s.value === Number(val)) || STATUS_OPTIONS[0];
 
   return (
     <Layout>
@@ -240,7 +235,7 @@ function Oprema() {
             <select name="status" value={filters.status} onChange={handleFilterChange}
               style={{ width: "100%", padding: "8px 12px 8px 30px", border: "1px solid var(--border)", borderRadius: "8px", background: "var(--input-bg)", color: filters.status ? "var(--text)" : "var(--text-muted)", fontSize: "14px", appearance: "none", cursor: "pointer" }}>
               <option value="">Svi statusi</option>
-              {STATUS_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+              {STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
             </select>
             <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "11px", color: "var(--text-muted)" }}>▼</span>
           </div>
@@ -250,7 +245,7 @@ function Oprema() {
             <select name="kabinet" value={filters.kabinet} onChange={handleFilterChange}
               style={{ width: "100%", padding: "8px 12px 8px 30px", border: "1px solid var(--border)", borderRadius: "8px", background: "var(--input-bg)", color: filters.kabinet ? "var(--text)" : "var(--text-muted)", fontSize: "14px", appearance: "none", cursor: "pointer" }}>
               <option value="">Svi kabineti</option>
-              {kabinetiOptions.map((k) => <option key={k} value={k}>{k}</option>)}
+              {kabinetiOptions.map(k => <option key={k} value={k}>{k}</option>)}
             </select>
             <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "11px", color: "var(--text-muted)" }}>▼</span>
           </div>
@@ -260,7 +255,7 @@ function Oprema() {
             <select name="zgrada" value={filters.zgrada} onChange={handleFilterChange}
               style={{ width: "100%", padding: "8px 12px 8px 30px", border: "1px solid var(--border)", borderRadius: "8px", background: "var(--input-bg)", color: filters.zgrada ? "var(--text)" : "var(--text-muted)", fontSize: "14px", appearance: "none", cursor: "pointer" }}>
               <option value="">Sve zgrade</option>
-              {zgradaOptions.map((z) => <option key={z} value={z}>{z}</option>)}
+              {zgradaOptions.map(z => <option key={z} value={z}>{z}</option>)}
             </select>
             <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "11px", color: "var(--text-muted)" }}>▼</span>
           </div>
@@ -274,9 +269,7 @@ function Oprema() {
 
         <div className="card users-list-card">
           {message.text && !modalOpen && !kvarModalOpen && (
-            <p className={message.type === "error" ? "form-error" : "form-success"}>
-              {message.text}
-            </p>
+            <p className={message.type === "error" ? "form-error" : "form-success"}>{message.text}</p>
           )}
 
           <div className="users-list-header users-list-row">
@@ -292,7 +285,7 @@ function Oprema() {
             <div className="users-empty-state">Učitavanje podataka...</div>
           ) : filteredOprema.length > 0 ? (
             <div className="users-list">
-              {filteredOprema.map((item) => (
+              {filteredOprema.map(item => (
                 <div className="users-list-row users-list-item" key={item.id}>
                   <span style={{ fontWeight: "600" }}>{item.naziv}</span>
                   <span>{item.serijskiBroj}</span>
@@ -307,19 +300,13 @@ function Oprema() {
                     <div className="users-actions">
                       {isTehnicar && (
                         <>
-                          <button className="users-action-btn" onClick={() => openEditModal(item)}>
-                            ✎ Uredi
-                          </button>
-                          <button className="users-action-btn warn" onClick={() => handleDelete(item.id)}>
-                            🗑 Briši
-                          </button>
+                          <button className="users-action-btn" onClick={() => openEditModal(item)}>✎ Uredi</button>
+                          <button className="users-action-btn warn" onClick={() => handleDelete(item.id)}>🗑 Briši</button>
                         </>
                       )}
                       {userRole === "student" && (
-                      <button className="users-action-btn warn" onClick={() => openKvarModal(item)}>
-                        ⚠ Prijavi kvar
-                      </button>
-                    )}
+                        <button className="users-action-btn warn" onClick={() => openKvarModal(item)}>⚠ Prijavi kvar</button>
+                      )}
                     </div>
                   </span>
                 </div>
@@ -329,9 +316,7 @@ function Oprema() {
             <div className="users-empty-state">
               Nema pronađene opreme.
               {activeFilterCount > 0 && (
-                <button className="button sekundarno" onClick={resetFilters} style={{ marginLeft: "10px" }}>
-                  Resetuj filtere
-                </button>
+                <button className="button sekundarno" onClick={resetFilters} style={{ marginLeft: "10px" }}>Resetuj filtere</button>
               )}
             </div>
           )}
@@ -341,7 +326,7 @@ function Oprema() {
       {/* Modal za kreiranje/editovanje opreme */}
       {modalOpen && (
         <div className="users-modal-overlay" onClick={() => setModalOpen(false)}>
-          <div className="users-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="users-modal" onClick={e => e.stopPropagation()}>
             <div className="users-modal-header">
               <h2>{modalMode === "create" ? "Nova oprema" : "Uredi opremu"}</h2>
               <button className="users-modal-close" onClick={() => setModalOpen(false)}>×</button>
@@ -361,13 +346,45 @@ function Oprema() {
               <div className="form-group">
                 <label>Status</label>
                 <select name="stanje" value={formState.stanje} onChange={handleFormChange}>
-                  {STATUS_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                  {STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                </select>
+              </div>
+
+              {/* Objekat → Kabinet selekcija */}
+              <div className="form-group">
+                <label>Objekat</label>
+                <select
+                  value={selectedObjekatID}
+                  onChange={e => {
+                    setSelectedObjekatID(e.target.value);
+                    setFormState(prev => ({ ...prev, kabinetID: "" }));
+                  }}
+                  required
+                >
+                  <option value="">-- Odaberi objekat --</option>
+                  {objekti.map(o => (
+                    <option key={o.id} value={o.id}>{o.lokacija}</option>
+                  ))}
                 </select>
               </div>
               <div className="form-group">
-                <label>ID Kabineta</label>
-                <input name="kabinetID" type="number" value={formState.kabinetID} onChange={handleFormChange} required />
+                <label>Kabinet</label>
+                <select
+                  name="kabinetID"
+                  value={formState.kabinetID}
+                  onChange={handleFormChange}
+                  required
+                  disabled={!selectedObjekatID}
+                >
+                  <option value="">
+                    {selectedObjekatID ? "-- Odaberi kabinet --" : "Prvo odaberi objekat"}
+                  </option>
+                  {kabinetiZaObjekat.map(k => (
+                    <option key={k.id} value={k.id}>{k.naziv}</option>
+                  ))}
+                </select>
               </div>
+
               <div className="users-modal-actions">
                 <button className="button" type="submit" disabled={saving}>
                   {saving ? "Slanje..." : "Sačuvaj"}
@@ -384,7 +401,7 @@ function Oprema() {
       {/* Modal za prijavu kvara */}
       {kvarModalOpen && (
         <div className="users-modal-overlay" onClick={() => setKvarModalOpen(false)}>
-          <div className="users-modal" onClick={(e) => e.stopPropagation()}>
+          <div className="users-modal" onClick={e => e.stopPropagation()}>
             <div className="users-modal-header">
               <h2>⚠ Prijava kvara — {kvarOprema?.naziv}</h2>
               <button className="users-modal-close" onClick={() => setKvarModalOpen(false)}>×</button>
@@ -394,7 +411,7 @@ function Oprema() {
                 <label>Opis kvara</label>
                 <textarea
                   value={kvarKomentar}
-                  onChange={(e) => setKvarKomentar(e.target.value)}
+                  onChange={e => setKvarKomentar(e.target.value)}
                   maxLength={20}
                   required
                   rows={4}
