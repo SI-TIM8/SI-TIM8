@@ -15,10 +15,15 @@ namespace LABsistem.Api.Services
 
         public async Task<OpremaDTO> KreirajOpremu(OpremaCreateDTO dto)
         {
+            var postojecaOprema = await _repo.GetAllAsync();
+            var nextSerijskiBroj = postojecaOprema.Any()
+                ? postojecaOprema.Max(o => o.SerijskiBroj) + 1
+                : 1;
+
             var nova = new Oprema
             {
                 Naziv = dto.Naziv,
-                SerijskiBroj = dto.SerijskiBroj,
+                SerijskiBroj = nextSerijskiBroj,
                 stanje = (StatusOpreme)dto.Stanje,
                 KabinetID = dto.KabinetID,
                 KreatorID = dto.KreatorID
@@ -53,7 +58,6 @@ namespace LABsistem.Api.Services
             var p = await _repo.GetByIdAsync(id);
             if (p == null) return false;
             p.Naziv = dto.Naziv;
-            p.SerijskiBroj = dto.SerijskiBroj;
             p.stanje = (StatusOpreme)dto.Stanje;
             p.KabinetID = dto.KabinetID;
             await _repo.UpdateAsync(p);
