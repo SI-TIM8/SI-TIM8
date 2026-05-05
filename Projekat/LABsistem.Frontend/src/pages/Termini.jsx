@@ -19,8 +19,10 @@ const INITIAL_FILTERS = {
 
 function extractErrorMessage(error, fallbackMessage) {
   const responseData = error?.response?.data;
-  if (typeof responseData === "string" && responseData.trim()) return responseData;
-  if (typeof responseData?.message === "string" && responseData.message.trim()) return responseData.message;
+  if (typeof responseData === "string" && responseData.trim())
+    return responseData;
+  if (typeof responseData?.message === "string" && responseData.message.trim())
+    return responseData.message;
   return fallbackMessage;
 }
 
@@ -49,12 +51,15 @@ function formatTimeForPayload(value) {
 
 function isPastTermin(formState) {
   if (!formState.datum || !formState.vrijemePocetka) return false;
-  const selectedDateTime = new Date(`${formState.datum}T${formState.vrijemePocetka}:00`);
+  const selectedDateTime = new Date(
+    `${formState.datum}T${formState.vrijemePocetka}:00`,
+  );
   return selectedDateTime.getTime() < Date.now();
 }
 
 function Termini() {
   const [termini, setTermini] = useState([]);
+  const [kabineti, setKabineti] = useState([]);
   const [filters, setFilters] = useState(INITIAL_FILTERS);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -66,7 +71,8 @@ function Termini() {
 
   const currentUserId = getCurrentUserId();
   const currentRole = getCurrentRole();
-  const canManageTermini = currentRole === "tehnicar" || currentRole === "admin";
+  const canManageTermini =
+    currentRole === "tehnicar" || currentRole === "admin";
 
   useEffect(() => {
     loadTermini();
@@ -75,8 +81,12 @@ function Termini() {
   async function loadTermini() {
     setLoading(true);
     try {
-      const response = await api.get("/Termin");
-      setTermini(response.data);
+      const [terminiResponse, kabinetiResponse] = await Promise.all([
+        api.get("/Termin"),
+        api.get("/Kabinet"),
+      ]);
+      setTermini(terminiResponse.data);
+      setKabineti(kabinetiResponse.data);
     } catch (error) {
       setMessage({
         type: "error",
@@ -88,15 +98,12 @@ function Termini() {
   }
 
   const kabinetOptions = useMemo(() => {
-    const unique = new Map();
-    termini.forEach((termin) => {
-      if (termin.kabinetID && termin.kabinetNaziv) {
-        unique.set(termin.kabinetID, termin.kabinetNaziv);
-      }
-    });
-
-    return [...unique.entries()].map(([id, naziv]) => ({ id, naziv }));
-  }, [termini]);
+    return kabineti.map((kabinet) => ({
+      id: kabinet.id,
+      naziv: kabinet.naziv,
+      objekatLokacija: kabinet.objekatLokacija,
+    }));
+  }, [kabineti]);
 
   const filteredTermini = useMemo(() => {
     return termini.filter((termin) => {
@@ -110,7 +117,8 @@ function Termini() {
         datum.includes(search);
 
       const dateMatch = !filters.datum || datum === filters.datum;
-      const kabinetMatch = !filters.kabinet || termin.kabinetID === Number(filters.kabinet);
+      const kabinetMatch =
+        !filters.kabinet || termin.kabinetID === Number(filters.kabinet);
 
       return searchMatch && dateMatch && kabinetMatch;
     });
@@ -162,7 +170,12 @@ function Termini() {
   }
 
   function validateForm() {
-    if (!formState.datum || !formState.vrijemePocetka || !formState.vrijemeKraja || !formState.kabinetID) {
+    if (
+      !formState.datum ||
+      !formState.vrijemePocetka ||
+      !formState.vrijemeKraja ||
+      !formState.kabinetID
+    ) {
       return "Sva polja su obavezna.";
     }
 
@@ -224,7 +237,7 @@ function Termini() {
 
   async function handleDelete(termin) {
     const potvrda = window.confirm(
-      `Da li ste sigurni da zelite obrisati termin ${formatDateForDisplay(termin.datum)} u ${formatTimeForInput(termin.vrijemePocetka)}?`
+      `Da li ste sigurni da zelite obrisati termin ${formatDateForDisplay(termin.datum)} u ${formatTimeForInput(termin.vrijemePocetka)}?`,
     );
 
     if (!potvrda) return;
@@ -253,15 +266,33 @@ function Termini() {
       </div>
 
       <div className="users-page">
-        <div className="card users-toolbar" style={{ flexWrap: "wrap", gap: "10px", alignItems: "center" }}>
+        <div
+          className="card users-toolbar"
+          style={{ flexWrap: "wrap", gap: "10px", alignItems: "center" }}
+        >
           {canManageTermini && (
-            <button className="button users-create-button" onClick={openCreateModal}>
+            <button
+              className="button users-create-button"
+              onClick={openCreateModal}
+            >
               <span className="users-create-icon">+</span> Dodaj termin
             </button>
           )}
 
           <div style={{ position: "relative", flex: "1", minWidth: "220px" }}>
-            <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", fontSize: "14px", pointerEvents: "none" }}>🔍</span>
+            <span
+              style={{
+                position: "absolute",
+                left: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                color: "var(--text-muted)",
+                fontSize: "14px",
+                pointerEvents: "none",
+              }}
+            >
+              🔍
+            </span>
             <input
               type="text"
               name="searchTerm"
@@ -299,7 +330,19 @@ function Termini() {
           </div>
 
           <div style={{ position: "relative", minWidth: "170px" }}>
-            <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "13px", color: "var(--text-muted)" }}>🚪</span>
+            <span
+              style={{
+                position: "absolute",
+                left: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+                fontSize: "13px",
+                color: "var(--text-muted)",
+              }}
+            >
+              🚪
+            </span>
             <select
               name="kabinet"
               value={filters.kabinet}
@@ -320,14 +363,33 @@ function Termini() {
               {kabinetOptions.map((kabinet) => (
                 <option key={kabinet.id} value={kabinet.id}>
                   {kabinet.naziv}
+                  {kabinet.objekatLokacija
+                    ? ` (${kabinet.objekatLokacija})`
+                    : ""}
                 </option>
               ))}
             </select>
-            <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "11px", color: "var(--text-muted)" }}>▼</span>
+            <span
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+                fontSize: "11px",
+                color: "var(--text-muted)",
+              }}
+            >
+              ▼
+            </span>
           </div>
 
           {activeFilterCount > 0 && (
-            <button className="button sekundarno" onClick={resetFilters} style={{ whiteSpace: "nowrap" }}>
+            <button
+              className="button sekundarno"
+              onClick={resetFilters}
+              style={{ whiteSpace: "nowrap" }}
+            >
               Resetuj ({activeFilterCount})
             </button>
           )}
@@ -335,7 +397,12 @@ function Termini() {
 
         <div className="card users-list-card">
           {message.text && !modalOpen && (
-            <p className={message.type === "error" ? "form-error" : "form-success"} style={{ margin: "16px 22px 0" }}>
+            <p
+              className={
+                message.type === "error" ? "form-error" : "form-success"
+              }
+              style={{ margin: "16px 22px 0" }}
+            >
               {message.text}
             </p>
           )}
@@ -353,22 +420,38 @@ function Termini() {
           ) : sortedTermini.length > 0 ? (
             <div className="users-list">
               {sortedTermini.map((termin) => (
-                <div className="termini-list-row users-list-item" key={termin.id}>
-                  <span style={{ fontWeight: 700 }}>{formatDateForDisplay(termin.datum)}</span>
+                <div
+                  className="termini-list-row users-list-item"
+                  key={termin.id}
+                >
+                  <span style={{ fontWeight: 700 }}>
+                    {formatDateForDisplay(termin.datum)}
+                  </span>
                   <span>
                     <span className="badge plavo">
-                      {formatTimeForInput(termin.vrijemePocetka)} - {formatTimeForInput(termin.vrijemeKraja)}
+                      {formatTimeForInput(termin.vrijemePocetka)} -{" "}
+                      {formatTimeForInput(termin.vrijemeKraja)}
                     </span>
                   </span>
-                  <span>{termin.kabinetNaziv || `Kabinet #${termin.kabinetID}`}</span>
-                  <span>{termin.kreatorIme || `Korisnik #${termin.kreatorID}`}</span>
+                  <span>
+                    {termin.kabinetNaziv || `Kabinet #${termin.kabinetID}`}
+                  </span>
+                  <span>
+                    {termin.kreatorIme || `Korisnik #${termin.kreatorID}`}
+                  </span>
                   {canManageTermini && (
                     <span>
                       <div className="users-actions">
-                        <button className="users-action-btn" onClick={() => openEditModal(termin)}>
+                        <button
+                          className="users-action-btn"
+                          onClick={() => openEditModal(termin)}
+                        >
                           Uredi
                         </button>
-                        <button className="users-action-btn warn" onClick={() => handleDelete(termin)}>
+                        <button
+                          className="users-action-btn warn"
+                          onClick={() => handleDelete(termin)}
+                        >
                           Brisi
                         </button>
                       </div>
@@ -381,7 +464,11 @@ function Termini() {
             <div className="users-empty-state">
               Nema pronadjenih termina.
               {activeFilterCount > 0 && (
-                <button className="button sekundarno" onClick={resetFilters} style={{ marginLeft: "10px" }}>
+                <button
+                  className="button sekundarno"
+                  onClick={resetFilters}
+                  style={{ marginLeft: "10px" }}
+                >
                   Resetuj filtere
                 </button>
               )}
@@ -391,26 +478,49 @@ function Termini() {
       </div>
 
       {modalOpen && canManageTermini && (
-        <div className="users-modal-overlay" onClick={() => setModalOpen(false)}>
-          <div className="users-modal" onClick={(event) => event.stopPropagation()}>
+        <div
+          className="users-modal-overlay"
+          onClick={() => setModalOpen(false)}
+        >
+          <div
+            className="users-modal"
+            onClick={(event) => event.stopPropagation()}
+          >
             <div className="users-modal-header">
               <div>
-                <h2>{modalMode === "create" ? "Novi termin" : "Uredi termin"}</h2>
+                <h2>
+                  {modalMode === "create" ? "Novi termin" : "Uredi termin"}
+                </h2>
                 <p>Unesite datum, vrijeme i kabinet za termin.</p>
               </div>
-              <button className="users-modal-close" onClick={() => setModalOpen(false)}>
+              <button
+                className="users-modal-close"
+                onClick={() => setModalOpen(false)}
+              >
                 x
               </button>
             </div>
 
             {message.text && (
-              <p className={message.type === "error" ? "form-error" : "form-success"}>{message.text}</p>
+              <p
+                className={
+                  message.type === "error" ? "form-error" : "form-success"
+                }
+              >
+                {message.text}
+              </p>
             )}
 
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>Datum</label>
-                <input name="datum" type="date" value={formState.datum} onChange={handleFormChange} required />
+                <input
+                  name="datum"
+                  type="date"
+                  value={formState.datum}
+                  onChange={handleFormChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
@@ -436,25 +546,34 @@ function Termini() {
               </div>
 
               <div className="form-group">
-                <label>ID kabineta</label>
-                <input
+                <label>Kabinet</label>
+                <select
                   name="kabinetID"
-                  type="number"
-                  min="1"
                   value={formState.kabinetID}
                   onChange={handleFormChange}
                   required
-                />
-                <div className="users-field-hint">
-                  Postojeci kabineti: {kabinetOptions.length > 0 ? kabinetOptions.map((k) => `${k.id} - ${k.naziv}`).join(", ") : "nema ucitanih kabineta"}
-                </div>
+                >
+                  <option value="">Odaberi kabinet</option>
+                  {kabinetOptions.map((kabinet) => (
+                    <option key={kabinet.id} value={kabinet.id}>
+                      {kabinet.naziv}
+                      {kabinet.objekatLokacija
+                        ? ` (${kabinet.objekatLokacija})`
+                        : ""}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="users-modal-actions">
                 <button className="button" type="submit" disabled={saving}>
                   {saving ? "Slanje..." : "Sacuvaj"}
                 </button>
-                <button className="button sekundarno" type="button" onClick={() => setModalOpen(false)}>
+                <button
+                  className="button sekundarno"
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                >
                   Odustani
                 </button>
               </div>
