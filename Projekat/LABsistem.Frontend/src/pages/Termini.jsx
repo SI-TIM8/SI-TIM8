@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Layout from "../components/Layout";
 import api from "../api/client";
 import { getCurrentUserId } from "../auth/session";
+import { getCurrentRole } from "../auth/routeAccess";
 
 const INITIAL_FORM_STATE = {
   datum: "",
@@ -64,6 +65,8 @@ function Termini() {
   const [message, setMessage] = useState({ type: "", text: "" });
 
   const currentUserId = getCurrentUserId();
+  const currentRole = getCurrentRole();
+  const canManageTermini = currentRole === "tehnicar" || currentRole === "admin";
 
   useEffect(() => {
     loadTermini();
@@ -242,14 +245,20 @@ function Termini() {
     <Layout>
       <div className="page-header">
         <h1>Upravljanje terminima</h1>
-        <p>Definisanje, izmjena i brisanje termina za kabinete.</p>
+        <p>
+          {canManageTermini
+            ? "Definisanje, izmjena i brisanje termina za kabinete."
+            : "Pregled termina po datumima i kabinetima."}
+        </p>
       </div>
 
       <div className="users-page">
         <div className="card users-toolbar" style={{ flexWrap: "wrap", gap: "10px", alignItems: "center" }}>
-          <button className="button users-create-button" onClick={openCreateModal}>
-            <span className="users-create-icon">+</span> Dodaj termin
-          </button>
+          {canManageTermini && (
+            <button className="button users-create-button" onClick={openCreateModal}>
+              <span className="users-create-icon">+</span> Dodaj termin
+            </button>
+          )}
 
           <div style={{ position: "relative", flex: "1", minWidth: "220px" }}>
             <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", fontSize: "14px", pointerEvents: "none" }}>🔍</span>
@@ -336,7 +345,7 @@ function Termini() {
             <span>Vrijeme</span>
             <span>Kabinet</span>
             <span>Kreator</span>
-            <span>Akcije</span>
+            {canManageTermini && <span>Akcije</span>}
           </div>
 
           {loading ? (
@@ -353,16 +362,18 @@ function Termini() {
                   </span>
                   <span>{termin.kabinetNaziv || `Kabinet #${termin.kabinetID}`}</span>
                   <span>{termin.kreatorIme || `Korisnik #${termin.kreatorID}`}</span>
-                  <span>
-                    <div className="users-actions">
-                      <button className="users-action-btn" onClick={() => openEditModal(termin)}>
-                        Uredi
-                      </button>
-                      <button className="users-action-btn warn" onClick={() => handleDelete(termin)}>
-                        Brisi
-                      </button>
-                    </div>
-                  </span>
+                  {canManageTermini && (
+                    <span>
+                      <div className="users-actions">
+                        <button className="users-action-btn" onClick={() => openEditModal(termin)}>
+                          Uredi
+                        </button>
+                        <button className="users-action-btn warn" onClick={() => handleDelete(termin)}>
+                          Brisi
+                        </button>
+                      </div>
+                    </span>
+                  )}
                 </div>
               ))}
             </div>
@@ -379,7 +390,7 @@ function Termini() {
         </div>
       </div>
 
-      {modalOpen && (
+      {modalOpen && canManageTermini && (
         <div className="users-modal-overlay" onClick={() => setModalOpen(false)}>
           <div className="users-modal" onClick={(event) => event.stopPropagation()}>
             <div className="users-modal-header">
