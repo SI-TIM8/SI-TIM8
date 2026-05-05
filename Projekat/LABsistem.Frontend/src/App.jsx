@@ -8,6 +8,7 @@ import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Profil from "./pages/Profil";
 import Oprema from "./pages/Oprema";
+import Termini from "./pages/Termini";
 import { ALLOWED_ROLES_BY_ROUTE, getCurrentRole } from "./auth/routeAccess";
 import { clearSession, hasActiveAccessToken } from "./auth/session";
 
@@ -155,7 +156,7 @@ function App() {
           path="/termini"
           element={
             <ProtectedPage path="/termini">
-              <PlaceholderStranica naslov="Upravljanje terminima" opis="CRUD okruzenje za termine." />
+              <Termini />
             </ProtectedPage>
           }
         />
