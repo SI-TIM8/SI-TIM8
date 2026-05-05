@@ -16,6 +16,7 @@ export const NAVIGATION_BY_ROLE = {
     { label: "Zahtjevi studenata", path: "/zahtjevi" },
     { label: "Lista rezervacija", path: "/rezervacije" },
     { label: "Historija studenata", path: "/historija" },
+    { label: "Termini", path: "/termini" },
     { label: "Kalendar termina", path: "/kalendar" },
   ],
   tehnicar: [
@@ -41,7 +42,7 @@ export const ALLOWED_ROLES_BY_ROUTE = {
   "/oprema": ["student", "tehnicar"],
   "/zahtjevi": ["profesor"],
   "/historija": ["profesor"],
-  "/termini": ["tehnicar"],
+  "/termini": ["tehnicar", "profesor"],
   "/kvarovi": ["tehnicar"],
   "/korisnici": ["admin"],
   "/objekti": ["admin"],
