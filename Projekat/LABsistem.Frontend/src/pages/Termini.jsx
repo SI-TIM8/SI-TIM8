@@ -252,6 +252,7 @@ function Termini() {
           </button>
 
           <div style={{ position: "relative", flex: "1", minWidth: "220px" }}>
+            <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", fontSize: "14px", pointerEvents: "none" }}>🔍</span>
             <input
               type="text"
               name="searchTerm"
@@ -260,11 +261,13 @@ function Termini() {
               onChange={handleFilterChange}
               style={{
                 width: "100%",
-                padding: "8px 12px",
-                border: "1px solid #e2e8f0",
+                padding: "8px 12px 8px 32px",
+                border: "1px solid var(--border)",
                 borderRadius: "8px",
-                color: "#1f2937",
+                background: "var(--input-bg)",
+                color: "var(--text)",
                 fontSize: "14px",
+                boxSizing: "border-box",
               }}
             />
           </div>
@@ -287,18 +290,21 @@ function Termini() {
           </div>
 
           <div style={{ position: "relative", minWidth: "170px" }}>
+            <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "13px", color: "var(--text-muted)" }}>🚪</span>
             <select
               name="kabinet"
               value={filters.kabinet}
               onChange={handleFilterChange}
               style={{
                 width: "100%",
-                padding: "8px 12px",
-                border: "1px solid #e2e8f0",
+                padding: "8px 12px 8px 30px",
+                border: "1px solid var(--border)",
                 borderRadius: "8px",
-                background: "white",
-                color: filters.kabinet ? "#1f2937" : "#64748b",
+                background: "var(--input-bg)",
+                color: filters.kabinet ? "var(--text)" : "var(--text-muted)",
                 fontSize: "14px",
+                appearance: "none",
+                cursor: "pointer",
               }}
             >
               <option value="">Svi kabineti</option>
@@ -308,6 +314,7 @@ function Termini() {
                 </option>
               ))}
             </select>
+            <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "11px", color: "var(--text-muted)" }}>▼</span>
           </div>
 
           {activeFilterCount > 0 && (
