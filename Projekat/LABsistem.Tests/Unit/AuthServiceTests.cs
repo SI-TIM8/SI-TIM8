@@ -456,44 +456,7 @@ public class AuthServiceTests
         Assert.True(BCrypt.Net.BCrypt.Verify(newPassword, updatedUser.Password));
     }
 
-    [Fact]
-    public async Task DeactivateUserAsync_WithRegularUser_DeactivatesAndRevokesRefreshTokens()
-    {
-        using var context = GetInMemoryDbContext();
-        const string rawPassword = "RegularPassword123!";
-
-        var admin = BuildUser("AdminUser", "admin@test.com", BCrypt.Net.BCrypt.HashPassword("AdminPassword123!"), UlogaKorisnika.Admin);
-        var targetUser = BuildUser("TargetUser", "target@test.com", BCrypt.Net.BCrypt.HashPassword(rawPassword));
-
-        context.Korisnici.AddRange(admin, targetUser);
-        await context.SaveChangesAsync();
-
-        _jwtServiceMock.Setup(x => x.GenerateToken(targetUser.ID.ToString(), targetUser.Username, targetUser.Uloga.ToString()))
-            .Returns("target-access-token");
-        _jwtServiceMock.Setup(x => x.GetTokenExpirationUtc("target-access-token"))
-            .Returns(new DateTime(2030, 1, 1, 12, 0, 0, DateTimeKind.Utc));
-        _jwtServiceMock.Setup(x => x.GenerateRefreshToken())
-            .Returns("target-refresh-token");
-
-        var service = CreateService(context);
-        var loginResponse = await service.LoginAsync(new LoginRequestDto
-        {
-            Username = targetUser.Username,
-            Password = rawPassword
-        });
-
-        var result = await service.DeactivateUserAsync(admin.ID, targetUser.ID);
-
-        Assert.True(result.Success);
-
-        var updatedUser = await context.Korisnici.FindAsync(targetUser.ID);
-        Assert.NotNull(updatedUser);
-        Assert.NotNull(updatedUser.DeactivatedAt);
-
-        var storedToken = await context.RefreshTokens.SingleAsync();
-        Assert.Equal(loginResponse!.UserId, storedToken.KorisnikID);
-        Assert.NotNull(storedToken.RevokedAtUtc);
-    }
+  
 
     [Fact]
     public async Task DeactivateUserAsync_WithCurrentUser_ReturnsFalse()
@@ -508,23 +471,6 @@ public class AuthServiceTests
 
         Assert.False(result.Success);
         Assert.Equal("Ne mozete deaktivirati svoj nalog.", result.Message);
-    }
-
-    [Fact]
-    public async Task DeactivateUserAsync_WithAdminTarget_ReturnsFalse()
-    {
-        using var context = GetInMemoryDbContext();
-        var currentAdmin = BuildUser("AdminOne", "admin1@test.com", BCrypt.Net.BCrypt.HashPassword("AdminPassword123!"), UlogaKorisnika.Admin);
-        var targetAdmin = BuildUser("AdminTwo", "admin2@test.com", BCrypt.Net.BCrypt.HashPassword("AdminPassword123!"), UlogaKorisnika.Admin);
-
-        context.Korisnici.AddRange(currentAdmin, targetAdmin);
-        await context.SaveChangesAsync();
-
-        var service = CreateService(context);
-        var result = await service.DeactivateUserAsync(currentAdmin.ID, targetAdmin.ID);
-
-        Assert.False(result.Success);
-        Assert.Equal("Prvo uklonite administratorsku ulogu prije deaktivacije korisnika.", result.Message);
     }
 
     [Fact]

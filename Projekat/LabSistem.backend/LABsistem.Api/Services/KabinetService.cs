@@ -1,10 +1,59 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
+using LABsistem.Application.DTOs;
+using LABsistem.Dal.Interfaces;
+using LABsistem.Domain.Entities;
 
-namespace LABsistem.Application.Services
+namespace LABsistem.Api.Services
 {
-    internal class KabinetService
+    public class KabinetService : IKabinetService
     {
+        private readonly IKabinetRepository _repo;
+        public KabinetService(IKabinetRepository repo) => _repo = repo;
+
+        public async Task<IEnumerable<KabinetDTO>> VratiSveKabinete()
+        {
+            var rezultat = await _repo.GetAllWithDetailsAsync();
+            return rezultat.Select(x => new KabinetDTO
+            {
+                ID = x.kabinet.ID,
+                Naziv = x.kabinet.Naziv,
+                KorisnikID = x.kabinet.KorisnikID,
+                OdgovorniKorisnik = x.odgovorniKorisnik,
+                ObjekatID = x.kabinet.ObjekatID,
+                ObjekatLokacija = x.objekatLokacija
+            }).ToList();
+        }
+
+        public async Task KreirajKabinet(KabinetCreateDTO dto)
+        {
+            var novi = new Kabinet
+            {
+                Naziv = dto.Naziv,
+                KorisnikID = dto.KorisnikID,
+                ObjekatID = dto.ObjekatID
+            };
+            await _repo.AddAsync(novi);
+        }
+
+        public async Task<bool> AzurirajKabinet(int id, KabinetCreateDTO dto)
+        {
+            var k = await _repo.GetByIdAsync(id);
+            if (k == null) return false;
+            k.Naziv = dto.Naziv;
+            k.KorisnikID = dto.KorisnikID;
+            k.ObjekatID = dto.ObjekatID;
+            await _repo.UpdateAsync(k);
+            return true;
+        }
+
+        public async Task<bool> ObrisiKabinet(int id)
+        {
+            var k = await _repo.GetByIdAsync(id);
+            if (k == null) return false;
+            await _repo.DeleteAsync(id);
+            return true;
+        }
     }
 }
