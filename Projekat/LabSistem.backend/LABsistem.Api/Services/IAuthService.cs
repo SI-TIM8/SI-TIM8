@@ -6,7 +6,7 @@ namespace LABsistem.Application.Services
 {
     public interface IAuthService
     {
-        Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, string? ipAddress = null, string? deviceInfo = null);
+        Task<LoginAttemptResultDto> LoginAsync(LoginRequestDto request, string? ipAddress = null, string? deviceInfo = null);
         Task<LoginResponseDto?> RefreshAsync(string refreshToken, string? ipAddress = null, string? deviceInfo = null);
         Task<ProfileResponseDto?> GetProfileAsync(int userId);
         Task<List<UserListItemDto>> GetUsersAsync();

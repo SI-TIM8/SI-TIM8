@@ -25,17 +25,22 @@ namespace LABsistem.Presentation.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            var response = await _authService.LoginAsync(
+            var loginResult = await _authService.LoginAsync(
                 request,
                 HttpContext.Connection.RemoteIpAddress?.ToString(),
                 Request.Headers.UserAgent.ToString());
 
-            if (response == null)
+            if (loginResult.Session is null)
             {
-                return Unauthorized(new { Message = "Pogresni kredencijali." });
+                return Unauthorized(new
+                {
+                    Message = string.IsNullOrWhiteSpace(loginResult.FailureMessage)
+                        ? "Pogresni kredencijali."
+                        : loginResult.FailureMessage
+                });
             }
 
-            return Ok(response);
+            return Ok(loginResult.Session);
         }
 
         [HttpPost("refresh")]

@@ -36,7 +36,7 @@ public class AuthControllerTests
 
         _authServiceMock
             .Setup(s => s.LoginAsync(request, It.IsAny<string?>(), It.IsAny<string?>()))
-            .ReturnsAsync(responseDto);
+            .ReturnsAsync(LoginAttemptResultDto.Success(responseDto));
 
         _controller.ControllerContext = new ControllerContext
         {
@@ -47,6 +47,30 @@ public class AuthControllerTests
 
         var okResult = Assert.IsType<OkObjectResult>(result);
         Assert.Equal(responseDto, okResult.Value);
+    }
+
+    [Fact]
+    public async Task Login_WithInactiveUser_ReturnsBlockedMessage()
+    {
+        var request = new LoginRequestDto
+        {
+            Username = "inactiveuser",
+            Password = "ValidPassword123!"
+        };
+
+        _authServiceMock
+            .Setup(s => s.LoginAsync(request, It.IsAny<string?>(), It.IsAny<string?>()))
+            .ReturnsAsync(LoginAttemptResultDto.Failure("Pristup ovom nalogu je blokiran."));
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        var result = await _controller.Login(request);
+
+        var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
+        Assert.Contains("Pristup ovom nalogu je blokiran.", unauthorizedResult.Value?.ToString());
     }
 
     [Fact]
