@@ -93,4 +93,42 @@ public class LabSistemDbSeederTests
         Assert.Equal(UlogaKorisnika.Tehnicar, tehnicar.Uloga);
         Assert.True(BCrypt.Net.BCrypt.Verify("tehnicar123", tehnicar.Password));
     }
+
+    [Fact]
+    public async Task SeedDefaultObjektiAsync_WithEmptyDatabase_AddsDefaultsWithoutExplicitIds()
+    {
+        using var context = GetInMemoryDbContext();
+
+        await LabSistemDbSeeder.SeedDefaultObjektiAsync(context);
+
+        var objekti = await context.Objekti
+            .OrderBy(x => x.Lokacija)
+            .ToListAsync();
+
+        Assert.Equal(2, objekti.Count);
+        Assert.All(objekti, objekat => Assert.True(objekat.ID > 0));
+        Assert.Contains(objekti, x => x.Lokacija == "Zgrada ET");
+        Assert.Contains(objekti, x => x.Lokacija == "Druga zgrada");
+    }
+
+    [Fact]
+    public async Task SeedDefaultKabinetiAsync_WithSeededObjektiAndTehnicar_AddsDefaults()
+    {
+        using var context = GetInMemoryDbContext();
+
+        await LabSistemDbSeeder.SeedDefaultUsersAsync(context);
+        await LabSistemDbSeeder.SeedDefaultObjektiAsync(context);
+        await LabSistemDbSeeder.SeedDefaultKabinetiAsync(context);
+
+        var kabineti = await context.Kabineti
+            .OrderBy(x => x.Naziv)
+            .ToListAsync();
+        var glavniObjekat = await context.Objekti.SingleAsync(x => x.Lokacija == "Zgrada ET");
+        var tehnicar = await context.Korisnici.SingleAsync(x => x.Username == "tehnicar");
+
+        Assert.Equal(2, kabineti.Count);
+        Assert.All(kabineti, kabinet => Assert.True(kabinet.ID > 0));
+        Assert.All(kabineti, kabinet => Assert.Equal(glavniObjekat.ID, kabinet.ObjekatID));
+        Assert.All(kabineti, kabinet => Assert.Equal(tehnicar.ID, kabinet.KorisnikID));
+    }
 }

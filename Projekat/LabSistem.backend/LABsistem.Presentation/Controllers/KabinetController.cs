@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using LABsistem.Api.Services;
 using LABsistem.Application.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LABsistem.Presentation.Controllers
 {
@@ -9,9 +10,11 @@ namespace LABsistem.Presentation.Controllers
     public class KabinetController : ControllerBase
     {
         private readonly IKabinetService _service;
+
         public KabinetController(IKabinetService service) => _service = service;
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Profesor,Tehnicar")]
         public async Task<IActionResult> Get()
         {
             var kabineti = await _service.VratiSveKabinete();
@@ -19,20 +22,23 @@ namespace LABsistem.Presentation.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Post([FromBody] KabinetCreateDTO dto)
         {
             await _service.KreirajKabinet(dto);
-            return Ok(new { message = "Kabinet uspješno dodan" });
+            return Ok(new { message = "Kabinet uspjesno dodan" });
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put(int id, [FromBody] KabinetCreateDTO dto)
         {
             await _service.AzurirajKabinet(id, dto);
-            return Ok(new { message = "Kabinet ažuriran" });
+            return Ok(new { message = "Kabinet azuriran" });
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             await _service.ObrisiKabinet(id);

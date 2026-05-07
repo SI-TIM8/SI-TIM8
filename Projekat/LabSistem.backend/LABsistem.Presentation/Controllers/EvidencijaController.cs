@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using LABsistem.Api.Services;
 using LABsistem.Application.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace LABsistem.Presentation.Controllers
 {
@@ -9,9 +10,11 @@ namespace LABsistem.Presentation.Controllers
     public class EvidencijaController : ControllerBase
     {
         private readonly IEvidencijaService _service;
+
         public EvidencijaController(IEvidencijaService service) => _service = service;
 
         [HttpGet]
+        [Authorize(Roles = "Admin,Tehnicar")]
         public async Task<IActionResult> Get()
         {
             var evidencije = await _service.VratiSveEvidencije();
@@ -19,20 +22,23 @@ namespace LABsistem.Presentation.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Tehnicar")]
         public async Task<IActionResult> Post([FromBody] EvidencijaCreateDTO dto)
         {
             await _service.KreirajEvidenciju(dto);
-            return Ok(new { message = "Kvar uspješno prijavljen" });
+            return Ok(new { message = "Kvar uspjesno prijavljen" });
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin,Tehnicar")]
         public async Task<IActionResult> Put(int id, [FromBody] EvidencijaUpdateDTO dto)
         {
             await _service.AzurirajStatus(id, dto.Status);
-            return Ok(new { message = "Status ažuriran" });
+            return Ok(new { message = "Status azuriran" });
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Tehnicar")]
         public async Task<IActionResult> Delete(int id)
         {
             await _service.ObrisiEvidenciju(id);
