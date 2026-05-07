@@ -88,9 +88,15 @@ function Oprema() {
     return unique.filter(Boolean);
   }, [opremaList]);
 
+  const nextSerijskiBroj = useMemo(() => {
+    if (!opremaList.length) return 1;
+    return Math.max(...opremaList.map((item) => Number(item.serijskiBroj) || 0)) + 1;
+  }, [opremaList]);
+
   const filteredOprema = useMemo(() => {
     return opremaList.filter(o => {
-      const termMatch = !filters.searchTerm ||
+      const termMatch =
+        !filters.searchTerm ||
         o.naziv.toLowerCase().includes(filters.searchTerm.toLowerCase().trim()) ||
         o.serijskiBroj.toString().includes(filters.searchTerm.trim());
       const statusMatch = !filters.status || o.stanje === Number(filters.status);
@@ -111,14 +117,16 @@ function Oprema() {
 
   function handleFormChange(e) {
     const { name, value } = e.target;
-    const processedValue = name === "stanje" || name === "serijskiBroj" || name === "kabinetID"
-      ? Number(value) : value;
+    const processedValue =
+      name === "stanje" || name === "serijskiBroj" || name === "kabinetID"
+        ? Number(value)
+        : value;
     setFormState(prev => ({ ...prev, [name]: processedValue }));
   }
 
   function openCreateModal() {
     setModalMode("create");
-    setFormState(INITIAL_FORM_STATE);
+    setFormState({ ...INITIAL_FORM_STATE, serijskiBroj: nextSerijskiBroj });
     setSelectedObjekatID("");
     setMessage({ type: "", text: "" });
     setModalOpen(true);
@@ -133,7 +141,6 @@ function Oprema() {
       stanje: oprema.stanje,
       kabinetID: oprema.kabinetID,
     });
-    // Pronađi objekat koji sadrži ovaj kabinet
     const obj = objekti.find(o => o.kabineti?.some(k => k.id === oprema.kabinetID));
     setSelectedObjekatID(obj ? String(obj.id) : "");
     setMessage({ type: "", text: "" });
@@ -172,7 +179,10 @@ function Oprema() {
     setMessage({ type: "", text: "" });
     try {
       if (modalMode === "create") {
-        await api.post("/Oprema", { ...formState, kreatorID: Number(currentUserId) });
+        await api.post("/Oprema", {
+          ...formState,
+          kreatorID: Number(currentUserId),
+        });
         setMessage({ type: "success", text: "Oprema uspješno dodana!" });
       } else {
         await api.put(`/Oprema/${editingOprema.id}`, {
@@ -211,7 +221,10 @@ function Oprema() {
       </div>
 
       <div className="users-page">
-        <div className="card users-toolbar" style={{ flexWrap: "wrap", gap: "10px", alignItems: "center" }}>
+        <div
+          className="card users-toolbar"
+          style={{ flexWrap: "wrap", gap: "10px", alignItems: "center" }}
+        >
           {isTehnicar && (
             <button className="button users-create-button" onClick={openCreateModal}>
               <span className="users-create-icon">+</span> Dodaj opremu
@@ -219,49 +232,190 @@ function Oprema() {
           )}
 
           <div style={{ position: "relative", flex: "1", minWidth: "200px" }}>
-            <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)", fontSize: "14px", pointerEvents: "none" }}>🔍</span>
+            <span
+              style={{
+                position: "absolute",
+                left: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                color: "var(--text-muted)",
+                fontSize: "14px",
+                pointerEvents: "none",
+              }}
+            >
+              🔍
+            </span>
             <input
               type="text"
               name="searchTerm"
               placeholder="Pretraži (naziv, serijski broj)..."
               value={filters.searchTerm}
               onChange={handleFilterChange}
-              style={{ width: "100%", padding: "8px 12px 8px 32px", border: "1px solid var(--border)", borderRadius: "8px", background: "var(--input-bg)", color: "var(--text)", fontSize: "14px", boxSizing: "border-box" }}
+              style={{
+                width: "100%",
+                padding: "8px 12px 8px 32px",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                background: "var(--input-bg)",
+                color: "var(--text)",
+                fontSize: "14px",
+                boxSizing: "border-box",
+              }}
             />
           </div>
 
           <div style={{ position: "relative", minWidth: "160px" }}>
-            <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "13px", color: "var(--text-muted)" }}>⚙️</span>
-            <select name="status" value={filters.status} onChange={handleFilterChange}
-              style={{ width: "100%", padding: "8px 12px 8px 30px", border: "1px solid var(--border)", borderRadius: "8px", background: "var(--input-bg)", color: filters.status ? "var(--text)" : "var(--text-muted)", fontSize: "14px", appearance: "none", cursor: "pointer" }}>
+            <span
+              style={{
+                position: "absolute",
+                left: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+                fontSize: "13px",
+                color: "var(--text-muted)",
+              }}
+            >
+              ⚙️
+            </span>
+            <select
+              name="status"
+              value={filters.status}
+              onChange={handleFilterChange}
+              style={{
+                width: "100%",
+                padding: "8px 12px 8px 30px",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                background: "var(--input-bg)",
+                color: filters.status ? "var(--text)" : "var(--text-muted)",
+                fontSize: "14px",
+                appearance: "none",
+                cursor: "pointer",
+              }}
+            >
               <option value="">Svi statusi</option>
-              {STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+              {STATUS_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
             </select>
-            <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "11px", color: "var(--text-muted)" }}>▼</span>
+            <span
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+                fontSize: "11px",
+                color: "var(--text-muted)",
+              }}
+            >
+              ▼
+            </span>
           </div>
 
           <div style={{ position: "relative", minWidth: "160px" }}>
-            <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "13px", color: "var(--text-muted)" }}>🚪</span>
-            <select name="kabinet" value={filters.kabinet} onChange={handleFilterChange}
-              style={{ width: "100%", padding: "8px 12px 8px 30px", border: "1px solid var(--border)", borderRadius: "8px", background: "var(--input-bg)", color: filters.kabinet ? "var(--text)" : "var(--text-muted)", fontSize: "14px", appearance: "none", cursor: "pointer" }}>
+            <span
+              style={{
+                position: "absolute",
+                left: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+                fontSize: "13px",
+                color: "var(--text-muted)",
+              }}
+            >
+              🚪
+            </span>
+            <select
+              name="kabinet"
+              value={filters.kabinet}
+              onChange={handleFilterChange}
+              style={{
+                width: "100%",
+                padding: "8px 12px 8px 30px",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                background: "var(--input-bg)",
+                color: filters.kabinet ? "var(--text)" : "var(--text-muted)",
+                fontSize: "14px",
+                appearance: "none",
+                cursor: "pointer",
+              }}
+            >
               <option value="">Svi kabineti</option>
               {kabinetiOptions.map(k => <option key={k} value={k}>{k}</option>)}
             </select>
-            <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "11px", color: "var(--text-muted)" }}>▼</span>
+            <span
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+                fontSize: "11px",
+                color: "var(--text-muted)",
+              }}
+            >
+              ▼
+            </span>
           </div>
 
           <div style={{ position: "relative", minWidth: "160px" }}>
-            <span style={{ position: "absolute", left: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "13px", color: "var(--text-muted)" }}>🏢</span>
-            <select name="zgrada" value={filters.zgrada} onChange={handleFilterChange}
-              style={{ width: "100%", padding: "8px 12px 8px 30px", border: "1px solid var(--border)", borderRadius: "8px", background: "var(--input-bg)", color: filters.zgrada ? "var(--text)" : "var(--text-muted)", fontSize: "14px", appearance: "none", cursor: "pointer" }}>
+            <span
+              style={{
+                position: "absolute",
+                left: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+                fontSize: "13px",
+                color: "var(--text-muted)",
+              }}
+            >
+              🏢
+            </span>
+            <select
+              name="zgrada"
+              value={filters.zgrada}
+              onChange={handleFilterChange}
+              style={{
+                width: "100%",
+                padding: "8px 12px 8px 30px",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                background: "var(--input-bg)",
+                color: filters.zgrada ? "var(--text)" : "var(--text-muted)",
+                fontSize: "14px",
+                appearance: "none",
+                cursor: "pointer",
+              }}
+            >
               <option value="">Sve zgrade</option>
               {zgradaOptions.map(z => <option key={z} value={z}>{z}</option>)}
             </select>
-            <span style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none", fontSize: "11px", color: "var(--text-muted)" }}>▼</span>
+            <span
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+                fontSize: "11px",
+                color: "var(--text-muted)",
+              }}
+            >
+              ▼
+            </span>
           </div>
 
           {activeFilterCount > 0 && (
-            <button className="button sekundarno" onClick={resetFilters} style={{ whiteSpace: "nowrap", borderRadius: "8px" }}>
+            <button
+              className="button sekundarno"
+              onClick={resetFilters}
+              style={{ whiteSpace: "nowrap", borderRadius: "8px" }}
+            >
               ✕ Resetuj ({activeFilterCount})
             </button>
           )}
@@ -269,7 +423,9 @@ function Oprema() {
 
         <div className="card users-list-card">
           {message.text && !modalOpen && !kvarModalOpen && (
-            <p className={message.type === "error" ? "form-error" : "form-success"}>{message.text}</p>
+            <p className={message.type === "error" ? "form-error" : "form-success"}>
+              {message.text}
+            </p>
           )}
 
           <div className="users-list-header users-list-row">
@@ -300,12 +456,18 @@ function Oprema() {
                     <div className="users-actions">
                       {isTehnicar && (
                         <>
-                          <button className="users-action-btn" onClick={() => openEditModal(item)}>✎ Uredi</button>
-                          <button className="users-action-btn warn" onClick={() => handleDelete(item.id)}>🗑 Briši</button>
+                          <button className="users-action-btn" onClick={() => openEditModal(item)}>
+                            ✎ Uredi
+                          </button>
+                          <button className="users-action-btn warn" onClick={() => handleDelete(item.id)}>
+                            🗑 Briši
+                          </button>
                         </>
                       )}
                       {userRole === "student" && (
-                        <button className="users-action-btn warn" onClick={() => openKvarModal(item)}>⚠ Prijavi kvar</button>
+                        <button className="users-action-btn warn" onClick={() => openKvarModal(item)}>
+                          ⚠ Prijavi kvar
+                        </button>
                       )}
                     </div>
                   </span>
@@ -316,23 +478,28 @@ function Oprema() {
             <div className="users-empty-state">
               Nema pronađene opreme.
               {activeFilterCount > 0 && (
-                <button className="button sekundarno" onClick={resetFilters} style={{ marginLeft: "10px" }}>Resetuj filtere</button>
+                <button className="button sekundarno" onClick={resetFilters} style={{ marginLeft: "10px" }}>
+                  Resetuj filtere
+                </button>
               )}
             </div>
           )}
         </div>
       </div>
 
-      {/* Modal za kreiranje/editovanje opreme */}
       {modalOpen && (
         <div className="users-modal-overlay" onClick={() => setModalOpen(false)}>
           <div className="users-modal" onClick={e => e.stopPropagation()}>
             <div className="users-modal-header">
               <h2>{modalMode === "create" ? "Nova oprema" : "Uredi opremu"}</h2>
-              <button className="users-modal-close" onClick={() => setModalOpen(false)}>×</button>
+              <button className="users-modal-close" onClick={() => setModalOpen(false)}>
+                ×
+              </button>
             </div>
             {message.text && (
-              <p className={message.type === "error" ? "form-error" : "form-success"}>{message.text}</p>
+              <p className={message.type === "error" ? "form-error" : "form-success"}>
+                {message.text}
+              </p>
             )}
             <form onSubmit={handleSubmit}>
               <div className="form-group">
@@ -341,7 +508,14 @@ function Oprema() {
               </div>
               <div className="form-group">
                 <label>Serijski broj</label>
-                <input name="serijskiBroj" type="number" value={formState.serijskiBroj} onChange={handleFormChange} required />
+                <input
+                  name="serijskiBroj"
+                  type="number"
+                  value={formState.serijskiBroj}
+                  onChange={handleFormChange}
+                  readOnly
+                  required
+                />
               </div>
               <div className="form-group">
                 <label>Status</label>
@@ -350,7 +524,6 @@ function Oprema() {
                 </select>
               </div>
 
-              {/* Objekat → Kabinet selekcija */}
               <div className="form-group">
                 <label>Objekat</label>
                 <select
@@ -398,13 +571,14 @@ function Oprema() {
         </div>
       )}
 
-      {/* Modal za prijavu kvara */}
       {kvarModalOpen && (
         <div className="users-modal-overlay" onClick={() => setKvarModalOpen(false)}>
           <div className="users-modal" onClick={e => e.stopPropagation()}>
             <div className="users-modal-header">
               <h2>⚠ Prijava kvara — {kvarOprema?.naziv}</h2>
-              <button className="users-modal-close" onClick={() => setKvarModalOpen(false)}>×</button>
+              <button className="users-modal-close" onClick={() => setKvarModalOpen(false)}>
+                ×
+              </button>
             </div>
             <form onSubmit={handleKvarSubmit}>
               <div className="form-group">
@@ -416,7 +590,16 @@ function Oprema() {
                   required
                   rows={4}
                   placeholder="Opišite kvar što detaljnije..."
-                  style={{ width: "100%", padding: "8px", borderRadius: "6px", border: "1px solid var(--border)", resize: "vertical", background: "var(--input-bg)", color: "var(--text)", fontSize: "14px" }}
+                  style={{
+                    width: "100%",
+                    padding: "8px",
+                    borderRadius: "6px",
+                    border: "1px solid var(--border)",
+                    resize: "vertical",
+                    background: "var(--input-bg)",
+                    color: "var(--text)",
+                    fontSize: "14px",
+                  }}
                 />
               </div>
               <div className="users-modal-actions">

@@ -31,7 +31,9 @@ namespace LABsistem.Tests.Integration
             {
                 Naziv = "Stari Naziv",
                 SerijskiBroj = 123, 
-                stanje = StatusOpreme.Ispravno
+                stanje = StatusOpreme.Ispravno,
+                KabinetID = 1,
+                KreatorID = 1
             };
             context.Oprema.Add(oprema);
             await context.SaveChangesAsync();
@@ -42,8 +44,10 @@ namespace LABsistem.Tests.Integration
             var updateDto = new OpremaCreateDTO
             {
                 Naziv = "Novi Naziv",
-                SerijskiBroj = 45,
-                Stanje = (int)StatusOpreme.UKvaru
+                SerijskiBroj = 45,  // Ovo će biti ignorirano - serijski broj se ne mijenja pri update-u
+                Stanje = (int)StatusOpreme.UKvaru,
+                KabinetID = 1,
+                KreatorID = 1
             };
 
             // Act
@@ -57,7 +61,7 @@ namespace LABsistem.Tests.Integration
 
             Assert.NotNull(updatedEntity);
             Assert.Equal("Novi Naziv", updatedEntity.Naziv);
-            Assert.Equal(45, updatedEntity.SerijskiBroj);
+            Assert.Equal(123, updatedEntity.SerijskiBroj);  // Serijski broj ostaje nepromijenjen
             Assert.Equal(StatusOpreme.UKvaru, updatedEntity.stanje);
         }
     }

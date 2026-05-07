@@ -10,7 +10,6 @@ import AccessDenied from "./pages/AccessDenied";
 import AboutApp from "./pages/AboutApp";
 import Dashboard from "./pages/Dashboard";
 import Korisnici from "./pages/Korisnici";
-import Kvarovi from "./pages/Kvarovi";
 import Objekti from "./pages/Objekti";
 import Layout from "./components/Layout";
 import Login from "./pages/Login";
@@ -165,14 +164,6 @@ function App() {
           element={
             <ProtectedPage path="/termini">
               <Termini />
-            </ProtectedPage>
-          }
-        />
-        <Route
-          path="/kvarovi"
-          element={
-            <ProtectedPage path="/kvarovi">
-              <Kvarovi />
             </ProtectedPage>
           }
         />

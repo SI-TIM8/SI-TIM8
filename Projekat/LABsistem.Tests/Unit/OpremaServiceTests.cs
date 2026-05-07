@@ -28,16 +28,22 @@ namespace LABsistem.Tests.Unit
         [Fact]
         public async Task KreirajOpremu_ValidDto_ReturnsCorrectOpremaDTO()
         {
-           
+            // Arrange - simulira postojeću opremu sa max serial brojem 4
+            var existingOprema = new List<Oprema>
+            {
+                new Oprema { ID = 1, Naziv = "Postojeca oprema", SerijskiBroj = 4, stanje = StatusOpreme.Ispravno, KabinetID = 1, KreatorID = 1 }
+            };
+            _repoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(existingOprema);
+            
             var dto = _fixture.Create<OpremaCreateDTO>();
 
-           
+            // Act
             var result = await _service.KreirajOpremu(dto);
 
-            
+            // Assert
             Assert.NotNull(result);
             Assert.Equal(dto.Naziv, result.Naziv);
-            Assert.Equal(dto.SerijskiBroj, result.SerijskiBroj);
+            Assert.Equal(5, result.SerijskiBroj);  // max(4) + 1 = 5, serijski broj je sistemski generisan
             _repoMock.Verify(x => x.AddAsync(It.IsAny<Oprema>()), Times.Once);
         }
 

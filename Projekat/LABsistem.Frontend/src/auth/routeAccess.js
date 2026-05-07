@@ -10,19 +10,18 @@ export const NAVIGATION_BY_ROLE = {
     { label: "Kalendar termina", path: "/kalendar" },
     { label: "Zakazi termin", path: "/zakazivanje" },
     { label: "Moje rezervacije", path: "/rezervacije" },
-    { label: "Oprema", path: "/oprema" },
   ],
   profesor: [
     { label: "Zahtjevi studenata", path: "/zahtjevi" },
     { label: "Lista rezervacija", path: "/rezervacije" },
     { label: "Historija studenata", path: "/historija" },
+    { label: "Oprema", path: "/oprema" },
     { label: "Termini", path: "/termini" },
     { label: "Kalendar termina", path: "/kalendar" },
   ],
   tehnicar: [
     { label: "Upravljanje terminima", path: "/termini" },
     { label: "Upravljanje opremom", path: "/oprema" },
-    { label: "Kvarovi opreme", path: "/kvarovi" },
     { label: "Kalendar termina", path: "/kalendar" },
   ],
   admin: [
@@ -39,11 +38,10 @@ export const ALLOWED_ROLES_BY_ROUTE = {
   "/o-aplikaciji": ["student", "profesor", "tehnicar", "admin"],
   "/zakazivanje": ["student"],
   "/rezervacije": ["student", "profesor"],
-  "/oprema": ["student", "tehnicar"],
+  "/oprema": ["profesor", "tehnicar"],
   "/zahtjevi": ["profesor"],
   "/historija": ["profesor"],
   "/termini": ["tehnicar", "profesor"],
-  "/kvarovi": ["tehnicar"],
   "/korisnici": ["admin"],
   "/objekti": ["admin"],
 };
