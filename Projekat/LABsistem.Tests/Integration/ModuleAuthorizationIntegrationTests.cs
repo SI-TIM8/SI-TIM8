@@ -195,6 +195,7 @@ namespace LABsistem.Tests.Integration
             await SeedUserAsync("module2-admin", "module2.admin@test.com", "AdminPassword123!", UlogaKorisnika.Admin);
             var profesorId = await SeedUserAsync("module2-profesor", "module2.profesor@test.com", "ProfesorPassword123!", UlogaKorisnika.Profesor);
             var tehnicarId = await SeedUserAsync("module2-tehnicar", "module2.tehnicar@test.com", "TehnicarPassword123!", UlogaKorisnika.Tehnicar);
+            await SeedUserAsync("module2-student", "module2.student@test.com", "StudentPassword123!", UlogaKorisnika.Student);
 
             int objekatId;
             int kabinetId;
@@ -221,6 +222,7 @@ namespace LABsistem.Tests.Integration
             var adminToken = await LoginAsync("module2-admin", "AdminPassword123!");
             var profesorToken = await LoginAsync("module2-profesor", "ProfesorPassword123!");
             var tehnicarToken = await LoginAsync("module2-tehnicar", "TehnicarPassword123!");
+            var studentToken = await LoginAsync("module2-student", "StudentPassword123!");
 
             using var profesorObjekatPost = new HttpRequestMessage(HttpMethod.Post, "/api/Objekat")
             {
@@ -237,6 +239,9 @@ namespace LABsistem.Tests.Integration
 
             using var profesorTerminGet = new HttpRequestMessage(HttpMethod.Get, "/api/Termin");
             profesorTerminGet.Headers.Authorization = new AuthenticationHeaderValue("Bearer", profesorToken);
+
+            using var studentTerminGet = new HttpRequestMessage(HttpMethod.Get, "/api/Termin");
+            studentTerminGet.Headers.Authorization = new AuthenticationHeaderValue("Bearer", studentToken);
 
             using var profesorTerminPost = new HttpRequestMessage(HttpMethod.Post, "/api/Termin")
             {
@@ -289,6 +294,7 @@ namespace LABsistem.Tests.Integration
             Assert.Equal(HttpStatusCode.Forbidden, (await _client.SendAsync(profesorObjekatPost)).StatusCode);
             Assert.Equal(HttpStatusCode.OK, (await _client.SendAsync(profesorOpremaGet)).StatusCode);
             Assert.Equal(HttpStatusCode.OK, (await _client.SendAsync(profesorTerminGet)).StatusCode);
+            Assert.Equal(HttpStatusCode.OK, (await _client.SendAsync(studentTerminGet)).StatusCode);
             Assert.Equal(HttpStatusCode.Forbidden, (await _client.SendAsync(profesorTerminPost)).StatusCode);
             Assert.Equal(HttpStatusCode.OK, (await _client.SendAsync(tehnicarOpremaPost)).StatusCode);
             Assert.Equal(HttpStatusCode.Forbidden, (await _client.SendAsync(tehnicarKabinetPost)).StatusCode);

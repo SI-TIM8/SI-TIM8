@@ -14,7 +14,7 @@ namespace LABsistem.Presentation.Controllers
         public TerminController(ITerminService service) => _service = service;
 
         [HttpGet]
-        [Authorize(Roles = "Admin,Profesor,Tehnicar")]
+        [Authorize(Roles = "Admin,Profesor,Tehnicar,Student")]
         public async Task<IActionResult> Get()
         {
             var termini = await _service.VratiSveTermine();
