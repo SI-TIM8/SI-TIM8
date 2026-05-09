@@ -9,6 +9,7 @@ import {
 import AccessDenied from "./pages/AccessDenied";
 import AboutApp from "./pages/AboutApp";
 import Dashboard from "./pages/Dashboard";
+import Kalendar from "./pages/Kalendar";
 import Korisnici from "./pages/Korisnici";
 import Objekti from "./pages/Objekti";
 import Layout from "./components/Layout";
@@ -84,10 +85,7 @@ function App() {
           path="/kalendar"
           element={
             <ProtectedPage path="/kalendar">
-              <PlaceholderStranica
-                naslov="Kalendar termina"
-                opis="Prikaz termina u kalendarskom prikazu."
-              />
+              <Kalendar />
             </ProtectedPage>
           }
         />

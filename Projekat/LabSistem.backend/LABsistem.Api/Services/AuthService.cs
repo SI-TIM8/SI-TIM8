@@ -29,11 +29,11 @@ namespace LABsistem.Application.Services
             _businessRules = businessRules;
         }
 
-        public async Task<LoginResponseDto?> LoginAsync(LoginRequestDto request, string? ipAddress = null, string? deviceInfo = null)
+        public async Task<LoginAttemptResultDto> LoginAsync(LoginRequestDto request, string? ipAddress = null, string? deviceInfo = null)
         {
             if (string.IsNullOrWhiteSpace(request.Username) || string.IsNullOrWhiteSpace(request.Password))
             {
-                return null;
+                return LoginAttemptResultDto.Failure("Pogresni kredencijali.");
             }
 
             var korisnickiIdentifikator = request.Username.Trim();
@@ -43,14 +43,19 @@ namespace LABsistem.Application.Services
                     x.Username == korisnickiIdentifikator ||
                     x.Email == korisnickiIdentifikator);
 
-            if (korisnik is null || korisnik.DeactivatedAt.HasValue)
+            if (korisnik is null)
             {
-                return null;
+                return LoginAttemptResultDto.Failure("Pogresni kredencijali.");
+            }
+
+            if (korisnik.DeactivatedAt.HasValue)
+            {
+                return LoginAttemptResultDto.Failure("Pristup ovom nalogu je blokiran.");
             }
 
             if (!VerifyPassword(korisnik, request.Password))
             {
-                return null;
+                return LoginAttemptResultDto.Failure("Pogresni kredencijali.");
             }
 
             if (NeedsPasswordUpgrade(korisnik.Password))
@@ -59,7 +64,7 @@ namespace LABsistem.Application.Services
                 await _dbContext.SaveChangesAsync();
             }
 
-            return await IssueSessionAsync(korisnik, ipAddress, deviceInfo);
+            return LoginAttemptResultDto.Success(await IssueSessionAsync(korisnik, ipAddress, deviceInfo));
         }
 
         public async Task<LoginResponseDto?> RefreshAsync(string refreshToken, string? ipAddress = null, string? deviceInfo = null)

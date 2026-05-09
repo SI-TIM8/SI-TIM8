@@ -114,6 +114,24 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
         });
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        var payload = await response.Content.ReadAsStringAsync();
+        Assert.Contains("Pristup ovom nalogu je blokiran.", payload);
+    }
+
+    [Fact]
+    public async Task LoginEndpoint_WithInvalidCredentials_ReturnsUnauthorizedWithGenericMessage()
+    {
+        await SeedUserAsync("invalidintegration", "invalid.integration@test.com", "ValidPassword123!");
+
+        var response = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "invalidintegration",
+            Password = "PogresnaLozinka123!"
+        });
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        var payload = await response.Content.ReadAsStringAsync();
+        Assert.Contains("Pogresni kredencijali.", payload);
     }
 
     [Fact]

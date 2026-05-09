@@ -90,10 +90,10 @@ public class AuthServiceTests
             "127.0.0.1",
             "UnitTestAgent");
 
-        Assert.NotNull(result);
-        Assert.Equal("access-token", result.Token);
-        Assert.Equal("refresh-token", result.RefreshToken);
-        Assert.Equal(korisnik.ID, result.UserId);
+        Assert.NotNull(result.Session);
+        Assert.Equal("access-token", result.Session.Token);
+        Assert.Equal("refresh-token", result.Session.RefreshToken);
+        Assert.Equal(korisnik.ID, result.Session.UserId);
 
         var persistedRefreshToken = await context.RefreshTokens.SingleAsync();
         Assert.Equal(korisnik.ID, persistedRefreshToken.KorisnikID);
@@ -103,7 +103,7 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task LoginAsync_WithInactiveUser_ReturnsNull()
+    public async Task LoginAsync_WithInactiveUser_ReturnsBlockedFailure()
     {
         using var context = GetInMemoryDbContext();
         const string rawPassword = "InactivePassword123!";
@@ -124,7 +124,8 @@ public class AuthServiceTests
             Password = rawPassword
         });
 
-        Assert.Null(result);
+        Assert.Null(result.Session);
+        Assert.Equal("Pristup ovom nalogu je blokiran.", result.FailureMessage);
         Assert.Empty(context.RefreshTokens);
     }
 
@@ -154,8 +155,8 @@ public class AuthServiceTests
             Password = plainPassword
         });
 
-        Assert.NotNull(result);
-        Assert.Equal("legacy-access-token", result.Token);
+        Assert.NotNull(result.Session);
+        Assert.Equal("legacy-access-token", result.Session.Token);
 
         var updatedUser = await context.Korisnici.FindAsync(korisnik.ID);
         Assert.NotNull(updatedUser);
@@ -196,7 +197,7 @@ public class AuthServiceTests
             Password = rawPassword
         });
 
-        var refreshResponse = await service.RefreshAsync(loginResponse!.RefreshToken, "127.0.0.1", "RefreshAgent");
+        var refreshResponse = await service.RefreshAsync(loginResponse.Session!.RefreshToken, "127.0.0.1", "RefreshAgent");
 
         Assert.NotNull(refreshResponse);
         Assert.Equal("access-token-2", refreshResponse.Token);
@@ -246,8 +247,8 @@ public class AuthServiceTests
             Password = rawPassword
         });
 
-        var firstRefresh = await service.RefreshAsync(loginResponse!.RefreshToken, "127.0.0.1", "RefreshAgent");
-        var secondRefresh = await service.RefreshAsync(loginResponse.RefreshToken, "127.0.0.1", "RefreshAgent");
+        var firstRefresh = await service.RefreshAsync(loginResponse.Session!.RefreshToken, "127.0.0.1", "RefreshAgent");
+        var secondRefresh = await service.RefreshAsync(loginResponse.Session.RefreshToken, "127.0.0.1", "RefreshAgent");
 
         Assert.NotNull(firstRefresh);
         Assert.Null(secondRefresh);
@@ -284,7 +285,7 @@ public class AuthServiceTests
         korisnik.DeactivatedAt = DateTime.UtcNow;
         await context.SaveChangesAsync();
 
-        var refreshResponse = await service.RefreshAsync(loginResponse!.RefreshToken);
+        var refreshResponse = await service.RefreshAsync(loginResponse.Session!.RefreshToken);
 
         Assert.Null(refreshResponse);
         var storedToken = await context.RefreshTokens.SingleAsync();
@@ -318,7 +319,7 @@ public class AuthServiceTests
             Password = "ValidPassword123!"
         });
 
-        var revoked = await service.RevokeRefreshTokenAsync(loginResponse!.RefreshToken);
+        var revoked = await service.RevokeRefreshTokenAsync(loginResponse.Session!.RefreshToken);
 
         Assert.True(revoked);
         var storedToken = await context.RefreshTokens.SingleAsync();
