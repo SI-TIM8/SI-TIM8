@@ -23,8 +23,6 @@ const DASHBOARD_TEXT_BY_ROLE = {
   admin: {
     naslov: "Administratorski panel",
     opis: "Upravljajte korisnicima, objektima i kabinetima.",
-    tabelaNaslov: "Korisnici",
-    tabelaKolone: ["Ime i prezime", "Email", "Uloga", "Status"],
   },
 };
 
@@ -231,30 +229,17 @@ function Dashboard() {
       api.get("/Objekat"),
       api.get("/Kabinet"),
     ]);
-
     const users = Array.isArray(usersResponse.data) ? usersResponse.data : [];
     const objekti = Array.isArray(objektiResponse.data) ? objektiResponse.data : [];
     const kabineti = Array.isArray(kabinetiResponse.data) ? kabinetiResponse.data : [];
-
     const aktivniObjekti = objekti.filter((objekat) => Array.isArray(objekat.kabineti) && objekat.kabineti.length > 0).length;
 
     setStatCards([
-      { label: "Ukupno korisnika", vrijednost: String(users.length), klasa: "plavo" },
+      { label: "Ukupno korisnika", vrijednost: String(users.length), klasa: "blue" },
       { label: "Aktivni objekti", vrijednost: String(aktivniObjekti), klasa: "" },
       { label: "Kabineti", vrijednost: String(kabineti.length), klasa: "" },
     ]);
-
-    setTableData({
-      naslov: tekst.tabelaNaslov,
-      kolone: tekst.tabelaKolone,
-      redovi: users.slice(0, 5).map((user) => ([
-        user.imePrezime,
-        user.email,
-        user.role,
-        user.status,
-      ])),
-      emptyMessage: "Nema korisnika za prikaz.",
-    });
+    setTableData(null);
   }
 
   async function handleEvidencijaStatus(id, noviStatus) {
