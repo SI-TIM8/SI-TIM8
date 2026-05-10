@@ -9,6 +9,6 @@ namespace LABsistem.Domain.Enums
         NaCekanju = 1,
         Odobren = 2,
         Odbijen = 3,
-        Storniran = 4
+        Otkazan = 4
     }
 }

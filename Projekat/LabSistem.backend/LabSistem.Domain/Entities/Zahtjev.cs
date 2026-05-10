@@ -1,3 +1,4 @@
+using LABsistem.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,20 +12,25 @@ namespace LABsistem.Domain.Entities
         public int ID { get; set; }
         
 
-        public bool Status { get; set; }
         
 
         [StringLength(200)]
         public string Komentar { get; set; }
         
 
+      
+
+
+        public int StudentID { get; set; }
+
+        public Korisnik Student { get; set; }
+
+
         // Foreign Keys
         public int TerminID { get; set; }
-        
+
         public Termin Termin { get; set; }
 
-        public int KabinetID { get; set; }
-        
-        public Kabinet Kabinet { get; set; }
+        public StatusZahtjeva StatusZahtjeva { get; set; }
     }
 }

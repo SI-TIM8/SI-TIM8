@@ -17,6 +17,9 @@ import Login from "./pages/Login";
 import Profil from "./pages/Profil";
 import Oprema from "./pages/Oprema";
 import Termini from "./pages/Termini";
+import Zakazivanje from "./pages/Zakazivanje";
+import Rezervacije from "./pages/Rezervacije";
+import Zahtjevi from "./pages/Zahtjevi";
 import { ALLOWED_ROLES_BY_ROUTE, getCurrentRole } from "./auth/routeAccess";
 import { clearSession, hasActiveAccessToken } from "./auth/session";
 
@@ -93,10 +96,7 @@ function App() {
           path="/zakazivanje"
           element={
             <ProtectedPage path="/zakazivanje">
-              <PlaceholderStranica
-                naslov="Zakazi termin"
-                opis="Forma za odabir laboratorija, datuma i trajanja."
-              />
+              <Zakazivanje />
             </ProtectedPage>
           }
         />
@@ -104,10 +104,7 @@ function App() {
           path="/rezervacije"
           element={
             <ProtectedPage path="/rezervacije">
-              <PlaceholderStranica
-                naslov="Rezervacije"
-                opis="Lista aktivnih i proslih rezervacija."
-              />
+              <Rezervacije />
             </ProtectedPage>
           }
         />
@@ -139,10 +136,7 @@ function App() {
           path="/zahtjevi"
           element={
             <ProtectedPage path="/zahtjevi">
-              <PlaceholderStranica
-                naslov="Zahtjevi studenata"
-                opis="Lista zahtjeva s akcijama odobravanja i odbijanja."
-              />
+              <Zahtjevi />
             </ProtectedPage>
           }
         />

@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using LABsistem.Application.Models;
@@ -12,6 +12,7 @@ using LABsistem.Application.DTOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using LABsistem.Api.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +43,12 @@ builder.Services.AddScoped<IObjekatService, ObjekatService>();
 builder.Services.AddScoped<IKabinetRepository, KabinetRepository>();
 builder.Services.AddScoped<IKabinetService, KabinetService>();
 builder.Services.AddScoped<ITerminRepository, TerminRepository>();
+builder.Services.AddScoped<ITerminValidator, TerminValidator>();
 builder.Services.AddScoped<ITerminService, TerminService>();
+builder.Services.AddScoped<IRezervacijaValidator, RezervacijaValidator>();
+builder.Services.AddScoped<IRezervacijaService, RezervacijaService>();
+builder.Services.AddScoped<IOpremaValidator, OpremaValidator>();
+builder.Services.AddScoped<IOpremaService, OpremaService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -109,6 +115,19 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// Debug: Log users
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+    var users = await db.Korisnici.ToListAsync();
+    Console.WriteLine("--- KORISNICI U BAZI ---");
+    foreach (var u in users)
+    {
+        Console.WriteLine($"User: {u.Username}, Email: {u.Email}, Role: {u.Uloga}");
+    }
+    Console.WriteLine("-------------------------");
+}
 
 using (var scope = app.Services.CreateScope())
 {

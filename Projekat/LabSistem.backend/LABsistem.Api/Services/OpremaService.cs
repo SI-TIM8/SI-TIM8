@@ -11,10 +11,18 @@ namespace LABsistem.Api.Services
     public class OpremaService : IOpremaService
     {
         private readonly IOpremaRepository _repo;
-        public OpremaService(IOpremaRepository repo) => _repo = repo;
+        private readonly Validators.IOpremaValidator _validator;
+
+        public OpremaService(IOpremaRepository repo, Validators.IOpremaValidator validator)
+        {
+            _repo = repo;
+            _validator = validator;
+        }
 
         public async Task<OpremaDTO> KreirajOpremu(OpremaCreateDTO dto)
         {
+            _validator.ValidateCreate(dto.Naziv, dto.KabinetID);
+
             var postojecaOprema = await _repo.GetAllAsync();
             var nextSerijskiBroj = postojecaOprema.Any()
                 ? postojecaOprema.Max(o => o.SerijskiBroj) + 1
@@ -70,6 +78,20 @@ namespace LABsistem.Api.Services
             if (postojeca == null) return false;
             await _repo.DeleteAsync(id);
             return true;
+        }
+
+        public async Task<IEnumerable<OpremaDTO>> VratiOpremuPoKabinetu(int kabinetId)
+        {
+            var oprema = await _repo.GetAllAsync();
+            return oprema
+                .Where(o => o.KabinetID == kabinetId)
+                .Select(o => new OpremaDTO
+                {
+                    ID = o.ID,
+                    Naziv = o.Naziv,
+                    SerijskiBroj = o.SerijskiBroj,
+                    Stanje = (int)o.stanje
+                }).ToList();
         }
     }
 }

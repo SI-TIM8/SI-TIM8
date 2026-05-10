@@ -47,6 +47,10 @@ namespace LABsistem.Domain.Entities
 
         public ICollection<RefreshToken> RefreshTokens { get; set; }
 
+        public ICollection<Termin> RezervisaniTermini { get; set; }
+
+        public ICollection<Zahtjev> MojiZahtjevi { get; set; }
+
 
     }
 }

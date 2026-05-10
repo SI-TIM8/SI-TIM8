@@ -3,6 +3,7 @@ using System;
 using LABsistem.Dal.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LabSistem.Dal.Migrations
 {
     [DbContext(typeof(LabSistemDbContext))]
-    partial class LabSistemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260509094333_Sprint7")]
+    partial class Sprint7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -405,6 +408,9 @@ namespace LabSistem.Dal.Migrations
                     b.Property<int>("KabinetID")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("KorisnikID")
+                        .HasColumnType("integer");
+
                     b.Property<int>("KreatorID")
                         .HasColumnType("integer");
 
@@ -429,6 +435,8 @@ namespace LabSistem.Dal.Migrations
                     b.HasKey("ID");
 
                     b.HasIndex("KabinetID");
+
+                    b.HasIndex("KorisnikID");
 
                     b.HasIndex("KreatorID");
 
@@ -583,6 +591,10 @@ namespace LabSistem.Dal.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("LABsistem.Domain.Entities.Korisnik", null)
+                        .WithMany("RezervisaniTermini")
+                        .HasForeignKey("KorisnikID");
+
                     b.HasOne("LABsistem.Domain.Entities.Korisnik", "Kreator")
                         .WithMany("KreiraniTermini")
                         .HasForeignKey("KreatorID")
@@ -590,9 +602,9 @@ namespace LabSistem.Dal.Migrations
                         .IsRequired();
 
                     b.HasOne("LABsistem.Domain.Entities.Korisnik", "Profesor")
-                        .WithMany("RezervisaniTermini")
+                        .WithMany()
                         .HasForeignKey("ProfesorID")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Kabinet");
 
@@ -604,9 +616,9 @@ namespace LabSistem.Dal.Migrations
             modelBuilder.Entity("LABsistem.Domain.Entities.Zahtjev", b =>
                 {
                     b.HasOne("LABsistem.Domain.Entities.Korisnik", "Student")
-                        .WithMany("MojiZahtjevi")
+                        .WithMany()
                         .HasForeignKey("StudentID")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LABsistem.Domain.Entities.Termin", "Termin")
@@ -636,8 +648,6 @@ namespace LabSistem.Dal.Migrations
                     b.Navigation("KorisnikObjekti");
 
                     b.Navigation("KreiraniTermini");
-
-                    b.Navigation("MojiZahtjevi");
 
                     b.Navigation("RefreshTokens");
 
