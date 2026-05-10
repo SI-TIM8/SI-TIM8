@@ -21,12 +21,24 @@ namespace LABsistem.Tests.Integration
             return new LabSistemDbContext(options);
         }
 
+        private static Mock<ITerminValidator> CreateValidatorMock()
+        {
+            var validatorMock = new Mock<ITerminValidator>();
+            validatorMock
+                .Setup(v => v.ValidateCreateAsync(It.IsAny<DateTime>(), It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>(), It.IsAny<int>()))
+                .Returns(Task.CompletedTask);
+            validatorMock
+                .Setup(v => v.ValidateUpdateAsync(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>(), It.IsAny<int>()))
+                .Returns(Task.CompletedTask);
+            return validatorMock;
+        }
+
         [Fact]
         public async Task KreirajTermin_TrajnoSpremaUBazu()
         {
            
             using var context = GetInMemoryDbContext();
-            var service = new TerminService(new TerminRepository(context), new Mock<ITerminValidator>().Object);
+            var service = new TerminService(new TerminRepository(context), CreateValidatorMock().Object);
             var dto = new TerminCreateDTO
             {
                 Datum = DateTime.Now,
@@ -55,7 +67,7 @@ namespace LABsistem.Tests.Integration
             await context.SaveChangesAsync();
             context.Entry(termin).State = EntityState.Detached;
 
-            var service = new TerminService(new TerminRepository(context), new Mock<ITerminValidator>().Object);
+            var service = new TerminService(new TerminRepository(context), CreateValidatorMock().Object);
             var updateDto = new TerminCreateDTO { VrijemePocetka = new TimeSpan(16, 0, 0), Datum = DateTime.Now };
 
             
@@ -75,7 +87,7 @@ namespace LABsistem.Tests.Integration
             context.Termini.Add(t);
             await context.SaveChangesAsync();
 
-            var service = new TerminService(new TerminRepository(context), new Mock<ITerminValidator>().Object);
+            var service = new TerminService(new TerminRepository(context), CreateValidatorMock().Object);
 
             
             await service.ObrisiTermin(50);
@@ -114,6 +126,38 @@ namespace LABsistem.Tests.Integration
             
             Assert.Equal("N/A", stavka.kreatorIme);
             Assert.Equal("N/A", stavka.kabinetNaziv);
+        }
+
+        [Fact]
+        public async Task KreirajTermin_KadaSePreklapaUIstomKabinetu_BacaGresku()
+        {
+            using var context = GetInMemoryDbContext();
+            context.Termini.Add(new Termin
+            {
+                ID = 1,
+                Datum = DateTime.Today.AddDays(1),
+                VrijemePocetka = new TimeSpan(10, 0, 0),
+                VrijemeKraja = new TimeSpan(12, 0, 0),
+                KreatorID = 1,
+                KabinetID = 5
+            });
+            await context.SaveChangesAsync();
+
+            var validator = new TerminValidator(context);
+            var service = new TerminService(new TerminRepository(context), validator);
+
+            var dto = new TerminCreateDTO
+            {
+                Datum = DateTime.Today.AddDays(1),
+                VrijemePocetka = new TimeSpan(11, 0, 0),
+                VrijemeKraja = new TimeSpan(13, 0, 0),
+                KreatorID = 2,
+                KabinetID = 5
+            };
+
+            var exception = await Assert.ThrowsAsync<Exception>(() => service.KreirajTermin(dto));
+
+            Assert.Equal("Vec postoji termin koji se vremenski preklapa u odabranom kabinetu.", exception.Message);
         }
     }
 }

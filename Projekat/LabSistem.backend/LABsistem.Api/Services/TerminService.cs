@@ -42,7 +42,7 @@ namespace LABsistem.Api.Services
 
         public async Task KreirajTermin(TerminCreateDTO dto)
         {
-            _validator.ValidateCreate(dto.Datum, dto.VrijemePocetka, dto.VrijemeKraja);
+            await _validator.ValidateCreateAsync(dto.Datum, dto.VrijemePocetka, dto.VrijemeKraja, dto.KabinetID);
 
             var novi = new Termin
             {
@@ -59,6 +59,9 @@ namespace LABsistem.Api.Services
         {
             var t = await _repo.GetByIdAsync(id);
             if (t == null) return false;
+
+            await _validator.ValidateUpdateAsync(id, dto.Datum, dto.VrijemePocetka, dto.VrijemeKraja, dto.KabinetID);
+
             t.VrijemePocetka = dto.VrijemePocetka;
             t.VrijemeKraja = dto.VrijemeKraja;
             t.Datum = dto.Datum;
