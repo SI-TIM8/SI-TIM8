@@ -1,7 +1,8 @@
-﻿using Moq;
+using Moq;
 using AutoFixture;
 using LABsistem.Api.Services;
 using LABsistem.Application.DTOs;
+using LABsistem.Api.Validators;
 using LABsistem.Dal.Interfaces;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
@@ -13,6 +14,7 @@ namespace LABsistem.Tests.Unit
     {
         private readonly IFixture _fixture;
         private readonly Mock<IOpremaRepository> _repoMock;
+        private readonly Mock<IOpremaValidator> _validatorMock;
         private readonly OpremaService _service;
 
         public OpremaServiceTests()
@@ -22,7 +24,8 @@ namespace LABsistem.Tests.Unit
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
             _repoMock = new Mock<IOpremaRepository>();
-            _service = new OpremaService(_repoMock.Object);
+            _validatorMock = new Mock<IOpremaValidator>();
+            _service = new OpremaService(_repoMock.Object, _validatorMock.Object);
         }
 
         [Fact]

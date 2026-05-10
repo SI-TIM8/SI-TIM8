@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 using LABsistem.Dal.Db;
 using LABsistem.Dal.Repositories;
 using LABsistem.Api.Services;
+using LABsistem.Api.Validators;
 using LABsistem.Domain.Entities;
 using LABsistem.Application.DTOs;
 using LABsistem.Domain.Enums;
@@ -25,7 +27,7 @@ namespace LABsistem.Tests.Integration
             // Arrange
             using var context = GetInMemoryDbContext();
             var repo = new OpremaRepository(context);
-            var service = new OpremaService(repo);
+            var service = new OpremaService(repo, new Mock<IOpremaValidator>().Object);
 
             var oprema = new Oprema
             {

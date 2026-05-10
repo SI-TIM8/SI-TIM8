@@ -22,7 +22,9 @@ namespace LABsistem.Presentation.Controllers
         [Authorize(Roles = "Profesor")]
         public async Task<IActionResult> Rezervisi(int id, [FromBody] RezervacijaCreateDTO dto)
         {
-            var profesorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            var profesorId = int.Parse(userId);
             try
             {
                 await _service.RezervisiTermin(profesorId, id, dto.LimitOsoba, dto.VidljivoStudentima);
@@ -38,7 +40,9 @@ namespace LABsistem.Presentation.Controllers
         [Authorize(Roles = "Profesor")]
         public async Task<IActionResult> Otkazi(int id)
         {
-            var profesorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            var profesorId = int.Parse(userId);
             try
             {
                 await _service.OtkaziTermin(profesorId, id);
@@ -54,7 +58,9 @@ namespace LABsistem.Presentation.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> PosaljiZahtjev(int id)
         {
-            var studentId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            var studentId = int.Parse(userId);
             try
             {
                 await _service.PosaljiZahtjev(studentId, id);
@@ -70,7 +76,9 @@ namespace LABsistem.Presentation.Controllers
         [Authorize(Roles = "Profesor")]
         public async Task<IActionResult> OdgovoriNaZahtjev(int zahtjevId, [FromQuery] bool odobri)
         {
-            var profesorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            var profesorId = int.Parse(userId);
             try
             {
                 await _service.OdgovoriNaZahtjev(profesorId, zahtjevId, odobri);
@@ -93,9 +101,12 @@ namespace LABsistem.Presentation.Controllers
         [HttpGet("moje")]
         public async Task<IActionResult> GetMoje()
         {
-            var korisnikId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            var korisnikId = int.Parse(userId);
             var uloga = User.FindFirstValue(ClaimTypes.Role)?.ToLower();
             
+            if (uloga == null) return BadRequest("Uloga nije pronađena.");
             var termini = await _service.GetMojeRezervacijeAsync(korisnikId, uloga);
             return Ok(termini);
         }
@@ -104,7 +115,9 @@ namespace LABsistem.Presentation.Controllers
         [Authorize(Roles = "Profesor")]
         public async Task<IActionResult> GetDolazniZahtjevi()
         {
-            var profesorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            var profesorId = int.Parse(userId);
             var zahtjevi = await _service.GetDolazniZahtjeviAsync(profesorId);
             return Ok(zahtjevi);
         }
@@ -113,7 +126,9 @@ namespace LABsistem.Presentation.Controllers
         [Authorize(Roles = "Student")]
         public async Task<IActionResult> GetDostupniStudentima()
         {
-            var studentId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            var studentId = int.Parse(userId);
             var termini = await _service.GetDostupniTerminiZaStudenteAsync(studentId);
             return Ok(termini);
         }

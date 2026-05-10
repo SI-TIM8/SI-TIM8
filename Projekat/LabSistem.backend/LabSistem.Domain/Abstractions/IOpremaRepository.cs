@@ -8,7 +8,7 @@ namespace LABsistem.Dal.Interfaces
     public interface IOpremaRepository
     {
         Task<IEnumerable<Oprema>> GetAllAsync();
-        Task<Oprema> GetByIdAsync(int id);
+        Task<Oprema?> GetByIdAsync(int id);
         Task AddAsync(Oprema oprema);
         Task<IEnumerable<(Oprema oprema, string kabinetNaziv, string zgradaNaziv)>> GetAllWithKabinetAsync();
         Task UpdateAsync(Oprema oprema);
