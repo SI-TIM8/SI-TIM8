@@ -30,7 +30,9 @@ const DASHBOARD_TEXT_BY_ROLE = {
 
 const BADGE_KLASA = {
   odobreno: "zeleno",
+  odobren: "zeleno",
   "na cekanju": "zuto",
+  nacekanju: "zuto",
   prijavljen: "crveno",
   kvar: "crveno",
   "u obradi": "amber",
@@ -39,6 +41,7 @@ const BADGE_KLASA = {
   "u popravci": "amber",
   aktivan: "zeleno",
   odbijeno: "crveno",
+  odbijen: "crveno",
   rezervisan: "plavo",
   slobodan: "sivo",
   otkazan: "crveno",
@@ -196,28 +199,30 @@ function Dashboard() {
 
   async function loadTehnicarDashboard() {
     setLoadingEvidencije(true);
+    try {
+      const [terminiResponse, opremaResponse, evidencijeResponse] = await Promise.all([
+        api.get("/Termin"),
+        api.get("/Oprema"),
+        api.get("/Evidencija"),
+      ]);
 
-    const [terminiResponse, opremaResponse, evidencijeResponse] = await Promise.all([
-      api.get("/Termin"),
-      api.get("/Oprema"),
-      api.get("/Evidencija"),
-    ]);
+      const termini = Array.isArray(terminiResponse.data) ? terminiResponse.data : [];
+      const oprema = Array.isArray(opremaResponse.data) ? opremaResponse.data : [];
+      const sveEvidencije = Array.isArray(evidencijeResponse.data) ? evidencijeResponse.data : [];
 
-    const termini = Array.isArray(terminiResponse.data) ? terminiResponse.data : [];
-    const oprema = Array.isArray(opremaResponse.data) ? opremaResponse.data : [];
-    const sveEvidencije = Array.isArray(evidencijeResponse.data) ? evidencijeResponse.data : [];
+      setEvidencije(sveEvidencije);
 
-    setEvidencije(sveEvidencije);
-    setLoadingEvidencije(false);
+      const aktivniKvarovi = sveEvidencije.filter((evidencija) => evidencija.status === "Kvar").length;
 
-    const aktivniKvarovi = sveEvidencije.filter((evidencija) => evidencija.status === "Kvar").length;
-
-    setStatCards([
-      { label: "Termini danas", vrijednost: String(termini.filter(isTerminToday).length), klasa: "plavo" },
-      { label: "Ukupna oprema", vrijednost: String(oprema.length), klasa: "" },
-      { label: "Prijavljeni kvarovi", vrijednost: String(aktivniKvarovi), klasa: "crveno" },
-    ]);
-    setTableData(null);
+      setStatCards([
+        { label: "Termini danas", vrijednost: String(termini.filter(isTerminToday).length), klasa: "plavo" },
+        { label: "Ukupna oprema", vrijednost: String(oprema.length), klasa: "" },
+        { label: "Prijavljeni kvarovi", vrijednost: String(aktivniKvarovi), klasa: "crveno" },
+      ]);
+      setTableData(null);
+    } finally {
+      setLoadingEvidencije(false);
+    }
   }
 
   async function loadAdminDashboard() {
