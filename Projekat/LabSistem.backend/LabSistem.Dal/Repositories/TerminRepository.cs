@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using LABsistem.Domain.Entities;
 using LABsistem.Dal.Interfaces;
 using LABsistem.Dal.Db;
+using LabSistem.Domain.Enums;
 
 namespace LABsistem.Dal.Repositories
 {
@@ -51,5 +52,26 @@ namespace LABsistem.Dal.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+        public async Task<IEnumerable<Termin>> GetSlobodniTerminiAsync() =>
+            await _context.Termini
+                .Where(t => t.StatusTermina == StatusTermina.Slobodan)
+                .Include(t => t.Kabinet)
+                .Include(t => t.Kreator)
+                .ToListAsync();
+
+        public async Task<IEnumerable<Termin>> GetTerminiProfesoraAsync(int profesorId) =>
+            await _context.Termini
+                .Where(t => t.ProfesorID == profesorId)
+                .Include(t => t.Kabinet)
+                .Include(t => t.Zahtjevi)
+                .ToListAsync();
+
+        public async Task<Termin?> GetByIdWithDetailsAsync(int id) =>
+            await _context.Termini
+                .Include(t => t.Kabinet)
+                .Include(t => t.Profesor)
+                .Include(t => t.Zahtjevi)
+                    .ThenInclude(z => z.Student)
+                .FirstOrDefaultAsync(t => t.ID == id);
     }
 }

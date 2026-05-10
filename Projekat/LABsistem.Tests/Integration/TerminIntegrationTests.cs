@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 using LABsistem.Dal.Db;
 using LABsistem.Dal.Repositories;
 using LABsistem.Api.Services;
+using LABsistem.Api.Validators;
 using LABsistem.Domain.Entities;
 using LABsistem.Application.DTOs;
 using LABsistem.Domain.Enums;
@@ -24,7 +26,7 @@ namespace LABsistem.Tests.Integration
         {
            
             using var context = GetInMemoryDbContext();
-            var service = new TerminService(new TerminRepository(context));
+            var service = new TerminService(new TerminRepository(context), new Mock<ITerminValidator>().Object);
             var dto = new TerminCreateDTO
             {
                 Datum = DateTime.Now,
@@ -53,7 +55,7 @@ namespace LABsistem.Tests.Integration
             await context.SaveChangesAsync();
             context.Entry(termin).State = EntityState.Detached;
 
-            var service = new TerminService(new TerminRepository(context));
+            var service = new TerminService(new TerminRepository(context), new Mock<ITerminValidator>().Object);
             var updateDto = new TerminCreateDTO { VrijemePocetka = new TimeSpan(16, 0, 0), Datum = DateTime.Now };
 
             
@@ -73,7 +75,7 @@ namespace LABsistem.Tests.Integration
             context.Termini.Add(t);
             await context.SaveChangesAsync();
 
-            var service = new TerminService(new TerminRepository(context));
+            var service = new TerminService(new TerminRepository(context), new Mock<ITerminValidator>().Object);
 
             
             await service.ObrisiTermin(50);

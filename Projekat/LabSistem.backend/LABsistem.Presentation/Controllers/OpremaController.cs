@@ -44,5 +44,13 @@ namespace LABsistem.Presentation.Controllers
             await _service.ObrisiOpremu(id);
             return Ok(new { message = "Oprema obrisana" });
         }
+
+        [HttpGet("kabinet/{kabinetId}")]
+        [Authorize]
+        public async Task<IActionResult> GetPoKabinetu(int kabinetId)
+        {
+            var oprema = await _service.VratiOpremuPoKabinetu(kabinetId);
+            return Ok(oprema);
+        }
     }
 }

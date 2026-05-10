@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +11,13 @@ namespace LABsistem.Api.Services
     public class TerminService : ITerminService
     {
         private readonly ITerminRepository _repo;
-        public TerminService(ITerminRepository repo) => _repo = repo;
+        private readonly Validators.ITerminValidator _validator;
+
+        public TerminService(ITerminRepository repo, Validators.ITerminValidator validator)
+        {
+            _repo = repo;
+            _validator = validator;
+        }
 
         public async Task<IEnumerable<TerminDTO>> VratiSveTermine()
         {
@@ -25,12 +31,19 @@ namespace LABsistem.Api.Services
                 KreatorID = x.termin.KreatorID,
                 KreatorIme = x.kreatorIme,
                 KabinetID = x.termin.KabinetID,
-                KabinetNaziv = x.kabinetNaziv
+                KabinetNaziv = x.kabinetNaziv,
+                StatusTermina = x.termin.StatusTermina.ToString(),
+                LimitOsoba = x.termin.LimitOsoba,
+                VidljivoStudentima = x.termin.VidljivoStudentima,
+                ProfesorIme = x.termin.Profesor?.ImePrezime,
+                BrojOdobrenih = x.termin.Zahtjevi?.Count(z => z.StatusZahtjeva == LABsistem.Domain.Enums.StatusZahtjeva.Odobren) ?? 0
             }).ToList();
         }
 
         public async Task KreirajTermin(TerminCreateDTO dto)
         {
+            _validator.ValidateCreate(dto.Datum, dto.VrijemePocetka, dto.VrijemeKraja);
+
             var novi = new Termin
             {
                 VrijemePocetka = dto.VrijemePocetka,
@@ -61,6 +74,21 @@ namespace LABsistem.Api.Services
             if (t == null) return false;
             await _repo.DeleteAsync(id);
             return true;
+        }
+
+        public async Task<TerminDTO?> GetById(int id)
+        {
+            var t = await _repo.GetByIdAsync(id);
+            if (t == null) return null;
+            return new TerminDTO
+            {
+                ID = t.ID,
+                VrijemePocetka = t.VrijemePocetka,
+                VrijemeKraja = t.VrijemeKraja,
+                Datum = t.Datum,
+                KreatorID = t.KreatorID,
+                KabinetID = t.KabinetID
+            };
         }
     }
 }

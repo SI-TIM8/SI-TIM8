@@ -17,7 +17,7 @@ namespace LABsistem.Dal.Repositories
         public async Task<IEnumerable<Oprema>> GetAllAsync() =>
             await _context.Oprema.Include(o => o.Evidencije).ToListAsync();
 
-        public async Task<Oprema> GetByIdAsync(int id) =>
+        public async Task<Oprema?> GetByIdAsync(int id) =>
             await _context.Oprema.FindAsync(id);
 
         public async Task AddAsync(Oprema oprema)

@@ -3,6 +3,7 @@ using System;
 using LABsistem.Dal.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LabSistem.Dal.Migrations
 {
     [DbContext(typeof(LabSistemDbContext))]
-    partial class LabSistemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260510062500_Sprint7Rezervacije")]
+    partial class Sprint7Rezervacije
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -450,6 +453,9 @@ namespace LabSistem.Dal.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
+                    b.Property<int?>("KorisnikID")
+                        .HasColumnType("integer");
+
                     b.Property<int>("StatusZahtjeva")
                         .HasColumnType("integer");
 
@@ -460,6 +466,8 @@ namespace LabSistem.Dal.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("KorisnikID");
 
                     b.HasIndex("StudentID");
 
@@ -603,8 +611,12 @@ namespace LabSistem.Dal.Migrations
 
             modelBuilder.Entity("LABsistem.Domain.Entities.Zahtjev", b =>
                 {
-                    b.HasOne("LABsistem.Domain.Entities.Korisnik", "Student")
+                    b.HasOne("LABsistem.Domain.Entities.Korisnik", null)
                         .WithMany("MojiZahtjevi")
+                        .HasForeignKey("KorisnikID");
+
+                    b.HasOne("LABsistem.Domain.Entities.Korisnik", "Student")
+                        .WithMany()
                         .HasForeignKey("StudentID")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();

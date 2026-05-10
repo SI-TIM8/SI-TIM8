@@ -11,5 +11,9 @@ namespace LABsistem.Dal.Interfaces
         Task AddAsync(Termin termin);
         Task UpdateAsync(Termin termin);
         Task DeleteAsync(int id);
+
+        Task<IEnumerable<Termin>> GetSlobodniTerminiAsync();
+        Task<IEnumerable<Termin>> GetTerminiProfesoraAsync(int profesorId);
+        Task<Termin?> GetByIdWithDetailsAsync(int id); // include Zahtjevi, Profesor, Kabinet
     }
 }

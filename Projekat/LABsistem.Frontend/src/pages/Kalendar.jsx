@@ -101,33 +101,23 @@ function toLocalDate(dateValue, timeValue) {
 }
 
 function resolveTerminStatus(termin) {
-  const rawStatus = String(
-    termin.status ??
-      termin.Status ??
-      termin.tip ??
-      termin.Tip ??
-      termin.rezervacijaStatus ??
-      "",
-  ).toLowerCase();
+  const rawStatus = String(termin.statusTermina || "").toLowerCase();
 
-  if (
-    termin.blokiran === true ||
-    termin.isBlocked === true ||
-    rawStatus.includes("blok")
-  ) {
+  if (rawStatus === "otkazan" || rawStatus === "odbijen") {
     return "blocked";
   }
 
-  if (
-    termin.zauzet === true ||
-    termin.isReserved === true ||
-    termin.rezervisan === true ||
-    rawStatus.includes("zauzet") ||
-    rawStatus.includes("approved") ||
-    rawStatus.includes("pending")
-  ) {
+  if (rawStatus === "rezervisan") {
     return "occupied";
   }
+
+  if (rawStatus === "slobodan") {
+    return "available";
+  }
+
+  // Fallback na staru logiku ako nema statusTermina
+  if (rawStatus.includes("blok")) return "blocked";
+  if (rawStatus.includes("zauzet") || rawStatus.includes("rezervisan")) return "occupied";
 
   return "available";
 }

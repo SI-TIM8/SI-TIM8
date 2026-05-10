@@ -1,7 +1,8 @@
-﻿using Moq;
+using Moq;
 using AutoFixture;
 using LABsistem.Api.Services;
 using LABsistem.Application.DTOs;
+using LABsistem.Api.Validators;
 using LABsistem.Dal.Interfaces;
 using LABsistem.Domain.Entities;
 using Xunit;
@@ -12,6 +13,7 @@ namespace LABsistem.Tests.Unit
     {
         private readonly IFixture _fixture;
         private readonly Mock<ITerminRepository> _repoMock;
+        private readonly Mock<ITerminValidator> _validatorMock;
         private readonly TerminService _service;
 
         public TerminServiceTests()
@@ -21,7 +23,8 @@ namespace LABsistem.Tests.Unit
             _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
             _repoMock = new Mock<ITerminRepository>();
-            _service = new TerminService(_repoMock.Object);
+            _validatorMock = new Mock<ITerminValidator>();
+            _service = new TerminService(_repoMock.Object, _validatorMock.Object);
         }
 
         [Fact]

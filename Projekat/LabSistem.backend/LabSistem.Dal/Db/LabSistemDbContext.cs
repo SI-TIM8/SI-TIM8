@@ -67,7 +67,49 @@ namespace LABsistem.Dal.Db
                 .HasIndex(x => x.Jti)
                 .IsUnique();
 
-            // Ovdje možeš dodati Fluent API konfiguracije za strane kljuceve ako konvencije nisu dovoljne
+            // Fluent API konfiguracije
+
+
+            modelBuilder.Entity<Termin>()
+                .HasOne(t => t.Kreator)
+                .WithMany(k => k.KreiraniTermini) 
+                .HasForeignKey(t => t.KreatorID)
+                .OnDelete(DeleteBehavior.Restrict); 
+
+            
+            modelBuilder.Entity<Termin>()
+                .HasOne(t => t.Profesor)
+                .WithMany(k => k.RezervisaniTermini) 
+                .HasForeignKey(t => t.ProfesorID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+
+            modelBuilder.Entity<Termin>()
+                .Property(t => t.StatusTermina)
+                .HasConversion<int>();
+
+
+            modelBuilder.Entity<Termin>()
+                .Property(t => t.LimitOsoba)
+                .IsRequired(false);
+
+
+            modelBuilder.Entity<Zahtjev>()
+                .HasOne(z => z.Student)
+                .WithMany(s => s.MojiZahtjevi)
+                .HasForeignKey(z => z.StudentID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Zahtjev>()
+                .HasOne(z => z.Termin)
+                .WithMany(t => t.Zahtjevi)
+                .HasForeignKey(z => z.TerminID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            modelBuilder.Entity<Zahtjev>()
+                .Property(z => z.StatusZahtjeva)
+                .HasConversion<int>();
         }
     }
 }
