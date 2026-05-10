@@ -123,6 +123,7 @@ function Termini() {
       id: kabinet.id,
       naziv: kabinet.naziv,
       objekatLokacija: kabinet.objekatLokacija,
+      kapacitet: kabinet.kapacitet,
     }));
   }, [kabineti]);
 
@@ -282,6 +283,29 @@ function Termini() {
   async function handleRezervisi(e) {
     e.preventDefault();
     setSaving(true);
+    setMessage({ type: "", text: "" });
+
+    if (!rezervacijaForm.maxKapacitet || rezervacijaForm.maxKapacitet < 1) {
+      setMessage({
+        type: "error",
+        text: "Kapacitet kabineta nije ispravno ucitan.",
+      });
+      setSaving(false);
+      return;
+    }
+
+    if (
+      rezervacijaForm.limitOsoba < 1 ||
+      rezervacijaForm.limitOsoba > rezervacijaForm.maxKapacitet
+    ) {
+      setMessage({
+        type: "error",
+        text: `Limit osoba mora biti izmedju 1 i ${rezervacijaForm.maxKapacitet}.`,
+      });
+      setSaving(false);
+      return;
+    }
+
     try {
       await api.post(`/Rezervacija/rezervisi/${selectedTerminId}`, rezervacijaForm);
       setMessage({ type: "success", text: "Termin uspjesno rezervisan." });
@@ -295,7 +319,23 @@ function Termini() {
   }
 
   function openRezervacijaModal(id) {
+    const termin = termini.find(t => t.id === id);
+    const kabinet = kabineti.find(k => k.id === termin?.kabinetID);
+
+    if (!kabinet || !kabinet.kapacitet || kabinet.kapacitet < 1) {
+      setMessage({
+        type: "error",
+        text: "Kapacitet odabranog kabineta nije dostupan. Provjerite kabinet prije rezervacije.",
+      });
+      return;
+    }
+
     setSelectedTerminId(id);
+    setRezervacijaForm({ 
+      limitOsoba: kabinet.kapacitet,
+      vidljivoStudentima: true,
+      maxKapacitet: kabinet.kapacitet
+    });
     setRezervacijaModalOpen(true);
   }
 
@@ -661,14 +701,20 @@ function Termini() {
             </div>
             <form onSubmit={handleRezervisi}>
               <div className="form-group">
-                <label>Limit osoba</label>
+                <label>Limit osoba (Maksimalno: {rezervacijaForm.maxKapacitet})</label>
                 <input
                   type="number"
                   value={rezervacijaForm.limitOsoba}
-                  onChange={(e) => setRezervacijaForm({ ...rezervacijaForm, limitOsoba: e.target.value })}
+                  onChange={(e) => setRezervacijaForm({ ...rezervacijaForm, limitOsoba: Number(e.target.value) })}
                   min="1"
+                  max={rezervacijaForm.maxKapacitet}
                   required
                 />
+                {rezervacijaForm.limitOsoba > rezervacijaForm.maxKapacitet && (
+                  <p className="form-error" style={{ fontSize: "12px", marginTop: "4px" }}>
+                    Limit ne može biti veći od kapaciteta kabineta ({rezervacijaForm.maxKapacitet}).
+                  </p>
+                )}
               </div>
               <div className="form-group" style={{ margin: "15px 0" }}>
                 <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", fontWeight: "500" }}>

@@ -22,7 +22,8 @@ namespace LABsistem.Api.Services
                 KorisnikID = x.kabinet.KorisnikID,
                 OdgovorniKorisnik = x.odgovorniKorisnik,
                 ObjekatID = x.kabinet.ObjekatID,
-                ObjekatLokacija = x.objekatLokacija
+                ObjekatLokacija = x.objekatLokacija,
+                Kapacitet = x.kabinet.Kapacitet
             }).ToList();
         }
 
@@ -32,7 +33,8 @@ namespace LABsistem.Api.Services
             {
                 Naziv = dto.Naziv,
                 KorisnikID = dto.KorisnikID,
-                ObjekatID = dto.ObjekatID
+                ObjekatID = dto.ObjekatID,
+                Kapacitet = dto.Kapacitet
             };
             await _repo.AddAsync(novi);
         }
@@ -44,6 +46,7 @@ namespace LABsistem.Api.Services
             k.Naziv = dto.Naziv;
             k.KorisnikID = dto.KorisnikID;
             k.ObjekatID = dto.ObjekatID;
+            k.Kapacitet = dto.Kapacitet;
             await _repo.UpdateAsync(k);
             return true;
         }

@@ -27,10 +27,18 @@ namespace LABsistem.Api.Validators
 
         public async Task ValidateRezervacija(int terminId, int profesorId, int limitOsoba)
         {
-            var termin = await _context.Termini.FirstOrDefaultAsync(t => t.ID == terminId);
+            var termin = await _context.Termini
+                .Include(t => t.Kabinet)
+                .FirstOrDefaultAsync(t => t.ID == terminId);
 
             if (termin == null)
                 throw new Exception("Termin ne postoji.");
+
+            if (termin.Kabinet == null)
+                throw new Exception("Kabinet za ovaj termin ne postoji.");
+
+            if (limitOsoba > termin.Kabinet.Kapacitet)
+                throw new Exception($"Limit osoba ({limitOsoba}) ne može biti veći od kapaciteta kabineta ({termin.Kabinet.Kapacitet}).");
 
             if (termin.StatusTermina != StatusTermina.Slobodan)
                 throw new Exception("Termin je već rezervisan.");

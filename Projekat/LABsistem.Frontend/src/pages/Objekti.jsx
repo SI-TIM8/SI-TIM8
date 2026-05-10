@@ -5,7 +5,7 @@ import api from "../api/client";
 const getLocalRole = () => localStorage.getItem("uloga") || "student";
 
 const INIT_OBJEKAT = { lokacija: "", radnoVrijeme: "" };
-const INIT_KABINET = { naziv: "", korisnikID: "", objekatID: null };
+const INIT_KABINET = { naziv: "", korisnikID: "", objekatID: null, kapacitet: "" };
 
 function extractError(error, fallback) {
   const d = error?.response?.data;
@@ -14,16 +14,20 @@ function extractError(error, fallback) {
   return fallback;
 }
 
-function ProfAutocomplete({ korisnici, value, onChange }) {
+function ProfAutocomplete({ korisnici, value, onChange, initialDisplayName = "" }) {
   const [inputVal, setInputVal] = useState("");
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
-    if (!value) { setInputVal(""); return; }
+    if (!value) {
+      setInputVal(initialDisplayName || "");
+      return;
+    }
     const found = korisnici.find(k => k.userId === Number(value));
     if (found) setInputVal(found.imePrezime);
-  }, [value, korisnici]);
+    else setInputVal(initialDisplayName || "");
+  }, [value, korisnici, initialDisplayName]);
 
   useEffect(() => {
     function handleClick(e) {
@@ -136,7 +140,7 @@ export default function Objekti() {
     if (type === "objekat-create") setForm(INIT_OBJEKAT);
     else if (type === "objekat-edit") setForm({ lokacija: data.lokacija, radnoVrijeme: data.radnoVrijeme });
     else if (type === "kabinet-create") setForm({ ...INIT_KABINET, objekatID: data.objekatID });
-    else if (type === "kabinet-edit") setForm({ naziv: data.naziv, korisnikID: data.korisnikID, objekatID: data.objekatID });
+    else if (type === "kabinet-edit") setForm({ naziv: data.naziv, korisnikID: data.korisnikID, objekatID: data.objekatID, kapacitet: data.kapacitet });
     setFormMsg({ type: "", text: "" });
   }
 
@@ -144,7 +148,8 @@ export default function Objekti() {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: name === "korisnikID" ? Number(value) : value }));
+    const numericFields = ["korisnikID", "kapacitet"];
+    setForm(prev => ({ ...prev, [name]: numericFields.includes(name) ? Number(value) : value }));
   }
 
   async function handleSubmit(e) {
@@ -274,13 +279,15 @@ export default function Objekti() {
                       <>
                         <div className="users-list-header users-list-row" style={{ fontSize: "12px" }}>
                           <span>Naziv</span>
-                          <span>Odgovorni korisnik</span>
+                          <span>Odgovorni profesor</span>
+                          <span>Kapacitet</span>
                           {isAdmin && <span>Akcije</span>}
                         </div>
                         {objekat.kabineti.map(k => (
                           <div className="users-list-row users-list-item" key={k.id}>
                             <span style={{ fontWeight: "600" }}>{k.naziv}</span>
                             <span>{k.odgovorniKorisnik}</span>
+                            <span>{k.kapacitet}</span>
                             {isAdmin && (
                               <span>
                                 <div className="users-actions">
@@ -335,7 +342,12 @@ export default function Objekti() {
                       korisnici={korisnici}
                       value={form.korisnikID}
                       onChange={val => setForm(prev => ({ ...prev, korisnikID: val }))}
+                      initialDisplayName={modal?.data?.odgovorniKorisnik || ""}
                     />
+                  </div>
+                  <div className="form-group">
+                    <label>Kapacitet</label>
+                    <input type="number" name="kapacitet" value={form.kapacitet || ""} onChange={handleChange} required min="1" />
                   </div>
                 </>
               )}

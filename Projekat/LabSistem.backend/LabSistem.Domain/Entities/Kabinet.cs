@@ -12,6 +12,8 @@ namespace LABsistem.Domain.Entities
         public int ID { get; set; }
         [Required, StringLength(20)]
         public string Naziv { get; set; }
+        [Required, Range(1, 1000)]
+        public int Kapacitet { get; set; }
 
         // Relacija: Korisnik (1:N) [Izvor: ERD slika, source 46]
         public int KorisnikID { get; set; }

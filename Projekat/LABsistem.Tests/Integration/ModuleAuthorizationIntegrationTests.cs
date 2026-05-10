@@ -275,7 +275,8 @@ namespace LABsistem.Tests.Integration
                 {
                     Naziv = "KabT2",
                     KorisnikID = tehnicarId,
-                    ObjekatID = objekatId
+                    ObjekatID = objekatId,
+                    Kapacitet = 20
                 })
             };
             tehnicarKabinetPost.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tehnicarToken);
@@ -286,7 +287,8 @@ namespace LABsistem.Tests.Integration
                 {
                     Naziv = "KabA1",
                     KorisnikID = tehnicarId,
-                    ObjekatID = objekatId
+                    ObjekatID = objekatId,
+                    Kapacitet = 30
                 })
             };
             adminKabinetPost.Headers.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
