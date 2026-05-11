@@ -142,16 +142,16 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
 |----|-------------|------|-----|-----------|-----------|--------|
 | US26 | Automatska validacija konflikta termina i opreme | Sistem provjerava bazu podataka u milisekundama prije potvrde rezervacije; poruka "Termin je u međuvremenu zauzet" | Technical Task | 5 | High | To Do |
-| US27 | In-app notifikacija o odluci | Student prima email ili in-app notifikaciju o odobrenju/odbijanju, uključujući komentar asistenta | Feature | 3 | Medium | To Do |
+| US27 | In-app notifikacija o zahtjevu | Student prima email ili in-app notifikaciju o odobrenju/odbijanju, uključujući komentar profesora/asistenta; Profesor prima notifikacije o pristiglom zahtjevu.| Feature | 3 | Medium | To Do |
 | US37 | Automatska promjena statusa opreme po rezervaciji | Sistem automatski označava opremu kao zauzetu tokom potvrđene rezervacije i oslobađa je po završetku termina | Technical Task | 2 | Medium | To Do |
 
 **Podjela rada po članovima tima:**
 
 | Član | Oblast odgovornosti |
 |------|---------------------|
-| M1-M2 | Database Locks + konflikt validacija (US26) |
-| M3-M4 | In-app notifikacije (US27) |
-| M5-M6 | Automatska promjena statusa opreme (US37) |
+| M1-M2 | Automatska validacija konflikta termina i opreme |
+| M3-M4 | In-app notifikacija o zahtjevu (US27) |
+| M5-M6 | Uvođenje novih tipova opreme |
 | M7-M8 | E2E testiranje cijelog rezervacijskog toka |
 
 > **Sažetak sprinta:** Sprint 8 zaokružuje Release 3. Tehničke pretpostavke rezervacijskog sistema (database locks, automatski status opreme) postavljaju se uz paralelno provođenje integracijskog i E2E testiranja kompletnog toka koji je implementiran u Sprintu 7. Na kraju sprinta sistem je funkcionalno upotrebljiv i stabilan za osnovni laboratorijski rad.
@@ -182,14 +182,14 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 
 | Član | Oblast odgovornosti |
 |------|---------------------|
-| M1 | Forma za prijavu kvara – frontend (US09) |
-| M2 | Automatsko otkazivanje rezervacija pri kvaru – backend (US28) |
+| M1 | Forma za prijavu kvara – frontend (US09/US28) |
+| M2 | Dodavanje općenitih obavještenja za sve korisnike |
 | M3-M4 | Ograničenje broja rezervacija po studentu (US16)|
 | M5 | Sistemsko E2E testiranje: kvar → otkazivanje → notifikacija |
 | M6 |Load testiranje – 50 concurrent korisnika (NFR-13); ACID i backup provjera (NFR-17, NFR-19) |
 | M7-M8 | Regresijsko testiranje svih funkcionalnosti do kraja S9 |
 
-> **Sažetak sprinta:** Sprint 9 donosi prijavu kvarova s automatskim povlačenjem svih pogođenih rezervacija i filtriranje opreme. Slobodan kapacitet tima (M6–M8) usmjeren je na sistemsko i performansno testiranje – load test s 50 korisnika i provjera ACID/backup integriteta provode se ovdje dok je sistem već stabilan nakon S8.
+> **Sažetak sprinta:** Sprint 9 donosi prijavu kvarova s automatskim povlačenjem svih pogođenih rezervacija i filtriranje opreme. Slobodan kapacitet tima (M5–M8) usmjeren je na sistemsko i performansno testiranje – load test s 50 korisnika i provjera ACID/backup integriteta provode se ovdje dok je sistem već stabilan nakon S8.
 
 ---
 
