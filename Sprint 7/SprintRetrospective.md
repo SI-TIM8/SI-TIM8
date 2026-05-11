@@ -10,4 +10,4 @@ Odrediti termin za sastanak kada su svi članovi tima slobodni je se pokazao iza
 Pri izradi primjetili smo da smo pri kreiranju Initial Release Plan-a odvojili neke User Story-e na više sprintova iako su međusobno povezane, na pimjer, zakazivanje rezervacije i prihvatanje/odbijanje zahtjeva, te smo odlučili promijeniti taj dokument i prilagoditi ga trenutnom radu tima.
 
 #### Koje konkretne akcije tim uvodi u narednom sprintu
-Za naredni sprint smo odlučili testirati UI aplikacije.
+Za naredni sprint ćemo pratiti ažurirani Release Plan.
