@@ -4,6 +4,7 @@ import "dayjs/locale/bs";
 import { Calendar, Views, dayjsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import api from "../api/client";
+import { getCurrentRole } from "../auth/routeAccess";
 import Layout from "../components/Layout";
 
 dayjs.locale("bs");
@@ -100,8 +101,16 @@ function toLocalDate(dateValue, timeValue) {
   );
 }
 
-function resolveTerminStatus(termin) {
+function resolveTerminStatus(termin, role) {
   const rawStatus = String(termin.statusTermina || "").toLowerCase();
+
+  if (
+    role === "student" &&
+    termin.vidljivoStudentima &&
+    rawStatus === "rezervisan"
+  ) {
+    return "available";
+  }
 
   if (rawStatus === "otkazan" || rawStatus === "odbijen") {
     return "blocked";
@@ -131,6 +140,7 @@ function getDefaultView() {
 }
 
 function Kalendar() {
+  const role = getCurrentRole();
   const [termini, setTermini] = useState([]);
   const [selectedKabinetId, setSelectedKabinetId] = useState("");
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -159,7 +169,9 @@ function Kalendar() {
     setMessage({ type: "", text: "" });
 
     try {
-      const response = await api.get("/Termin");
+      const endpoint =
+        role === "student" ? "/Rezervacija/dostupni-studentima" : "/Termin";
+      const response = await api.get(endpoint);
       setTermini(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       setMessage({
@@ -201,7 +213,7 @@ function Kalendar() {
           return null;
         }
 
-        const status = resolveTerminStatus(termin);
+        const status = resolveTerminStatus(termin, role);
 
         return {
           id: termin.id,
@@ -217,7 +229,7 @@ function Kalendar() {
         };
       })
       .filter(Boolean);
-  }, [termini]);
+  }, [termini, role]);
 
   const filteredEvents = useMemo(() => {
     if (!selectedKabinetId) {
@@ -394,7 +406,9 @@ function Kalendar() {
             <div className="calendar-help">
               <h3>Napomena</h3>
               <p>
-                Boje termina prate status koji backend vrati za pojedini slot.
+                Boje termina oznacavaju trenutno stanje termina. Slobodni
+                termini su dostupni za slanje zahtjeva, dok termini koji su vec
+                zauzeti ili nisu dostupni ne mogu biti odabrani.
               </p>
             </div>
           </div>

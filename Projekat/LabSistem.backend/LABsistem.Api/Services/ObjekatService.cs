@@ -35,7 +35,8 @@ namespace LABsistem.Api.Services
                         KorisnikID = x.kabinet.KorisnikID,
                         OdgovorniKorisnik = x.odgovorniKorisnik,
                         ObjekatID = x.kabinet.ObjekatID,
-                        ObjekatLokacija = o.Lokacija
+                        ObjekatLokacija = o.Lokacija,
+                        Kapacitet = x.kabinet.Kapacitet
                     }).ToList()
             }).ToList();
         }

@@ -132,13 +132,15 @@ namespace LABsistem.Dal.Db
                     {
                         Naziv = "Lab 101",
                         KorisnikID = tehnicar.ID,
-                        ObjekatID = glavniObjekatId.Value
+                        ObjekatID = glavniObjekatId.Value,
+                        Kapacitet = 30
                     },
                     new Kabinet
                     {
                         Naziv = "Lab 102",
                         KorisnikID = tehnicar.ID,
-                        ObjekatID = glavniObjekatId.Value
+                        ObjekatID = glavniObjekatId.Value,
+                        Kapacitet = 25
                     }
                 };
 

@@ -24,6 +24,12 @@ namespace LABsistem.Tests.Unit
 
             _repoMock = new Mock<ITerminRepository>();
             _validatorMock = new Mock<ITerminValidator>();
+            _validatorMock
+                .Setup(v => v.ValidateCreateAsync(It.IsAny<DateTime>(), It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>(), It.IsAny<int>()))
+                .Returns(Task.CompletedTask);
+            _validatorMock
+                .Setup(v => v.ValidateUpdateAsync(It.IsAny<int>(), It.IsAny<DateTime>(), It.IsAny<TimeSpan>(), It.IsAny<TimeSpan>(), It.IsAny<int>()))
+                .Returns(Task.CompletedTask);
             _service = new TerminService(_repoMock.Object, _validatorMock.Object);
         }
 
@@ -63,6 +69,11 @@ namespace LABsistem.Tests.Unit
             
             await _service.KreirajTermin(dto);
 
+            _validatorMock.Verify(v => v.ValidateCreateAsync(
+                dto.Datum,
+                dto.VrijemePocetka,
+                dto.VrijemeKraja,
+                dto.KabinetID), Times.Once);
             _repoMock.Verify(r => r.AddAsync(It.Is<Termin>(t =>
                 t.VrijemePocetka == dto.VrijemePocetka &&
                 t.KreatorID == dto.KreatorID)), Times.Once);
@@ -80,6 +91,12 @@ namespace LABsistem.Tests.Unit
             var result = await _service.AzurirajTermin(5, dto);
 
             Assert.True(result);
+            _validatorMock.Verify(v => v.ValidateUpdateAsync(
+                5,
+                dto.Datum,
+                dto.VrijemePocetka,
+                dto.VrijemeKraja,
+                dto.KabinetID), Times.Once);
             _repoMock.Verify(r => r.UpdateAsync(postojeci), Times.Once);
         }
 

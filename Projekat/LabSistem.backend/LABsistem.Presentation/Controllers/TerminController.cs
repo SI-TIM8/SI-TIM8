@@ -25,16 +25,35 @@ namespace LABsistem.Presentation.Controllers
         [Authorize(Roles = "Admin,Tehnicar")]
         public async Task<IActionResult> Post([FromBody] TerminCreateDTO dto)
         {
-            await _service.KreirajTermin(dto);
-            return Ok(new { message = "Termin uspjesno dodan" });
+            try
+            {
+                await _service.KreirajTermin(dto);
+                return Ok(new { message = "Termin uspjesno dodan" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Tehnicar")]
         public async Task<IActionResult> Put(int id, [FromBody] TerminCreateDTO dto)
         {
-            await _service.AzurirajTermin(id, dto);
-            return Ok(new { message = "Termin azuriran" });
+            try
+            {
+                var updated = await _service.AzurirajTermin(id, dto);
+                if (!updated)
+                {
+                    return NotFound(new { message = "Termin nije pronadjen." });
+                }
+
+                return Ok(new { message = "Termin azuriran" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpDelete("{id}")]
