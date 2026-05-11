@@ -109,14 +109,17 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 
 #### Sprint 7 | TBD
 
-**Cilj sprinta:** Prikaz dostupnosti i podnošenje zahtjeva za rezervaciju  
-**Kapacitet tima:** ~65%
+**Cilj sprinta:** Prikaz dostupnosti, podnošenje i upravljanje zahtjevima za rezervaciju
+**Kapacitet tima:** ~75%
 
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
-|----|-------------|------|-----|-----------|-----------|--------|
-| US21 / US24 | Pregled i kalendarski prikaz slobodnih termina | Student pregledava termine u kalendarskom prikazu; color-coded status (slobodan/zauzet/blokiran); filtriranje po kabinetu | Feature | 5 | High | To Do |
-| US11 | Kreiranje zahtjeva za rezervaciju | Student rezerviše slobodan termin i opremu; sistem sprječava preklapanja i rezervacije u prošlosti; zahtjev se šalje asistentu na odobrenje | Feature | 5 | High | To Do |
-| US25 | Odabir specifične opreme unutar kabineta | Student odabire tačno određenu opremu iz kabineta pri rezervaciji; moguće označiti više stavki | Feature | 2 | Medium | To Do |
+|----|--------------|------|-----|-----------|-----------|--------|
+| US21 / US24 | Pregled i kalendarski prikaz slobodnih termina | Student pregledava termine u kalendarskom prikazu; color-coded status (slobodan/zauzet/blokiran); filtriranje po kabinetu | Feature | 5 | High | Završeno |
+| US11 | Kreiranje zahtjeva za rezervaciju | Student rezerviše slobodan termin i opremu; sistem sprječava preklapanja i rezervacije u prošlosti; zahtjev se šalje asistentu na odobrenje | Feature | 5 | High | Završeno |
+| US15 | Odobravanje i odbijanje zahtjeva | Profesor/asistent pregleda Pending zahtjeve i može ih odobriti ili odbiti uz komentar; status se ažurira u realnom vremenu | Feature | 5 | High | Završeno |
+| US12 | Pregled vlastitih zahtjeva | Student pregledava sve podnesene i odobrene zahtjeve | Feature | 2 | High | Završeno |
+| US13 | Otkazivanje rezervacije | Student otkazuje aktivan termin uz trenutno oslobađanje resursa | Feature | 3 | Medium | Završeno |
+| US14 | Pregled svih rezervacija (asistent/profesor) | Profesor/asistent pregledava listu svih zauzetih i slobodnih termina, historiju zauzeća; opcija eksporta podataka | Feature | 3 | High | Završeno |
 
 **Podjela rada po članovima tima:**
 
@@ -124,13 +127,11 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 |------|---------------------|
 | M1 | Kalendar UI – prikaz i color-coding (US24) |
 | M2 | Lista slobodnih termina – backend (US21) |
-| M3 | Kreiranje rezervacije – frontend flow (US11) |
-| M4 | Kreiranje rezervacije – backend + validacija |
-| M5 | Odabir opreme unutar kabineta (US25) |
-| M6 | API integracija frontend–backend |
-| M7 | Testiranje UI i rezervacijskog toka |
-| M8 | Buffer – podrška, code review, dokumentacija endpointa |
+| M3-M4 | Rezervacije CRUD – frontend, backend (US11) |
+| M5-M6 | Odobravanje/odbijanje zahtjeva, Pregled vlastitih zahtjeva – frontend, backend |
+| M7-M8 | Testiranje dodanih operacija – rezervacija |
 
+> **Napomena:** Sprint 7 je završen sa proširenim opsegom u odnosu na originalni plan.
 ---
 
 #### Sprint 8 | TBD
@@ -141,31 +142,26 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
 |----|-------------|------|-----|-----------|-----------|--------|
 | US26 | Automatska validacija konflikta termina i opreme | Sistem provjerava bazu podataka u milisekundama prije potvrde rezervacije; poruka "Termin je u međuvremenu zauzet" | Technical Task | 5 | High | To Do |
-| US14 | Pregled svih rezervacija (asistent/profesor) | Profesor/asistent pregledava listu svih zauzetih i slobodnih termina, historiju zauzeća; opcija eksporta podataka | Feature | 3 | High | To Do |
-| US15 | Odobravanje i odbijanje zahtjeva | Profesor/asistent pregleda Pending zahtjeve i može ih odobriti ili odbiti uz komentar; status se ažurira u realnom vremenu | Feature | 5 | High | To Do |
-| US27 | In-app notifikacija o odluci | Student prima email ili in-app notifikaciju o odobrenju/odbijanju, uključujući komentar asistenta | Feature | 3 | Medium | To Do |
+| US27 | In-app notifikacija o zahtjevu | Student prima email ili in-app notifikaciju o odobrenju/odbijanju, uključujući komentar profesora/asistenta; Profesor prima notifikacije o pristiglom zahtjevu.| Feature | 3 | Medium | To Do |
+| US37 | Automatska promjena statusa opreme po rezervaciji | Sistem automatski označava opremu kao zauzetu tokom potvrđene rezervacije i oslobađa je po završetku termina | Technical Task | 2 | Medium | To Do |
 
 **Podjela rada po članovima tima:**
 
 | Član | Oblast odgovornosti |
 |------|---------------------|
-| M1 | Database Locks + konflikt validacija (US26) |
-| M2 | Pregled svih rezervacija – backend (US14) |
-| M3 | Odobravanje/odbijanje zahtjeva – backend (US15) |
-| M4 | Odobravanje/odbijanje zahtjeva – frontend |
-| M5 | In-app notifikacije (US27) |
-| M6 | Pregled rezervacija – frontend (US14) |
-| M7 | API integracija i validacija statusa |
-| M8 | E2E testiranje cijelog rezervacijskog toka |
+| M1-M2 | Automatska validacija konflikta termina i opreme |
+| M3-M4 | In-app notifikacija o zahtjevu (US27) |
+| M5-M6 | Uvođenje novih tipova opreme |
+| M7-M8 | E2E testiranje cijelog rezervacijskog toka |
 
-> **Sažetak releasea:** Ovo je srž sistema. Student vidi kalendar, bira termin i opremu, šalje zahtjev. Sistem automatski blokira konfliktne rezervacije (database locks, NFR-16). Profesor/asistent dobija listu zahtjeva i odobrava ili odbija ih. Student prima in-app obavijest o odluci. Nakon ovog releasea sistem je funkcionalno upotrebljiv za osnovni laboratorijski rad.
+> **Sažetak sprinta:** Sprint 8 zaokružuje Release 3. Tehničke pretpostavke rezervacijskog sistema (database locks, automatski status opreme) postavljaju se uz paralelno provođenje integracijskog i E2E testiranja kompletnog toka koji je implementiran u Sprintu 7. Na kraju sprinta sistem je funkcionalno upotrebljiv i stabilan za osnovni laboratorijski rad.
 
 ---
 
 ### Release 4 – Upravljanje opremom i napredne funkcionalnosti
 
 **Obuhvaćeni sprintovi:** Sprint 9 i Sprint 10  
-**Ključna isporuka:** Pregled i otkazivanje rezervacija, upravljanje kvarovima, profil korisnika i sekundarne funkcionalnosti  
+**Ključna isporuka:** Prijava kvarova, automatsko otkazivanje rezervacija pri kvaru, filtriranje opreme, oporavak lozinke i audit log  
 **Zavisnosti:** Release 3 mora biti završen. Upravljanje kvarovima i automatska promjena statusa direktno ovise o rezervacijskom toku koji mora biti testiran i stabilan.  
 **Glavni rizici:** Nedostupnost developera u finalnim sprintovima može ugroziti demo pripremu (R009); Sprint 10 je zahtjevan po broju stavki – potrebno je pažljivo planiranje kapaciteta.
 
@@ -173,54 +169,57 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 
 #### Sprint 9 | TBD
 
-**Cilj sprinta:** Pregled, otkazivanje i ograničavanje rezervacija od strane korisnika  
-**Kapacitet tima:** ~40% (namjerno – buffer za refactoring i bugfixing iz prethodnih sprintova)
+**Cilj sprinta:** Prijava kvarova, filtriranje opreme i sistemsko testiranje 
+**Kapacitet tima:** ~65%
 
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
 |----|-------------|------|-----|-----------|-----------|--------|
-| US12 | Pregled vlastitih zahtjeva | Student pregledava sve podnesene i odobrene zahtjeve | Feature | 2 | Medium | To Do |
-| US13 | Otkazivanje rezervacije | Student otkazuje aktivan termin uz trenutno oslobađanje resursa | Feature | 3 | Medium | To Do |
+| US09 / US28 | Prijava kvara + automatsko otkazivanje budućih rezervacija | Profesor prijavljuje kvar opreme; sistem mijenja status na "neispravna" i otkazuje sve Pending/Approved rezervacije; pogođeni korisnici primaju obavijest | Feature | 3+3 | Medium | To Do |
 | US16 | Ograničenje broja aktivnih rezervacija po studentu | Profesor postavlja limit; sistem prikazuje upozorenje kada se limit dostigne | Feature | 2 | Medium | To Do |
+| – | Sistemsko i performansno testiranje | E2E tok s kvarom opreme; load testiranje sa 50 concurrent korisnika; provjera ACID transakcija i backup mehanizma | Testing | 4 | High | To Do |
 
 **Podjela rada po članovima tima:**
 
 | Član | Oblast odgovornosti |
 |------|---------------------|
-| M1 | Pregled vlastitih zahtjeva – frontend (US12) |
-| M2 | Pregled vlastitih zahtjeva – backend |
-| M3 | Otkazivanje rezervacije – frontend + backend (US13) |
-| M4 | Limitiranje rezervacija po studentu (US16) |
-| M5–M8 | Refactoring, bugfixing iz prethodnih sprintova, performance testiranje |
+| M1 | Forma za prijavu kvara – frontend (US09/US28) |
+| M2 | Dodavanje općenitih obavještenja za sve korisnike |
+| M3-M4 | Ograničenje broja rezervacija po studentu (US16)|
+| M5 | Sistemsko E2E testiranje: kvar → otkazivanje → notifikacija |
+| M6 |Load testiranje – 50 concurrent korisnika (NFR-13); ACID i backup provjera (NFR-17, NFR-19) |
+| M7-M8 | Regresijsko testiranje svih funkcionalnosti do kraja S9 |
+
+> **Sažetak sprinta:** Sprint 9 donosi prijavu kvarova s automatskim povlačenjem svih pogođenih rezervacija i filtriranje opreme. Slobodan kapacitet tima (M5–M8) usmjeren je na sistemsko i performansno testiranje – load test s 50 korisnika i provjera ACID/backup integriteta provode se ovdje dok je sistem već stabilan nakon S8.
 
 ---
 
 #### Sprint 10 | TBD
 
-**Cilj sprinta:** Prijava kvarova, filtriranje opreme, upravljanje profilom i sigurnosne funkcionalnosti  
+**Cilj sprinta:** Oporavak lozinke, audit log, finalno testiranje i demo priprema 
 **Kapacitet tima:** ~85%
 
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
 |----|-------------|------|-----|-----------|-----------|--------|
-| US09 / US28 | Prijava kvara + automatsko otkazivanje budućih rezervacija | Profesor prijavljuje kvar opreme; sistem mijenja status na "neispravna" i otkazuje sve Pending/Approved rezervacije; korisnici primaju obavijest | Feature | 3+3 | Medium | To Do |
-| US10 | Filtriranje i pretraga opreme | Korisnik filtrira opremu po kategoriji, dostupnosti i nazivu; mogućnost korištenja više filtera; opcija resetovanja | Feature | 3 | Medium | To Do |
-| US04 / US05 | Promjena lozinke i uređivanje profila | Korisnik mijenja lozinku (uz validaciju minimalne dužine) i ažurira vlastite podatke na profilu | Feature | 6 | Medium | To Do |
 | US33 | Oporavak lozinke putem emaila | Korisnik resetuje zaboravljenu lozinku putem unikatnog privremenog linka poslanog na email | Feature | 3 | Medium | To Do |
 | US34 | Evidentiranje aktivnosti prijava (audit log) | Sistem bilježi korisničko ime i timestamp svake uspješne i neuspješne prijave; administrator može pregledati listu zapisa | Feature | 2 | Low | To Do |
+| – | Sigurnosno testiranje | RBAC matrica svih uloga; zaštita od SQL injection; enkripcija JMBG; provjera hash algoritma lozinki | Testing | 3 | High | To Do |
+| – | UI, cross-browser i lokalizacijsko testiranje | Provjera responzivnosti (360px–1920px); testiranje na Chrome, Firefox, Safari; BHS lokalizacija svih tekstova | Testing | 3 | High | To Do |
+| – | UAT i finalna demo priprema | Testiranje prihvatljivosti s Product Ownerom; priprema demo verzije | Testing | 4 | High | To Do |
+
 
 **Podjela rada po članovima tima:**
 
 | Član | Oblast odgovornosti |
 |------|---------------------|
-| M1 | Forma za prijavu kvara – frontend (US09) |
-| M2 | Automatsko otkazivanje rezervacija pri kvaru (US28) |
-| M3 | Filtriranje i pretraga opreme (US10) |
-| M4 | Promjena lozinke i profila – frontend (US04/05) |
-| M5 | Promjena lozinke – backend + validacija |
-| M6 | Oporavak lozinke putem emaila (US33) |
-| M7 | Audit log prijava (US34) |
-| M8 | Finalno testiranje, dokumentacija, demo priprema |
+| M1 | Oporavak lozinke putem emaila (US33) |
+| M2 | Audit log prijava (US34) |
+ M3 - M4 | Sigurnosno testiranje: RBAC matrica, SQL injection, NFR-07, NFR-08 |
+| M5 | UI testiranje: responzivnost, kalendar color-coding, max 4 klika (NFR-01, NFR-04) |
+| M6 | Cross-browser testiranje: Chrome v110+, Firefox v105+, Safari v15+ (NFR-10) |
+| M7 | Lokalizacijska provjera – svi BHS tekstovi (NFR-18); regresijski finalni prolaz |
+| M8 | UAT koordinacija + finalna demo priprema |
 
-> **Sažetak releasea:** Ovaj release zaokružuje funkcionalni sistem. Sprint 9 je namjerno rasterećen kao buffer za stabilizaciju i bugfixing. Sprint 10 donosi preostale funkcionalnosti: kvarovi se prijavljuju direktno kroz aplikaciju i automatski povlače buduće rezervacije, korisnici filtriraju opremu, upravljaju profilom i resetuju lozinku. Slobodan kapacitet u S9 (M5–M8) služi kao planirani buffer za pripremu finalne demo verzije sistema.
+> **Sažetak releasea i projekta:** Sprint 10 zatvara sistem. Oporavak lozinke i audit log upotpunjuju funkcionalni skup. Slobodan kapacitet tima u cijelosti je posvećen finalnom testiranju: sigurnosna provjera svih uloga i enkripcije, cross-browser i lokalizacijska validacija, te UAT s krajnjim korisnicima. Demo verzija sistema je isporučena i prezentabilna po završetku sprinta.
 
 ---
 
@@ -291,18 +290,18 @@ Svaka stavka se smatra završenom kada su ispunjeni sljedeći kriteriji (bit će
 | Release | S1 | S2 | S3 | S4 | S5 | S6 | S7 | S8 | S9 | S10 |
 |---------|----|----|----|----|----|----|----|----|----|----|
 | **R0 – Dokumentacija** | ✓ | ✓ | ✓ | ↻ | – | – | – | – | – | – |
-| **R1 – Autentifikacija** | – | – | – | – | ◉ | – | – | – | – | – |
-| **R2 – Administracija** | – | – | – | – | – | ◉ | – | – | – | – |
-| **R3 – Rezervacije** | – | – | – | – | – | – | ◉ | ◉ | – | – |
+| **R1 – Autentifikacija** | – | – | – | – | ✓ | – | – | – | – | – |
+| **R2 – Administracija** | – | – | – | – | – | ✓ | – | – | – | – |
+| **R3 – Rezervacije** | – | – | – | – | – | – | ✓ | ◉ | – | – |
 | **R4 – Napredno** | – | – | – | – | – | – | – | – | ◉ | ◉ |
 
 | Sprint | Kapacitet | Napomena |
 |--------|-----------|----------|
 | S5 | ~62% | Namjerno lakši – auth mora biti solidno istestiran |
 | S6 | ~95% | Kritičan – 8 članova paralelno na odvojenim CRUD oblastima |
-| S7 | ~65% | Osnova rezervacijskog toka: kalendar, kreiranje, odabir opreme |
-| S8 | ~80% | Validacija konflikta, odobravanje zahtjeva, notifikacije |
-| S9 | ~40% | Pregled/otkazivanje rezervacija + buffer za refactoring i bugove |
-| S10 | ~85% | Kvarovi, filtriranje, profil, audit log + finalna demo priprema |
+| S7 | ~75% | Prošireni opseg: rezervacije, odobravanje, otkazivanje, pregled |
+| S8 | ~80% | Database locks, notifikacije, automatski status opreme + integracijsko i E2E testiranje |
+| S9 | ~65% | Kvarovi, filtriranje opreme, ograničenje rezervacija + sistemsko i load testiranje |
+| S10 | ~85% | Oporavak lozinke, audit log + sigurnosno, UI, cross-browser, UAT i demo priprema |
 
 *✓ Završeno &nbsp;&nbsp; ↻ U toku &nbsp;&nbsp; ◉ Planiran release &nbsp;&nbsp; – Nije u sprintu*
