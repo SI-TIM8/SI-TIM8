@@ -416,5 +416,134 @@ namespace LABsistem.Tests.Integration
             Assert.NotNull(updatedZahtjev);
             Assert.Equal(StatusZahtjeva.Otkazan, updatedZahtjev!.StatusZahtjeva);
         }
+
+        [Fact]
+        public async Task RezervisiTermin_ProfessorCanReserveSlot()
+        {
+            var tehnicarId = await SeedUserAsync("reserve-tech", "reserve.tech@test.com", "TehnicarPassword123!", UlogaKorisnika.Tehnicar);
+            var profesorId = await SeedUserAsync("reserve-prof", "reserve.prof@test.com", "ProfesorPassword123!", UlogaKorisnika.Profesor);
+
+            int terminId;
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+
+                var objekat = new Objekat
+                {
+                    Lokacija = "Reserve objekat",
+                    RadnoVrijeme = "08-16"
+                };
+                context.Objekti.Add(objekat);
+                await context.SaveChangesAsync();
+
+                var kabinet = new Kabinet
+                {
+                    Naziv = "Reserve kabinet",
+                    KorisnikID = profesorId,
+                    ObjekatID = objekat.ID,
+                    Kapacitet = 30
+                };
+                context.Kabineti.Add(kabinet);
+                await context.SaveChangesAsync();
+
+                var termin = new Termin
+                {
+                    Datum = DateTime.Today.AddDays(7),
+                    VrijemePocetka = new TimeSpan(9, 0, 0),
+                    VrijemeKraja = new TimeSpan(10, 0, 0),
+                    KreatorID = tehnicarId,
+                    KabinetID = kabinet.ID,
+                    StatusTermina = StatusTermina.Slobodan,
+                    VidljivoStudentima = false
+                };
+                context.Termini.Add(termin);
+                await context.SaveChangesAsync();
+                terminId = termin.ID;
+            }
+
+            var profesorToken = await LoginAsync("reserve-prof", "ProfesorPassword123!");
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"/api/Rezervacija/rezervisi/{terminId}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", profesorToken);
+            request.Content = JsonContent.Create(new RezervacijaCreateDTO
+            {
+                LimitOsoba = 10,
+                VidljivoStudentima = true
+            });
+
+            var response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            using var verificationScope = _factory.Services.CreateScope();
+            var verificationContext = verificationScope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+            var updatedTermin = await verificationContext.Termini.FindAsync(terminId);
+
+            Assert.NotNull(updatedTermin);
+            Assert.Equal(profesorId, updatedTermin!.ProfesorID);
+            Assert.Equal(StatusTermina.Rezervisan, updatedTermin.StatusTermina);
+            Assert.Equal(10, updatedTermin.LimitOsoba);
+            Assert.True(updatedTermin.VidljivoStudentima);
+        }
+
+        [Fact]
+        public async Task PosaljiZahtjev_StudentCreatesRequest()
+        {
+            var tehnicarId = await SeedUserAsync("request-tech", "request.tech@test.com", "TehnicarPassword123!", UlogaKorisnika.Tehnicar);
+            var profesorId = await SeedUserAsync("request-prof", "request.prof@test.com", "ProfesorPassword123!", UlogaKorisnika.Profesor);
+            var studentId = await SeedUserAsync("request-student", "request.student@test.com", "StudentPassword123!", UlogaKorisnika.Student);
+
+            int terminId;
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+
+                var objekat = new Objekat
+                {
+                    Lokacija = "Request objekat",
+                    RadnoVrijeme = "08-16"
+                };
+                context.Objekti.Add(objekat);
+                await context.SaveChangesAsync();
+
+                var kabinet = new Kabinet
+                {
+                    Naziv = "Request kabinet",
+                    KorisnikID = profesorId,
+                    ObjekatID = objekat.ID,
+                    Kapacitet = 10
+                };
+                context.Kabineti.Add(kabinet);
+                await context.SaveChangesAsync();
+
+                var termin = new Termin
+                {
+                    Datum = DateTime.Today.AddDays(8),
+                    VrijemePocetka = new TimeSpan(11, 0, 0),
+                    VrijemeKraja = new TimeSpan(12, 0, 0),
+                    KreatorID = tehnicarId,
+                    KabinetID = kabinet.ID,
+                    ProfesorID = profesorId,
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true,
+                    LimitOsoba = 5
+                };
+                context.Termini.Add(termin);
+                await context.SaveChangesAsync();
+                terminId = termin.ID;
+            }
+
+            var studentToken = await LoginAsync("request-student", "StudentPassword123!");
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"/api/Rezervacija/zahtjev/{terminId}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", studentToken);
+
+            var response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            using var verificationScope = _factory.Services.CreateScope();
+            var verificationContext = verificationScope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+            var zahtjev = await verificationContext.Zahtjevi.FirstOrDefaultAsync(z => z.TerminID == terminId && z.StudentID == studentId);
+
+            Assert.NotNull(zahtjev);
+            Assert.Equal(StatusZahtjeva.NaCekanju, zahtjev!.StatusZahtjeva);
+        }
     }
 }
