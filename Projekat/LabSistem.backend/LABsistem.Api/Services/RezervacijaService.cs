@@ -78,10 +78,7 @@ namespace LABsistem.Api.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task OdgovoriNaZahtjev(
-            int profesorId,
-            int zahtjevId,
-            bool odobri)
+        public async Task<OdgovorNaZahtjevDTO> OdgovoriNaZahtjev(int profesorId, int zahtjevId, bool odobri)
         {
             await _validator.ValidateOdgovor(zahtjevId, profesorId, odobri);
 
@@ -89,18 +86,18 @@ namespace LABsistem.Api.Services
                 .Include(z => z.Termin)
                 .FirstAsync(z => z.ID == zahtjevId);
 
-            if (odobri)
-            {
-                zahtjev.StatusZahtjeva = StatusZahtjeva.Odobren;
-            }
-            else
-            {
-                zahtjev.StatusZahtjeva = StatusZahtjeva.Odbijen;
-            }
+            zahtjev.StatusZahtjeva = odobri ? StatusZahtjeva.Odobren : StatusZahtjeva.Odbijen;
 
             await _context.SaveChangesAsync();
-        }
 
+            return new OdgovorNaZahtjevDTO
+            {
+                StudentID = zahtjev.StudentID,
+                TerminID = zahtjev.TerminID,
+                DatumTermina = zahtjev.Termin.Datum,
+                VrijemePocetka = zahtjev.Termin.VrijemePocetka
+            };
+        }
         public async Task<IEnumerable<TerminDTO>> GetSlobodniTerminiAsync()
         {
             return await _context.Termini

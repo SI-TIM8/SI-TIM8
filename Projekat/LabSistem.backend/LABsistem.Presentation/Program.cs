@@ -49,6 +49,7 @@ builder.Services.AddScoped<IRezervacijaValidator, RezervacijaValidator>();
 builder.Services.AddScoped<IRezervacijaService, RezervacijaService>();
 builder.Services.AddScoped<IOpremaValidator, OpremaValidator>();
 builder.Services.AddScoped<IOpremaService, OpremaService>();
+builder.Services.AddScoped<IObavijestService, ObavijestService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

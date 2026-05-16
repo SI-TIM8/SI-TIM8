@@ -51,6 +51,6 @@ namespace LABsistem.Domain.Entities
 
         public ICollection<Zahtjev> MojiZahtjevi { get; set; }
 
-
+        public ICollection<Obavijest> Obavijesti { get; set; }
     }
 }
