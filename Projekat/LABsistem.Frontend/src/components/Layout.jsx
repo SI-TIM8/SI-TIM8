@@ -3,6 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { NAVIGATION_BY_ROLE, ROLE_LABELS, getCurrentRole } from "../auth/routeAccess";
 import api from "../api/client";
 import { clearSession, getRefreshToken } from "../auth/session";
+import NotifikacijaBell from "../pages/NotifikacijaBell";
 
 function Layout({ children }) {
   const navigate = useNavigate();
@@ -26,29 +27,18 @@ function Layout({ children }) {
 
     async function ucitajProfilZaMeni() {
       const token = localStorage.getItem("token");
-      if (!token) {
-        return;
-      }
-
+      if (!token) return;
       try {
         const response = await api.get("/Auth/profile");
         const email = response.data?.email;
-        if (!aktivno || !email) {
-          return;
-        }
-
+        if (!aktivno || !email) return;
         localStorage.setItem("korisnikEmail", email);
         setKorisnikEmail(email);
-      } catch {
-        // Fallback ostaje lokalno sacuvana vrijednost.
-      }
+      } catch {}
     }
 
     ucitajProfilZaMeni();
-
-    return () => {
-      aktivno = false;
-    };
+    return () => { aktivno = false; };
   }, []);
 
   useEffect(() => {
@@ -57,16 +47,11 @@ function Layout({ children }) {
         setMenuOtvoren(false);
       }
     };
-
     const handleEscape = (event) => {
-      if (event.key === "Escape") {
-        setMenuOtvoren(false);
-      }
+      if (event.key === "Escape") setMenuOtvoren(false);
     };
-
     document.addEventListener("mousedown", handleKlikVan);
     document.addEventListener("keydown", handleEscape);
-
     return () => {
       document.removeEventListener("mousedown", handleKlikVan);
       document.removeEventListener("keydown", handleEscape);
@@ -75,32 +60,19 @@ function Layout({ children }) {
 
   const handleOdjava = async () => {
     try {
-      await api.post("/Auth/logout", {
-        refreshToken: getRefreshToken(),
-      });
-    } catch {
-      // Client-side cleanup still happens even if the backend logout fails.
-    } finally {
+      await api.post("/Auth/logout", { refreshToken: getRefreshToken() });
+    } catch {}
+    finally {
       clearSession();
       navigate("/login");
     }
-  };
-
-  const idiNaProfil = () => {
-    navigate("/profil");
-  };
-
-  const idiNaOAplikaciji = () => {
-    navigate("/o-aplikaciji");
   };
 
   return (
     <div className="app-layout">
       <aside className="sidebar">
         <NavLink to="/dashboard" style={{ textDecoration: "none" }}>
-          <div className="sidebar-logo">
-            LAB<span>sistem</span>
-          </div>
+          <div className="sidebar-logo">LAB<span>sistem</span></div>
         </NavLink>
 
         <nav className="sidebar-nav">
@@ -121,11 +93,18 @@ function Layout({ children }) {
         <header className="topbar">
           <div className="topbar-spacer" />
 
+          {/* Bell ikonica — samo za studente*/}
+          {(uloga === "student") && (
+            <div style={{ display: "flex", alignItems: "center", marginRight: "8px" }}>
+              <NotifikacijaBell />
+            </div>
+          )}
+
           <div className="topbar-account" ref={accountMenuRef}>
             <button
               type="button"
               className="topbar-account-trigger"
-              onClick={() => setMenuOtvoren((vrijednost) => !vrijednost)}
+              onClick={() => setMenuOtvoren((v) => !v)}
               aria-expanded={menuOtvoren}
             >
               <span className="topbar-avatar">{inicijal}</span>
@@ -142,11 +121,10 @@ function Layout({ children }) {
                   <strong>{korisnik}</strong>
                   <span>{korisnikEmail}</span>
                 </div>
-
-                <button type="button" className="topbar-menu-item" onClick={idiNaProfil}>
+                <button type="button" className="topbar-menu-item" onClick={() => navigate("/profil")}>
                   Moj profil
                 </button>
-                <button type="button" className="topbar-menu-item" onClick={idiNaOAplikaciji}>
+                <button type="button" className="topbar-menu-item" onClick={() => navigate("/o-aplikaciji")}>
                   O aplikaciji
                 </button>
                 <div className="topbar-menu-divider" />

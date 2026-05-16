@@ -32,14 +32,15 @@ function Zakazivanje() {
   }
 
   async function posaljiZahtjev(id) {
-    try {
-      await api.post(`/Rezervacija/zahtjev/${id}`);
-      setMessage({ type: "success", text: "Zahtjev uspjesno poslan." });
-      loadDostupniTermini();
-    } catch (error) {
-      setMessage({ type: "error", text: error.response?.data || "Greska pri slanju zahtjeva." });
-    }
+  try {
+    await api.post(`/Rezervacija/zahtjev/${id}`);
+    setMessage({ type: "success", text: "Zahtjev uspjesno poslan." });
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    await loadDostupniTermini();
+  } catch (error) {
+    setMessage({ type: "error", text: error.response?.data || "Greska pri slanju zahtjeva." });
   }
+}
 
   async function loadEquipment(kabinetId, kabinetNaziv) {
     setLoadingEquipment(true);
