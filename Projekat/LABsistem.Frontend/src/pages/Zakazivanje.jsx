@@ -32,12 +32,18 @@ function Zakazivanje() {
   }
 
   async function posaljiZahtjev(id) {
+  // Odmah ažuriraj UI optimistički
+  setTermini(prev => prev.map(t =>
+    t.id === id ? { ...t, statusPrijave: "NaCekanju" } : t
+  ));
   try {
     await api.post(`/Rezervacija/zahtjev/${id}`);
     setMessage({ type: "success", text: "Zahtjev uspjesno poslan." });
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    await loadDostupniTermini();
   } catch (error) {
+    // Vrati na staro ako faila
+    setTermini(prev => prev.map(t =>
+      t.id === id ? { ...t, statusPrijave: null } : t
+    ));
     setMessage({ type: "error", text: error.response?.data || "Greska pri slanju zahtjeva." });
   }
 }

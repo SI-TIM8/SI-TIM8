@@ -162,9 +162,16 @@ namespace LABsistem.Api.Services
                 .Include(t => t.Zahtjevi)
                 .ToListAsync();
 
+            var studentZahtjevi = await _context.Zahtjevi
+                .Where(z => z.StudentID == studentId)
+                .ToListAsync();
+
             return termini.Select(t => {
                 var dto = MapToTerminDto(t);
-                var studentZahtjev = t.Zahtjevi?.FirstOrDefault(z => z.StudentID == studentId);
+                var studentZahtjev = studentZahtjevi
+                    .Where(z => z.TerminID == t.ID)
+                    .OrderByDescending(z => z.ID)
+                    .FirstOrDefault();
                 dto.StatusPrijave = studentZahtjev?.StatusZahtjeva.ToString();
                 return dto;
             });
