@@ -12,10 +12,12 @@ namespace LABsistem.Presentation.Controllers
     public class RezervacijaController : ControllerBase
     {
         private readonly IRezervacijaService _service;
+        private readonly IObavijestService _obavijestService;
 
-        public RezervacijaController(IRezervacijaService service)
+        public RezervacijaController(IRezervacijaService service, IObavijestService obavijestService)
         {
             _service = service;
+            _obavijestService = obavijestService;
         }
 
         [HttpPost("rezervisi/{id}")]
@@ -74,14 +76,24 @@ namespace LABsistem.Presentation.Controllers
 
         [HttpPost("odgovor/{zahtjevId}")]
         [Authorize(Roles = "Profesor")]
-        public async Task<IActionResult> OdgovoriNaZahtjev(int zahtjevId, [FromQuery] bool odobri)
+        public async Task<IActionResult> OdgovoriNaZahtjev(int zahtjevId, [FromQuery] bool odobri, [FromQuery] string? komentar = null)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
             var profesorId = int.Parse(userId);
             try
             {
-                await _service.OdgovoriNaZahtjev(profesorId, zahtjevId, odobri);
+                var zahtjev = await _service.OdgovoriNaZahtjev(profesorId, zahtjevId, odobri);
+
+                var poruka = odobri
+                    ? $"Vaš zahtjev za termin {zahtjev.DatumTermina:dd.MM.yyyy} u {zahtjev.VrijemePocetka} je odobren."
+                    : $"Vaš zahtjev za termin {zahtjev.DatumTermina:dd.MM.yyyy} u {zahtjev.VrijemePocetka} je odbijen.";
+
+                if (!string.IsNullOrWhiteSpace(komentar))
+                    poruka += $" Komentar profesora: {komentar}";
+
+                await _obavijestService.KreirajAsync(zahtjev.StudentID, poruka, zahtjev.TerminID);
+
                 return Ok(new { message = odobri ? "Zahtjev odobren." : "Zahtjev odbijen." });
             }
             catch (Exception ex)
@@ -105,7 +117,6 @@ namespace LABsistem.Presentation.Controllers
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
             var korisnikId = int.Parse(userId);
             var uloga = User.FindFirstValue(ClaimTypes.Role)?.ToLower();
-            
             if (uloga == null) return BadRequest("Uloga nije pronađena.");
             var termini = await _service.GetMojeRezervacijeAsync(korisnikId, uloga);
             return Ok(termini);

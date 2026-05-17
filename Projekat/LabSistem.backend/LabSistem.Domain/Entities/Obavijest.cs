@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace LABsistem.Domain.Entities
 {
@@ -9,18 +7,20 @@ namespace LABsistem.Domain.Entities
     {
         [Key]
         public int ID { get; set; }
-       
 
-        [Required, StringLength(100)]
+        [Required]
         public string Novosti { get; set; }
-       
 
-        public bool Dostupnost { get; set; }
-       
+        public bool Dostupnost { get; set; } = false;
 
-        // Foreign Key
-        public int TerminID { get; set; }
-        
+        public DateTime DatumKreiranja { get; set; } = DateTime.UtcNow;
+
+        // Kome ide notifikacija
+        public int KorisnikID { get; set; }
+        public Korisnik Korisnik { get; set; }
+
+        // Opcionalno vezana za termin
+        public int? TerminID { get; set; }
         public Termin Termin { get; set; }
     }
 }

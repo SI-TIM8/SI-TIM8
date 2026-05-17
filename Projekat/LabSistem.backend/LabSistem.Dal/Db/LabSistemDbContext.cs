@@ -106,10 +106,15 @@ namespace LABsistem.Dal.Db
                 .HasForeignKey(z => z.TerminID)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
             modelBuilder.Entity<Zahtjev>()
                 .Property(z => z.StatusZahtjeva)
                 .HasConversion<int>();
+
+            modelBuilder.Entity<Obavijest>()
+                .HasOne(o => o.Korisnik)
+                .WithMany(k => k.Obavijesti)
+                .HasForeignKey(o => o.KorisnikID)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

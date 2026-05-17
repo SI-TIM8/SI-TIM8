@@ -32,14 +32,21 @@ function Zakazivanje() {
   }
 
   async function posaljiZahtjev(id) {
-    try {
-      await api.post(`/Rezervacija/zahtjev/${id}`);
-      setMessage({ type: "success", text: "Zahtjev uspjesno poslan." });
-      loadDostupniTermini();
-    } catch (error) {
-      setMessage({ type: "error", text: error.response?.data || "Greska pri slanju zahtjeva." });
-    }
+  // Odmah ažuriraj UI optimistički
+  setTermini(prev => prev.map(t =>
+    t.id === id ? { ...t, statusPrijave: "NaCekanju" } : t
+  ));
+  try {
+    await api.post(`/Rezervacija/zahtjev/${id}`);
+    setMessage({ type: "success", text: "Zahtjev uspjesno poslan." });
+  } catch (error) {
+    // Vrati na staro ako faila
+    setTermini(prev => prev.map(t =>
+      t.id === id ? { ...t, statusPrijave: null } : t
+    ));
+    setMessage({ type: "error", text: error.response?.data || "Greska pri slanju zahtjeva." });
   }
+}
 
   async function loadEquipment(kabinetId, kabinetNaziv) {
     setLoadingEquipment(true);
