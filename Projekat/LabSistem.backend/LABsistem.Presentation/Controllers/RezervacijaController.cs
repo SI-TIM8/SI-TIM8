@@ -13,11 +13,16 @@ namespace LABsistem.Presentation.Controllers
     {
         private readonly IRezervacijaService _service;
         private readonly IObavijestService _obavijestService;
+        private readonly IEmailNotificationService _emailNotificationService;
 
-        public RezervacijaController(IRezervacijaService service, IObavijestService obavijestService)
+        public RezervacijaController(
+            IRezervacijaService service,
+            IObavijestService obavijestService,
+            IEmailNotificationService emailNotificationService)
         {
             _service = service;
             _obavijestService = obavijestService;
+            _emailNotificationService = emailNotificationService;
         }
 
         [HttpPost("rezervisi/{id}")]
@@ -86,13 +91,22 @@ namespace LABsistem.Presentation.Controllers
                 var zahtjev = await _service.OdgovoriNaZahtjev(profesorId, zahtjevId, odobri);
 
                 var poruka = odobri
-                    ? $"Vaš zahtjev za termin {zahtjev.DatumTermina:dd.MM.yyyy} u {zahtjev.VrijemePocetka} je odobren."
-                    : $"Vaš zahtjev za termin {zahtjev.DatumTermina:dd.MM.yyyy} u {zahtjev.VrijemePocetka} je odbijen.";
+                    ? $"Vas zahtjev za termin {zahtjev.DatumTermina:dd.MM.yyyy} u {zahtjev.VrijemePocetka:hh\\:mm} je odobren."
+                    : $"Vas zahtjev za termin {zahtjev.DatumTermina:dd.MM.yyyy} u {zahtjev.VrijemePocetka:hh\\:mm} je odbijen.";
 
                 if (!string.IsNullOrWhiteSpace(komentar))
+                {
                     poruka += $" Komentar profesora: {komentar}";
+                }
 
                 await _obavijestService.KreirajAsync(zahtjev.StudentID, poruka, zahtjev.TerminID);
+                await _emailNotificationService.SendReservationDecisionEmailAsync(
+                    zahtjev.StudentEmail,
+                    zahtjev.StudentImePrezime,
+                    zahtjev.DatumTermina,
+                    zahtjev.VrijemePocetka,
+                    odobri,
+                    komentar);
 
                 return Ok(new { message = odobri ? "Zahtjev odobren." : "Zahtjev odbijen." });
             }
@@ -117,7 +131,7 @@ namespace LABsistem.Presentation.Controllers
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
             var korisnikId = int.Parse(userId);
             var uloga = User.FindFirstValue(ClaimTypes.Role)?.ToLower();
-            if (uloga == null) return BadRequest("Uloga nije pronađena.");
+            if (uloga == null) return BadRequest("Uloga nije pronadjena.");
             var termini = await _service.GetMojeRezervacijeAsync(korisnikId, uloga);
             return Ok(termini);
         }
