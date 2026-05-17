@@ -83,7 +83,7 @@ public class LabSistemDbSeederTests
 
         var student = users.Single(x => x.Username == "student");
         Assert.Equal("Student Korisnik", student.ImePrezime);
-        Assert.Equal("student@labsistem.local", student.Email);
+        Assert.Equal("runtyfly34@gmail.com", student.Email);
         Assert.Equal(UlogaKorisnika.Student, student.Uloga);
         Assert.True(BCrypt.Net.BCrypt.Verify("student123", student.Password));
 

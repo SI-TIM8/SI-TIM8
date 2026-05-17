@@ -13,6 +13,8 @@ namespace LABsistem.Application.DTOs
     {
         public int StudentID { get; set; }
         public int TerminID { get; set; }
+        public string StudentImePrezime { get; set; } = string.Empty;
+        public string StudentEmail { get; set; } = string.Empty;
         public DateTime DatumTermina { get; set; }
         public TimeSpan VrijemePocetka { get; set; }
     }

@@ -494,12 +494,67 @@ tbody td {
   background: linear-gradient(135deg, #f1f5f9 0%, #dbeafe 100%);
 }
 
+.auth-page {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow: hidden;
+  background: #071a2d;
+}
+
+.auth-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, rgba(6, 24, 38, 0.58) 0%, rgba(8, 31, 48, 0.7) 100%),
+    url("./assets/images/login-background.svg") center / cover no-repeat;
+  transform: scale(1.02);
+}
+
+.auth-page::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.14), transparent 30%),
+    radial-gradient(circle at bottom left, rgba(20, 184, 166, 0.18), transparent 28%);
+}
+
 .login-card {
-  width: min(420px, 100%);
-  background: white;
-  border-radius: 16px;
+  position: relative;
+  z-index: 1;
+  width: min(440px, 100%);
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 24px;
   padding: 40px;
-  box-shadow: 0 12px 30px rgba(15,23,42,0.12);
+  box-shadow: 0 20px 44px rgba(15, 23, 42, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(12px);
+}
+
+.auth-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.forgot-password-card {
+  width: min(500px, 100%);
+}
+
+.auth-brand {
+  align-self: center;
+  margin-bottom: 16px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.08);
+  color: #0f766e;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .login-card h1 {
@@ -510,15 +565,65 @@ tbody td {
 
 .login-title {
   font-size: 22px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.25;
   text-align: center;
-  margin-bottom: 64px;
+  margin-bottom: 14px;
   color: #0f172a;
 }
 
+.auth-card-title {
+  margin-bottom: 10px;
+}
+
+.auth-description {
+  margin-bottom: 26px;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.65;
+  font-size: 14px;
+}
+
 .login-card form {
-  margin-top: 16px;
+  margin-top: 0;
+}
+
+.auth-link-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: -4px 0 18px;
+}
+
+.auth-inline-link,
+.auth-secondary-link {
+  color: #0f766e;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.auth-inline-link:hover,
+.auth-secondary-link:hover {
+  text-decoration: underline;
+}
+
+.auth-footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.auth-success-note {
+  margin-bottom: 18px;
+}
+
+.auth-muted-copy {
+  margin-bottom: 18px;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.6;
 }
 
 .password-field {
@@ -924,6 +1029,10 @@ tbody td {
 .equipment-table tr:hover {
   transform: scale(1.01);
 }
+
+.calendar-filter-block label {
+  font-size: 13px;
+  font-weight: 700;
   color: #334155;
 }
 
@@ -1555,6 +1664,21 @@ body.modal-open {
 
   .main-content {
     padding: 24px 16px;
+  }
+
+  .auth-page {
+    padding: 18px;
+  }
+
+  .login-card {
+    padding: 30px 24px;
+    border-radius: 20px;
+  }
+
+  .auth-footer-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
   }
 
   .calendar-toolbar {

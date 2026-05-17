@@ -3,6 +3,7 @@ using System;
 using LABsistem.Dal.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LabSistem.Dal.Migrations
 {
     [DbContext(typeof(LabSistemDbContext))]
-    partial class LabSistemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260517163747_AddPasswordResetTokens")]
+    partial class AddPasswordResetTokens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -258,11 +261,6 @@ namespace LabSistem.Dal.Migrations
 
                     b.Property<int>("KabinetID")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Kategorija")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)");
 
                     b.Property<int>("KreatorID")
                         .HasColumnType("integer");

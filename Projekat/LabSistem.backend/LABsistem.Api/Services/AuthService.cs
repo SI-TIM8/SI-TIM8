@@ -4,12 +4,15 @@ using System.Net.Mail;
 using System.Data;
 using System.Text;
 using System.Text.RegularExpressions;
+using LABsistem.Api.Services;
 using LABsistem.Application.DTOs.Auth;
 using LABsistem.Application.Models;
 using LABsistem.Dal.Db;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using LABsistem.Application.Validators;
 
 namespace LABsistem.Application.Services
@@ -20,13 +23,35 @@ namespace LABsistem.Application.Services
         private readonly IJwtService _jwtService;
         private readonly JwtSettings _jwtSettings;
         private readonly AuthBusinessRules _businessRules;
+        private readonly IEmailNotificationService _emailNotificationService;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthService> _logger;
 
-        public AuthService(LabSistemDbContext dbContext, IJwtService jwtService, JwtSettings jwtSettings, AuthBusinessRules businessRules)
+        private const string ForgotPasswordGenericMessage =
+            "Ako nalog sa ovim emailom postoji, poslali smo instrukcije za resetovanje lozinke.";
+
+        private const string InvalidResetTokenMessage =
+            "Link za resetovanje lozinke nije validan ili je istekao. Zatražite novi link.";
+
+        private const string ResetPasswordSuccessMessage =
+            "Lozinka je uspješno promijenjena. Sada se možete prijaviti.";
+
+        public AuthService(
+            LabSistemDbContext dbContext,
+            IJwtService jwtService,
+            JwtSettings jwtSettings,
+            AuthBusinessRules businessRules,
+            IEmailNotificationService emailNotificationService,
+            IConfiguration configuration,
+            ILogger<AuthService> logger)
         {
             _dbContext = dbContext;
             _jwtService = jwtService;
             _jwtSettings = jwtSettings;
             _businessRules = businessRules;
+            _emailNotificationService = emailNotificationService;
+            _configuration = configuration;
+            _logger = logger;
         }
 
         public async Task<LoginAttemptResultDto> LoginAsync(LoginRequestDto request, string? ipAddress = null, string? deviceInfo = null)
@@ -450,7 +475,119 @@ namespace LABsistem.Application.Services
             korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             await _dbContext.SaveChangesAsync();
 
-            return (true, "Lozinka je uspjesno promijenjena.");
+            return (true, ResetPasswordSuccessMessage);
+        }
+
+        public async Task<(bool Success, string Message)> ForgotPasswordAsync(
+            ForgotPasswordRequestDto request,
+            CancellationToken cancellationToken = default)
+        {
+            var emailValidationMessage = _businessRules.ValidateEmailAddress(request.Email);
+            if (emailValidationMessage is not null)
+            {
+                return (false, emailValidationMessage);
+            }
+
+            var normalizedEmail = request.Email.Trim();
+            var korisnik = await _dbContext.Korisnici
+                .FirstOrDefaultAsync(x => x.Email == normalizedEmail, cancellationToken);
+
+            if (korisnik is null || korisnik.DeactivatedAt.HasValue)
+            {
+                return (true, ForgotPasswordGenericMessage);
+            }
+
+            var now = DateTime.UtcNow;
+            await InvalidateActivePasswordResetTokensAsync(korisnik.ID, now, cancellationToken: cancellationToken);
+
+            var rawToken = GenerateSecureToken();
+            var resetLink = BuildPasswordResetLink(rawToken);
+            var passwordResetToken = new PasswordResetToken
+            {
+                KorisnikID = korisnik.ID,
+                TokenHash = HashToken(rawToken),
+                CreatedAtUtc = now,
+                ExpiresAtUtc = now.AddMinutes(30)
+            };
+
+            _dbContext.PasswordResetTokens.Add(passwordResetToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            if (string.IsNullOrWhiteSpace(resetLink))
+            {
+                _logger.LogWarning(
+                    "Password reset token je kreiran za korisnika {UserId}, ali FRONTEND_BASE_URL nije pravilno konfigurisan.",
+                    korisnik.ID);
+                return (true, ForgotPasswordGenericMessage);
+            }
+
+            await _emailNotificationService.SendPasswordResetEmailAsync(
+                korisnik.Email,
+                korisnik.ImePrezime,
+                resetLink,
+                passwordResetToken.ExpiresAtUtc,
+                cancellationToken);
+
+            return (true, ForgotPasswordGenericMessage);
+        }
+
+        public async Task<(bool Success, string Message)> ResetPasswordAsync(ResetPasswordRequestDto request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Token))
+            {
+                return (false, InvalidResetTokenMessage);
+            }
+
+            if (string.IsNullOrWhiteSpace(request.NewPassword) ||
+                string.IsNullOrWhiteSpace(request.ConfirmPassword))
+            {
+                return (false, "Nova lozinka i potvrda lozinke su obavezne.");
+            }
+
+            if (request.NewPassword != request.ConfirmPassword)
+            {
+                return (false, "Nova lozinka i potvrda se ne poklapaju.");
+            }
+
+            var passwordValidationMessage = _businessRules.ValidatePassword(request.NewPassword);
+            if (passwordValidationMessage is not null)
+            {
+                return (false, passwordValidationMessage);
+            }
+
+            var validationResult = await GetValidPasswordResetTokenAsync(
+                request.Token,
+                includeRefreshTokens: true);
+
+            if (!validationResult.Valid || validationResult.TokenEntity is null)
+            {
+                return (false, validationResult.Message);
+            }
+
+            var tokenEntity = validationResult.TokenEntity;
+            var korisnik = tokenEntity.Korisnik;
+            korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            tokenEntity.UsedAtUtc = DateTime.UtcNow;
+
+            if (korisnik.RefreshTokens is not null)
+            {
+                RevokeUserRefreshTokens(korisnik.RefreshTokens);
+            }
+
+            await InvalidateActivePasswordResetTokensAsync(
+                korisnik.ID,
+                DateTime.UtcNow,
+                excludeTokenId: tokenEntity.PasswordResetTokenID);
+
+            await _dbContext.SaveChangesAsync();
+
+            return (true, ResetPasswordSuccessMessage);
+        }
+
+        public async Task<(bool Valid, string Message)> VerifyPasswordResetTokenAsync(string token)
+        {
+            var validationResult = await GetValidPasswordResetTokenAsync(token);
+            return (validationResult.Valid, validationResult.Valid ? string.Empty : validationResult.Message);
         }
 
         public async Task<(bool Success, string Message)> CreateUserAsync(RegisterRequestDto request, UlogaKorisnika uloga)
@@ -573,6 +710,105 @@ namespace LABsistem.Application.Services
         {
             var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(value.Trim()));
             return Convert.ToHexString(bytes);
+        }
+
+        private string? BuildPasswordResetLink(string rawToken)
+        {
+            var frontendBaseUrl = _configuration["FRONTEND_BASE_URL"] ?? _configuration["FrontendBaseUrl"];
+            if (string.IsNullOrWhiteSpace(frontendBaseUrl) ||
+                !Uri.TryCreate(frontendBaseUrl, UriKind.Absolute, out var baseUri))
+            {
+                return null;
+            }
+
+            var uriBuilder = new UriBuilder(new Uri(baseUri, "reset-password"))
+            {
+                Query = $"token={Uri.EscapeDataString(rawToken)}"
+            };
+
+            return uriBuilder.Uri.ToString();
+        }
+
+        private static string GenerateSecureToken()
+        {
+            var bytes = RandomNumberGenerator.GetBytes(32);
+            return Convert.ToBase64String(bytes)
+                .TrimEnd('=')
+                .Replace('+', '-')
+                .Replace('/', '_');
+        }
+
+        private async Task InvalidateActivePasswordResetTokensAsync(
+            int korisnikId,
+            DateTime usedAtUtc,
+            int? excludeTokenId = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (_dbContext.Database.IsRelational())
+            {
+                var query = _dbContext.PasswordResetTokens
+                    .Where(x =>
+                        x.KorisnikID == korisnikId &&
+                        !x.UsedAtUtc.HasValue &&
+                        x.ExpiresAtUtc > usedAtUtc);
+
+                if (excludeTokenId.HasValue)
+                {
+                    query = query.Where(x => x.PasswordResetTokenID != excludeTokenId.Value);
+                }
+
+                await query.ExecuteUpdateAsync(setters => setters
+                    .SetProperty(x => x.UsedAtUtc, usedAtUtc), cancellationToken);
+                return;
+            }
+
+            var existingTokens = await _dbContext.PasswordResetTokens
+                .Where(x =>
+                    x.KorisnikID == korisnikId &&
+                    !x.UsedAtUtc.HasValue &&
+                    x.ExpiresAtUtc > usedAtUtc &&
+                    (!excludeTokenId.HasValue || x.PasswordResetTokenID != excludeTokenId.Value))
+                .ToListAsync(cancellationToken);
+
+            foreach (var existingToken in existingTokens)
+            {
+                existingToken.UsedAtUtc = usedAtUtc;
+            }
+        }
+
+        private async Task<(bool Valid, string Message, PasswordResetToken? TokenEntity)> GetValidPasswordResetTokenAsync(
+            string rawToken,
+            bool includeRefreshTokens = false)
+        {
+            if (string.IsNullOrWhiteSpace(rawToken))
+            {
+                return (false, InvalidResetTokenMessage, null);
+            }
+
+            IQueryable<PasswordResetToken> query = _dbContext.PasswordResetTokens;
+            if (includeRefreshTokens)
+            {
+                query = query
+                    .Include(x => x.Korisnik)
+                    .ThenInclude(x => x.RefreshTokens);
+            }
+            else
+            {
+                query = query.Include(x => x.Korisnik);
+            }
+
+            var hashedToken = HashToken(rawToken);
+            var tokenEntity = await query.FirstOrDefaultAsync(x => x.TokenHash == hashedToken);
+            if (tokenEntity is null ||
+                tokenEntity.UsedAtUtc.HasValue ||
+                tokenEntity.ExpiresAtUtc <= DateTime.UtcNow ||
+                tokenEntity.Korisnik is null ||
+                tokenEntity.Korisnik.DeactivatedAt.HasValue)
+            {
+                return (false, InvalidResetTokenMessage, null);
+            }
+
+            return (true, string.Empty, tokenEntity);
         }
 
         private static string? TrimToLength(string? value, int maxLength)

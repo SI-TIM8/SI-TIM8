@@ -334,6 +334,10 @@ namespace LABsistem.Tests.Integration
 
             Assert.NotNull(updatedZahtjev);
             Assert.Equal(StatusZahtjeva.Odobren, updatedZahtjev!.StatusZahtjeva);
+            var obavijest = await verificationContext.Obavijesti
+                .FirstOrDefaultAsync(o => o.KorisnikID == studentId && o.TerminID == updatedZahtjev.TerminID);
+            Assert.NotNull(obavijest);
+            Assert.Contains("odobren", obavijest!.Novosti, StringComparison.OrdinalIgnoreCase);
         }
 
         [Fact]

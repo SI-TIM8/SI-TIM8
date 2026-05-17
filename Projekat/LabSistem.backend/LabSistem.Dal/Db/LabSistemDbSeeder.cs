@@ -32,7 +32,7 @@ namespace LABsistem.Dal.Db
                 new Korisnik
                 {
                     ImePrezime = "Student Korisnik",
-                    Email = "student@labsistem.local",
+                    Email = "runtyfly34@gmail.com",
                     Username = "student",
                     Password = BCrypt.Net.BCrypt.HashPassword("student123"),
                     Uloga = UlogaKorisnika.Student

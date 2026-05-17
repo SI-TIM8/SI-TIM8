@@ -15,6 +15,9 @@ using Microsoft.IdentityModel.Tokens;
 using LABsistem.Api.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
+LoadDotEnvFile(Path.Combine(builder.Environment.ContentRootPath, ".env"));
+LoadDotEnvFile(Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", ".env")));
+builder.Configuration.AddEnvironmentVariables();
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
 Console.WriteLine($"TRENUTNI CONNECTION STRING JE: {connectionString}");
@@ -50,6 +53,7 @@ builder.Services.AddScoped<IRezervacijaService, RezervacijaService>();
 builder.Services.AddScoped<IOpremaValidator, OpremaValidator>();
 builder.Services.AddScoped<IOpremaService, OpremaService>();
 builder.Services.AddScoped<IObavijestService, ObavijestService>();
+builder.Services.AddHttpClient<IEmailNotificationService, ResendEmailNotificationService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -163,4 +167,38 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 app.Run();
+
+static void LoadDotEnvFile(string filePath)
+{
+    if (!File.Exists(filePath))
+    {
+        return;
+    }
+
+    foreach (var line in File.ReadAllLines(filePath))
+    {
+        var trimmedLine = line.Trim();
+        if (string.IsNullOrWhiteSpace(trimmedLine) || trimmedLine.StartsWith('#'))
+        {
+            continue;
+        }
+
+        var separatorIndex = trimmedLine.IndexOf('=');
+        if (separatorIndex <= 0)
+        {
+            continue;
+        }
+
+        var key = trimmedLine[..separatorIndex].Trim();
+        var value = trimmedLine[(separatorIndex + 1)..].Trim().Trim('"');
+
+        if (string.IsNullOrWhiteSpace(key) || !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(key)))
+        {
+            continue;
+        }
+
+        Environment.SetEnvironmentVariable(key, value);
+    }
+}
+
 public partial class Program { }

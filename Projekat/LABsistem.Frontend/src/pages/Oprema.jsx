@@ -14,6 +14,7 @@ const STATUS_OPTIONS = [
 
 const INITIAL_FORM_STATE = {
   naziv: "",
+  kategorija: "",
   serijskiBroj: "",
   stanje: 1,
   kabinetID: "",
@@ -22,6 +23,7 @@ const INITIAL_FORM_STATE = {
 const INITIAL_FILTERS = {
   searchTerm: "",
   status: "",
+  kategorija: "",
   kabinet: "",
   zgrada: "",
 };
@@ -88,6 +90,11 @@ function Oprema() {
     return unique.filter(Boolean);
   }, [opremaList]);
 
+  const kategorijeOptions = useMemo(() => {
+    const unique = [...new Map(opremaList.map(o => [o.kategorija, o.kategorija])).values()];
+    return unique.filter(Boolean).sort((left, right) => left.localeCompare(right));
+  }, [opremaList]);
+
   const nextSerijskiBroj = useMemo(() => {
     if (!opremaList.length) return 1;
     return Math.max(...opremaList.map((item) => Number(item.serijskiBroj) || 0)) + 1;
@@ -98,11 +105,13 @@ function Oprema() {
       const termMatch =
         !filters.searchTerm ||
         o.naziv.toLowerCase().includes(filters.searchTerm.toLowerCase().trim()) ||
+        (o.kategorija || "").toLowerCase().includes(filters.searchTerm.toLowerCase().trim()) ||
         o.serijskiBroj.toString().includes(filters.searchTerm.trim());
       const statusMatch = !filters.status || o.stanje === Number(filters.status);
+      const kategorijaMatch = !filters.kategorija || o.kategorija === filters.kategorija;
       const kabinetMatch = !filters.kabinet || o.kabinetNaziv === filters.kabinet;
       const zgradaMatch = !filters.zgrada || o.zgradaNaziv === filters.zgrada;
-      return termMatch && statusMatch && kabinetMatch && zgradaMatch;
+      return termMatch && statusMatch && kategorijaMatch && kabinetMatch && zgradaMatch;
     });
   }, [opremaList, filters]);
 
@@ -137,6 +146,7 @@ function Oprema() {
     setEditingOprema(oprema);
     setFormState({
       naziv: oprema.naziv,
+      kategorija: oprema.kategorija || "",
       serijskiBroj: oprema.serijskiBroj,
       stanje: oprema.stanje,
       kabinetID: oprema.kabinetID,
@@ -410,6 +420,56 @@ function Oprema() {
             </span>
           </div>
 
+          <div style={{ position: "relative", minWidth: "180px" }}>
+            <span
+              style={{
+                position: "absolute",
+                left: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+                fontSize: "13px",
+                color: "var(--text-muted)",
+              }}
+            >
+              #
+            </span>
+            <select
+              name="kategorija"
+              value={filters.kategorija}
+              onChange={handleFilterChange}
+              style={{
+                width: "100%",
+                padding: "8px 12px 8px 30px",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                background: "var(--input-bg)",
+                color: filters.kategorija ? "var(--text)" : "var(--text-muted)",
+                fontSize: "14px",
+                appearance: "none",
+                cursor: "pointer",
+              }}
+            >
+              <option value="">Sve kategorije</option>
+              {kategorijeOptions.map((kategorija) => (
+                <option key={kategorija} value={kategorija}>{kategorija}</option>
+              ))}
+            </select>
+            <span
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                pointerEvents: "none",
+                fontSize: "11px",
+                color: "var(--text-muted)",
+              }}
+            >
+              â–¼
+            </span>
+          </div>
+
           {activeFilterCount > 0 && (
             <button
               className="button sekundarno"
@@ -430,6 +490,7 @@ function Oprema() {
 
           <div className="users-list-header users-list-row">
             <span>Naziv</span>
+            <span>Kategorija</span>
             <span>Serijski broj</span>
             <span>Status</span>
             <span>Kabinet</span>
@@ -444,6 +505,7 @@ function Oprema() {
               {filteredOprema.map(item => (
                 <div className="users-list-row users-list-item" key={item.id}>
                   <span style={{ fontWeight: "600" }}>{item.naziv}</span>
+                  <span>{item.kategorija || "N/A"}</span>
                   <span>{item.serijskiBroj}</span>
                   <span>
                     <span className={`badge ${getStatusInfo(item.stanje).color}`}>
@@ -505,6 +567,17 @@ function Oprema() {
               <div className="form-group">
                 <label>Naziv</label>
                 <input name="naziv" value={formState.naziv} onChange={handleFormChange} required />
+              </div>
+              <div className="form-group">
+                <label>Kategorija</label>
+                <input
+                  name="kategorija"
+                  value={formState.kategorija}
+                  onChange={handleFormChange}
+                  placeholder="npr. Laptop, osciloskop, projektor"
+                  maxLength={40}
+                  required
+                />
               </div>
               <div className="form-group">
                 <label>Serijski broj</label>

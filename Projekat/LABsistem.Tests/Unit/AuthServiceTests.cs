@@ -2,10 +2,13 @@ using AutoFixture;
 using LABsistem.Application.DTOs.Auth;
 using LABsistem.Application.Models;
 using LABsistem.Application.Services;
+using LABsistem.Api.Services;
 using LABsistem.Dal.Db;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 using LABsistem.Application.Validators;
 
@@ -13,7 +16,10 @@ public class AuthServiceTests
 {
     private readonly IFixture _fixture;
     private readonly Mock<IJwtService> _jwtServiceMock;
+    private readonly Mock<IEmailNotificationService> _emailNotificationServiceMock;
+    private readonly Mock<ILogger<AuthService>> _loggerMock;
     private readonly JwtSettings _jwtSettings;
+    private readonly IConfiguration _configuration;
 
     public AuthServiceTests()
     {
@@ -22,6 +28,8 @@ public class AuthServiceTests
         _fixture.Behaviors.Add(new OmitOnRecursionBehavior());
 
         _jwtServiceMock = new Mock<IJwtService>(MockBehavior.Strict);
+        _emailNotificationServiceMock = new Mock<IEmailNotificationService>();
+        _loggerMock = new Mock<ILogger<AuthService>>();
         _jwtSettings = new JwtSettings
         {
             Key = "TestSuperSecretKeyThatMustBeLongEnough123!",
@@ -30,6 +38,12 @@ public class AuthServiceTests
             ExpireMinutes = 30,
             RefreshExpireDays = 7
         };
+        _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["FrontendBaseUrl"] = "http://localhost:3001"
+            })
+            .Build();
     }
 
     private static LabSistemDbContext GetInMemoryDbContext()
@@ -44,7 +58,14 @@ public class AuthServiceTests
     private AuthService CreateService(LabSistemDbContext context)
     {
         var businessRules = new AuthBusinessRules(context);
-        return new AuthService(context, _jwtServiceMock.Object, _jwtSettings, businessRules);
+        return new AuthService(
+            context,
+            _jwtServiceMock.Object,
+            _jwtSettings,
+            businessRules,
+            _emailNotificationServiceMock.Object,
+            _configuration,
+            _loggerMock.Object);
     }
 
     private Korisnik BuildUser(

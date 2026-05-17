@@ -83,6 +83,7 @@ namespace LABsistem.Api.Services
             await _validator.ValidateOdgovor(zahtjevId, profesorId, odobri);
 
             var zahtjev = await _context.Zahtjevi
+                .Include(z => z.Student)
                 .Include(z => z.Termin)
                 .FirstAsync(z => z.ID == zahtjevId);
 
@@ -94,6 +95,8 @@ namespace LABsistem.Api.Services
             {
                 StudentID = zahtjev.StudentID,
                 TerminID = zahtjev.TerminID,
+                StudentImePrezime = zahtjev.Student.ImePrezime,
+                StudentEmail = zahtjev.Student.Email,
                 DatumTermina = zahtjev.Termin.Datum,
                 VrijemePocetka = zahtjev.Termin.VrijemePocetka
             };

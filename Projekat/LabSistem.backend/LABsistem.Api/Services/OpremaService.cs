@@ -21,7 +21,7 @@ namespace LABsistem.Api.Services
 
         public async Task<OpremaDTO> KreirajOpremu(OpremaCreateDTO dto)
         {
-            _validator.ValidateCreate(dto.Naziv, dto.KabinetID);
+            _validator.ValidateSave(dto.Naziv, dto.Kategorija, dto.KabinetID);
 
             var postojecaOprema = await _repo.GetAllAsync();
             var nextSerijskiBroj = postojecaOprema.Any()
@@ -31,6 +31,7 @@ namespace LABsistem.Api.Services
             var nova = new Oprema
             {
                 Naziv = dto.Naziv,
+                Kategorija = dto.Kategorija,
                 SerijskiBroj = nextSerijskiBroj,
                 stanje = (StatusOpreme)dto.Stanje,
                 KabinetID = dto.KabinetID,
@@ -41,6 +42,7 @@ namespace LABsistem.Api.Services
             {
                 ID = nova.ID,
                 Naziv = nova.Naziv,
+                Kategorija = nova.Kategorija,
                 SerijskiBroj = nova.SerijskiBroj
             };
         }
@@ -52,6 +54,7 @@ namespace LABsistem.Api.Services
             {
                 ID = x.oprema.ID,
                 Naziv = x.oprema.Naziv,
+                Kategorija = x.oprema.Kategorija,
                 SerijskiBroj = x.oprema.SerijskiBroj,
                 Stanje = (int)x.oprema.stanje,
                 KabinetID = x.oprema.KabinetID,
@@ -63,9 +66,12 @@ namespace LABsistem.Api.Services
 
         public async Task<bool> AzurirajOpremu(int id, OpremaCreateDTO dto)
         {
+            _validator.ValidateSave(dto.Naziv, dto.Kategorija, dto.KabinetID);
+
             var p = await _repo.GetByIdAsync(id);
             if (p == null) return false;
             p.Naziv = dto.Naziv;
+            p.Kategorija = dto.Kategorija;
             p.stanje = (StatusOpreme)dto.Stanje;
             p.KabinetID = dto.KabinetID;
             await _repo.UpdateAsync(p);
@@ -89,6 +95,7 @@ namespace LABsistem.Api.Services
                 {
                     ID = o.ID,
                     Naziv = o.Naziv,
+                    Kategorija = o.Kategorija,
                     SerijskiBroj = o.SerijskiBroj,
                     Stanje = (int)o.stanje
                 }).ToList();

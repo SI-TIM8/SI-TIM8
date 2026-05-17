@@ -34,7 +34,7 @@ namespace LABsistem.Tests.Unit
             // Arrange - simulira postojeću opremu sa max serial brojem 4
             var existingOprema = new List<Oprema>
             {
-                new Oprema { ID = 1, Naziv = "Postojeca oprema", SerijskiBroj = 4, stanje = StatusOpreme.Ispravno, KabinetID = 1, KreatorID = 1 }
+                new Oprema { ID = 1, Naziv = "Postojeca oprema", Kategorija = "Mjerni uređaj", SerijskiBroj = 4, stanje = StatusOpreme.Ispravno, KabinetID = 1, KreatorID = 1 }
             };
             _repoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(existingOprema);
             
@@ -46,6 +46,7 @@ namespace LABsistem.Tests.Unit
             // Assert
             Assert.NotNull(result);
             Assert.Equal(dto.Naziv, result.Naziv);
+            Assert.Equal(dto.Kategorija, result.Kategorija);
             Assert.Equal(5, result.SerijskiBroj);  // max(4) + 1 = 5, serijski broj je sistemski generisan
             _repoMock.Verify(x => x.AddAsync(It.IsAny<Oprema>()), Times.Once);
         }
@@ -56,7 +57,7 @@ namespace LABsistem.Tests.Unit
             
             var mockData = new List<(Oprema oprema, string kabinetNaziv, string zgradaNaziv)>
             {
-                (new Oprema { ID = 1, Naziv = "Mikroskop", stanje = StatusOpreme.Ispravno }, "Kabinet A", "Zgrada 1")
+                (new Oprema { ID = 1, Naziv = "Mikroskop", Kategorija = "Optička oprema", stanje = StatusOpreme.Ispravno }, "Kabinet A", "Zgrada 1")
             };
 
             _repoMock.Setup(x => x.GetAllWithKabinetAsync()).ReturnsAsync(mockData);
@@ -68,6 +69,7 @@ namespace LABsistem.Tests.Unit
             var list = result.ToList();
             Assert.Single(list);
             Assert.Equal("Mikroskop", list[0].Naziv);
+            Assert.Equal("Optička oprema", list[0].Kategorija);
             Assert.Equal("Kabinet A", list[0].KabinetNaziv);
         }
 

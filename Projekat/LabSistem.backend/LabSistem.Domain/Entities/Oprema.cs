@@ -12,6 +12,8 @@ namespace LABsistem.Domain.Entities
         public int ID { get; set; } 
         [Required, StringLength(30)]
         public string Naziv { get; set; } 
+        [Required, StringLength(40)]
+        public string Kategorija { get; set; }
         public int SerijskiBroj { get; set; } 
 
         

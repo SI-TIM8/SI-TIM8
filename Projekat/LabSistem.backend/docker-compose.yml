@@ -29,6 +29,9 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
       - ASPNETCORE_URLS=${ASPNETCORE_URLS}
       - ConnectionStrings__Default=${CONNECTION_STRING}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - FROM_EMAIL=${FROM_EMAIL}
+      - FRONTEND_BASE_URL=${FRONTEND_BASE_URL}
     ports:
       - "8080:8080"
     networks:
