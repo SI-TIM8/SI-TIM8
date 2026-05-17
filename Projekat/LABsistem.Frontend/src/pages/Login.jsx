@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import api from "../api/client";
 import { hasActiveAccessToken, persistSession } from "../auth/session";
 
@@ -42,6 +42,9 @@ function PasswordVisibilityIcon({ visible }) {
 }
 
 function Login() {
+  const loginHeading =
+    "Prijavite se sa svojim LABsistem korisni\u010dkim nalogom";
+  const usernameLabel = "Korisni\u010dko ime ili email adresa:";
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -57,12 +60,12 @@ function Login() {
     }
   }, [navigate]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     setGreska("");
 
     if (!usernameOrEmail || !password) {
-      setGreska("Unesite korisnicko ime ili email adresu i lozinku.");
+      setGreska("Unesite korisničko ime ili email adresu i lozinku.");
       return;
     }
 
@@ -86,15 +89,16 @@ function Login() {
           : responseData?.message;
 
       setGreska(
-        backendMessage || "Prijava nije uspjela. Provjerite korisnicko ime ili email adresu i lozinku."
+        backendMessage || "Prijava nije uspjela. Provjerite korisničko ime ili email adresu i lozinku."
       );
     }
   };
 
   return (
-    <main className="page">
-      <div className="login-card">
-        <h1 className="login-title">Prijavite se sa svojim LABsistem korisničkim nalogom</h1>
+    <main className="auth-page">
+      <div className="login-card auth-card">
+        <div className="auth-brand">LABsistem</div>
+        <h1 className="login-title">{loginHeading}</h1>
 
         {sesijaIstekla && (
           <p style={{ color: "#dc2626", marginBottom: 16, fontSize: 14 }}>
@@ -110,13 +114,13 @@ function Login() {
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="form-group">
-            <label htmlFor="username">Korisničko ime ili email adresa:</label>
+            <label htmlFor="username">{usernameLabel}</label>
             <input
               id="username"
               type="text"
               placeholder="Unesite korisničko ime ili email adresu"
               value={usernameOrEmail}
-              onChange={(e) => setUsernameOrEmail(e.target.value)}
+              onChange={(event) => setUsernameOrEmail(event.target.value)}
             />
           </div>
 
@@ -128,18 +132,24 @@ function Login() {
                 type={showPassword ? "text" : "password"}
                 placeholder="********"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(event) => setPassword(event.target.value)}
               />
               <button
                 type="button"
                 className="password-toggle-button"
-                aria-label={showPassword ? "Sakrij lozinku" : "Prikazi lozinku"}
+                aria-label={showPassword ? "Sakrij lozinku" : "Prikaži lozinku"}
                 aria-pressed={showPassword}
                 onClick={() => setShowPassword((current) => !current)}
               >
                 <PasswordVisibilityIcon visible={showPassword} />
               </button>
             </div>
+          </div>
+
+          <div className="auth-link-row">
+            <Link className="auth-inline-link" to="/forgot-password">
+              Zaboravljena lozinka?
+            </Link>
           </div>
 
           <button className="button" type="submit" style={{ width: "100%" }}>

@@ -202,6 +202,44 @@ namespace LABsistem.Presentation.Controllers
             return Ok(new { Message = result.Message });
         }
 
+        [HttpPost("forgot-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto request)
+        {
+            var result = await _authService.ForgotPasswordAsync(request, HttpContext.RequestAborted);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message });
+        }
+
+        [HttpGet("verify-reset-token")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VerifyResetToken([FromQuery] string token)
+        {
+            var result = await _authService.VerifyPasswordResetTokenAsync(token);
+            return Ok(new
+            {
+                Valid = result.Valid,
+                Message = result.Message
+            });
+        }
+
+        [HttpPost("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto request)
+        {
+            var result = await _authService.ResetPasswordAsync(request);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message });
+        }
+
         [HttpPost("verify-token")]
         [AllowAnonymous]
         public async Task<IActionResult> VerifyToken([FromBody] VerifyTokenRequestDto request)

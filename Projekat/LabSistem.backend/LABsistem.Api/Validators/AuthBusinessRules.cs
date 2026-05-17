@@ -19,7 +19,6 @@ namespace LABsistem.Application.Validators
         public string? ValidateProfileFields(string imePrezime, string email, string username)
         {
             var normalizedFullName = imePrezime?.Trim() ?? string.Empty;
-            var normalizedEmail = email?.Trim() ?? string.Empty;
             var normalizedUsername = username?.Trim() ?? string.Empty;
 
             if (string.IsNullOrWhiteSpace(normalizedFullName))
@@ -42,24 +41,10 @@ namespace LABsistem.Application.Validators
                 return "Ime i prezime moze sadrzavati samo slova i razmake.";
             }
 
-            if (string.IsNullOrWhiteSpace(normalizedEmail))
+            var emailValidationMessage = ValidateEmailAddress(email);
+            if (emailValidationMessage is not null)
             {
-                return "Email je obavezan.";
-            }
-
-            if (normalizedEmail.Length < 5)
-            {
-                return "Email mora imati najmanje 5 karaktera.";
-            }
-
-            if (normalizedEmail.Length > 254)
-            {
-                return "Email moze imati najvise 254 karaktera.";
-            }
-
-            if (!IsEmailValid(normalizedEmail))
-            {
-                return "Email nije ispravan.";
+                return emailValidationMessage;
             }
 
             if (string.IsNullOrWhiteSpace(normalizedUsername))
@@ -80,6 +65,33 @@ namespace LABsistem.Application.Validators
             if (!UsernameRegex.IsMatch(normalizedUsername))
             {
                 return "Korisnicko ime moze sadrzavati samo slova i brojeve, bez razmaka i specijalnih znakova.";
+            }
+
+            return null;
+        }
+
+        public string? ValidateEmailAddress(string email)
+        {
+            var normalizedEmail = email?.Trim() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(normalizedEmail))
+            {
+                return "Email je obavezan.";
+            }
+
+            if (normalizedEmail.Length < 5)
+            {
+                return "Email mora imati najmanje 5 karaktera.";
+            }
+
+            if (normalizedEmail.Length > 254)
+            {
+                return "Email moze imati najvise 254 karaktera.";
+            }
+
+            if (!IsEmailValid(normalizedEmail))
+            {
+                return "Email nije ispravan.";
             }
 
             return null;

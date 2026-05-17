@@ -36,14 +36,14 @@ namespace LABsistem.Api.Services
         {
             if (string.IsNullOrWhiteSpace(recipientEmail))
             {
-                _logger.LogWarning("Email notifikacija je preskocena jer primalac nema email adresu.");
+                _logger.LogWarning("Email notifikacija je preskočena jer primalac nema email adresu.");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(_apiKey) || string.IsNullOrWhiteSpace(_fromEmail))
             {
                 _logger.LogWarning(
-                    "Email notifikacija je preskocena jer RESEND_API_KEY ili FROM_EMAIL nisu postavljeni.");
+                    "Email notifikacija je preskočena jer RESEND_API_KEY ili FROM_EMAIL nisu postavljeni.");
                 return false;
             }
 
@@ -64,7 +64,7 @@ namespace LABsistem.Api.Services
                 if (response.IsSuccessStatusCode)
                 {
                     _logger.LogInformation(
-                        "Email notifikacija je uspjesno poslana korisniku {Email}.",
+                        "Email notifikacija je uspješno poslana korisniku {Email}.",
                         recipientEmail);
                     return true;
                 }
@@ -78,7 +78,69 @@ namespace LABsistem.Api.Services
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Doslo je do greske pri slanju email notifikacije za {Email}.", recipientEmail);
+                _logger.LogWarning(ex, "Došlo je do greške pri slanju email notifikacije za {Email}.", recipientEmail);
+                return false;
+            }
+        }
+
+        public async Task<bool> SendPasswordResetEmailAsync(
+            string recipientEmail,
+            string recipientName,
+            string resetLink,
+            DateTime expiresAtUtc,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(recipientEmail))
+            {
+                _logger.LogWarning("Password reset email je preskočen jer primalac nema email adresu.");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(resetLink))
+            {
+                _logger.LogWarning("Password reset email je preskočen jer reset link nije dostupan.");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(_apiKey) || string.IsNullOrWhiteSpace(_fromEmail))
+            {
+                _logger.LogWarning(
+                    "Password reset email je preskočen jer RESEND_API_KEY ili FROM_EMAIL nisu postavljeni.");
+                return false;
+            }
+
+            try
+            {
+                using var request = new HttpRequestMessage(HttpMethod.Post, ResendEndpoint);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
+                request.Content = JsonContent.Create(new
+                {
+                    from = _fromEmail,
+                    to = recipientEmail,
+                    subject = "LABsistem - resetovanje lozinke",
+                    html = BuildPasswordResetHtmlBody(recipientName, resetLink, expiresAtUtc),
+                    text = BuildPasswordResetTextBody(recipientName, resetLink, expiresAtUtc)
+                });
+
+                using var response = await _httpClient.SendAsync(request, cancellationToken);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation(
+                        "Password reset email je uspješno poslan korisniku {Email}.",
+                        recipientEmail);
+                    return true;
+                }
+
+                var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                _logger.LogWarning(
+                    "Slanje password reset emaila nije uspjelo. Status: {StatusCode}. Odgovor: {ResponseBody}",
+                    (int)response.StatusCode,
+                    responseBody);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Došlo je do greške pri slanju password reset emaila za {Email}.", recipientEmail);
                 return false;
             }
         }
@@ -99,9 +161,9 @@ namespace LABsistem.Api.Services
             var status = odobri ? "odobren" : "odbijen";
             var lines = new List<string>
             {
-                $"Postovani/a {recipientName},",
+                $"Poštovani/a {recipientName},",
                 string.Empty,
-                $"Vas zahtjev za rezervaciju termina je {status}.",
+                $"Vaš zahtjev za rezervaciju termina je {status}.",
                 $"Termin: {datumTermina:dd.MM.yyyy} u {vrijemeTekst}",
             };
 
@@ -111,9 +173,9 @@ namespace LABsistem.Api.Services
             }
 
             lines.Add(string.Empty);
-            lines.Add("Status mozete provjeriti i unutar LABsistem aplikacije.");
+            lines.Add("Status možete provjeriti i unutar LABsistem aplikacije.");
             lines.Add(string.Empty);
-            lines.Add("Srdacan pozdrav,");
+            lines.Add("Srdačan pozdrav,");
             lines.Add("LABsistem");
 
             return string.Join(Environment.NewLine, lines);
@@ -131,8 +193,8 @@ namespace LABsistem.Api.Services
             var accentColor = odobri ? "#0f766e" : "#b42318";
             var accentBackground = odobri ? "#ecfdf3" : "#fef3f2";
             var introText = odobri
-                ? "Vas zahtjev za rezervaciju termina je uspjesno odobren."
-                : "Vas zahtjev za rezervaciju termina je odbijen.";
+                ? "Vaš zahtjev za rezervaciju termina je uspješno odobren."
+                : "Vaš zahtjev za rezervaciju termina je odbijen.";
 
             var komentarSection = string.IsNullOrWhiteSpace(komentar)
                 ? string.Empty
@@ -156,7 +218,7 @@ namespace LABsistem.Api.Services
                     <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(15,23,42,0.12);">
                       <div style="padding:24px 32px;background:linear-gradient(135deg,#0f766e 0%,#115e59 100%);color:#ffffff;">
                         <div style="font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.9;">LABsistem</div>
-                        <div style="margin-top:10px;font-size:28px;font-weight:700;line-height:1.25;">Status vaseg zahtjeva je azuriran</div>
+                        <div style="margin-top:10px;font-size:28px;font-weight:700;line-height:1.25;">Status vašeg zahtjeva je ažuriran</div>
                         <div style="margin-top:8px;font-size:15px;line-height:1.6;opacity:0.92;">Dobijate obavijest o promjeni statusa rezervacije direktno iz sistema.</div>
                       </div>
                       <div style="padding:32px;">
@@ -164,7 +226,7 @@ namespace LABsistem.Api.Services
                           {statusText}
                         </div>
                         <p style="margin:24px 0 12px;font-size:18px;line-height:1.6;color:#101828;">
-                          Postovani/a <strong>{System.Net.WebUtility.HtmlEncode(recipientName)}</strong>,
+                          Poštovani/a <strong>{System.Net.WebUtility.HtmlEncode(recipientName)}</strong>,
                         </p>
                         <p style="margin:0 0 24px;font-size:16px;line-height:1.75;color:#344054;">
                           {introText}
@@ -187,7 +249,92 @@ namespace LABsistem.Api.Services
                         {komentarSection}
 
                         <p style="margin:24px 0 0;font-size:15px;line-height:1.75;color:#475467;">
-                          Za dodatne informacije mozete otvoriti LABsistem aplikaciju i provjeriti status zahtjeva u svom korisnickom profilu.
+                          Za dodatne informacije možete otvoriti LABsistem aplikaciju i provjeriti status zahtjeva u svom korisničkom profilu.
+                        </p>
+                      </div>
+                      <div style="padding:20px 32px;background:#f8fafc;border-top:1px solid #eaecf0;color:#667085;font-size:13px;line-height:1.7;">
+                        Ova poruka je automatski generisana iz LABsistem aplikacije.
+                      </div>
+                    </div>
+                  </div>
+                </body>
+                </html>
+                """;
+        }
+
+        private static string BuildPasswordResetTextBody(
+            string recipientName,
+            string resetLink,
+            DateTime expiresAtUtc)
+        {
+            return string.Join(Environment.NewLine, new[]
+            {
+                $"Poštovani/a {recipientName},",
+                string.Empty,
+                "Zaprimili smo zahtjev za resetovanje lozinke na vašem LABsistem nalogu.",
+                $"Link za resetovanje: {resetLink}",
+                $"Link ističe: {expiresAtUtc:dd.MM.yyyy HH:mm} UTC",
+                string.Empty,
+                "Ako niste zatražili resetovanje lozinke, slobodno zanemarite ovu poruku.",
+                string.Empty,
+                "Srdačan pozdrav,",
+                "LABsistem"
+            });
+        }
+
+        private static string BuildPasswordResetHtmlBody(
+            string recipientName,
+            string resetLink,
+            DateTime expiresAtUtc)
+        {
+            return $"""
+                <!DOCTYPE html>
+                <html lang="bs">
+                <head>
+                  <meta charset="utf-8" />
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                  <title>LABsistem reset lozinke</title>
+                </head>
+                <body style="margin:0;padding:0;background:#f4f7fb;font-family:Segoe UI,Arial,sans-serif;color:#101828;">
+                  <div style="padding:32px 16px;">
+                    <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(15,23,42,0.12);">
+                      <div style="padding:24px 32px;background:linear-gradient(135deg,#0f766e 0%,#115e59 100%);color:#ffffff;">
+                        <div style="font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.9;">LABsistem</div>
+                        <div style="margin-top:10px;font-size:28px;font-weight:700;line-height:1.25;">Resetovanje lozinke</div>
+                        <div style="margin-top:8px;font-size:15px;line-height:1.6;opacity:0.92;">Za vaš nalog pripremili smo siguran link za postavljanje nove lozinke.</div>
+                      </div>
+                      <div style="padding:32px;">
+                        <div style="display:inline-block;padding:8px 14px;border-radius:999px;background:#ecfeff;color:#0e7490;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">
+                          Reset link
+                        </div>
+                        <p style="margin:24px 0 12px;font-size:18px;line-height:1.6;color:#101828;">
+                          Poštovani/a <strong>{System.Net.WebUtility.HtmlEncode(recipientName)}</strong>,
+                        </p>
+                        <p style="margin:0 0 24px;font-size:16px;line-height:1.75;color:#344054;">
+                          Zaprimili smo zahtjev za resetovanje lozinke na vašem LABsistem nalogu. Kliknite na dugme ispod kako biste postavili novu lozinku.
+                        </p>
+
+                        <div style="padding:20px;border-radius:16px;background:#f8fafc;border:1px solid #e4e7ec;">
+                          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#475467;margin-bottom:14px;">Važenje linka</div>
+                          <div style="font-size:15px;line-height:1.7;color:#101828;">
+                            Link ističe za 30 minuta, odnosno do <strong>{expiresAtUtc:dd.MM.yyyy HH:mm} UTC</strong>.
+                          </div>
+                        </div>
+
+                        <div style="margin-top:24px;text-align:center;">
+                          <a href="{System.Net.WebUtility.HtmlEncode(resetLink)}" style="display:inline-block;padding:14px 22px;border-radius:999px;background:#0f766e;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;">
+                            Resetuj lozinku
+                          </a>
+                        </div>
+
+                        <p style="margin:24px 0 0;font-size:15px;line-height:1.75;color:#475467;">
+                          Ako dugme ne radi, kopirajte i otvorite sljedeći link:
+                        </p>
+                        <p style="margin:10px 0 0;font-size:14px;line-height:1.75;word-break:break-all;color:#0e7490;">
+                          {System.Net.WebUtility.HtmlEncode(resetLink)}
+                        </p>
+                        <p style="margin:24px 0 0;font-size:15px;line-height:1.75;color:#475467;">
+                          Ako niste zatražili resetovanje lozinke, slobodno zanemarite ovu poruku.
                         </p>
                       </div>
                       <div style="padding:20px 32px;background:#f8fafc;border-top:1px solid #eaecf0;color:#667085;font-size:13px;line-height:1.7;">

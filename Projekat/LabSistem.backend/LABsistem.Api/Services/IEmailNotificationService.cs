@@ -10,5 +10,12 @@ namespace LABsistem.Api.Services
             bool odobri,
             string? komentar = null,
             CancellationToken cancellationToken = default);
+
+        Task<bool> SendPasswordResetEmailAsync(
+            string recipientEmail,
+            string recipientName,
+            string resetLink,
+            DateTime expiresAtUtc,
+            CancellationToken cancellationToken = default);
     }
 }

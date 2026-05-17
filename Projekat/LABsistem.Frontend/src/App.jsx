@@ -9,6 +9,7 @@ import {
 import AccessDenied from "./pages/AccessDenied";
 import AboutApp from "./pages/AboutApp";
 import Dashboard from "./pages/Dashboard";
+import ForgotPassword from "./pages/ForgotPassword";
 import Kalendar from "./pages/Kalendar";
 import Korisnici from "./pages/Korisnici";
 import Objekti from "./pages/Objekti";
@@ -16,6 +17,7 @@ import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Profil from "./pages/Profil";
 import Oprema from "./pages/Oprema";
+import ResetPassword from "./pages/ResetPassword";
 import Termini from "./pages/Termini";
 import Zakazivanje from "./pages/Zakazivanje";
 import Rezervacije from "./pages/Rezervacije";
@@ -74,6 +76,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
 
         <Route

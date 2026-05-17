@@ -107,4 +107,22 @@ export async function pingApi() {
   return response.status;
 }
 
+export function forgotPassword(email) {
+  return authApi.post("/Auth/forgot-password", { email });
+}
+
+export function verifyResetToken(token) {
+  return authApi.get("/Auth/verify-reset-token", {
+    params: { token },
+  });
+}
+
+export function resetPassword(token, newPassword, confirmPassword) {
+  return authApi.post("/Auth/reset-password", {
+    token,
+    newPassword,
+    confirmPassword,
+  });
+}
+
 export default api;
