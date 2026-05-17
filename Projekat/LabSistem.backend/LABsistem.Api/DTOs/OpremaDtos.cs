@@ -1,8 +1,15 @@
 namespace LABsistem.Application.DTOs
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class OpremaCreateDTO
     {
+        [Required]
+        [StringLength(30)]
         public string Naziv { get; set; } = default!;
+        [Required]
+        [StringLength(40)]
+        public string Kategorija { get; set; } = default!;
         public int SerijskiBroj { get; set; }
         public int Stanje { get; set; }
         public int KabinetID { get; set; }
@@ -13,6 +20,7 @@ namespace LABsistem.Application.DTOs
     {
         public int ID { get; set; }
         public string Naziv { get; set; } = default!;
+        public string Kategorija { get; set; } = default!;
         public int SerijskiBroj { get; set; }
         public int Stanje { get; set; }
         public int KabinetID { get; set; }

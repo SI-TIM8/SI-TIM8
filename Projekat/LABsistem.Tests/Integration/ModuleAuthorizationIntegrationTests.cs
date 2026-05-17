@@ -96,6 +96,7 @@ namespace LABsistem.Tests.Integration
             var oprema = new Oprema
             {
                 Naziv = "Test oprema",
+                Kategorija = "Test kategorija",
                 SerijskiBroj = 42,
                 stanje = StatusOpreme.Ispravno,
                 KreatorID = tehnicar.ID,
@@ -150,6 +151,7 @@ namespace LABsistem.Tests.Integration
                 Content = JsonContent.Create(new OpremaCreateDTO
                 {
                     Naziv = "OprS1",
+                    Kategorija = "Studentska kategorija",
                     SerijskiBroj = 10,
                     Stanje = (int)StatusOpreme.Ispravno,
                     KabinetID = kabinetId,
@@ -261,6 +263,7 @@ namespace LABsistem.Tests.Integration
                 Content = JsonContent.Create(new OpremaCreateDTO
                 {
                     Naziv = "OprT1",
+                    Kategorija = "Tehnička kategorija",
                     SerijskiBroj = 11,
                     Stanje = (int)StatusOpreme.Ispravno,
                     KabinetID = kabinetId,

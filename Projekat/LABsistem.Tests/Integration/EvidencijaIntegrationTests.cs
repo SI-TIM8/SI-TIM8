@@ -25,7 +25,7 @@ namespace LABsistem.Tests.Integration
             using var context = GetInMemoryDbContext();
 
             var korisnik = new Korisnik { ID = 1, ImePrezime = "Jane Doe", Username = "jane", Email = "j@j.com", Password = "x" };
-            var oprema = new Oprema { ID = 1, Naziv = "Mikroskop", SerijskiBroj = 12345 };
+            var oprema = new Oprema { ID = 1, Naziv = "Mikroskop", Kategorija = "Optička oprema", SerijskiBroj = 12345 };
             var evidencija = new Evidencija { ID = 1, KorisnikID = 1, OpremaID = 1, Status = "Novo", Komentar = "Test" };
 
             context.Korisnici.Add(korisnik);
