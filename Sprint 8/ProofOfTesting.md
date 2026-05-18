@@ -47,7 +47,7 @@ Ovaj izvještaj dokumentuje validaciju sistema kroz tri nivoa testiranja:
 ### Tehnologije i metodologija
 
 - **XUnit** za unit & integracijske testove (backend logika i baze)
-- **Playwright/Cypress/Jest** (ili drugi moderni alat prema repozitoriju) za E2E testiranje kompletne integracije (backend+frontend+notifikacije)
+- **Cypress za E2E testiranje kompletne integracije (backend+frontend+notifikacije)
 - **EF Core In-Memory DB** za brzinu i izolaciju testiranja logike i pravila
 - **TestWebApplicationFactory** za simulaciju autentifikacije i prava pristupa
 - **Automatske notifikacije**: sistem testiran za slanje e-mail i in-app obavijesti u svim glavnim scenarijima (odobravanje, odbijanje, otkazivanje, kaskadno brisanje)
