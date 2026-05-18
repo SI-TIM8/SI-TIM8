@@ -69,7 +69,10 @@ function Termini() {
   const [formState, setFormState] = useState(INITIAL_FORM_STATE);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [rezervacijaModalOpen, setRezervacijaModalOpen] = useState(false);
-  const [rezervacijaForm, setRezervacijaForm] = useState({ limitOsoba: 20, vidljivoStudentima: true });
+  const [rezervacijaForm, setRezervacijaForm] = useState({
+    limitOsoba: 20,
+    vidljivoStudentima: true,
+  });
   const [selectedTerminId, setSelectedTerminId] = useState(null);
   const [equipmentModalOpen, setEquipmentModalOpen] = useState(false);
   const [selectedCabinetEquipment, setSelectedCabinetEquipment] = useState([]);
@@ -130,7 +133,9 @@ function Termini() {
   const filteredTermini = useMemo(() => {
     return termini.filter((termin) => {
       // Sakrij prosle termine
-      const terminEnd = new Date(`${termin.datum.split("T")[0]}T${termin.vrijemeKraja}`);
+      const terminEnd = new Date(
+        `${termin.datum.split("T")[0]}T${termin.vrijemeKraja}`,
+      );
       if (terminEnd < new Date()) return false;
 
       const datum = formatDateForInput(termin.datum);
@@ -307,20 +312,26 @@ function Termini() {
     }
 
     try {
-      await api.post(`/Rezervacija/rezervisi/${selectedTerminId}`, rezervacijaForm);
+      await api.post(
+        `/Rezervacija/rezervisi/${selectedTerminId}`,
+        rezervacijaForm,
+      );
       setMessage({ type: "success", text: "Termin uspjesno rezervisan." });
       setRezervacijaModalOpen(false);
       loadTermini();
     } catch (error) {
-      setMessage({ type: "error", text: error.response?.data || "Greska pri rezervaciji." });
+      setMessage({
+        type: "error",
+        text: error.response?.data || "Greska pri rezervaciji.",
+      });
     } finally {
       setSaving(false);
     }
   }
 
   function openRezervacijaModal(id) {
-    const termin = termini.find(t => t.id === id);
-    const kabinet = kabineti.find(k => k.id === termin?.kabinetID);
+    const termin = termini.find((t) => t.id === id);
+    const kabinet = kabineti.find((k) => k.id === termin?.kabinetID);
 
     if (!kabinet || !kabinet.kapacitet || kabinet.kapacitet < 1) {
       setMessage({
@@ -331,10 +342,10 @@ function Termini() {
     }
 
     setSelectedTerminId(id);
-    setRezervacijaForm({ 
+    setRezervacijaForm({
       limitOsoba: kabinet.kapacitet,
       vidljivoStudentima: true,
-      maxKapacitet: kabinet.kapacitet
+      maxKapacitet: kabinet.kapacitet,
     });
     setRezervacijaModalOpen(true);
   }
@@ -498,7 +509,9 @@ function Termini() {
             <span>Kabinet</span>
             <span>Kreator</span>
             <span>Status</span>
-            {(canManageTermini || currentRole === "profesor") && <span>Akcije</span>}
+            {(canManageTermini || currentRole === "profesor") && (
+              <span>Akcije</span>
+            )}
           </div>
 
           {loading ? (
@@ -520,10 +533,21 @@ function Termini() {
                     </span>
                   </span>
                   <span>
-                    <button 
-                      className="text-button" 
-                      onClick={() => loadEquipment(termin.kabinetID, termin.kabinetNaziv)}
-                      style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', padding: 0, fontSize: 'inherit', fontWeight: 'inherit', textDecoration: 'underline' }}
+                    <button
+                      className="text-button"
+                      onClick={() =>
+                        loadEquipment(termin.kabinetID, termin.kabinetNaziv)
+                      }
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "#2563eb",
+                        cursor: "pointer",
+                        padding: 0,
+                        fontSize: "inherit",
+                        fontWeight: "inherit",
+                        textDecoration: "underline",
+                      }}
                     >
                       {termin.kabinetNaziv || `Kabinet #${termin.kabinetID}`}
                     </button>
@@ -532,11 +556,15 @@ function Termini() {
                     {termin.kreatorIme || `Korisnik #${termin.kreatorID}`}
                   </span>
                   <span>
-                    <span className={`badge ${termin.statusTermina === "Slobodan" ? "zeleno" : "plavo"}`}>
+                    <span
+                      className={`badge ${termin.statusTermina === "Slobodan" ? "zeleno" : "plavo"}`}
+                    >
                       {termin.statusTermina}
                     </span>
                   </span>
-                  {(canManageTermini || (currentRole === "profesor" && termin.statusTermina === "Slobodan")) && (
+                  {(canManageTermini ||
+                    (currentRole === "profesor" &&
+                      termin.statusTermina === "Slobodan")) && (
                     <span>
                       <div className="users-actions">
                         {canManageTermini && (
@@ -555,15 +583,16 @@ function Termini() {
                             </button>
                           </>
                         )}
-                        {currentRole === "profesor" && termin.statusTermina === "Slobodan" && (
-                          <button
-                            className="button"
-                            style={{ padding: "4px 12px" }}
-                            onClick={() => openRezervacijaModal(termin.id)}
-                          >
-                            Rezervisi
-                          </button>
-                        )}
+                        {currentRole === "profesor" &&
+                          termin.statusTermina === "Slobodan" && (
+                            <button
+                              className="button"
+                              style={{ padding: "4px 12px" }}
+                              onClick={() => openRezervacijaModal(termin.id)}
+                            >
+                              Rezervisi
+                            </button>
+                          )}
                       </div>
                     </span>
                   )}
@@ -693,35 +722,67 @@ function Termini() {
       )}
 
       {rezervacijaModalOpen && (
-        <div className="users-modal-overlay" onClick={() => setRezervacijaModalOpen(false)}>
+        <div
+          className="users-modal-overlay"
+          onClick={() => setRezervacijaModalOpen(false)}
+        >
           <div className="users-modal" onClick={(e) => e.stopPropagation()}>
             <div className="users-modal-header">
               <h2>Rezervacija termina</h2>
-              <button className="users-modal-close" onClick={() => setRezervacijaModalOpen(false)}>x</button>
+              <button
+                className="users-modal-close"
+                onClick={() => setRezervacijaModalOpen(false)}
+              >
+                x
+              </button>
             </div>
             <form onSubmit={handleRezervisi}>
               <div className="form-group">
-                <label>Limit osoba (Maksimalno: {rezervacijaForm.maxKapacitet})</label>
+                <label>
+                  Limit osoba (Maksimalno: {rezervacijaForm.maxKapacitet})
+                </label>
                 <input
                   type="number"
                   value={rezervacijaForm.limitOsoba}
-                  onChange={(e) => setRezervacijaForm({ ...rezervacijaForm, limitOsoba: Number(e.target.value) })}
+                  onChange={(e) =>
+                    setRezervacijaForm({
+                      ...rezervacijaForm,
+                      limitOsoba: Number(e.target.value),
+                    })
+                  }
                   min="1"
                   max={rezervacijaForm.maxKapacitet}
                   required
                 />
                 {rezervacijaForm.limitOsoba > rezervacijaForm.maxKapacitet && (
-                  <p className="form-error" style={{ fontSize: "12px", marginTop: "4px" }}>
-                    Limit ne može biti veći od kapaciteta kabineta ({rezervacijaForm.maxKapacitet}).
+                  <p
+                    className="form-error"
+                    style={{ fontSize: "12px", marginTop: "4px" }}
+                  >
+                    Limit ne može biti veći od kapaciteta kabineta (
+                    {rezervacijaForm.maxKapacitet}).
                   </p>
                 )}
               </div>
               <div className="form-group" style={{ margin: "15px 0" }}>
-                <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer", fontWeight: "500" }}>
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    cursor: "pointer",
+                    fontWeight: "500",
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={rezervacijaForm.vidljivoStudentima}
-                    onChange={(e) => setRezervacijaForm({ ...rezervacijaForm, vidljivoStudentima: e.target.checked })}
+                    onChange={(e) =>
+                      setRezervacijaForm({
+                        ...rezervacijaForm,
+                        vidljivoStudentima: e.target.checked,
+                      })
+                    }
                     style={{ width: "20px", height: "20px", margin: 0 }}
                   />
                   <span>Vidljivo studentima</span>
@@ -731,7 +792,11 @@ function Termini() {
                 <button className="button" type="submit" disabled={saving}>
                   {saving ? "Slanje..." : "Potvrdi rezervaciju"}
                 </button>
-                <button className="button sekundarno" type="button" onClick={() => setRezervacijaModalOpen(false)}>
+                <button
+                  className="button sekundarno"
+                  type="button"
+                  onClick={() => setRezervacijaModalOpen(false)}
+                >
                   Odustani
                 </button>
               </div>
@@ -746,8 +811,8 @@ function Termini() {
           <div className="modal-content" style={{ maxWidth: "500px" }}>
             <div className="modal-header">
               <h2>Oprema u kabinetu: {selectedCabinetName}</h2>
-              <button 
-                className="close-button" 
+              <button
+                className="close-button"
                 onClick={() => setEquipmentModalOpen(false)}
               >
                 &times;
@@ -761,18 +826,22 @@ function Termini() {
                   <thead>
                     <tr>
                       <th>Naziv</th>
+                      <th>Tip opreme</th>
                       <th>Serijski broj</th>
                       <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {selectedCabinetEquipment.map(o => (
+                    {selectedCabinetEquipment.map((o) => (
                       <tr key={o.id}>
                         <td>{o.naziv}</td>
+                        <td>{o.kategorija || "N/A"}</td>
                         <td>{o.serijskiBroj}</td>
                         <td>
-                          <span className={`badge ${o.stanje === 1 ? 'zeleno' : 'crveno'}`}>
-                            {o.stanje === 1 ? 'U funkciji' : 'Kvar'}
+                          <span
+                            className={`badge ${o.stanje === 1 ? "zeleno" : "crveno"}`}
+                          >
+                            {o.stanje === 1 ? "U funkciji" : "Kvar"}
                           </span>
                         </td>
                       </tr>
@@ -784,8 +853,8 @@ function Termini() {
               )}
             </div>
             <div className="modal-footer">
-              <button 
-                className="button secondary" 
+              <button
+                className="button secondary"
                 onClick={() => setEquipmentModalOpen(false)}
               >
                 Zatvori

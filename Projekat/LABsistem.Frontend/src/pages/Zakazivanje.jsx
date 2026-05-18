@@ -20,7 +20,9 @@ function Zakazivanje() {
     try {
       const response = await api.get("/Rezervacija/dostupni-studentima");
       const filtered = response.data.filter((t) => {
-        const terminEnd = new Date(`${t.datum.split("T")[0]}T${t.vrijemeKraja}`);
+        const terminEnd = new Date(
+          `${t.datum.split("T")[0]}T${t.vrijemeKraja}`,
+        );
         return terminEnd > new Date();
       });
       setTermini(filtered);
@@ -32,21 +34,24 @@ function Zakazivanje() {
   }
 
   async function posaljiZahtjev(id) {
-  // Odmah ažuriraj UI optimistički
-  setTermini(prev => prev.map(t =>
-    t.id === id ? { ...t, statusPrijave: "NaCekanju" } : t
-  ));
-  try {
-    await api.post(`/Rezervacija/zahtjev/${id}`);
-    setMessage({ type: "success", text: "Zahtjev uspjesno poslan." });
-  } catch (error) {
-    // Vrati na staro ako faila
-    setTermini(prev => prev.map(t =>
-      t.id === id ? { ...t, statusPrijave: null } : t
-    ));
-    setMessage({ type: "error", text: error.response?.data || "Greska pri slanju zahtjeva." });
+    // Odmah ažuriraj UI optimistički
+    setTermini((prev) =>
+      prev.map((t) => (t.id === id ? { ...t, statusPrijave: "NaCekanju" } : t)),
+    );
+    try {
+      await api.post(`/Rezervacija/zahtjev/${id}`);
+      setMessage({ type: "success", text: "Zahtjev uspjesno poslan." });
+    } catch (error) {
+      // Vrati na staro ako faila
+      setTermini((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, statusPrijave: null } : t)),
+      );
+      setMessage({
+        type: "error",
+        text: error.response?.data || "Greska pri slanju zahtjeva.",
+      });
+    }
   }
-}
 
   async function loadEquipment(kabinetId, kabinetNaziv) {
     setLoadingEquipment(true);
@@ -71,7 +76,9 @@ function Zakazivanje() {
 
       <div className="card">
         {message.text && (
-          <p className={message.type === "error" ? "form-error" : "form-success"}>
+          <p
+            className={message.type === "error" ? "form-error" : "form-success"}
+          >
             {message.text}
           </p>
         )}
@@ -91,26 +98,40 @@ function Zakazivanje() {
         ) : termini.length > 0 ? (
           <div className="users-list">
             {termini
-              .filter(t => t.statusPrijave !== "Odobren") // Ako je odobren, on je u "Moje rezervacije"
+              .filter((t) => t.statusPrijave !== "Odobren") // Ako je odobren, on je u "Moje rezervacije"
               .map((t) => (
                 <div className="termini-list-row users-list-item" key={t.id}>
-                  <span style={{ fontWeight: 700 }}>{new Date(t.datum).toLocaleDateString("de-DE")}</span>
+                  <span style={{ fontWeight: 700 }}>
+                    {new Date(t.datum).toLocaleDateString("de-DE")}
+                  </span>
                   <span>
                     <span className="badge plavo">
-                      {t.vrijemePocetka.slice(0, 5)} - {t.vrijemeKraja.slice(0, 5)}
+                      {t.vrijemePocetka.slice(0, 5)} -{" "}
+                      {t.vrijemeKraja.slice(0, 5)}
                     </span>
                   </span>
                   <span>
-                    <button 
-                      className="text-button" 
+                    <button
+                      className="text-button"
                       onClick={() => loadEquipment(t.kabinetID, t.kabinetNaziv)}
-                      style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', padding: 0, fontSize: 'inherit', fontWeight: 'inherit', textDecoration: 'underline' }}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "#2563eb",
+                        cursor: "pointer",
+                        padding: 0,
+                        fontSize: "inherit",
+                        fontWeight: "inherit",
+                        textDecoration: "underline",
+                      }}
                     >
                       {t.kabinetNaziv}
                     </button>
                   </span>
                   <span>{t.profesorIme}</span>
-                  <span>{t.brojOdobrenih} / {t.limitOsoba || "∞"}</span>
+                  <span>
+                    {t.brojOdobrenih} / {t.limitOsoba || "∞"}
+                  </span>
                   <span>
                     <span className="badge sivo">Javno</span>
                   </span>
@@ -120,7 +141,10 @@ function Zakazivanje() {
                     ) : t.statusPrijave === "Odbijen" ? (
                       <span className="badge crveno">Odbijeno</span>
                     ) : (
-                      <button className="button" onClick={() => posaljiZahtjev(t.id)}>
+                      <button
+                        className="button"
+                        onClick={() => posaljiZahtjev(t.id)}
+                      >
                         Pošalji zahtjev
                       </button>
                     )}
@@ -129,7 +153,9 @@ function Zakazivanje() {
               ))}
           </div>
         ) : (
-          <div className="users-empty-state">Trenutno nema dostupnih termina za prijavu.</div>
+          <div className="users-empty-state">
+            Trenutno nema dostupnih termina za prijavu.
+          </div>
         )}
       </div>
 
@@ -139,8 +165,8 @@ function Zakazivanje() {
           <div className="modal-content" style={{ maxWidth: "500px" }}>
             <div className="modal-header">
               <h2>Oprema u kabinetu: {selectedCabinetName}</h2>
-              <button 
-                className="close-button" 
+              <button
+                className="close-button"
                 onClick={() => setEquipmentModalOpen(false)}
               >
                 &times;
@@ -154,18 +180,22 @@ function Zakazivanje() {
                   <thead>
                     <tr>
                       <th>Naziv</th>
+                      <th>Tip opreme</th>
                       <th>Serijski broj</th>
                       <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {selectedCabinetEquipment.map(o => (
+                    {selectedCabinetEquipment.map((o) => (
                       <tr key={o.id}>
                         <td>{o.naziv}</td>
+                        <td>{o.kategorija || "N/A"}</td>
                         <td>{o.serijskiBroj}</td>
                         <td>
-                          <span className={`badge ${o.stanje === 1 ? 'zeleno' : 'crveno'}`}>
-                            {o.stanje === 1 ? 'U funkciji' : 'Kvar'}
+                          <span
+                            className={`badge ${o.stanje === 1 ? "zeleno" : "crveno"}`}
+                          >
+                            {o.stanje === 1 ? "U funkciji" : "Kvar"}
                           </span>
                         </td>
                       </tr>
@@ -177,8 +207,8 @@ function Zakazivanje() {
               )}
             </div>
             <div className="modal-footer">
-              <button 
-                className="button secondary" 
+              <button
+                className="button secondary"
                 onClick={() => setEquipmentModalOpen(false)}
               >
                 Zatvori
