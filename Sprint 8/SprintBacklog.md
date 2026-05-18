@@ -14,6 +14,33 @@
 # Detaljni User Stories (US)
 
 ---
+### US11 – Kreiranje rezervacije
+
+*Kao student, želim rezervisati termin i opremu, kako bih mogao koristiti laboratorijske resurse.*
+
+**Acceptance Criteria:**
+
+* Prikazuju se samo slobodni termini i dostupna oprema.
+* Sistem sprječava rezervacije u prošlosti.
+* Sistem sprječava preklapanje rezervacija.
+* Zahtjev se šalje na odobrenje.
+
+---
+
+
+
+### US15 – Odobravanje zahtjeva
+
+*Kao profesor ili asistent, želim odobriti ili odbiti rezervacijske zahtjeve.*
+
+**Acceptance Criteria:**
+
+* Prikazana je lista pending zahtjeva.
+* Dostupne su opcije Approve i Reject.
+* Moguće je ostaviti komentar.
+* Status se ažurira u realnom vremenu.
+
+---
 
 ### US26 – Sprječavanje preklapanja termina
 
@@ -40,3 +67,4 @@
 * Profesor dobija obavijest o novim zahtjevima.
 
 ---
+
