@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using LABsistem.Api.Validators;
 using LABsistem.Dal.Db;
@@ -164,6 +165,74 @@ namespace LABsistem.Tests.Unit
             var ex = await Assert.ThrowsAsync<Exception>(() => validator.ValidateOdgovor(6, 5, true));
 
             Assert.Equal("Termin je popunjen.", ex.Message);
+        }
+
+        [Fact]
+        public async Task ValidateZahtjev_ThrowsException_WhenOpremaAlreadyReservedInOverlappingTermin()
+        {
+            using var context = GetInMemoryDbContext();
+
+            var oprema = new Oprema
+            {
+                ID = 1,
+                Naziv = "Test oprema",
+                Kategorija = "Test",
+                SerijskiBroj = 1,
+                stanje = StatusOpreme.Ispravno,
+                KabinetID = 1,
+                KreatorID = 1
+            };
+
+            var terminPostojeci = new Termin
+            {
+                ID = 10,
+                KreatorID = 1,
+                Datum = DateTime.Today.AddDays(3),
+                VrijemePocetka = new TimeSpan(9, 0, 0),
+                VrijemeKraja = new TimeSpan(10, 0, 0),
+                StatusTermina = StatusTermina.Rezervisan,
+                VidljivoStudentima = true
+            };
+
+            var terminNovi = new Termin
+            {
+                ID = 11,
+                KreatorID = 1,
+                Datum = terminPostojeci.Datum,
+                VrijemePocetka = new TimeSpan(9, 30, 0),
+                VrijemeKraja = new TimeSpan(10, 30, 0),
+                StatusTermina = StatusTermina.Rezervisan,
+                VidljivoStudentima = true
+            };
+
+            var odobreniZahtjev = new Zahtjev
+            {
+                ID = 20,
+                StudentID = 100,
+                TerminID = terminPostojeci.ID,
+                StatusZahtjeva = StatusZahtjeva.Odobren,
+                Komentar = string.Empty
+            };
+
+            var zahtjevOprema = new ZahtjevOprema
+            {
+                ID = 30,
+                ZahtjevID = odobreniZahtjev.ID,
+                OpremaID = oprema.ID
+            };
+
+            context.Oprema.Add(oprema);
+            context.Termini.AddRange(terminPostojeci, terminNovi);
+            context.Zahtjevi.Add(odobreniZahtjev);
+            context.ZahtjevOprema.Add(zahtjevOprema);
+            await context.SaveChangesAsync();
+
+            var validator = new RezervacijaValidator(context);
+
+            var ex = await Assert.ThrowsAsync<Exception>(() =>
+                validator.ValidateZahtjev(200, terminNovi.ID, new List<int> { oprema.ID }));
+
+            Assert.Contains("Oprema 'Test oprema' je već zauzeta", ex.Message);
         }
     }
 }
