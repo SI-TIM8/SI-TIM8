@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using LABsistem.Dal.Db;
 using LabSistem.Domain.Enums;
 using LABsistem.Domain.Enums;
+using LABsistem.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace LABsistem.Api.Validators
@@ -12,7 +13,7 @@ namespace LABsistem.Api.Validators
     {
         Task ValidateRezervacija(int terminId, int profesorId, int limitOsoba);
         Task ValidateOtkazivanje(int terminId, int profesorId);
-        Task ValidateZahtjev(int studentId, int terminId);
+        Task ValidateZahtjev(int studentId, int terminId, List<int>? opremaIds = null);
         Task ValidateOdgovor(int zahtjevId, int profesorId, bool odobri);
     }
 
@@ -41,7 +42,7 @@ namespace LABsistem.Api.Validators
                 throw new Exception($"Limit osoba ({limitOsoba}) ne može biti veći od kapaciteta kabineta ({termin.Kabinet.Kapacitet}).");
 
             if (termin.StatusTermina != StatusTermina.Slobodan)
-                throw new Exception("Termin je već rezervisan.");
+                throw new Exception("Termin je u međuvremenu zauzet.");
 
             var profesorKonflikt = await _context.Termini.AnyAsync(t =>
                 t.ProfesorID == profesorId &&
@@ -73,7 +74,7 @@ namespace LABsistem.Api.Validators
                 throw new Exception("Termin se može otkazati najkasnije 24h ranije.");
         }
 
-        public async Task ValidateZahtjev(int studentId, int terminId)
+        public async Task ValidateZahtjev(int studentId, int terminId, List<int>? opremaIds = null)
         {
             var termin = await _context.Termini.FirstOrDefaultAsync(t => t.ID == terminId);
 
@@ -115,6 +116,11 @@ namespace LABsistem.Api.Validators
 
             if (konflikt)
                 throw new Exception("Student već ima drugi termin u ovom vremenu.");
+
+            if (opremaIds != null && opremaIds.Count > 0)
+            {
+                await ValidateOpremaKonflikt(termin, opremaIds, null);
+            }
         }
 
         public async Task ValidateOdgovor(int zahtjevId, int profesorId, bool odobri)
@@ -154,6 +160,39 @@ namespace LABsistem.Api.Validators
 
                 if (konflikt)
                     throw new Exception("Student već ima drugi termin u ovom vremenu.");
+
+                var opremaIds = await _context.ZahtjevOprema
+                    .Where(zo => zo.ZahtjevID == zahtjevId)
+                    .Select(zo => zo.OpremaID)
+                    .ToListAsync();
+
+                if (opremaIds.Count > 0)
+                {
+                    await ValidateOpremaKonflikt(zahtjev.Termin, opremaIds, zahtjevId);
+                }
+            }
+        }
+
+        private async Task ValidateOpremaKonflikt(LABsistem.Domain.Entities.Termin termin, List<int> opremaIds, int? excludeZahtjevId)
+        {
+            var opremaKonflikti = await _context.ZahtjevOprema
+                .Include(zo => zo.Zahtjev)
+                    .ThenInclude(z => z.Termin)
+                .Where(zo =>
+                    zo.Zahtjev.StatusZahtjeva == StatusZahtjeva.Odobren &&
+                    (excludeZahtjevId == null || zo.ZahtjevID != excludeZahtjevId) &&
+                    opremaIds.Contains(zo.OpremaID) &&
+                    zo.Zahtjev.Termin.Datum == termin.Datum &&
+                    zo.Zahtjev.Termin.VrijemePocetka < termin.VrijemeKraja &&
+                    termin.VrijemePocetka < zo.Zahtjev.Termin.VrijemeKraja
+                )
+                .ToListAsync();
+
+            if (opremaKonflikti.Any())
+            {
+                var opremaId = opremaKonflikti.First().OpremaID;
+                var oprema = await _context.Oprema.FindAsync(opremaId);
+                throw new Exception($"Oprema '{oprema?.Naziv}' je već zauzeta u ovom vremenu.");
             }
         }
     }

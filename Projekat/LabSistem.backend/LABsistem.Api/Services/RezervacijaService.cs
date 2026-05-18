@@ -62,9 +62,9 @@ namespace LABsistem.Api.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task PosaljiZahtjev(int studentId, int terminId)
+        public async Task PosaljiZahtjev(int studentId, int terminId, List<int>? opremaIds = null)
         {
-            await _validator.ValidateZahtjev(studentId, terminId);
+            await _validator.ValidateZahtjev(studentId, terminId, opremaIds);
 
             var zahtjev = new Zahtjev
             {
@@ -76,6 +76,18 @@ namespace LABsistem.Api.Services
 
             await _context.Zahtjevi.AddAsync(zahtjev);
             await _context.SaveChangesAsync();
+
+            if (opremaIds != null && opremaIds.Count > 0)
+            {
+                var zahtjevOpremaList = opremaIds.Select(opremaId => new ZahtjevOprema
+                {
+                    ZahtjevID = zahtjev.ID,
+                    OpremaID = opremaId
+                }).ToList();
+
+                await _context.ZahtjevOprema.AddRangeAsync(zahtjevOpremaList);
+                await _context.SaveChangesAsync();
+            }
         }
 
         public async Task<OdgovorNaZahtjevDTO> OdgovoriNaZahtjev(int profesorId, int zahtjevId, bool odobri)

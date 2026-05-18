@@ -11,7 +11,7 @@ namespace LABsistem.Api.Services
 
         Task OtkaziTermin(int profesorId, int terminId);
 
-        Task PosaljiZahtjev(int studentId, int terminId);
+        Task PosaljiZahtjev(int studentId, int terminId, List<int>? opremaIds = null);
 
         Task<IEnumerable<TerminDTO>> GetSlobodniTerminiAsync();
         

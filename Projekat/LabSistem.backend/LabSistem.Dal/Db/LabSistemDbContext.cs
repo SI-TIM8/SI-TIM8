@@ -36,6 +36,7 @@ namespace LABsistem.Dal.Db
         public DbSet<KorisnikObjekat> KorisnikObjekti { get; set; }
         public DbSet<OpremaRecenzija> OpremaRecenzije { get; set; }
         public DbSet<HistorijaTermin> HistorijaTermini { get; set; }
+        public DbSet<ZahtjevOprema> ZahtjevOprema { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -126,6 +127,22 @@ namespace LABsistem.Dal.Db
                 .WithMany(k => k.Obavijesti)
                 .HasForeignKey(o => o.KorisnikID)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ZahtjevOprema>()
+                .HasOne(zo => zo.Zahtjev)
+                .WithMany(z => z.OdabranaOprema)
+                .HasForeignKey(zo => zo.ZahtjevID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ZahtjevOprema>()
+                .HasOne(zo => zo.Oprema)
+                .WithMany(o => o.Zahtjevi)
+                .HasForeignKey(zo => zo.OpremaID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ZahtjevOprema>()
+                .HasIndex(zo => new { zo.ZahtjevID, zo.OpremaID })
+                .IsUnique();
         }
     }
 }

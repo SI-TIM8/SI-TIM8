@@ -32,5 +32,8 @@ namespace LABsistem.Domain.Entities
         public Termin Termin { get; set; }
 
         public StatusZahtjeva StatusZahtjeva { get; set; }
+
+        // Many-to-Many veža sa Opremom kroz ZahtjevOprema
+        public ICollection<ZahtjevOprema> OdabranaOprema { get; set; } = new List<ZahtjevOprema>();
     }
 }

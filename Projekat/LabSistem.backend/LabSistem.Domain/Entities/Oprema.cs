@@ -24,5 +24,8 @@ namespace LABsistem.Domain.Entities
         public int KabinetID { get; set; } 
 
         public ICollection<Evidencija> Evidencije { get; set; }
+
+        // Many-to-Many veža sa Zahtjevom kroz ZahtjevOprema
+        public ICollection<ZahtjevOprema> Zahtjevi { get; set; } = new List<ZahtjevOprema>();
     }
 }

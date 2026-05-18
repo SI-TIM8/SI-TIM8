@@ -3,6 +3,7 @@ using System;
 using LABsistem.Dal.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace LabSistem.Dal.Migrations
 {
     [DbContext(typeof(LabSistemDbContext))]
-    partial class LabSistemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260517225949_AddZahtjevOpremaEquipmentConflictValidation")]
+    partial class AddZahtjevOpremaEquipmentConflictValidation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,25 +203,18 @@ namespace LabSistem.Dal.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
-                    b.Property<DateTime>("DatumKreiranja")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<bool>("Dostupnost")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("KorisnikID")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Novosti")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
-                    b.Property<int?>("TerminID")
+                    b.Property<int>("TerminID")
                         .HasColumnType("integer");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("KorisnikID");
 
                     b.HasIndex("TerminID");
 
@@ -258,11 +254,6 @@ namespace LabSistem.Dal.Migrations
 
                     b.Property<int>("KabinetID")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Kategorija")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("character varying(40)");
 
                     b.Property<int>("KreatorID")
                         .HasColumnType("integer");
@@ -306,41 +297,6 @@ namespace LabSistem.Dal.Migrations
                     b.HasIndex("RecenzijaID");
 
                     b.ToTable("OpremaRecenzije");
-                });
-
-            modelBuilder.Entity("LABsistem.Domain.Entities.PasswordResetToken", b =>
-                {
-                    b.Property<int>("PasswordResetTokenID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PasswordResetTokenID"));
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("ExpiresAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("KorisnikID")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("TokenHash")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)");
-
-                    b.Property<DateTime?>("UsedAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("PasswordResetTokenID");
-
-                    b.HasIndex("KorisnikID");
-
-                    b.HasIndex("TokenHash")
-                        .IsUnique();
-
-                    b.ToTable("PasswordResetTokens");
                 });
 
             modelBuilder.Entity("LABsistem.Domain.Entities.Recenzija", b =>
@@ -601,17 +557,11 @@ namespace LabSistem.Dal.Migrations
 
             modelBuilder.Entity("LABsistem.Domain.Entities.Obavijest", b =>
                 {
-                    b.HasOne("LABsistem.Domain.Entities.Korisnik", "Korisnik")
-                        .WithMany("Obavijesti")
-                        .HasForeignKey("KorisnikID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("LABsistem.Domain.Entities.Termin", "Termin")
                         .WithMany()
-                        .HasForeignKey("TerminID");
-
-                    b.Navigation("Korisnik");
+                        .HasForeignKey("TerminID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Termin");
                 });
@@ -642,17 +592,6 @@ namespace LabSistem.Dal.Migrations
                     b.Navigation("Oprema");
 
                     b.Navigation("Recenzija");
-                });
-
-            modelBuilder.Entity("LABsistem.Domain.Entities.PasswordResetToken", b =>
-                {
-                    b.HasOne("LABsistem.Domain.Entities.Korisnik", "Korisnik")
-                        .WithMany("PasswordResetTokens")
-                        .HasForeignKey("KorisnikID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Korisnik");
                 });
 
             modelBuilder.Entity("LABsistem.Domain.Entities.RefreshToken", b =>
@@ -748,10 +687,6 @@ namespace LabSistem.Dal.Migrations
                     b.Navigation("KreiraniTermini");
 
                     b.Navigation("MojiZahtjevi");
-
-                    b.Navigation("Obavijesti");
-
-                    b.Navigation("PasswordResetTokens");
 
                     b.Navigation("RefreshTokens");
 

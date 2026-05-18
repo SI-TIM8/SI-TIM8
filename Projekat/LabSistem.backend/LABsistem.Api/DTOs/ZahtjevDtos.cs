@@ -15,4 +15,9 @@ namespace LABsistem.Application.DTOs
         public string StatusZahtjeva { get; set; }
         public DateTime KreiranoU { get; set; }
     }
+
+    public class PosaljiZahtjevDTO
+    {
+        public List<int>? OpremaIds { get; set; }
+    }
 }

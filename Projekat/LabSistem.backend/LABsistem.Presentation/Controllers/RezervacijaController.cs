@@ -63,14 +63,14 @@ namespace LABsistem.Presentation.Controllers
 
         [HttpPost("zahtjev/{id}")]
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> PosaljiZahtjev(int id)
+        public async Task<IActionResult> PosaljiZahtjev(int id, [FromBody] PosaljiZahtjevDTO? dto = null)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
             var studentId = int.Parse(userId);
             try
             {
-                await _service.PosaljiZahtjev(studentId, id);
+                await _service.PosaljiZahtjev(studentId, id, dto?.OpremaIds);
                 return Ok(new { message = "Zahtjev uspjesno poslan." });
             }
             catch (Exception ex)
