@@ -185,7 +185,7 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 | M1 | Forma za prijavu kvara – frontend (US09/US28) |
 | M2 | Dodavanje općenitih obavještenja za sve korisnike |
 | M3-M4 | Ograničenje broja rezervacija po studentu (US16)|
-| M5 | Sistemsko E2E testiranje: kvar → otkazivanje → notifikacija |
+| M5 | E2E testiranje- ostatak sistema|
 | M6 |Load testiranje – 50 concurrent korisnika (NFR-13); ACID i backup provjera (NFR-17, NFR-19) |
 | M7-M8 | Regresijsko testiranje svih funkcionalnosti do kraja S9 |
 
