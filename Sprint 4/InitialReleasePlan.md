@@ -141,7 +141,7 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
 |----|-------------|------|-----|-----------|-----------|--------|
-| US26 | Automatska validacija konflikta termina i opreme | Sistem provjerava bazu podataka u milisekundama prije potvrde rezervacije; poruka "Termin je u međuvremenu zauzet" | Technical Task | 5 | High | To Do |
+| US33 | Oporavak lozinke putem emaila | Korisnik resetuje zaboravljenu lozinku putem unikatnog privremenog linka poslanog na email | Feature | 3 | Medium | To Do |
 | US27 | In-app notifikacija o zahtjevu | Student prima email ili in-app notifikaciju o odobrenju/odbijanju, uključujući komentar profesora/asistenta; Profesor prima notifikacije o pristiglom zahtjevu.| Feature | 3 | Medium | To Do |
 | US37 | Automatska promjena statusa opreme po rezervaciji | Sistem automatski označava opremu kao zauzetu tokom potvrđene rezervacije i oslobađa je po završetku termina | Technical Task | 2 | Medium | To Do |
 
@@ -149,8 +149,8 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 
 | Član | Oblast odgovornosti |
 |------|---------------------|
-| M1-M2 | Automatska validacija konflikta termina i opreme |
-| M3-M4 | In-app notifikacija o zahtjevu (US27) |
+| M1-M2 |  Oporavak lozinke putem emaila (US33) |
+| M3-M4 | In-app notifikacija i email notifikacija o zahtjevu (US27) |
 | M5-M6 | Uvođenje novih tipova opreme |
 | M7-M8 | E2E testiranje cijelog rezervacijskog toka |
 
@@ -195,29 +195,58 @@ Sistem je podijeljen na 5 releasea koji odgovaraju logičkim skupinama funkciona
 
 #### Sprint 10 | TBD
 
-**Cilj sprinta:** Oporavak lozinke, audit log, finalno testiranje i demo priprema 
+**Cilj sprinta:** Rješavanje problema kvarova, ocjenjivanje studenata
 **Kapacitet tima:** ~85%
 
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
 |----|-------------|------|-----|-----------|-----------|--------|
-| US33 | Oporavak lozinke putem emaila | Korisnik resetuje zaboravljenu lozinku putem unikatnog privremenog linka poslanog na email | Feature | 3 | Medium | To Do |
+| US44 | Rješavanje kvarova opreme  | Nakon forme za kvar opreme koja je poslata od strane profesora/asistenta, tehničar riješava  problem, dolazi mu na mail obavijest o kvaru, i stavlja je u to do sekciju| 2 | Low | To Do |
 | US34 | Evidentiranje aktivnosti prijava (audit log) | Sistem bilježi korisničko ime i timestamp svake uspješne i neuspješne prijave; administrator može pregledati listu zapisa | Feature | 2 | Low | To Do |
-| – | Sigurnosno testiranje | RBAC matrica svih uloga; zaštita od SQL injection; enkripcija JMBG; provjera hash algoritma lozinki | Testing | 3 | High | To Do |
-| – | UI, cross-browser i lokalizacijsko testiranje | Provjera responzivnosti (360px–1920px); testiranje na Chrome, Firefox, Safari; BHS lokalizacija svih tekstova | Testing | 3 | High | To Do |
-| – | UAT i finalna demo priprema | Testiranje prihvatljivosti s Product Ownerom; priprema demo verzije | Testing | 4 | High | To Do |
-
+| US45| Nakon obavijesti da je došlo do kvara opreme, u sekciji to do se riješava problem | Tehničar  riješava problem u sekciji To-Do, tako što isključuje datu opremu iz sistema privremeno ili odmah je popravi | Feature | 3 | Medium | To Do |
+| US29 | Ocjena studentima | Profesor  daje ocjene studentima, može ih brisati dodavati ili uređivati| Feature | 2 | Medium | To Do |
 
 **Podjela rada po članovima tima:**
 
 | Član | Oblast odgovornosti |
 |------|---------------------|
-| M1 | Oporavak lozinke putem emaila (US33) |
-| M2 | Audit log prijava (US34) |
+| M1 | Prosljeđivanje problema u ( To-Do)|
+| M2 | Rješavanje problema |
+| M3 | Ocjenjivanje studenata |
+| M4 |Unit testiranje |
+
+---
+
+#### Sprint 11 | TBD
+
+**Cilj sprinta:** Recenzije na opremu i finalni demo
+**Kapacitet tima:** ~65%
+
+| ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
+|----|-------------|------|-----|-----------|-----------|--------|
+
+| US41 | Recenzije na opremu | Profesori i tehničari daju recenyije u vidu komentara na opremu| Feature | 1 | Low | To Do |
+
+**Podjela rada po članovima tima:**
+
+| Član | Oblast odgovornosti |
+|------|---------------------|
+| M5 | Recenzije na opremu |
+| M6 |Unit testiranje |
+
+
+> **Sažetak sprinta:** Sprint 11 donosi  riješavanje problema kvarova, ocjenjivanje studenata i recenyije na opremu. 
+
+
+---
+**Podjela rada po članovima tima:**
+
+| Član | Oblast odgovornosti |
+|------|---------------------|
+| M1 | Rješavanje problema kvara (US44) |
  M3 - M4 | Sigurnosno testiranje: RBAC matrica, SQL injection, NFR-07, NFR-08 |
 | M5 | UI testiranje: responzivnost, kalendar color-coding, max 4 klika (NFR-01, NFR-04) |
 | M6 | Cross-browser testiranje: Chrome v110+, Firefox v105+, Safari v15+ (NFR-10) |
 | M7 | Lokalizacijska provjera – svi BHS tekstovi (NFR-18); regresijski finalni prolaz |
-| M8 | UAT koordinacija + finalna demo priprema |
 
 > **Sažetak releasea i projekta:** Sprint 10 zatvara sistem. Oporavak lozinke i audit log upotpunjuju funkcionalni skup. Slobodan kapacitet tima u cijelosti je posvećen finalnom testiranju: sigurnosna provjera svih uloga i enkripcije, cross-browser i lokalizacijska validacija, te UAT s krajnjim korisnicima. Demo verzija sistema je isporučena i prezentabilna po završetku sprinta.
 
