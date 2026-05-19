@@ -11,7 +11,8 @@
 
 
 
-**Cilj sprinta:** Validacija konfliktnih rezervacija i workflow odobravanja  
+
+## **Cilj sprinta:** Validacija konfliktnih rezervacija i workflow odobravanja  
 
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
 |----|-------------|------|-----|-----------|-----------|--------|
@@ -59,7 +60,7 @@
 
 
 
-### US27 – Obavještenje o odobrenju ili odbijanju zahtjeva
+### US28 – Obavještenje o odobrenju ili odbijanju zahtjeva
 
 *Kao student, želim primiti notifikaciju o statusu zahtjeva, kako bih znao da li je rezervacija prihvaćena.*
 
