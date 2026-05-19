@@ -165,5 +165,151 @@ namespace LABsistem.Tests.Unit
 
             Assert.Equal("Termin je popunjen.", ex.Message);
         }
+
+        [Fact]
+        public async Task ValidateZahtjev_ThrowsException_WhenMaxActiveRequestsReached()
+        {
+            using var context = GetInMemoryDbContext();
+            var studentId = 20;
+
+            var termin = new Termin
+            {
+                ID = 10,
+                KreatorID = 1,
+                Datum = DateTime.Today.AddDays(10),
+                VrijemePocetka = new TimeSpan(9, 0, 0),
+                VrijemeKraja = new TimeSpan(10, 0, 0),
+                StatusTermina = StatusTermina.Rezervisan,
+                VidljivoStudentima = true,
+                LimitOsoba = 10
+            };
+            context.Termini.Add(termin);
+
+            for (var i = 0; i < RezervacijaValidator.MaxAktivnihZahtjevaPoStudentu; i++)
+            {
+                var activeTermin = new Termin
+                {
+                    ID = 100 + i,
+                    KreatorID = 1,
+                    Datum = DateTime.Today.AddDays(20 + i),
+                    VrijemePocetka = new TimeSpan(8, 0, 0),
+                    VrijemeKraja = new TimeSpan(9, 0, 0),
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true
+                };
+                context.Termini.Add(activeTermin);
+                context.Zahtjevi.Add(new Zahtjev
+                {
+                    StudentID = studentId,
+                    TerminID = activeTermin.ID,
+                    StatusZahtjeva = i % 2 == 0 ? StatusZahtjeva.NaCekanju : StatusZahtjeva.Odobren,
+                    Komentar = string.Empty
+                });
+            }
+
+            await context.SaveChangesAsync();
+
+            var validator = new RezervacijaValidator(context);
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => validator.ValidateZahtjev(studentId, termin.ID));
+
+            Assert.Contains("Dostignut je maksimalan broj aktivnih zahtjeva", ex.Message);
+        }
+
+        [Fact]
+        public async Task ValidateZahtjev_Succeeds_WhenActiveRequestsBelowLimit()
+        {
+            using var context = GetInMemoryDbContext();
+            var studentId = 21;
+
+            var termin = new Termin
+            {
+                ID = 11,
+                KreatorID = 1,
+                Datum = DateTime.Today.AddDays(11),
+                VrijemePocetka = new TimeSpan(10, 0, 0),
+                VrijemeKraja = new TimeSpan(11, 0, 0),
+                StatusTermina = StatusTermina.Rezervisan,
+                VidljivoStudentima = true,
+                LimitOsoba = 10
+            };
+            context.Termini.Add(termin);
+
+            for (var i = 0; i < RezervacijaValidator.MaxAktivnihZahtjevaPoStudentu - 1; i++)
+            {
+                var activeTermin = new Termin
+                {
+                    ID = 200 + i,
+                    KreatorID = 1,
+                    Datum = DateTime.Today.AddDays(30 + i),
+                    VrijemePocetka = new TimeSpan(8, 0, 0),
+                    VrijemeKraja = new TimeSpan(9, 0, 0),
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true
+                };
+                context.Termini.Add(activeTermin);
+                context.Zahtjevi.Add(new Zahtjev
+                {
+                    StudentID = studentId,
+                    TerminID = activeTermin.ID,
+                    StatusZahtjeva = StatusZahtjeva.NaCekanju,
+                    Komentar = string.Empty
+                });
+            }
+
+            await context.SaveChangesAsync();
+
+            var validator = new RezervacijaValidator(context);
+
+            await validator.ValidateZahtjev(studentId, termin.ID);
+        }
+
+        [Fact]
+        public async Task ValidateZahtjev_DoesNotCountCancelledOrRejectedRequests()
+        {
+            using var context = GetInMemoryDbContext();
+            var studentId = 22;
+
+            var termin = new Termin
+            {
+                ID = 12,
+                KreatorID = 1,
+                Datum = DateTime.Today.AddDays(12),
+                VrijemePocetka = new TimeSpan(12, 0, 0),
+                VrijemeKraja = new TimeSpan(13, 0, 0),
+                StatusTermina = StatusTermina.Rezervisan,
+                VidljivoStudentima = true,
+                LimitOsoba = 10
+            };
+            context.Termini.Add(termin);
+
+            for (var i = 0; i < RezervacijaValidator.MaxAktivnihZahtjevaPoStudentu; i++)
+            {
+                var inactiveTermin = new Termin
+                {
+                    ID = 300 + i,
+                    KreatorID = 1,
+                    Datum = DateTime.Today.AddDays(40 + i),
+                    VrijemePocetka = new TimeSpan(8, 0, 0),
+                    VrijemeKraja = new TimeSpan(9, 0, 0),
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true
+                };
+                context.Termini.Add(inactiveTermin);
+                context.Zahtjevi.Add(new Zahtjev
+                {
+                    StudentID = studentId,
+                    TerminID = inactiveTermin.ID,
+                    StatusZahtjeva = i % 2 == 0 ? StatusZahtjeva.Otkazan : StatusZahtjeva.Odbijen,
+                    Komentar = string.Empty
+                });
+            }
+
+            await context.SaveChangesAsync();
+
+            var validator = new RezervacijaValidator(context);
+
+            await validator.ValidateZahtjev(studentId, termin.ID);
+        }
     }
 }
