@@ -8,7 +8,7 @@ namespace LABsistem.Tests.Integration;
 public class AcidTests
 {
     private readonly HttpClient _client;
-    private readonly string _baseUrl = "http://localhost:3001";
+    private readonly string _baseUrl = "https://labsistem.duckdns.org/";
 
     public AcidTests()
     {
@@ -85,8 +85,8 @@ public class AcidTests
         var client1 = new HttpClient { BaseAddress = new Uri(_baseUrl) };
         var client2 = new HttpClient { BaseAddress = new Uri(_baseUrl) };
 
-        var token1 = await LoginAsync("loadstudent1", "student123");
-        var token2 = await LoginAsync("loadstudent2", "student123");
+        var token1 = await LoginAsync("student1", "student123");
+        var token2 = await LoginAsync("student2", "student123");
 
         client1.DefaultRequestHeaders.Authorization =
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token1);
