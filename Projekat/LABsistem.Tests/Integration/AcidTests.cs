@@ -180,7 +180,7 @@ public class AcidTests
             vrijemePocetka,
             vrijemeKraja,
             kreatorID = 4,
-            kabinetID = 1
+            kabinetID = 4
         });
 
         Assert.True(
