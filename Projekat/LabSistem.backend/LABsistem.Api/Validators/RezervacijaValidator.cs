@@ -18,6 +18,7 @@ namespace LABsistem.Api.Validators
 
     public class RezervacijaValidator : IRezervacijaValidator
     {
+        public const int MaxAktivnihZahtjevaPoStudentu = 5;
         private readonly LabSistemDbContext _context;
 
         public RezervacijaValidator(LabSistemDbContext context)
@@ -94,6 +95,15 @@ namespace LABsistem.Api.Validators
 
             if (postojiPrijava)
                 throw new Exception("Već ste poslali zahtjev za ovaj termin.");
+
+            var brojAktivnihZahtjeva = await _context.Zahtjevi.CountAsync(z =>
+                z.StudentID == studentId &&
+                (z.StatusZahtjeva == StatusZahtjeva.NaCekanju ||
+                 z.StatusZahtjeva == StatusZahtjeva.Odobren)
+            );
+
+            if (brojAktivnihZahtjeva >= MaxAktivnihZahtjevaPoStudentu)
+                throw new Exception($"Dostignut je maksimalan broj aktivnih zahtjeva ({MaxAktivnihZahtjevaPoStudentu}). Otkazite ili čekajte odobrenje postojećih zahtjeva.");
 
             var brojOdobrenih = await _context.Zahtjevi.CountAsync(z =>
                 z.TerminID == terminId &&
