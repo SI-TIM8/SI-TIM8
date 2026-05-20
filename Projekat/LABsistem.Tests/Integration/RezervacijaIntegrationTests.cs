@@ -1,5 +1,6 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using LABsistem.Api.Validators;
 using LABsistem.Application.DTOs;
 using LABsistem.Application.DTOs.Auth;
 using LABsistem.Dal.Db;
@@ -548,6 +549,91 @@ namespace LABsistem.Tests.Integration
 
             Assert.NotNull(zahtjev);
             Assert.Equal(StatusZahtjeva.NaCekanju, zahtjev!.StatusZahtjeva);
+        }
+
+        [Fact]
+        public async Task PosaljiZahtjev_ReturnsBadRequest_WhenMaxActiveRequestsReached()
+        {
+            var tehnicarId = await SeedUserAsync("limit-tech", "limit.tech@test.com", "TehnicarPassword123!", UlogaKorisnika.Tehnicar);
+            var profesorId = await SeedUserAsync("limit-prof", "limit.prof@test.com", "ProfesorPassword123!", UlogaKorisnika.Profesor);
+            var studentId = await SeedUserAsync("limit-student", "limit.student@test.com", "StudentPassword123!", UlogaKorisnika.Student);
+
+            int terminId;
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+
+                var objekat = new Objekat
+                {
+                    Lokacija = "Limit objekat",
+                    RadnoVrijeme = "08-16"
+                };
+                context.Objekti.Add(objekat);
+                await context.SaveChangesAsync();
+
+                var kabinet = new Kabinet
+                {
+                    Naziv = "Limit kabinet",
+                    KorisnikID = profesorId,
+                    ObjekatID = objekat.ID,
+                    Kapacitet = 20
+                };
+                context.Kabineti.Add(kabinet);
+                await context.SaveChangesAsync();
+
+                for (var i = 0; i < RezervacijaValidator.MaxAktivnihZahtjevaPoStudentu; i++)
+                {
+                    var activeTermin = new Termin
+                    {
+                        Datum = DateTime.Today.AddDays(20 + i),
+                        VrijemePocetka = new TimeSpan(8, 0, 0),
+                        VrijemeKraja = new TimeSpan(9, 0, 0),
+                        KreatorID = tehnicarId,
+                        KabinetID = kabinet.ID,
+                        ProfesorID = profesorId,
+                        StatusTermina = StatusTermina.Rezervisan,
+                        VidljivoStudentima = true,
+                        LimitOsoba = 10
+                    };
+                    context.Termini.Add(activeTermin);
+                    await context.SaveChangesAsync();
+
+                    context.Zahtjevi.Add(new Zahtjev
+                    {
+                        StudentID = studentId,
+                        TerminID = activeTermin.ID,
+                        StatusZahtjeva = i % 2 == 0 ? StatusZahtjeva.NaCekanju : StatusZahtjeva.Odobren,
+                        Komentar = string.Empty
+                    });
+                    await context.SaveChangesAsync();
+                }
+
+                var newTermin = new Termin
+                {
+                    Datum = DateTime.Today.AddDays(40),
+                    VrijemePocetka = new TimeSpan(10, 0, 0),
+                    VrijemeKraja = new TimeSpan(11, 0, 0),
+                    KreatorID = tehnicarId,
+                    KabinetID = kabinet.ID,
+                    ProfesorID = profesorId,
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true,
+                    LimitOsoba = 10
+                };
+                context.Termini.Add(newTermin);
+                await context.SaveChangesAsync();
+                terminId = newTermin.ID;
+            }
+
+            var studentToken = await LoginAsync("limit-student", "StudentPassword123!");
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"/api/Rezervacija/zahtjev/{terminId}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", studentToken);
+
+            var response = await _client.SendAsync(request);
+
+            Assert.Equal(400, (int)response.StatusCode);
+            var payload = await response.Content.ReadAsStringAsync();
+            Assert.Contains("Dostignut je maksimalan broj aktivnih zahtjeva", payload);
         }
     }
 }
