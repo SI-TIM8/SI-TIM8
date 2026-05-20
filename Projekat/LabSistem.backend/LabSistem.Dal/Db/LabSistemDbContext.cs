@@ -104,6 +104,30 @@ namespace LABsistem.Dal.Db
                 .Property(t => t.LimitOsoba)
                 .IsRequired(false);
 
+            modelBuilder.Entity<Evidencija>()
+                .HasOne(e => e.Korisnik)
+                .WithMany(k => k.Evidencije)
+                .HasForeignKey(e => e.KorisnikID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Evidencija>()
+                .HasOne(e => e.Profesor)
+                .WithMany()
+                .HasForeignKey(e => e.ProfesorID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Evidencija>()
+                .HasOne(e => e.ObradioKorisnik)
+                .WithMany()
+                .HasForeignKey(e => e.ObradioKorisnikID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Evidencija>()
+                .HasOne(e => e.Termin)
+                .WithMany()
+                .HasForeignKey(e => e.TerminID)
+                .OnDelete(DeleteBehavior.SetNull);
+
 
             modelBuilder.Entity<Zahtjev>()
                 .HasOne(z => z.Student)

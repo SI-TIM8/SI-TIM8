@@ -4,6 +4,7 @@ using LABsistem.Dal.Repositories;
 using LABsistem.Api.Services;
 using LABsistem.Domain.Entities;
 using LABsistem.Application.DTOs;
+using LABsistem.Domain.Enums;
 using Xunit;
 
 namespace LABsistem.Tests.Integration

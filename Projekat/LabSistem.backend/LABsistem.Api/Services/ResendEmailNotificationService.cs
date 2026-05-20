@@ -13,6 +13,7 @@ namespace LABsistem.Api.Services
         private readonly ILogger<ResendEmailNotificationService> _logger;
         private readonly string? _apiKey;
         private readonly string? _fromEmail;
+        private readonly string? _frontendBaseUrl;
 
         public ResendEmailNotificationService(
             HttpClient httpClient,
@@ -23,6 +24,7 @@ namespace LABsistem.Api.Services
             _logger = logger;
             _apiKey = configuration["RESEND_API_KEY"];
             _fromEmail = configuration["FROM_EMAIL"];
+            _frontendBaseUrl = configuration["FRONTEND_BASE_URL"] ?? configuration["FrontendBaseUrl"];
         }
 
         public async Task<bool> SendReservationDecisionEmailAsync(
@@ -36,14 +38,13 @@ namespace LABsistem.Api.Services
         {
             if (string.IsNullOrWhiteSpace(recipientEmail))
             {
-                _logger.LogWarning("Email notifikacija je preskočena jer primalac nema email adresu.");
+                _logger.LogWarning("Reservation decision email je preskocen jer primalac nema email adresu.");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(_apiKey) || string.IsNullOrWhiteSpace(_fromEmail))
             {
-                _logger.LogWarning(
-                    "Email notifikacija je preskočena jer RESEND_API_KEY ili FROM_EMAIL nisu postavljeni.");
+                _logger.LogWarning("Reservation decision email je preskocen jer RESEND_API_KEY ili FROM_EMAIL nisu postavljeni.");
                 return false;
             }
 
@@ -63,22 +64,20 @@ namespace LABsistem.Api.Services
                 using var response = await _httpClient.SendAsync(request, cancellationToken);
                 if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogInformation(
-                        "Email notifikacija je uspješno poslana korisniku {Email}.",
-                        recipientEmail);
+                    _logger.LogInformation("Reservation decision email je uspjesno poslan korisniku {Email}.", recipientEmail);
                     return true;
                 }
 
                 var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
                 _logger.LogWarning(
-                    "Slanje email notifikacije nije uspjelo. Status: {StatusCode}. Odgovor: {ResponseBody}",
+                    "Slanje reservation decision emaila nije uspjelo. Status: {StatusCode}. Odgovor: {ResponseBody}",
                     (int)response.StatusCode,
                     responseBody);
                 return false;
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Došlo je do greške pri slanju email notifikacije za {Email}.", recipientEmail);
+                _logger.LogWarning(ex, "Došlo je do greške pri slanju reservation decision emaila za {Email}.", recipientEmail);
                 return false;
             }
         }
@@ -141,6 +140,71 @@ namespace LABsistem.Api.Services
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Došlo je do greške pri slanju password reset emaila za {Email}.", recipientEmail);
+                return false;
+            }
+        }
+
+        public async Task<bool> SendEquipmentFaultEmailAsync(
+            string recipientEmail,
+            string recipientName,
+            string opremaNaziv,
+            DateTime datumTermina,
+            TimeSpan vrijemePocetka,
+            TimeSpan vrijemeKraja,
+            string komentar,
+            string? appLinkText = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(recipientEmail))
+            {
+                _logger.LogWarning("Email za kvar opreme je preskocen jer primalac nema email adresu.");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(_apiKey) || string.IsNullOrWhiteSpace(_fromEmail))
+            {
+                _logger.LogWarning("Email za kvar opreme je preskocen jer RESEND_API_KEY ili FROM_EMAIL nisu postavljeni.");
+                return false;
+            }
+
+            var faultSectionUrl = string.IsNullOrWhiteSpace(_frontendBaseUrl)
+              ? null
+              : $"{_frontendBaseUrl.TrimEnd('/')}/kvarovi";
+
+            var frontendLinkText = !string.IsNullOrWhiteSpace(appLinkText)
+              ? appLinkText
+              : "Otvorite sekciju kvarova u LABsistem aplikaciji.";
+
+            try
+            {
+                using var request = new HttpRequestMessage(HttpMethod.Post, ResendEndpoint);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
+                request.Content = JsonContent.Create(new
+                {
+                    from = _fromEmail,
+                    to = recipientEmail,
+                    subject = $"LABsistem - prijavljen kvar opreme: {opremaNaziv}",
+                  html = BuildEquipmentFaultHtmlBody(recipientName, opremaNaziv, datumTermina, vrijemePocetka, vrijemeKraja, komentar, frontendLinkText, faultSectionUrl),
+                  text = BuildEquipmentFaultTextBody(recipientName, opremaNaziv, datumTermina, vrijemePocetka, vrijemeKraja, komentar, frontendLinkText, faultSectionUrl)
+                });
+
+                using var response = await _httpClient.SendAsync(request, cancellationToken);
+                if (response.IsSuccessStatusCode)
+                {
+                    _logger.LogInformation("Email o kvaru opreme je uspjesno poslan korisniku {Email}.", recipientEmail);
+                    return true;
+                }
+
+                var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                _logger.LogWarning(
+                    "Slanje emaila o kvaru opreme nije uspjelo. Status: {StatusCode}. Odgovor: {ResponseBody}",
+                    (int)response.StatusCode,
+                    responseBody);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Došlo je do greške pri slanju emaila o kvaru opreme za {Email}.", recipientEmail);
                 return false;
             }
         }
@@ -340,6 +404,107 @@ namespace LABsistem.Api.Services
                       <div style="padding:20px 32px;background:#f8fafc;border-top:1px solid #eaecf0;color:#667085;font-size:13px;line-height:1.7;">
                         Ova poruka je automatski generisana iz LABsistem aplikacije.
                       </div>
+                    </div>
+                  </div>
+                </body>
+                </html>
+                """;
+        }
+
+        private static string BuildEquipmentFaultTextBody(
+            string recipientName,
+            string opremaNaziv,
+            DateTime datumTermina,
+            TimeSpan vrijemePocetka,
+            TimeSpan vrijemeKraja,
+            string komentar,
+          string? appLinkText,
+          string? appLinkUrl)
+        {
+            var lines = new List<string>
+            {
+                $"Poštovani/a {recipientName},",
+                string.Empty,
+                $"Prijavljen je kvar na opremi: {opremaNaziv}.",
+                $"Termin: {datumTermina:dd.MM.yyyy} {vrijemePocetka:hh\\:mm} - {vrijemeKraja:hh\\:mm}",
+                $"Komentar profesora: {komentar}",
+            };
+
+            if (!string.IsNullOrWhiteSpace(appLinkText))
+            {
+                lines.Add(string.Empty);
+                lines.Add(appLinkText);
+
+              if (!string.IsNullOrWhiteSpace(appLinkUrl))
+              {
+                lines.Add(appLinkUrl);
+              }
+            }
+
+            lines.Add(string.Empty);
+            lines.Add("LABsistem");
+
+            return string.Join(Environment.NewLine, lines);
+        }
+
+        private static string BuildEquipmentFaultHtmlBody(
+            string recipientName,
+            string opremaNaziv,
+            DateTime datumTermina,
+            TimeSpan vrijemePocetka,
+            TimeSpan vrijemeKraja,
+            string komentar,
+          string? appLinkText,
+          string? appLinkUrl)
+        {
+          var appSection = string.IsNullOrWhiteSpace(appLinkText)
+            ? string.Empty
+            : string.IsNullOrWhiteSpace(appLinkUrl)
+              ? $"<div style=\"margin-top:24px;padding:16px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;\"><div style=\"font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#475467;margin-bottom:8px;\">Brzi pristup</div><div style=\"font-size:15px;line-height:1.7;color:#101828;\">{System.Net.WebUtility.HtmlEncode(appLinkText)}</div></div>"
+              : $"<div style=\"margin-top:24px;padding:16px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;\"><div style=\"font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#475467;margin-bottom:8px;\">Brzi pristup</div><div style=\"font-size:15px;line-height:1.7;color:#101828;\">{System.Net.WebUtility.HtmlEncode(appLinkText)} <a href=\"{System.Net.WebUtility.HtmlEncode(appLinkUrl)}\" style=\"color:#0f766e;font-weight:700;text-decoration:none;\">Otvori kvarove</a></div></div>";
+
+            return $"""
+                <!DOCTYPE html>
+                <html lang="bs">
+                <head>
+                  <meta charset="utf-8" />
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                  <title>LABsistem kvar opreme</title>
+                </head>
+                <body style="margin:0;padding:0;background:#f4f7fb;font-family:Segoe UI,Arial,sans-serif;color:#101828;">
+                  <div style="padding:32px 16px;">
+                    <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(15,23,42,0.12);">
+                      <div style="padding:24px 32px;background:linear-gradient(135deg,#b42318 0%,#7f1d1d 100%);color:#ffffff;">
+                        <div style="font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.9;">LABsistem</div>
+                        <div style="margin-top:10px;font-size:28px;font-weight:700;line-height:1.25;">Prijavljen kvar opreme</div>
+                        <div style="margin-top:8px;font-size:15px;line-height:1.6;opacity:0.92;">Tehničar je obaviješten i može otvoriti sekciju kvarova u aplikaciji.</div>
+                      </div>
+                      <div style="padding:32px;">
+                        <p style="margin:0 0 12px;font-size:18px;line-height:1.6;color:#101828;">Poštovani/a <strong>{System.Net.WebUtility.HtmlEncode(recipientName)}</strong>,</p>
+                        <p style="margin:0 0 24px;font-size:16px;line-height:1.75;color:#344054;">Prijavljen je kvar na opremi <strong>{System.Net.WebUtility.HtmlEncode(opremaNaziv)}</strong>.</p>
+
+                        <div style="padding:20px;border-radius:16px;background:#f8fafc;border:1px solid #e4e7ec;">
+                          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#475467;margin-bottom:14px;">Detalji prijave</div>
+                          <table role="presentation" style="width:100%;border-collapse:collapse;">
+                            <tr>
+                              <td style="padding:6px 0;font-size:14px;color:#667085;">Datum termina</td>
+                              <td style="padding:6px 0;font-size:14px;font-weight:600;color:#101828;text-align:right;">{datumTermina:dd.MM.yyyy}</td>
+                            </tr>
+                            <tr>
+                              <td style="padding:6px 0;font-size:14px;color:#667085;">Vrijeme</td>
+                              <td style="padding:6px 0;font-size:14px;font-weight:600;color:#101828;text-align:right;">{vrijemePocetka:hh\:mm} - {vrijemeKraja:hh\:mm}</td>
+                            </tr>
+                          </table>
+                        </div>
+
+                        <div style="margin-top:24px;padding:16px;border-radius:12px;background:#fff7ed;border:1px solid #fed7aa;">
+                          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9a3412;margin-bottom:8px;">Komentar profesora</div>
+                          <div style="font-size:15px;line-height:1.7;color:#7c2d12;">{System.Net.WebUtility.HtmlEncode(komentar)}</div>
+                        </div>
+
+                        {appSection}
+                      </div>
+                      <div style="padding:20px 32px;background:#f8fafc;border-top:1px solid #eaecf0;color:#667085;font-size:13px;line-height:1.7;">Ova poruka je automatski generisana iz LABsistem aplikacije.</div>
                     </div>
                   </div>
                 </body>

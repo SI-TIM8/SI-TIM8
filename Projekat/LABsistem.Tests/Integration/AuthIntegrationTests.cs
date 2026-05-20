@@ -54,6 +54,7 @@ public class TestEmailNotificationService : IEmailNotificationService
     private readonly object _syncRoot = new();
     private readonly List<PasswordResetEmailRecord> _passwordResetEmails = [];
     private readonly List<ReservationDecisionEmailRecord> _reservationDecisionEmails = [];
+    private readonly List<EquipmentFaultEmailRecord> _equipmentFaultEmails = [];
 
     public IReadOnlyList<PasswordResetEmailRecord> PasswordResetEmails
     {
@@ -77,12 +78,24 @@ public class TestEmailNotificationService : IEmailNotificationService
         }
     }
 
+    public IReadOnlyList<EquipmentFaultEmailRecord> EquipmentFaultEmails
+    {
+        get
+        {
+            lock (_syncRoot)
+            {
+                return _equipmentFaultEmails.ToList();
+            }
+        }
+    }
+
     public void Clear()
     {
         lock (_syncRoot)
         {
             _passwordResetEmails.Clear();
             _reservationDecisionEmails.Clear();
+            _equipmentFaultEmails.Clear();
         }
     }
 
@@ -127,6 +140,33 @@ public class TestEmailNotificationService : IEmailNotificationService
 
         return Task.FromResult(true);
     }
+
+    public Task<bool> SendEquipmentFaultEmailAsync(
+        string recipientEmail,
+        string recipientName,
+        string opremaNaziv,
+        DateTime datumTermina,
+        TimeSpan vrijemePocetka,
+        TimeSpan vrijemeKraja,
+        string komentar,
+        string? appLinkText = null,
+        CancellationToken cancellationToken = default)
+    {
+        lock (_syncRoot)
+        {
+            _equipmentFaultEmails.Add(new EquipmentFaultEmailRecord(
+                recipientEmail,
+                recipientName,
+                opremaNaziv,
+                datumTermina,
+                vrijemePocetka,
+                vrijemeKraja,
+                komentar,
+                appLinkText));
+        }
+
+        return Task.FromResult(true);
+    }
 }
 
 public record PasswordResetEmailRecord(
@@ -142,6 +182,16 @@ public record ReservationDecisionEmailRecord(
     TimeSpan VrijemePocetka,
     bool Odobri,
     string? Komentar);
+
+public record EquipmentFaultEmailRecord(
+    string RecipientEmail,
+    string RecipientName,
+    string OpremaNaziv,
+    DateTime DatumTermina,
+    TimeSpan VrijemePocetka,
+    TimeSpan VrijemeKraja,
+    string Komentar,
+    string? AppLinkText);
 
 public record MessageResponseDto(string Message);
 public record VerifyResetTokenResponseDto(bool Valid, string Message);

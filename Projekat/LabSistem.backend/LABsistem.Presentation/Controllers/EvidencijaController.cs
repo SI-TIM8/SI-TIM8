@@ -2,6 +2,7 @@ using LABsistem.Api.Services;
 using LABsistem.Application.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LABsistem.Presentation.Controllers
 {
@@ -22,19 +23,47 @@ namespace LABsistem.Presentation.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin,Tehnicar")]
+        [Authorize(Roles = "Admin,Profesor,Tehnicar")]
         public async Task<IActionResult> Post([FromBody] EvidencijaCreateDTO dto)
         {
-            await _service.KreirajEvidenciju(dto);
-            return Ok(new { message = "Kvar uspjesno prijavljen" });
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+                await _service.KreirajEvidenciju(dto, int.Parse(userId));
+                return Ok(new { message = "Kvar uspjesno prijavljen" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Tehnicar")]
         public async Task<IActionResult> Put(int id, [FromBody] EvidencijaUpdateDTO dto)
         {
-            await _service.AzurirajStatus(id, dto.Status);
-            return Ok(new { message = "Status azuriran" });
+            try
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+                await _service.AzurirajStatus(id, dto, int.Parse(userId));
+                return Ok(new { message = "Status azuriran" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpDelete("{id}")]

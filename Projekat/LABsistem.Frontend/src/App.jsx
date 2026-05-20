@@ -17,6 +17,8 @@ import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Profil from "./pages/Profil";
 import Oprema from "./pages/Oprema";
+import Historija from "./pages/Historija";
+import Kvarovi from "./pages/Kvarovi";
 import ResetPassword from "./pages/ResetPassword";
 import Termini from "./pages/Termini";
 import Zakazivanje from "./pages/Zakazivanje";
@@ -148,10 +150,15 @@ function App() {
           path="/historija"
           element={
             <ProtectedPage path="/historija">
-              <PlaceholderStranica
-                naslov="Historija studenata"
-                opis="Tabelarni prikaz pohadjanja vjezbi."
-              />
+              <Historija />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/kvarovi"
+          element={
+            <ProtectedPage path="/kvarovi">
+              <Kvarovi />
             </ProtectedPage>
           }
         />

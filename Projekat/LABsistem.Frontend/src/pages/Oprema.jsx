@@ -115,6 +115,14 @@ function Oprema() {
     });
   }, [opremaList, filters]);
 
+  const visibleOprema = useMemo(() => {
+    if (userRole === "profesor") {
+      return filteredOprema.filter((oprema) => Number(oprema.stanje) !== 3);
+    }
+
+    return filteredOprema;
+  }, [filteredOprema, userRole]);
+
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
 
   function handleFilterChange(e) {
@@ -500,9 +508,9 @@ function Oprema() {
 
           {loading ? (
             <div className="users-empty-state">Učitavanje podataka...</div>
-          ) : filteredOprema.length > 0 ? (
+          ) : visibleOprema.length > 0 ? (
             <div className="users-list">
-              {filteredOprema.map(item => (
+              {visibleOprema.map(item => (
                 <div className="users-list-row users-list-item" key={item.id}>
                   <span style={{ fontWeight: "600" }}>{item.naziv}</span>
                   <span>{item.kategorija || "N/A"}</span>
