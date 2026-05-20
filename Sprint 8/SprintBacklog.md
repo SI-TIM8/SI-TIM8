@@ -2,15 +2,12 @@
 
 ## Stavke sprint backloga
 
-| ID | Naziv zadatka ili story-a| Povezani US | Odgovorna osoba ili osobe | Status | Napomena |
-|-|-|-|-|-|-|
-| 1 | Oporavak lozinke putem emaila  | US33 | Aner Atović, Haris Sadiković | Završeno  | -|
-| 2 | In-app i email notifikacije o statusu zahtjeva     | US27 | Emina Hamamdžić, Alma Jusufbegović | Završeno  | Obavijesti studentima i osoblju |
-| 3 | Uvođenje novih tipova opreme   | - | Hamza Hadžić, Merima Glušac | Završeno  | Automatsko zauzimanje i oslobađanje opreme |
-| 4 | E2E i integracijsko testiranje rezervacijskog toka | US11, US15, US26, US27 | Refik Mujčinović, Haris Macić | Završeno  | Testiranje kompletnog workflowa rezervacija |
-
-
-
+| ID | Naziv zadatka ili story-a | Opis | Povezani US | Odgovorna osoba ili osobe | Status | Napomena |
+|-|-|-|-|-|-|-|
+| 1 | Oporavak lozinke putem emaila | Implementiran je kompletan tok za zaboravljenu lozinku, uključujući slanje reset linka na email, validaciju tokena i postavljanje nove lozinke kroz sigurnu formu. | US33 | Aner Atović, Hamza Hadžić | Završeno | - |
+| 2 | In-app i email notifikacije o statusu zahtjeva | Student nakon obrade zahtjeva dobija obavijest unutar aplikacije i email sa statusom zahtjeva, dok profesor ili asistent može ostaviti komentar koji se prikazuje studentu uz odobrenje ili odbijanje. | US27 | Emina Hamamdžić, Alma Jusufbegović | Završeno | Obavijesti studentima i osoblju |
+| 3 | Uvođenje novih tipova opreme | Sistem je proširen novom klasifikacijom opreme kroz tip ili kategoriju, uz podršku za unos, prikaz i filtriranje tog podatka u inventaru. | US34 | Haris Macić, Refik Mujčinović | Završeno | Automatsko zauzimanje i oslobađanje opreme |
+| 4 | E2E i integracijsko testiranje rezervacijskog toka | Testiran je kompletan workflow rezervacija kroz više slojeva sistema, uključujući slanje zahtjeva, obradu zahtjeva, slanje obavijesti i provjeru da se sve promjene ispravno čuvaju i prikazuju. | US11, US15, US26, US27 | Merima Glušac, Haris Sadiković | Završeno | Testiranje kompletnog workflowa rezervacija |
 
 ## **Cilj sprinta:** Validacija konfliktnih rezervacija i workflow odobravanja  
 
@@ -20,8 +17,6 @@
 | US27 | In-app/email notifikacija o zahtjevu | Student prima email ili in-app notifikaciju o odobrenju/odbijanju, uključujući komentar profesora/asistenta; Profesor prima notifikacije o pristiglom zahtjevu.| Feature | 3 | Medium | To Do |
 | US28 | In-app notifikacija o zahtjevu | Profesor  dobija zahtjev od studenata za prihvatanje na termin ili odbijanje, prilikom odbijanja ili prihvatanja ima mogućnost komenatara.| Feature | 3 | Medium | To Do |
 | US34 | Upravljanje tipovima opreme | Kao tehničar, želim dodavati, uređivati i brisati tipove opreme kako bi sistem sadržavao ažurne kategorije laboratorijske opreme.| Feature | 3 | Medium | To Do |
-
-
 
 # Detaljni User Stories (US)
 
@@ -41,8 +36,6 @@
 
 ---
 
-
-
 ### US27 – Odobravanje zahtjeva
 
 *Kao profesor ili asistent, želim odobriti ili odbiti rezervacijske zahtjeve.*
@@ -57,8 +50,6 @@
 * Notifikacija sadrži informaciju da li je zahtjev prihvaćen ili odbijen.
 * Ako je ostavljen komentar, student ga može vidjeti u notifikaciji/emailu.
 ---
-
-
 
 ### US28 – Obavještenje o odobrenju ili odbijanju zahtjeva
 
@@ -75,9 +66,9 @@
 
 ### US34 – Upravljanje tipovima opreme
 
-Kao tehničar, želim dodavati, uređivati i brisati tipove opreme kako bi sistem sadržavao ažurne kategorije laboratorijske opreme.
+*Kao tehničar, želim dodavati, uređivati i brisati tipove opreme kako bi sistem sadržavao ažurne kategorije laboratorijske opreme.*
 
-Acceptance Criteria:
+**Acceptance Criteria:**
 
 * Tehničar može dodati novi tip opreme.
 * Tehničar  može izmijeniti postojeći tip opreme.
@@ -85,5 +76,18 @@ Acceptance Criteria:
 * Prikazuje se lista svih tipova opreme.
 * Sistem validira da naziv tipa opreme nije prazan.
 * Nakon izmjena, lista tipova opreme se automatski ažurira.
+
+---
+
+### US26 – Automatska validacija konflikta termina i opreme
+
+*Kao sistem, želim provjeriti da li su termin i resursi i dalje dostupni prije potvrde rezervacije, kako bi se spriječile konfliktne ili duple rezervacije.*
+
+**Acceptance Criteria:**
+
+* Sistem prije potvrde rezervacije provjerava da li je termin još uvijek dostupan.
+* Sistem ne dozvoljava potvrdu rezervacije ako je termin u međuvremenu zauzet.
+* Korisnik dobija jasnu poruku kada rezervacija nije moguća zbog konflikta.
+* Validacija se izvršava u sklopu rezervacijskog toka prije konačne potvrde zahtjeva.
 
 ---
