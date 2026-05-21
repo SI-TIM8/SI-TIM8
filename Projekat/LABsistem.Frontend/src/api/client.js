@@ -4,6 +4,7 @@ import {
   clearSession,
   getAccessToken,
   getRefreshToken,
+  persistPasswordChangeRequirement,
   persistSession,
   shouldRefreshAccessToken,
 } from "../auth/session";
@@ -98,6 +99,14 @@ api.interceptors.response.use(
       window.location.href = "/login?sesija=istekla";
     }
 
+    if (error.response?.status === 403 && error.response?.data?.code === "PASSWORD_CHANGE_REQUIRED") {
+      persistPasswordChangeRequirement(true);
+
+      if (window.location.pathname !== "/first-login-password") {
+        window.location.href = "/first-login-password";
+      }
+    }
+
     return Promise.reject(error);
   }
 );
@@ -115,6 +124,16 @@ export function verifyResetToken(token) {
   return authApi.get("/Auth/verify-reset-token", {
     params: { token },
   });
+}
+
+export function verifyEmail(token) {
+  return authApi.get("/Auth/verify-email", {
+    params: { token },
+  });
+}
+
+export function resendVerificationEmail() {
+  return api.post("/Auth/resend-verification-email");
 }
 
 export function resetPassword(token, newPassword, confirmPassword) {

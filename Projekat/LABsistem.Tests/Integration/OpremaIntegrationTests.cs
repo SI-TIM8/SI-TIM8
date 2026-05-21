@@ -1,12 +1,11 @@
-using Microsoft.EntityFrameworkCore;
-using Moq;
+using LABsistem.Api.Services;
+using LABsistem.Application.DTOs;
 using LABsistem.Dal.Db;
 using LABsistem.Dal.Repositories;
-using LABsistem.Api.Services;
-using LABsistem.Api.Validators;
 using LABsistem.Domain.Entities;
-using LABsistem.Application.DTOs;
 using LABsistem.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
+using Moq;
 using Xunit;
 
 namespace LABsistem.Tests.Integration
@@ -26,16 +25,17 @@ namespace LABsistem.Tests.Integration
         {
             using var context = GetInMemoryDbContext();
             var repo = new OpremaRepository(context);
-            var service = new OpremaService(repo, new Mock<IOpremaValidator>().Object);
+            var service = new OpremaService(repo, new Mock<LABsistem.Api.Validators.IOpremaValidator>().Object);
 
             var oprema = new Oprema
             {
-                Naziv = "Stari Naziv",
+                Naziv = "Stari naziv",
                 Kategorija = "Stara kategorija",
                 SerijskiBroj = 123,
                 stanje = StatusOpreme.Ispravno,
                 KabinetID = 1,
-                KreatorID = 1
+                KreatorID = 1,
+                IsArchived = false
             };
             context.Oprema.Add(oprema);
             await context.SaveChangesAsync();
@@ -44,7 +44,7 @@ namespace LABsistem.Tests.Integration
 
             var updateDto = new OpremaCreateDTO
             {
-                Naziv = "Novi Naziv",
+                Naziv = "Novi naziv",
                 Kategorija = "Nova kategorija",
                 SerijskiBroj = 45,
                 Stanje = (int)StatusOpreme.UKvaru,
@@ -59,10 +59,46 @@ namespace LABsistem.Tests.Integration
             var updatedEntity = await context.Oprema.FindAsync(oprema.ID);
 
             Assert.NotNull(updatedEntity);
-            Assert.Equal("Novi Naziv", updatedEntity.Naziv);
+            Assert.Equal("Novi naziv", updatedEntity!.Naziv);
             Assert.Equal("Nova kategorija", updatedEntity.Kategorija);
             Assert.Equal(123, updatedEntity.SerijskiBroj);
             Assert.Equal(StatusOpreme.UKvaru, updatedEntity.stanje);
+        }
+
+        [Fact]
+        public async Task ArhivirajIObnoviOpremu_PersistiraArchiveFlags()
+        {
+            using var context = GetInMemoryDbContext();
+            var repo = new OpremaRepository(context);
+            var service = new OpremaService(repo, new Mock<LABsistem.Api.Validators.IOpremaValidator>().Object);
+
+            var oprema = new Oprema
+            {
+                Naziv = "Arhivska oprema",
+                Kategorija = "Test kategorija",
+                SerijskiBroj = 222,
+                stanje = StatusOpreme.Ispravno,
+                KabinetID = 1,
+                KreatorID = 1
+            };
+            context.Oprema.Add(oprema);
+            await context.SaveChangesAsync();
+
+            var arhivirano = await service.ArhivirajOpremu(oprema.ID);
+            Assert.True(arhivirano);
+
+            var nakonArhiviranja = await context.Oprema.FindAsync(oprema.ID);
+            Assert.NotNull(nakonArhiviranja);
+            Assert.True(nakonArhiviranja!.IsArchived);
+            Assert.NotNull(nakonArhiviranja.ArchivedAtUtc);
+
+            var vraceno = await service.VratiIzArhive(oprema.ID);
+            Assert.True(vraceno);
+
+            var nakonObnove = await context.Oprema.FindAsync(oprema.ID);
+            Assert.NotNull(nakonObnove);
+            Assert.False(nakonObnove!.IsArchived);
+            Assert.Null(nakonObnove.ArchivedAtUtc);
         }
     }
 }

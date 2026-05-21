@@ -18,6 +18,8 @@ namespace LABsistem.Application.Services
         Task<(bool Success, string Message)> ForgotPasswordAsync(ForgotPasswordRequestDto request, CancellationToken cancellationToken = default);
         Task<(bool Success, string Message)> ResetPasswordAsync(ResetPasswordRequestDto request);
         Task<(bool Valid, string Message)> VerifyPasswordResetTokenAsync(string token);
+        Task<(bool Success, string Message)> VerifyEmailAsync(string token);
+        Task<(bool Success, string Message)> ResendVerificationEmailAsync(int userId, CancellationToken cancellationToken = default);
         Task<(bool Success, string Message)> CreateUserAsync(RegisterRequestDto request, UlogaKorisnika uloga);
         Task<bool> RevokeRefreshTokenAsync(string refreshToken);
         Task<bool> IsUserActiveAsync(int userId);

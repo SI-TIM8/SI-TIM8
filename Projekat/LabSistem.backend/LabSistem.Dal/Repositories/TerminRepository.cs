@@ -48,6 +48,15 @@ namespace LABsistem.Dal.Repositories
             var termin = await _context.Termini.FindAsync(id);
             if (termin != null)
             {
+                var povezaneObavijesti = await _context.Obavijesti
+                    .Where(o => o.TerminID == id)
+                    .ToListAsync();
+
+                foreach (var obavijest in povezaneObavijesti)
+                {
+                    obavijest.TerminID = null;
+                }
+
                 _context.Termini.Remove(termin);
                 await _context.SaveChangesAsync();
             }

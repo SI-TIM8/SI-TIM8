@@ -146,7 +146,7 @@
 2. Unos detaljnog opisa problema.
 3. Evidentiranje kvara u sistemu.
 4. Automatska promjena statusa opreme na "neispravna".  
-**Sprint:** 10  
+**Sprint:** 9  
 **Veza sa Product Backlogom:** 43, 44
 
 ---
@@ -165,6 +165,23 @@
 5. Opcija za resetovanje svih filtera.  
 **Sprint:** 10  
 **Veza sa Product Backlogom:** 40
+
+---
+
+### USER STORY – Arhiviranje opreme umjesto trajnog brisanja
+**ID storyja:** US49  
+**Naziv storyja:** Arhiviranje opreme umjesto trajnog brisanja  
+**Opis:** Kao tehničar, želim arhivirati opremu koja se više ne koristi, kako bih zadržao historiju bez prikaza u aktivnim listama.  
+**Poslovna vrijednost:** Očuvanje podataka uz čišći aktivni pregled.  
+**Prioritet:** Medium  
+**Pretpostavke:** Oprema postoji u sistemu i ima povezanu historiju korištenja ili evidencije.  
+**Veze:** US06, US07, US08  
+**Acceptance Criteria:** 1. Oprema se može označiti kao arhivirana.
+2. Arhivirana oprema nije vidljiva u standardnim aktivnim listama.
+3. Historija evidencija i kvarova ostaje dostupna.
+4. Administrator ili tehničar može vratiti arhiviranu opremu.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 49
 
 ---
 
@@ -200,19 +217,40 @@
 
 ---
 
-### USER STORY – Otkazivanje rezervacije
-**ID storyja:** US13  
-**Naziv storyja:** Otkazivanje rezervacije  
-**Opis:** Kao student, želim otkazati rezervisani termin, kako bih oslobodio resurse drugima.  
-**Poslovna vrijednost:** Automatsko oslobađanje termina bez posrednika.  
+### USER STORY – Pregled vlastitih rezervacija i zahtjeva
+**ID storyja:** US13A  
+**Naziv storyja:** Pregled mojih rezervacija i zahtjeva  
+**Opis:** Kao student, želim na jednom mjestu vidjeti svoje odobrene rezervacije i poslane zahtjeve, kako bih imao jasan pregled statusa svojih prijava i budućih termina.  
+**Poslovna vrijednost:** Povećava preglednost i smanjuje potrebu da student informacije traži kroz više različitih ekrana.  
 **Prioritet:** Medium  
-**Pretpostavke:** Student je prijavljen i ima aktivan zakazan termin.  
+**Pretpostavke:** Student je prijavljen u sistem i ima barem jednu rezervaciju ili zahtjev u sistemu.  
 **Veze:** US03, US11, US12  
-**Acceptance Criteria:** 1. Prikaz liste aktivnih termina.
-2. Mogućnost otkazivanja pored svakog termina.
-3. Trenutno oslobađanje termina u sistemu.  
+**Acceptance Criteria:** 1. Student može otvoriti ekran "Moje rezervacije" iz postojećeg menija.
+2. Ekran prikazuje tab "Aktivne rezervacije" sa odobrenim budućim terminima studenta.
+3. Ekran prikazuje tab "Moji zahtjevi" sa studentskim zahtjevima koji nisu odobrene rezervacije.
+4. Za svaku stavku prikazuju se datum, vrijeme, kabinet, profesor i status.
+5. Student vidi samo svoje podatke i ne može pristupiti tuđim rezervacijama ili zahtjevima.  
 **Sprint:** 9  
 **Veza sa Product Backlogom:** 39
+
+---
+
+### USER STORY – Otkazivanje rezervacije i povlačenje zahtjeva
+**ID storyja:** US13B  
+**Naziv storyja:** Otkazivanje rezervacije i povlačenje zahtjeva  
+**Opis:** Kao student, želim otkazati odobrenu rezervaciju ili poništiti zahtjev koji je još na čekanju, kako bih mogao odustati od termina bez posrednika i osloboditi mjesto drugima kada je to potrebno.  
+**Poslovna vrijednost:** Omogućava samostalno upravljanje prijavama, smanjuje administraciju i poboljšava iskorištenost termina.  
+**Prioritet:** Medium  
+**Pretpostavke:** Student je prijavljen i ima buduću odobrenu rezervaciju ili zahtjev na čekanju.  
+**Veze:** US03, US11, US12, US13A  
+**Acceptance Criteria:** 1. Student može otkazati svoju buduću odobrenu rezervaciju iz taba "Aktivne rezervacije".
+2. Student može poništiti svoj zahtjev sa statusom "Na čekanju" iz taba "Moji zahtjevi".
+3. Nakon otkazivanja ili poništavanja status stavke se mijenja u "Otkazan".
+4. Otkazana odobrena rezervacija više se ne prikazuje kao aktivna rezervacija i termin se ponovo oslobađa u sistemu.
+5. Zahtjevi koji su već odbijeni, otkazani ili termini koji su već počeli ne mogu se ponovo otkazivati.
+6. Nakon uspješne akcije student dobija jasnu potvrdu u interfejsu.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 50
 
 ---
 
@@ -223,7 +261,7 @@
 **Poslovna vrijednost:** Centralizovan uvid u korištenje laboratorije.  
 **Prioritet:** High  
 **Pretpostavke:** Osoblje je prijavljeno.  
-**Veze:** US11, US13  
+**Veze:** US11, US13A, US13B  
 **Acceptance Criteria:** 1. Lista svih zauzetih i slobodnih termina/opreme.
 2. Istorija svih prijašnjih zauzeća.
 3. Opcija za eksport podataka.
@@ -248,15 +286,18 @@
 
 ---
 
-### USER STORY – Ograničenje broja aktivnih rezervacija
+### USER STORY – Ograničenje broja aktivnih zahtjeva po studentu
 **ID storyja:** US16  
-**Naziv storyja:** Limitiranje rezervacija po korisniku  
-**Opis:** Kao profesor, želim postaviti limit na maksimalan broj aktivnih rezervacija po studentu.  
-**Poslovna vrijednost:** Pravedna raspodjela termina.  
+**Naziv storyja:** Limitiranje aktivnih zahtjeva po korisniku  
+**Opis:** Kao sistem, želim ograničiti maksimalan broj aktivnih zahtjeva po studentu, kako bi raspodjela termina bila pravednija i kako pojedinačni korisnici ne bi zauzimali prevelik broj mjesta u sistemu.  
+**Poslovna vrijednost:** Pravednija raspodjela termina i bolja kontrola nad opterećenjem rezervacijskog sistema.  
 **Prioritet:** Medium  
+**Pretpostavke:** Student je prijavljen u sistem i može slati zahtjeve za rezervaciju termina.  
 **Veze:** US11  
-**Acceptance Criteria:** 1. Sistem onemogućava novu rezervaciju ako je student dosegao definirani limit (npr. 3 aktivna termina).
-2. Prikaz poruke upozorenja o dosegnutom limitu.  
+**Acceptance Criteria:** 1. Sistem onemogućava slanje novog zahtjeva ako je student dosegao definisani limit aktivnih zahtjeva.
+2. Kao aktivni zahtjevi računaju se zahtjevi sa statusom "Na čekanju" i "Odobren".
+3. Student dobija jasnu poruku upozorenja kada pokuša poslati novi zahtjev nakon dostizanja limita.
+4. Nakon otkazivanja ili završetka postojećih zahtjeva student ponovo može slati nove zahtjeve u okviru dozvoljenog limita.  
 **Sprint:** 9  
 **Veza sa Product Backlogom:** 38
 
@@ -430,17 +471,37 @@
 
 ---
 
-### USER STORY – Automatska promjena statusa opreme nakon kvara
+### USER STORY – Automatsko označavanje opreme kao neispravne
 **ID storyja:** US28  
 **Naziv storyja:** Automatsko povlačenje neispravne opreme  
-**Opis:** Kao sistem, želim automatski otkazati buduće rezervacije za opremu koja je prijavljena kao kvar.  
-**Poslovna vrijednost:** Sprječava studente da dođu na termin i otkriju da oprema ne radi.  
+**Opis:** Kao sistem, želim automatski označiti opremu kao neispravnu nakon prijave kvara i prikazati njen ažurirani status korisnicima, kako bi se spriječila dalja upotreba neispravne opreme i omogućilo njeno dalje tehničko rješavanje.  
+**Poslovna vrijednost:** Smanjuje rizik korištenja neispravne opreme i osigurava da korisnici vide tačno stanje laboratorijskih resursa.  
 **Prioritet:** Medium  
-**Pretpostavke:** -  
-**Veze:** US09  
-**Acceptance Criteria:** 1. Kada se status promijeni u "neispravna", sistem pronalazi sve "Pending" i "Approved" rezervacije za tu stavku. 2. Slanje obavijesti pogođenim korisnicima.  
-**Sprint:** 10  
-**Veza sa Product Backlogom:** 33, 44
+**Pretpostavke:** Kvar je prijavljen kroz sistem.  
+**Veze:** US09, US08  
+**Acceptance Criteria:** 1. Nakon prijave kvara status opreme se automatski mijenja u "neispravna".
+2. Ažurirani status opreme je vidljiv korisnicima u sistemu.
+3. Oprema ostaje u neispravnom ili servisnom stanju dok tehničar ili administrator ne promijeni njen status.
+4. Sistem omogućava tehničaru da kroz obradu kvara dalje upravlja statusom opreme do njenog vraćanja u ispravno stanje.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 37
+
+---
+
+### USER STORY – Podsjetnik prije termina
+**ID storyja:** US50  
+**Naziv storyja:** Podsjetnik prije termina  
+**Opis:** Kao student, želim dobiti podsjetnik prije rezervisanog termina, kako ne bih propustio laboratorijsku vježbu.  
+**Poslovna vrijednost:** Manje izostanaka i bolje korištenje resursa.  
+**Prioritet:** Medium  
+**Pretpostavke:** Student ima odobren termin i aktivan kanal za primanje obavijesti. Email podsjetnik se šalje samo ako je email verifikovan, a in-app obavijest se šalje u svakom slučaju.  
+**Veze:** US11, US12, US27  
+**Acceptance Criteria:** 1. Sistem šalje in-app i/ili email podsjetnik prije termina.
+2. Vrijeme podsjetnika je konfigurabilno, npr. 24h i 1h ranije.
+3. Podsjetnik sadrži datum, vrijeme i laboratoriju.
+4. Ne šalju se podsjetnici za otkazane termine.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 48
 
 ---
 
@@ -513,6 +574,42 @@
 **Acceptance Criteria:** 1. Link "Forgot Password" na login formi. 2. Slanje unikatnog, privremenog linka na korisnikov email. 3. Mogućnost postavljanja nove lozinke putem tog linka.  
 **Sprint:** 10  
 **Veza sa Product Backlogom:** 40
+
+---
+
+### USER STORY – Verifikacija email adrese
+**ID storyja:** US46  
+**Naziv storyja:** Verifikacija email adrese  
+**Opis:** Kao korisnik, želim potvrditi svoju email adresu putem verifikacionog linka, kako bi sistem znao da koristim validnu i dostupnu email adresu.  
+**Poslovna vrijednost:** Povećava sigurnost naloga i pouzdanost email komunikacije sistema.  
+**Prioritet:** High  
+**Pretpostavke:** Korisnik ima registrovan nalog i pristup unesenoj email adresi.  
+**Veze:** US01, US03, US33  
+**Acceptance Criteria:** 1. Nakon kreiranja naloga ili promjene email adrese sistem šalje verifikacioni email sa jedinstvenim linkom.
+2. Klik na verifikacioni link potvrđuje email adresu korisnika.
+3. Sistem ne otkriva osjetljive podatke kroz verifikacioni link.
+4. Korisnik vidi jasan status da li je email verifikovan ili nije.
+5. Neverifikovan korisnik može ponovo zatražiti slanje verifikacionog emaila.  
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 46
+
+---
+
+### USER STORY – Obavezna promjena lozinke pri prvom loginu
+**ID storyja:** US47  
+**Naziv storyja:** Obavezna promjena lozinke pri prvom loginu  
+**Opis:** Kao korisnik kojem je nalog kreirao administrator, želim biti primoran promijeniti privremenu lozinku pri prvom loginu, kako bi moj nalog bio sigurniji i poznat samo meni.  
+**Poslovna vrijednost:** Smanjuje sigurnosni rizik dijeljenih ili privremenih lozinki.  
+**Prioritet:** High  
+**Pretpostavke:** Administrator je kreirao korisnika sa početnom lozinkom.  
+**Veze:** US01, US03, US04  
+**Acceptance Criteria:** 1. Korisnik se može prijaviti sa privremenom lozinkom samo do ekrana za promjenu lozinke.
+2. Dok ne promijeni lozinku, korisnik ne može pristupiti ostatku aplikacije.
+3. Nova lozinka mora zadovoljiti postojeća sigurnosna pravila sistema.
+4. Nakon uspješne promjene lozinke, korisnik dobija normalan pristup aplikaciji.
+5. Sistem više ne traži obaveznu promjenu lozinke nakon što je korisnik jednom uspješno postavi.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 47
 
 ---
 

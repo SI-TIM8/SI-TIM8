@@ -17,20 +17,34 @@ import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Profil from "./pages/Profil";
 import Oprema from "./pages/Oprema";
+import Historija from "./pages/Historija";
+import Kvarovi from "./pages/Kvarovi";
 import ResetPassword from "./pages/ResetPassword";
+import FirstLoginPassword from "./pages/FirstLoginPassword";
 import Termini from "./pages/Termini";
+import VerifyEmail from "./pages/VerifyEmail";
 import Zakazivanje from "./pages/Zakazivanje";
 import Rezervacije from "./pages/Rezervacije";
 import Zahtjevi from "./pages/Zahtjevi";
 import { ALLOWED_ROLES_BY_ROUTE, getCurrentRole } from "./auth/routeAccess";
-import { clearSession, hasActiveAccessToken } from "./auth/session";
+import { clearSession, hasActiveAccessToken, isPasswordChangeRequired } from "./auth/session";
 
 function ZasticenaRuta({ children, allowedRoles }) {
   const location = useLocation();
+  const requiresPasswordChange = isPasswordChangeRequired();
+  const isFirstLoginRoute = location.pathname === "/first-login-password";
 
   if (!hasActiveAccessToken()) {
     clearSession();
     return <Navigate to="/login?sesija=istekla" replace />;
+  }
+
+  if (requiresPasswordChange && !isFirstLoginRoute) {
+    return <Navigate to="/first-login-password" replace />;
+  }
+
+  if (!requiresPasswordChange && isFirstLoginRoute) {
+    return <Navigate to="/dashboard" replace />;
   }
 
   const uloga = getCurrentRole();
@@ -78,7 +92,16 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route
+          path="/first-login-password"
+          element={
+            <ZasticenaRuta>
+              <FirstLoginPassword />
+            </ZasticenaRuta>
+          }
+        />
 
         <Route
           path="/dashboard"
@@ -148,10 +171,15 @@ function App() {
           path="/historija"
           element={
             <ProtectedPage path="/historija">
-              <PlaceholderStranica
-                naslov="Historija studenata"
-                opis="Tabelarni prikaz pohadjanja vjezbi."
-              />
+              <Historija />
+            </ProtectedPage>
+          }
+        />
+        <Route
+          path="/kvarovi"
+          element={
+            <ProtectedPage path="/kvarovi">
+              <Kvarovi />
             </ProtectedPage>
           }
         />

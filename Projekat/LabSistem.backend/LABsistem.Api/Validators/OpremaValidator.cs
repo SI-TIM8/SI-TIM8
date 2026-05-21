@@ -22,7 +22,7 @@ namespace LABsistem.Api.Validators
 
             if (kategorija.Trim().Length > 40)
                 throw new Exception("Kategorija opreme može imati najviše 40 karaktera.");
-            
+
             if (kabinetId <= 0)
                 throw new Exception("Kabinet mora biti odabran.");
         }

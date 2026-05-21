@@ -30,9 +30,9 @@ namespace LABsistem.Tests.Unit
         {
             
             var evidencija = _fixture.Create<Evidencija>();
-            var mockData = new List<(Evidencija evidencija, string opremaNaziv, string korisnikImePrezime)>
+            var mockData = new List<(Evidencija evidencija, string opremaNaziv, string? opremaKategorija, int opremaSerijskiBroj, int opremaStanje, int opremaKabinetID, string? opremaKabinetNaziv, string? opremaZgradaNaziv, string korisnikImePrezime, string? profesorImePrezime, string? obradioImePrezime, DateTime? terminDatum, TimeSpan? terminVrijemePocetka, TimeSpan? terminVrijemeKraja)>
             {
-                (evidencija, "Test Oprema", "Marko Markovic")
+                (evidencija, "Test Oprema", "Mjerni uredjaj", 123, 1, 7, "Kabinet A", "Zgrada 1", "Marko Markovic", null, null, null, null, null)
             };
 
             _repoMock.Setup(r => r.GetAllWithDetailsAsync()).ReturnsAsync(mockData);

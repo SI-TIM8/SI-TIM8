@@ -8,11 +8,13 @@ using LABsistem.Dal.Db;
 using LABsistem.Dal.Interfaces;
 using LABsistem.Dal.Repositories;
 using LABsistem.Api.Services;
+using LABsistem.Api.Options;
 using LABsistem.Application.DTOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using LABsistem.Api.Validators;
+using LABsistem.Presentation.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 LoadDotEnvFile(Path.Combine(builder.Environment.ContentRootPath, ".env"));
@@ -32,6 +34,8 @@ if (!builder.Environment.IsEnvironment("Testing"))
 }
 
 builder.Services.AddMemoryCache();
+builder.Services.Configure<ReservationReminderOptions>(
+    builder.Configuration.GetSection(ReservationReminderOptions.SectionName));
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IRevokedTokenStore, DatabaseRevokedTokenStore>();
@@ -50,10 +54,12 @@ builder.Services.AddScoped<ITerminValidator, TerminValidator>();
 builder.Services.AddScoped<ITerminService, TerminService>();
 builder.Services.AddScoped<IRezervacijaValidator, RezervacijaValidator>();
 builder.Services.AddScoped<IRezervacijaService, RezervacijaService>();
+builder.Services.AddScoped<IReservationReminderService, ReservationReminderService>();
 builder.Services.AddScoped<IOpremaValidator, OpremaValidator>();
 builder.Services.AddScoped<IOpremaService, OpremaService>();
 builder.Services.AddScoped<IObavijestService, ObavijestService>();
 builder.Services.AddHttpClient<IEmailNotificationService, ResendEmailNotificationService>();
+builder.Services.AddHostedService<ReservationReminderBackgroundService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -95,12 +101,20 @@ builder.Services
                 var dbContext = context.HttpContext.RequestServices.GetRequiredService<LabSistemDbContext>();
                 var userState = await dbContext.Korisnici
                     .Where(x => x.ID == userId)
-                    .Select(x => new { x.DeactivatedAt })
+                    .Select(x => new { x.DeactivatedAt, x.MustChangePassword })
                     .FirstOrDefaultAsync(context.HttpContext.RequestAborted);
 
                 if (userState is null || userState.DeactivatedAt.HasValue)
                 {
                     context.Fail("User account is inactive.");
+                    return;
+                }
+
+                if (userState.MustChangePassword &&
+                    context.Principal?.Identity is ClaimsIdentity identity &&
+                    !identity.HasClaim("must_change_password", "true"))
+                {
+                    identity.AddClaim(new Claim("must_change_password", "true"));
                 }
             }
         };
@@ -158,6 +172,36 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.UseAuthentication();
+app.Use(async (context, next) =>
+{
+    if (context.User.Identity?.IsAuthenticated == true &&
+        string.Equals(
+            context.User.FindFirst("must_change_password")?.Value,
+            "true",
+            StringComparison.OrdinalIgnoreCase))
+    {
+        var allowedPaths = new[]
+        {
+            "/api/Auth/change-password",
+            "/api/Auth/logout",
+            "/api/Auth/refresh"
+        };
+
+        var requestPath = context.Request.Path.Value ?? string.Empty;
+        if (!allowedPaths.Contains(requestPath, StringComparer.OrdinalIgnoreCase))
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                Code = "PASSWORD_CHANGE_REQUIRED",
+                Message = "Morate promijeniti privremenu lozinku prije nastavka rada."
+            });
+            return;
+        }
+    }
+
+    await next();
+});
 app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())

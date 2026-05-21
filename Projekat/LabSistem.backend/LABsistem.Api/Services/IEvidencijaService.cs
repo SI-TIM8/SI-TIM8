@@ -8,8 +8,8 @@ namespace LABsistem.Api.Services
     public interface IEvidencijaService
     {
         Task<IEnumerable<EvidencijaDTO>> VratiSveEvidencije();
-        Task KreirajEvidenciju(EvidencijaCreateDTO dto);
-        Task AzurirajStatus(int id, string status);
+        Task KreirajEvidenciju(EvidencijaCreateDTO dto, int prijavioKorisnikId);
+        Task AzurirajStatus(int id, EvidencijaUpdateDTO dto, int obradioKorisnikId);
         Task ObrisiEvidenciju(int id);
     }
 }

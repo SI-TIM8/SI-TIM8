@@ -19,6 +19,10 @@ namespace LABsistem.Domain.Entities
         
         public StatusOpreme stanje { get; set; } 
 
+        public bool IsArchived { get; set; }
+
+        public DateTime? ArchivedAtUtc { get; set; }
+
         // FK veze
         public int KreatorID { get; set; } 
         public int KabinetID { get; set; } 

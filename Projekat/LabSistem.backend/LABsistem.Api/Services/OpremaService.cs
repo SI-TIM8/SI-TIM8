@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using LABsistem.Application.DTOs;
@@ -35,7 +36,9 @@ namespace LABsistem.Api.Services
                 SerijskiBroj = nextSerijskiBroj,
                 stanje = (StatusOpreme)dto.Stanje,
                 KabinetID = dto.KabinetID,
-                KreatorID = dto.KreatorID
+                KreatorID = dto.KreatorID,
+                IsArchived = false,
+                ArchivedAtUtc = null
             };
             await _repo.AddAsync(nova);
             return new OpremaDTO
@@ -43,14 +46,23 @@ namespace LABsistem.Api.Services
                 ID = nova.ID,
                 Naziv = nova.Naziv,
                 Kategorija = nova.Kategorija,
-                SerijskiBroj = nova.SerijskiBroj
+                SerijskiBroj = nova.SerijskiBroj,
+                IsArchived = nova.IsArchived,
+                ArchivedAtUtc = nova.ArchivedAtUtc
             };
         }
 
-        public async Task<IEnumerable<OpremaDTO>> VratiSvuOpremu()
+        public async Task<IEnumerable<OpremaDTO>> VratiSvuOpremu(string prikaz)
         {
             var rezultat = await _repo.GetAllWithKabinetAsync();
-            return rezultat.Select(x => new OpremaDTO
+            var filtriranaOprema = rezultat.Where(x => prikaz switch
+            {
+                "arhivirana" => x.oprema.IsArchived,
+                "sve" => true,
+                _ => !x.oprema.IsArchived
+            });
+
+            return filtriranaOprema.Select(x => new OpremaDTO
             {
                 ID = x.oprema.ID,
                 Naziv = x.oprema.Naziv,
@@ -60,7 +72,9 @@ namespace LABsistem.Api.Services
                 KabinetID = x.oprema.KabinetID,
                 KreatorID = x.oprema.KreatorID,
                 KabinetNaziv = x.kabinetNaziv,
-                ZgradaNaziv = x.zgradaNaziv
+                ZgradaNaziv = x.zgradaNaziv,
+                IsArchived = x.oprema.IsArchived,
+                ArchivedAtUtc = x.oprema.ArchivedAtUtc
             }).ToList();
         }
 
@@ -78,11 +92,27 @@ namespace LABsistem.Api.Services
             return true;
         }
 
-        public async Task<bool> ObrisiOpremu(int id)
+        public async Task<bool> ArhivirajOpremu(int id)
         {
             var postojeca = await _repo.GetByIdAsync(id);
             if (postojeca == null) return false;
-            await _repo.DeleteAsync(id);
+            if (postojeca.IsArchived) return true;
+
+            postojeca.IsArchived = true;
+            postojeca.ArchivedAtUtc = DateTime.UtcNow;
+            await _repo.UpdateAsync(postojeca);
+            return true;
+        }
+
+        public async Task<bool> VratiIzArhive(int id)
+        {
+            var postojeca = await _repo.GetByIdAsync(id);
+            if (postojeca == null) return false;
+            if (!postojeca.IsArchived) return true;
+
+            postojeca.IsArchived = false;
+            postojeca.ArchivedAtUtc = null;
+            await _repo.UpdateAsync(postojeca);
             return true;
         }
 
@@ -90,14 +120,16 @@ namespace LABsistem.Api.Services
         {
             var oprema = await _repo.GetAllAsync();
             return oprema
-                .Where(o => o.KabinetID == kabinetId)
+                .Where(o => o.KabinetID == kabinetId && !o.IsArchived)
                 .Select(o => new OpremaDTO
                 {
                     ID = o.ID,
                     Naziv = o.Naziv,
                     Kategorija = o.Kategorija,
                     SerijskiBroj = o.SerijskiBroj,
-                    Stanje = (int)o.stanje
+                    Stanje = (int)o.stanje,
+                    IsArchived = o.IsArchived,
+                    ArchivedAtUtc = o.ArchivedAtUtc
                 }).ToList();
         }
     }

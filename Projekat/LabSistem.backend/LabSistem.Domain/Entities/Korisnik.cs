@@ -20,6 +20,10 @@ namespace LABsistem.Domain.Entities
 
         [Required, StringLength(254, MinimumLength = 5)]
         public string Email { get; set; }
+
+        public bool EmailVerified { get; set; }
+
+        public DateTime? EmailVerifiedAtUtc { get; set; }
         
 
         [Required, StringLength(30, MinimumLength = 3)]
@@ -28,6 +32,8 @@ namespace LABsistem.Domain.Entities
 
         [Required, StringLength(64, MinimumLength = 8)]
         public string Password { get; set; }
+
+        public bool MustChangePassword { get; set; }
 
         public DateTime? DeactivatedAt { get; set; }
 
@@ -48,6 +54,8 @@ namespace LABsistem.Domain.Entities
         public ICollection<RefreshToken> RefreshTokens { get; set; }
 
         public ICollection<PasswordResetToken> PasswordResetTokens { get; set; }
+
+        public ICollection<EmailVerificationToken> EmailVerificationTokens { get; set; }
 
         public ICollection<Termin> RezervisaniTermini { get; set; }
 

@@ -22,6 +22,46 @@ namespace LabSistem.Dal.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("LABsistem.Domain.Entities.EmailVerificationToken", b =>
+                {
+                    b.Property<int>("EmailVerificationTokenID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EmailVerificationTokenID"));
+
+                    b.Property<DateTime>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(254)
+                        .HasColumnType("character varying(254)");
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("KorisnikID")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
+
+                    b.Property<DateTime?>("UsedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("EmailVerificationTokenID");
+
+                    b.HasIndex("KorisnikID");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.ToTable("EmailVerificationTokens");
+                });
+
             modelBuilder.Entity("LABsistem.Domain.Entities.Evidencija", b =>
                 {
                     b.Property<int>("ID")
@@ -32,25 +72,50 @@ namespace LabSistem.Dal.Migrations
 
                     b.Property<string>("Komentar")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<int>("KorisnikID")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("ObradioKorisnikID")
+                        .HasColumnType("integer");
+
                     b.Property<int>("OpremaID")
                         .HasColumnType("integer");
+
+                    b.Property<DateTime>("PrijavljenoU")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("ProfesorID")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("RijesenoU")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Rjesenje")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)");
 
+                    b.Property<int?>("TerminID")
+                        .HasColumnType("integer");
+
                     b.HasKey("ID");
 
                     b.HasIndex("KorisnikID");
 
+                    b.HasIndex("ObradioKorisnikID");
+
                     b.HasIndex("OpremaID");
+
+                    b.HasIndex("ProfesorID");
+
+                    b.HasIndex("TerminID");
 
                     b.ToTable("Evidencije");
                 });
@@ -140,10 +205,19 @@ namespace LabSistem.Dal.Migrations
                         .HasMaxLength(254)
                         .HasColumnType("character varying(254)");
 
+                    b.Property<bool>("EmailVerified")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("EmailVerifiedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("ImePrezime")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("MustChangePassword")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -255,6 +329,12 @@ namespace LabSistem.Dal.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+
+                    b.Property<DateTime?>("ArchivedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("KabinetID")
                         .HasColumnType("integer");
@@ -414,6 +494,31 @@ namespace LabSistem.Dal.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
+            modelBuilder.Entity("LABsistem.Domain.Entities.ReservationReminderDispatch", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("ReminderOffsetMinutes")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("SentAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ZahtjevID")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ZahtjevID", "ReminderOffsetMinutes")
+                        .IsUnique();
+
+                    b.ToTable("ReservationReminderDispatches");
+                });
+
             modelBuilder.Entity("LABsistem.Domain.Entities.RevokedAccessToken", b =>
                 {
                     b.Property<int>("ID")
@@ -518,13 +623,29 @@ namespace LabSistem.Dal.Migrations
                     b.ToTable("Zahtjevi");
                 });
 
+            modelBuilder.Entity("LABsistem.Domain.Entities.EmailVerificationToken", b =>
+                {
+                    b.HasOne("LABsistem.Domain.Entities.Korisnik", "Korisnik")
+                        .WithMany("EmailVerificationTokens")
+                        .HasForeignKey("KorisnikID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Korisnik");
+                });
+
             modelBuilder.Entity("LABsistem.Domain.Entities.Evidencija", b =>
                 {
                     b.HasOne("LABsistem.Domain.Entities.Korisnik", "Korisnik")
                         .WithMany("Evidencije")
                         .HasForeignKey("KorisnikID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("LABsistem.Domain.Entities.Korisnik", "ObradioKorisnik")
+                        .WithMany()
+                        .HasForeignKey("ObradioKorisnikID")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("LABsistem.Domain.Entities.Oprema", "Oprema")
                         .WithMany("Evidencije")
@@ -532,9 +653,25 @@ namespace LabSistem.Dal.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("LABsistem.Domain.Entities.Korisnik", "Profesor")
+                        .WithMany()
+                        .HasForeignKey("ProfesorID")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("LABsistem.Domain.Entities.Termin", "Termin")
+                        .WithMany()
+                        .HasForeignKey("TerminID")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("Korisnik");
 
+                    b.Navigation("ObradioKorisnik");
+
                     b.Navigation("Oprema");
+
+                    b.Navigation("Profesor");
+
+                    b.Navigation("Termin");
                 });
 
             modelBuilder.Entity("LABsistem.Domain.Entities.Kabinet", b =>
@@ -585,7 +722,8 @@ namespace LabSistem.Dal.Migrations
 
                     b.HasOne("LABsistem.Domain.Entities.Termin", "Termin")
                         .WithMany()
-                        .HasForeignKey("TerminID");
+                        .HasForeignKey("TerminID")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Korisnik");
 
@@ -642,6 +780,17 @@ namespace LabSistem.Dal.Migrations
                     b.Navigation("Korisnik");
                 });
 
+            modelBuilder.Entity("LABsistem.Domain.Entities.ReservationReminderDispatch", b =>
+                {
+                    b.HasOne("LABsistem.Domain.Entities.Zahtjev", "Zahtjev")
+                        .WithMany("ReservationReminderDispatches")
+                        .HasForeignKey("ZahtjevID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Zahtjev");
+                });
+
             modelBuilder.Entity("LABsistem.Domain.Entities.Termin", b =>
                 {
                     b.HasOne("LABsistem.Domain.Entities.Kabinet", "Kabinet")
@@ -696,6 +845,8 @@ namespace LabSistem.Dal.Migrations
 
             modelBuilder.Entity("LABsistem.Domain.Entities.Korisnik", b =>
                 {
+                    b.Navigation("EmailVerificationTokens");
+
                     b.Navigation("Evidencije");
 
                     b.Navigation("Kabineti");
@@ -735,6 +886,11 @@ namespace LabSistem.Dal.Migrations
             modelBuilder.Entity("LABsistem.Domain.Entities.Termin", b =>
                 {
                     b.Navigation("Zahtjevi");
+                });
+
+            modelBuilder.Entity("LABsistem.Domain.Entities.Zahtjev", b =>
+                {
+                    b.Navigation("ReservationReminderDispatches");
                 });
 #pragma warning restore 612, 618
         }

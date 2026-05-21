@@ -30,7 +30,9 @@ namespace LABsistem.Dal.Db
         public DbSet<Historija> Historije { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+        public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
         public DbSet<RevokedAccessToken> RevokedAccessTokens { get; set; }
+        public DbSet<ReservationReminderDispatch> ReservationReminderDispatches { get; set; }
 
         // Spojne tabele za Many-to-Many veze
         public DbSet<KorisnikObjekat> KorisnikObjekti { get; set; }
@@ -74,6 +76,26 @@ namespace LABsistem.Dal.Db
                 .HasForeignKey(x => x.KorisnikID)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<EmailVerificationToken>()
+                .HasIndex(x => x.TokenHash)
+                .IsUnique();
+
+            modelBuilder.Entity<EmailVerificationToken>()
+                .HasOne(x => x.Korisnik)
+                .WithMany(x => x.EmailVerificationTokens)
+                .HasForeignKey(x => x.KorisnikID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ReservationReminderDispatch>()
+                .HasIndex(x => new { x.ZahtjevID, x.ReminderOffsetMinutes })
+                .IsUnique();
+
+            modelBuilder.Entity<ReservationReminderDispatch>()
+                .HasOne(x => x.Zahtjev)
+                .WithMany(x => x.ReservationReminderDispatches)
+                .HasForeignKey(x => x.ZahtjevID)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<RevokedAccessToken>()
                 .HasIndex(x => x.Jti)
                 .IsUnique();
@@ -104,6 +126,30 @@ namespace LABsistem.Dal.Db
                 .Property(t => t.LimitOsoba)
                 .IsRequired(false);
 
+            modelBuilder.Entity<Evidencija>()
+                .HasOne(e => e.Korisnik)
+                .WithMany(k => k.Evidencije)
+                .HasForeignKey(e => e.KorisnikID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Evidencija>()
+                .HasOne(e => e.Profesor)
+                .WithMany()
+                .HasForeignKey(e => e.ProfesorID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Evidencija>()
+                .HasOne(e => e.ObradioKorisnik)
+                .WithMany()
+                .HasForeignKey(e => e.ObradioKorisnikID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Evidencija>()
+                .HasOne(e => e.Termin)
+                .WithMany()
+                .HasForeignKey(e => e.TerminID)
+                .OnDelete(DeleteBehavior.SetNull);
+
 
             modelBuilder.Entity<Zahtjev>()
                 .HasOne(z => z.Student)
@@ -126,6 +172,12 @@ namespace LABsistem.Dal.Db
                 .WithMany(k => k.Obavijesti)
                 .HasForeignKey(o => o.KorisnikID)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Obavijest>()
+                .HasOne(o => o.Termin)
+                .WithMany()
+                .HasForeignKey(o => o.TerminID)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

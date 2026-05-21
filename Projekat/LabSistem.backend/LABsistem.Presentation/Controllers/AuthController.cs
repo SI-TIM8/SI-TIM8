@@ -215,6 +215,37 @@ namespace LABsistem.Presentation.Controllers
             return Ok(new { Message = result.Message });
         }
 
+        [HttpGet("verify-email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> VerifyEmail([FromQuery] string token)
+        {
+            var result = await _authService.VerifyEmailAsync(token);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message });
+        }
+
+        [HttpPost("resend-verification-email")]
+        [Authorize]
+        public async Task<IActionResult> ResendVerificationEmail()
+        {
+            if (!TryGetCurrentUserId(out var userId))
+            {
+                return Unauthorized(new { Message = "Neispravan korisnicki identitet." });
+            }
+
+            var result = await _authService.ResendVerificationEmailAsync(userId, HttpContext.RequestAborted);
+            if (!result.Success)
+            {
+                return BadRequest(new { Message = result.Message });
+            }
+
+            return Ok(new { Message = result.Message });
+        }
+
         [HttpGet("verify-reset-token")]
         [AllowAnonymous]
         public async Task<IActionResult> VerifyResetToken([FromQuery] string token)

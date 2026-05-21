@@ -11,6 +11,7 @@ namespace LABsistem.Dal.Db
     {
         public static async Task SeedDefaultUsersAsync(LabSistemDbContext dbContext, CancellationToken cancellationToken = default)
         {
+            var verifiedAtUtc = DateTime.UtcNow;
             var defaultUsers = new[]
             {
                 new Korisnik
@@ -19,7 +20,10 @@ namespace LABsistem.Dal.Db
                     Email = "admin@labsistem.local",
                     Username = "admin",
                     Password = BCrypt.Net.BCrypt.HashPassword("admin123"),
-                    Uloga = UlogaKorisnika.Admin
+                    Uloga = UlogaKorisnika.Admin,
+                    MustChangePassword = false,
+                    EmailVerified = true,
+                    EmailVerifiedAtUtc = verifiedAtUtc
                 },
                 new Korisnik
                 {
@@ -27,7 +31,10 @@ namespace LABsistem.Dal.Db
                     Email = "profesor@labsistem.local",
                     Username = "profesor",
                     Password = BCrypt.Net.BCrypt.HashPassword("profesor123"),
-                    Uloga = UlogaKorisnika.Profesor
+                    Uloga = UlogaKorisnika.Profesor,
+                    MustChangePassword = false,
+                    EmailVerified = true,
+                    EmailVerifiedAtUtc = verifiedAtUtc
                 },
                 new Korisnik
                 {
@@ -35,7 +42,10 @@ namespace LABsistem.Dal.Db
                     Email = "runtyfly34@gmail.com",
                     Username = "student",
                     Password = BCrypt.Net.BCrypt.HashPassword("student123"),
-                    Uloga = UlogaKorisnika.Student
+                    Uloga = UlogaKorisnika.Student,
+                    MustChangePassword = false,
+                    EmailVerified = true,
+                    EmailVerifiedAtUtc = verifiedAtUtc
                 },
                 new Korisnik
                 {
@@ -43,7 +53,10 @@ namespace LABsistem.Dal.Db
                     Email = "tehnicar@labsistem.local",
                     Username = "tehnicar",
                     Password = BCrypt.Net.BCrypt.HashPassword("tehnicar123"),
-                    Uloga = UlogaKorisnika.Tehnicar
+                    Uloga = UlogaKorisnika.Tehnicar,
+                    MustChangePassword = false,
+                    EmailVerified = true,
+                    EmailVerifiedAtUtc = verifiedAtUtc
                 }
             };
 
@@ -73,7 +86,10 @@ namespace LABsistem.Dal.Db
                 existingUser.Username = user.Username;
                 existingUser.Password = user.Password;
                 existingUser.Uloga = user.Uloga;
+                existingUser.MustChangePassword = false;
                 existingUser.DeactivatedAt = null;
+                existingUser.EmailVerified = true;
+                existingUser.EmailVerifiedAtUtc ??= verifiedAtUtc;
             }
 
             await dbContext.SaveChangesAsync(cancellationToken);

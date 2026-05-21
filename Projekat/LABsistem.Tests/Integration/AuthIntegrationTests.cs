@@ -28,7 +28,8 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
         {
             configBuilder.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["FrontendBaseUrl"] = "http://localhost:3001"
+                ["FrontendBaseUrl"] = "http://localhost:3001",
+                ["ReservationReminders:Enabled"] = "false"
             });
         });
 
@@ -54,6 +55,9 @@ public class TestEmailNotificationService : IEmailNotificationService
     private readonly object _syncRoot = new();
     private readonly List<PasswordResetEmailRecord> _passwordResetEmails = [];
     private readonly List<ReservationDecisionEmailRecord> _reservationDecisionEmails = [];
+    private readonly List<EquipmentFaultEmailRecord> _equipmentFaultEmails = [];
+    private readonly List<EmailVerificationEmailRecord> _emailVerificationEmails = [];
+    private readonly List<ReservationReminderEmailRecord> _reservationReminderEmails = [];
 
     public IReadOnlyList<PasswordResetEmailRecord> PasswordResetEmails
     {
@@ -77,12 +81,48 @@ public class TestEmailNotificationService : IEmailNotificationService
         }
     }
 
+    public IReadOnlyList<EquipmentFaultEmailRecord> EquipmentFaultEmails
+    {
+        get
+        {
+            lock (_syncRoot)
+            {
+                return _equipmentFaultEmails.ToList();
+            }
+        }
+    }
+
+    public IReadOnlyList<EmailVerificationEmailRecord> EmailVerificationEmails
+    {
+        get
+        {
+            lock (_syncRoot)
+            {
+                return _emailVerificationEmails.ToList();
+            }
+        }
+    }
+
+    public IReadOnlyList<ReservationReminderEmailRecord> ReservationReminderEmails
+    {
+        get
+        {
+            lock (_syncRoot)
+            {
+                return _reservationReminderEmails.ToList();
+            }
+        }
+    }
+
     public void Clear()
     {
         lock (_syncRoot)
         {
             _passwordResetEmails.Clear();
             _reservationDecisionEmails.Clear();
+            _equipmentFaultEmails.Clear();
+            _emailVerificationEmails.Clear();
+            _reservationReminderEmails.Clear();
         }
     }
 
@@ -127,6 +167,77 @@ public class TestEmailNotificationService : IEmailNotificationService
 
         return Task.FromResult(true);
     }
+
+    public Task<bool> SendEmailVerificationEmailAsync(
+        string recipientEmail,
+        string recipientName,
+        string verificationLink,
+        DateTime expiresAtUtc,
+        CancellationToken cancellationToken = default)
+    {
+        lock (_syncRoot)
+        {
+            _emailVerificationEmails.Add(new EmailVerificationEmailRecord(
+                recipientEmail,
+                recipientName,
+                verificationLink,
+                expiresAtUtc));
+        }
+
+        return Task.FromResult(true);
+    }
+
+    public Task<bool> SendEquipmentFaultEmailAsync(
+        string recipientEmail,
+        string recipientName,
+        string opremaNaziv,
+        DateTime datumTermina,
+        TimeSpan vrijemePocetka,
+        TimeSpan vrijemeKraja,
+        string komentar,
+        string? appLinkText = null,
+        CancellationToken cancellationToken = default)
+    {
+        lock (_syncRoot)
+        {
+            _equipmentFaultEmails.Add(new EquipmentFaultEmailRecord(
+                recipientEmail,
+                recipientName,
+                opremaNaziv,
+                datumTermina,
+                vrijemePocetka,
+                vrijemeKraja,
+                komentar,
+                appLinkText));
+        }
+
+        return Task.FromResult(true);
+    }
+
+    public Task<bool> SendReservationReminderEmailAsync(
+        string recipientEmail,
+        string recipientName,
+        DateTime datumTermina,
+        TimeSpan vrijemePocetka,
+        TimeSpan vrijemeKraja,
+        string kabinetNaziv,
+        string reminderLeadTimeText,
+        CancellationToken cancellationToken = default)
+    {
+        lock (_syncRoot)
+        {
+            _reservationReminderEmails.Add(new ReservationReminderEmailRecord(
+                recipientEmail,
+                recipientName,
+                datumTermina,
+                vrijemePocetka,
+                vrijemeKraja,
+                kabinetNaziv,
+                reminderLeadTimeText));
+        }
+
+        return Task.FromResult(true);
+    }
 }
 
 public record PasswordResetEmailRecord(
@@ -142,6 +253,31 @@ public record ReservationDecisionEmailRecord(
     TimeSpan VrijemePocetka,
     bool Odobri,
     string? Komentar);
+
+public record EquipmentFaultEmailRecord(
+    string RecipientEmail,
+    string RecipientName,
+    string OpremaNaziv,
+    DateTime DatumTermina,
+    TimeSpan VrijemePocetka,
+    TimeSpan VrijemeKraja,
+    string Komentar,
+    string? AppLinkText);
+
+public record EmailVerificationEmailRecord(
+    string RecipientEmail,
+    string RecipientName,
+    string VerificationLink,
+    DateTime ExpiresAtUtc);
+
+public record ReservationReminderEmailRecord(
+    string RecipientEmail,
+    string RecipientName,
+    DateTime DatumTermina,
+    TimeSpan VrijemePocetka,
+    TimeSpan VrijemeKraja,
+    string KabinetNaziv,
+    string ReminderLeadTimeText);
 
 public record MessageResponseDto(string Message);
 public record VerifyResetTokenResponseDto(bool Valid, string Message);
@@ -168,7 +304,9 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
         string email,
         string password,
         UlogaKorisnika role = UlogaKorisnika.Student,
-        bool isActive = true)
+        bool isActive = true,
+        bool emailVerified = true,
+        bool mustChangePassword = false)
     {
         using var scope = _factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
@@ -180,6 +318,9 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
             existingUser.Email = email;
             existingUser.Uloga = role;
             existingUser.DeactivatedAt = isActive ? null : DateTime.UtcNow;
+            existingUser.EmailVerified = emailVerified;
+            existingUser.EmailVerifiedAtUtc = emailVerified ? DateTime.UtcNow : null;
+            existingUser.MustChangePassword = mustChangePassword;
             await context.SaveChangesAsync();
             return existingUser.ID;
         }
@@ -188,9 +329,12 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
         {
             ImePrezime = "Test User",
             Email = email,
+            EmailVerified = emailVerified,
+            EmailVerifiedAtUtc = emailVerified ? DateTime.UtcNow : null,
             Username = username,
             Password = BCrypt.Net.BCrypt.HashPassword(password),
             Uloga = role,
+            MustChangePassword = mustChangePassword,
             DeactivatedAt = isActive ? null : DateTime.UtcNow
         };
 
@@ -405,6 +549,8 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
     [Fact]
     public async Task UpdateProfileEndpoint_WithValidPayload_UpdatesProfileData()
     {
+        var emailService = GetEmailService();
+        emailService.Clear();
         await SeedUserAsync("profileintegration", "profile.integration@test.com", "ValidPassword123!");
 
         var loginResponse = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
@@ -430,8 +576,271 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
 
         updateResponse.EnsureSuccessStatusCode();
         var payload = await updateResponse.Content.ReadAsStringAsync();
-        Assert.Contains("Profil je uspjesno azuriran.", payload);
+        Assert.Contains("Profil je uspješno ažuriran.", payload);
         Assert.Contains("profileupdated", payload);
+
+        var verificationEmail = Assert.Single(emailService.EmailVerificationEmails);
+        Assert.Equal("profile.updated@test.com", verificationEmail.RecipientEmail);
+
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+        var updatedUser = await context.Korisnici.SingleAsync(x => x.Username == "profileupdated");
+        Assert.Equal("profile.updated@test.com", updatedUser.Email);
+        Assert.False(updatedUser.EmailVerified);
+        Assert.Null(updatedUser.EmailVerifiedAtUtc);
+    }
+
+    [Fact]
+    public async Task CreateUserEndpoint_WithAdmin_SendsVerificationEmail_AndMarksUserAsUnverified()
+    {
+        var emailService = GetEmailService();
+        emailService.Clear();
+        await SeedUserAsync("admincreateverify", "admin.create.verify@test.com", "AdminPassword123!", UlogaKorisnika.Admin);
+
+        var loginResponse = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "admincreateverify",
+            Password = "AdminPassword123!"
+        });
+        loginResponse.EnsureSuccessStatusCode();
+        var loginPayload = await loginResponse.Content.ReadFromJsonAsync<LoginResponseDto>();
+
+        using var createRequest = new HttpRequestMessage(HttpMethod.Post, "/api/Auth/create-user?uloga=Student")
+        {
+            Content = JsonContent.Create(new RegisterRequestDto
+            {
+                ImePrezime = "Email Verify Student",
+                Email = "email.verify.student@test.com",
+                Username = "emailverifystudent",
+                Password = "ValidPassword123!"
+            })
+        };
+        createRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginPayload!.Token);
+
+        var createResponse = await _client.SendAsync(createRequest);
+        createResponse.EnsureSuccessStatusCode();
+
+        var verificationEmail = Assert.Single(emailService.EmailVerificationEmails);
+        Assert.Equal("email.verify.student@test.com", verificationEmail.RecipientEmail);
+
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+        var createdUser = await context.Korisnici.SingleAsync(x => x.Username == "emailverifystudent");
+        Assert.False(createdUser.EmailVerified);
+        Assert.Null(createdUser.EmailVerifiedAtUtc);
+        Assert.True(createdUser.MustChangePassword);
+
+        var storedToken = await context.EmailVerificationTokens.SingleAsync(x => x.KorisnikID == createdUser.ID);
+        Assert.Equal(createdUser.Email, storedToken.Email);
+        Assert.Null(storedToken.UsedAtUtc);
+    }
+
+    [Theory]
+    [InlineData(UlogaKorisnika.Student, "firstloginstudent", "first.login.student@test.com")]
+    [InlineData(UlogaKorisnika.Profesor, "firstloginprofesor", "first.login.profesor@test.com")]
+    [InlineData(UlogaKorisnika.Tehnicar, "firstlogintehnicar", "first.login.tehnicar@test.com")]
+    [InlineData(UlogaKorisnika.Admin, "firstloginadmin", "first.login.admin@test.com")]
+    public async Task LoginEndpoint_WithAdminCreatedUserOfAnyRole_ReturnsMustChangePasswordFlag(
+        UlogaKorisnika role,
+        string username,
+        string email)
+    {
+        await SeedUserAsync("admincreateverify2", "admin.create.verify2@test.com", "AdminPassword123!", UlogaKorisnika.Admin);
+
+        var adminLogin = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "admincreateverify2",
+            Password = "AdminPassword123!"
+        });
+        adminLogin.EnsureSuccessStatusCode();
+        var adminPayload = await adminLogin.Content.ReadFromJsonAsync<LoginResponseDto>();
+
+        using var createRequest = new HttpRequestMessage(HttpMethod.Post, $"/api/Auth/create-user?uloga={role}")
+        {
+            Content = JsonContent.Create(new RegisterRequestDto
+            {
+                ImePrezime = "First Login User",
+                Email = email,
+                Username = username,
+                Password = "ValidPassword123!"
+            })
+        };
+        createRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", adminPayload!.Token);
+
+        var createResponse = await _client.SendAsync(createRequest);
+        createResponse.EnsureSuccessStatusCode();
+
+        var userLogin = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = username,
+            Password = "ValidPassword123!"
+        });
+        userLogin.EnsureSuccessStatusCode();
+
+        var userPayload = await userLogin.Content.ReadFromJsonAsync<LoginResponseDto>();
+        Assert.NotNull(userPayload);
+        Assert.True(userPayload!.MustChangePassword);
+    }
+
+    [Fact]
+    public async Task MustChangePasswordUser_CannotAccessProfileUntilPasswordIsChanged()
+    {
+        await SeedUserAsync(
+            "firstloginblock",
+            "first.login.block@test.com",
+            "ValidPassword123!",
+            mustChangePassword: true);
+
+        var loginResponse = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "firstloginblock",
+            Password = "ValidPassword123!"
+        });
+        loginResponse.EnsureSuccessStatusCode();
+        var loginPayload = await loginResponse.Content.ReadFromJsonAsync<LoginResponseDto>();
+        Assert.NotNull(loginPayload);
+        Assert.True(loginPayload!.MustChangePassword);
+
+        using var profileRequest = new HttpRequestMessage(HttpMethod.Get, "/api/Auth/profile");
+        profileRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginPayload.Token);
+
+        var blockedProfileResponse = await _client.SendAsync(profileRequest);
+        Assert.Equal(HttpStatusCode.Forbidden, blockedProfileResponse.StatusCode);
+
+        using var changePasswordRequest = new HttpRequestMessage(HttpMethod.Post, "/api/Auth/change-password")
+        {
+            Content = JsonContent.Create(new ChangePasswordRequestDto
+            {
+                NewPassword = "NovaValidna123!",
+                ConfirmPassword = "NovaValidna123!"
+            })
+        };
+        changePasswordRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginPayload.Token);
+
+        var changePasswordResponse = await _client.SendAsync(changePasswordRequest);
+        changePasswordResponse.EnsureSuccessStatusCode();
+
+        var profileAfterChangeRequest = new HttpRequestMessage(HttpMethod.Get, "/api/Auth/profile");
+        profileAfterChangeRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginPayload.Token);
+
+        var profileAfterChangeResponse = await _client.SendAsync(profileAfterChangeRequest);
+        profileAfterChangeResponse.EnsureSuccessStatusCode();
+
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+        var updatedUser = await context.Korisnici.SingleAsync(x => x.Username == "firstloginblock");
+        Assert.False(updatedUser.MustChangePassword);
+    }
+
+    [Fact]
+    public async Task VerifyEmailEndpoint_WithValidToken_MarksEmailAsVerified()
+    {
+        var emailService = GetEmailService();
+        emailService.Clear();
+        await SeedUserAsync("adminverifyemail", "admin.verify.email@test.com", "AdminPassword123!", UlogaKorisnika.Admin);
+
+        var adminLogin = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "adminverifyemail",
+            Password = "AdminPassword123!"
+        });
+        adminLogin.EnsureSuccessStatusCode();
+        var adminPayload = await adminLogin.Content.ReadFromJsonAsync<LoginResponseDto>();
+
+        using var createRequest = new HttpRequestMessage(HttpMethod.Post, "/api/Auth/create-user?uloga=Student")
+        {
+            Content = JsonContent.Create(new RegisterRequestDto
+            {
+                ImePrezime = "Verify Flow Student",
+                Email = "verify.flow.student@test.com",
+                Username = "verifyflowstudent",
+                Password = "ValidPassword123!"
+            })
+        };
+        createRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", adminPayload!.Token);
+
+        var createResponse = await _client.SendAsync(createRequest);
+        createResponse.EnsureSuccessStatusCode();
+
+        var verificationEmail = Assert.Single(emailService.EmailVerificationEmails);
+        var token = ExtractTokenFromLink(verificationEmail.VerificationLink);
+
+        var verifyResponse = await _client.GetAsync($"/api/Auth/verify-email?token={Uri.EscapeDataString(token)}");
+        verifyResponse.EnsureSuccessStatusCode();
+
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+        var verifiedUser = await context.Korisnici.SingleAsync(x => x.Username == "verifyflowstudent");
+        Assert.True(verifiedUser.EmailVerified);
+        Assert.NotNull(verifiedUser.EmailVerifiedAtUtc);
+
+        var storedToken = await context.EmailVerificationTokens.SingleAsync(x => x.KorisnikID == verifiedUser.ID);
+        Assert.NotNull(storedToken.UsedAtUtc);
+    }
+
+    [Fact]
+    public async Task ResendVerificationEmailEndpoint_WithUnverifiedEmail_SendsVerificationEmail()
+    {
+        var emailService = GetEmailService();
+        emailService.Clear();
+        await SeedUserAsync(
+            "resendverify",
+            "resend.verify@test.com",
+            "ValidPassword123!",
+            emailVerified: false);
+
+        var loginResponse = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "resendverify",
+            Password = "ValidPassword123!"
+        });
+        loginResponse.EnsureSuccessStatusCode();
+        var loginPayload = await loginResponse.Content.ReadFromJsonAsync<LoginResponseDto>();
+
+        using var resendRequest = new HttpRequestMessage(HttpMethod.Post, "/api/Auth/resend-verification-email");
+        resendRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginPayload!.Token);
+
+        var resendResponse = await _client.SendAsync(resendRequest);
+        resendResponse.EnsureSuccessStatusCode();
+
+        var verificationEmail = Assert.Single(emailService.EmailVerificationEmails);
+        Assert.Equal("resend.verify@test.com", verificationEmail.RecipientEmail);
+    }
+
+    [Fact]
+    public async Task ForgotPasswordEndpoint_WithUnverifiedEmail_ReturnsGenericSuccessWithoutSendingEmail()
+    {
+        var emailService = GetEmailService();
+        emailService.Clear();
+        await SeedUserAsync(
+            "forgotunverified",
+            "forgot.unverified@test.com",
+            "ValidPassword123!",
+            emailVerified: false);
+
+        int tokenCountBeforeRequest;
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+            tokenCountBeforeRequest = await context.PasswordResetTokens.CountAsync();
+        }
+
+        var response = await _client.PostAsJsonAsync("/api/Auth/forgot-password", new ForgotPasswordRequestDto
+        {
+            Email = "forgot.unverified@test.com"
+        });
+
+        response.EnsureSuccessStatusCode();
+        var payload = await response.Content.ReadFromJsonAsync<MessageResponseDto>();
+
+        Assert.NotNull(payload);
+        Assert.Equal(GenericForgotPasswordMessage, payload!.Message);
+        Assert.Empty(emailService.PasswordResetEmails);
+
+        using var verificationScope = _factory.Services.CreateScope();
+        var verificationContext = verificationScope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+        var tokenCountAfterRequest = await verificationContext.PasswordResetTokens.CountAsync();
+        Assert.Equal(tokenCountBeforeRequest, tokenCountAfterRequest);
     }
 
     [Fact]

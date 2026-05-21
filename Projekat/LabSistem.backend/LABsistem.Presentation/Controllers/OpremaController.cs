@@ -15,9 +15,9 @@ namespace LABsistem.Presentation.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,Profesor,Tehnicar")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromQuery] string prikaz = "aktivna")
         {
-            var oprema = await _service.VratiSvuOpremu();
+            var oprema = await _service.VratiSvuOpremu(prikaz);
             return Ok(oprema);
         }
 
@@ -26,7 +26,7 @@ namespace LABsistem.Presentation.Controllers
         public async Task<IActionResult> Post([FromBody] OpremaCreateDTO dto)
         {
             await _service.KreirajOpremu(dto);
-            return Ok(new { message = "Oprema uspjesno dodana" });
+            return Ok(new { message = "Oprema uspješno dodana." });
         }
 
         [HttpPut("{id}")]
@@ -34,15 +34,25 @@ namespace LABsistem.Presentation.Controllers
         public async Task<IActionResult> Put(int id, [FromBody] OpremaCreateDTO dto)
         {
             await _service.AzurirajOpremu(id, dto);
-            return Ok(new { message = "Oprema azurirana" });
+            return Ok(new { message = "Oprema ažurirana." });
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin,Tehnicar")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _service.ObrisiOpremu(id);
-            return Ok(new { message = "Oprema obrisana" });
+            var uspjeh = await _service.ArhivirajOpremu(id);
+            if (!uspjeh) return NotFound();
+            return Ok(new { message = "Oprema arhivirana." });
+        }
+
+        [HttpPost("{id}/restore")]
+        [Authorize(Roles = "Admin,Tehnicar")]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var uspjeh = await _service.VratiIzArhive(id);
+            if (!uspjeh) return NotFound();
+            return Ok(new { message = "Oprema vraćena iz arhive." });
         }
 
         [HttpGet("kabinet/{kabinetId}")]

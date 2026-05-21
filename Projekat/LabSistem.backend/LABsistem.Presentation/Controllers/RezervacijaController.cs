@@ -44,16 +44,36 @@ namespace LABsistem.Presentation.Controllers
         }
 
         [HttpPost("otkazi/{id}")]
-        [Authorize(Roles = "Profesor")]
+        [Authorize(Roles = "Profesor,Student")]
         public async Task<IActionResult> Otkazi(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
-            var profesorId = int.Parse(userId);
+            if (!int.TryParse(userId, out var korisnikId)) return Unauthorized();
+
+            var role = User.FindFirstValue(ClaimTypes.Role)?.ToLowerInvariant();
             try
             {
-                await _service.OtkaziTermin(profesorId, id);
-                return Ok(new { message = "Rezervacija otkazana." });
+                if (role == "profesor")
+                {
+                    await _service.OtkaziTermin(korisnikId, id);
+                    return Ok(new { message = "Rezervacija otkazana." });
+                }
+
+                if (role == "student")
+                {
+                    var rezultat = await _service.OtkaziStudentovuRezervaciju(korisnikId, id);
+                    if (rezultat.ProfesorID.HasValue)
+                    {
+                        var poruka =
+                            $"Student {rezultat.StudentImePrezime} je otkazao dolazak na termin {rezultat.DatumTermina:dd.MM.yyyy} u {rezultat.VrijemePocetka:hh\\:mm}.";
+                        await _obavijestService.KreirajAsync(rezultat.ProfesorID.Value, poruka, rezultat.TerminID);
+                    }
+
+                    return Ok(new { message = "Rezervacija otkazana." });
+                }
+
+                return Forbid();
             }
             catch (Exception ex)
             {
@@ -72,6 +92,25 @@ namespace LABsistem.Presentation.Controllers
             {
                 await _service.PosaljiZahtjev(studentId, id);
                 return Ok(new { message = "Zahtjev uspjesno poslan." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("otkazi-zahtjev/{zahtjevId}")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> OtkaziZahtjev(int zahtjevId)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            if (!int.TryParse(userId, out var studentId)) return Unauthorized();
+
+            try
+            {
+                await _service.OtkaziStudentovZahtjev(studentId, zahtjevId);
+                return Ok(new { message = "Zahtjev uspješno otkazan." });
             }
             catch (Exception ex)
             {
@@ -100,13 +139,16 @@ namespace LABsistem.Presentation.Controllers
                 }
 
                 await _obavijestService.KreirajAsync(zahtjev.StudentID, poruka, zahtjev.TerminID);
-                await _emailNotificationService.SendReservationDecisionEmailAsync(
-                    zahtjev.StudentEmail,
-                    zahtjev.StudentImePrezime,
-                    zahtjev.DatumTermina,
-                    zahtjev.VrijemePocetka,
-                    odobri,
-                    komentar);
+                if (zahtjev.StudentEmailVerified)
+                {
+                    await _emailNotificationService.SendReservationDecisionEmailAsync(
+                        zahtjev.StudentEmail,
+                        zahtjev.StudentImePrezime,
+                        zahtjev.DatumTermina,
+                        zahtjev.VrijemePocetka,
+                        odobri,
+                        komentar);
+                }
 
                 return Ok(new { message = odobri ? "Zahtjev odobren." : "Zahtjev odbijen." });
             }
@@ -156,6 +198,18 @@ namespace LABsistem.Presentation.Controllers
             var studentId = int.Parse(userId);
             var termini = await _service.GetDostupniTerminiZaStudenteAsync(studentId);
             return Ok(termini);
+        }
+
+        [HttpGet("moji-zahtjevi")]
+        [Authorize(Roles = "Student")]
+        public async Task<IActionResult> GetMojiZahtjevi()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+            if (!int.TryParse(userId, out var studentId)) return Unauthorized();
+
+            var zahtjevi = await _service.GetMojeZahtjeveAsync(studentId);
+            return Ok(zahtjevi);
         }
     }
 }
