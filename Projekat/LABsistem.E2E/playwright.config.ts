@@ -1,40 +1,26 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3001';
+
 export default defineConfig({
-  // Mapa gdje će se nalaziti naši testovi
   testDir: './tests',
-  
-  // Maksimalno vrijeme trajanja jednog testa (30 sekundi)
   timeout: 30 * 1000,
-  
-  // Očekivanja (assertions) imaju timeout od 5 sekundi
   expect: {
-    timeout: 5000
+    timeout: 5000,
   },
-
-  // Pokreni testove paralelno ako ih ima više
   fullyParallel: true,
-
-  // Reporteri - 'html' će ti otvoriti super izvještaj u browseru ako test padne
   reporter: 'html',
-
-  // Zajedničke postavke za sve browsere
   use: {
-    baseURL: 'https://labsistem.duckdns.org',
-    
+    baseURL,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     trace: 'on-first-retry',
   },
-
-  
   projects: [
-
     {
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
     },
-
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },

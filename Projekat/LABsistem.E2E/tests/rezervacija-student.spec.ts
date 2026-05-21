@@ -1,40 +1,39 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 
-test('Student-slanje zahtjeva za rezervaciju i odobrenje', async ({ page }) => {
+const studentUsername = process.env.PLAYWRIGHT_STUDENT_USERNAME || 'student';
+const studentPassword = process.env.PLAYWRIGHT_STUDENT_PASSWORD || 'student123';
+const professorUsername = process.env.PLAYWRIGHT_PROFESSOR_USERNAME || 'profesor';
+const professorPassword = process.env.PLAYWRIGHT_PROFESSOR_PASSWORD || 'profesor123';
 
-
-  await page.goto('https://labsistem.duckdns.org/login');
-  await page.getByRole('textbox', { name: 'Korisničko ime ili email' }).click();
-  await page.getByRole('textbox', { name: 'Korisničko ime ili email' }).fill('student');
-  await page.getByRole('textbox', { name: 'Lozinka:' }).click();
-  await page.getByRole('textbox', { name: 'Lozinka:' }).fill('student123');
+test('Student salje zahtjev za rezervaciju i profesor ga odobrava', async ({ page }) => {
+  await page.goto('/login');
+  await page.getByRole('textbox', { name: 'Korisnicko ime ili email' }).click();
+  await page.getByRole('textbox', { name: 'Korisnicko ime ili email' }).fill(studentUsername);
+  await page.getByLabel('Lozinka:').click();
+  await page.getByLabel('Lozinka:').fill(studentPassword);
   await page.getByRole('button', { name: 'Prijavi se' }).click();
-
 
   await page.getByRole('link', { name: 'Zakazi termin' }).click();
-  await page.getByRole('button', { name: 'Pošalji zahtjev' }).click();
-  await page.getByRole('button', { name: 'S student Student ▾' }).click();
+  await page.getByRole('button', { name: 'Posalji zahtjev' }).click();
+  await page.getByRole('button', { name: /student/i }).click();
   await page.getByRole('button', { name: 'Odjavi se' }).click();
 
-  await page.getByRole('textbox', { name: 'Korisničko ime ili email' }).click();
-  await page.getByRole('textbox', { name: 'Korisničko ime ili email' }).fill('profesor');
-  await page.getByRole('textbox', { name: 'Lozinka:' }).click();
-  await page.getByRole('textbox', { name: 'Lozinka:' }).fill('profesor123');
+  await page.getByRole('textbox', { name: 'Korisnicko ime ili email' }).click();
+  await page.getByRole('textbox', { name: 'Korisnicko ime ili email' }).fill(professorUsername);
+  await page.getByLabel('Lozinka:').click();
+  await page.getByLabel('Lozinka:').fill(professorPassword);
   await page.getByRole('button', { name: 'Prijavi se' }).click();
-
 
   await page.getByRole('link', { name: 'Zahtjevi studenata' }).click();
   await page.getByRole('button', { name: 'Odobri' }).click();
-  await page.getByRole('button', { name: 'P profesor Profesor /' }).click();
+  await page.getByRole('button', { name: /profesor/i }).click();
   await page.getByRole('button', { name: 'Odjavi se' }).click();
 
-
-  await page.getByRole('textbox', { name: 'Korisničko ime ili email' }).click();
-  await page.getByRole('textbox', { name: 'Korisničko ime ili email' }).fill('student');
-  await page.getByRole('textbox', { name: 'Lozinka:' }).click();
-  await page.getByRole('textbox', { name: 'Lozinka:' }).fill('student123');
+  await page.getByRole('textbox', { name: 'Korisnicko ime ili email' }).click();
+  await page.getByRole('textbox', { name: 'Korisnicko ime ili email' }).fill(studentUsername);
+  await page.getByLabel('Lozinka:').click();
+  await page.getByLabel('Lozinka:').fill(studentPassword);
   await page.getByRole('button', { name: 'Prijavi se' }).click();
 
-  
   await page.getByRole('link', { name: 'Moje rezervacije' }).click();
 });
