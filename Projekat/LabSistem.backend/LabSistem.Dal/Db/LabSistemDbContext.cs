@@ -172,6 +172,12 @@ namespace LABsistem.Dal.Db
                 .WithMany(k => k.Obavijesti)
                 .HasForeignKey(o => o.KorisnikID)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Obavijest>()
+                .HasOne(o => o.Termin)
+                .WithMany()
+                .HasForeignKey(o => o.TerminID)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

@@ -96,6 +96,48 @@ namespace LABsistem.Tests.Integration
         }
 
         [Fact]
+        public async Task ObrisiTermin_ZadrzavaObavijestiINuliraTerminReferencu()
+        {
+            using var context = GetInMemoryDbContext();
+            var korisnik = new Korisnik
+            {
+                ID = 70,
+                ImePrezime = "Test Korisnik",
+                Username = "test-korisnik",
+                Email = "test@example.com",
+                Password = "test1234"
+            };
+            var termin = new Termin
+            {
+                ID = 71,
+                Datum = DateTime.Now,
+                VrijemePocetka = TimeSpan.Zero,
+                VrijemeKraja = TimeSpan.FromHours(1)
+            };
+            var obavijest = new Obavijest
+            {
+                ID = 72,
+                KorisnikID = korisnik.ID,
+                Novosti = "Podsjetnik za termin",
+                TerminID = termin.ID
+            };
+
+            context.Korisnici.Add(korisnik);
+            context.Termini.Add(termin);
+            context.Obavijesti.Add(obavijest);
+            await context.SaveChangesAsync();
+
+            var service = new TerminService(new TerminRepository(context), CreateValidatorMock().Object);
+
+            await service.ObrisiTermin(71);
+
+            Assert.Null(await context.Termini.FindAsync(71));
+
+            var sacuvanaObavijest = await context.Obavijesti.SingleAsync(o => o.ID == 72);
+            Assert.Null(sacuvanaObavijest.TerminID);
+        }
+
+        [Fact]
         public async Task Repository_GetById_VracaNullZaNepostojeci()
         {
             
