@@ -4,8 +4,8 @@
 
 | ID | Naziv zadatka ili story-a | Opis | Povezani US | Odgovorna osoba ili osobe | Status | Napomena |
 |-|-|-|-|-|-|-|
-| 1 | Prijava i evidencija kvara opreme | Implementiran je tok prijave kvara od strane profesora, uključujući validaciju, unos komentara i automatsku promjenu statusa opreme na neispravnu. | US09, US28 | Emina Hamamdžić, Hamza Hadžić | Završeno | Status opreme se odmah ažurira i prikazuje korisnicima |
-| 2 | Ograničenje aktivnih zahtjeva po studentu | Uveden je sistemski limit aktivnih studentskih zahtjeva uz validaciju i poruku upozorenja kada je limit dostignut. | US16 | Refik Mujčinović, Hamza Hadžić | Završeno | Aktivni zahtjevi su statusi Na čekanju i Odobren |
+| 1 | Prijava i evidencija kvara opreme | Implementiran je tok prijave kvara od strane profesora, uključujući validaciju, unos komentara i automatsku promjenu statusa opreme na neispravnu. | US09, US28 | Emina Hamamdžić | Završeno | Status opreme se odmah ažurira i prikazuje korisnicima |
+| 2 | Ograničenje aktivnih zahtjeva po studentu | Uveden je sistemski limit aktivnih studentskih zahtjeva uz validaciju i poruku upozorenja kada je limit dostignut. | US16 | Refik Mujčinović | Završeno | Aktivni zahtjevi su statusi Na čekanju i Odobren |
 | 3 | Sigurnost prvog pristupa | Dodana je obavezna promjena lozinke pri prvom loginu za novokreirane korisnike koje kreira administrator. | US47 | Hamza Hadžić | Završeno | Ne odnosi se na seedovane korisnike |
 | 4 | Pregled rezervacija i upravljanje zahtjevima studenta | Student na jednom ekranu vidi aktivne rezervacije i svoje zahtjeve, te može otkazati rezervaciju ili poništiti zahtjev na čekanju. | US13A, US13B | Hamza Hadžić | Završeno | Implementirani su odvojeni tabovi unutar ekrana "Moje rezervacije" |
 | 5 | Podsjetnici prije termina | Sistem šalje in-app podsjetnike svim studentima, a email podsjetnike samo kada je email adresa verifikovana. | US50 | Hamza Hadžić | Završeno | Vrijeme slanja je konfigurabilno, npr. 24h i 1h ranije |
