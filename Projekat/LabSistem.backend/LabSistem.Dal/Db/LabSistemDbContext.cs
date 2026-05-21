@@ -32,6 +32,7 @@ namespace LABsistem.Dal.Db
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
         public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
         public DbSet<RevokedAccessToken> RevokedAccessTokens { get; set; }
+        public DbSet<ReservationReminderDispatch> ReservationReminderDispatches { get; set; }
 
         // Spojne tabele za Many-to-Many veze
         public DbSet<KorisnikObjekat> KorisnikObjekti { get; set; }
@@ -83,6 +84,16 @@ namespace LABsistem.Dal.Db
                 .HasOne(x => x.Korisnik)
                 .WithMany(x => x.EmailVerificationTokens)
                 .HasForeignKey(x => x.KorisnikID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<ReservationReminderDispatch>()
+                .HasIndex(x => new { x.ZahtjevID, x.ReminderOffsetMinutes })
+                .IsUnique();
+
+            modelBuilder.Entity<ReservationReminderDispatch>()
+                .HasOne(x => x.Zahtjev)
+                .WithMany(x => x.ReservationReminderDispatches)
+                .HasForeignKey(x => x.ZahtjevID)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<RevokedAccessToken>()

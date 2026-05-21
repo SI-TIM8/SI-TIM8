@@ -35,5 +35,15 @@ namespace LABsistem.Api.Services
             string verificationLink,
             DateTime expiresAtUtc,
             CancellationToken cancellationToken = default);
+
+        Task<bool> SendReservationReminderEmailAsync(
+            string recipientEmail,
+            string recipientName,
+            DateTime datumTermina,
+            TimeSpan vrijemePocetka,
+            TimeSpan vrijemeKraja,
+            string kabinetNaziv,
+            string reminderLeadTimeText,
+            CancellationToken cancellationToken = default);
     }
 }

@@ -32,5 +32,7 @@ namespace LABsistem.Domain.Entities
         public Termin Termin { get; set; }
 
         public StatusZahtjeva StatusZahtjeva { get; set; }
+
+        public ICollection<ReservationReminderDispatch> ReservationReminderDispatches { get; set; } = [];
     }
 }

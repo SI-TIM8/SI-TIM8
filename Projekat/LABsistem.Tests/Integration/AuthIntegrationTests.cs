@@ -28,7 +28,8 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
         {
             configBuilder.AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["FrontendBaseUrl"] = "http://localhost:3001"
+                ["FrontendBaseUrl"] = "http://localhost:3001",
+                ["ReservationReminders:Enabled"] = "false"
             });
         });
 
@@ -56,6 +57,7 @@ public class TestEmailNotificationService : IEmailNotificationService
     private readonly List<ReservationDecisionEmailRecord> _reservationDecisionEmails = [];
     private readonly List<EquipmentFaultEmailRecord> _equipmentFaultEmails = [];
     private readonly List<EmailVerificationEmailRecord> _emailVerificationEmails = [];
+    private readonly List<ReservationReminderEmailRecord> _reservationReminderEmails = [];
 
     public IReadOnlyList<PasswordResetEmailRecord> PasswordResetEmails
     {
@@ -101,6 +103,17 @@ public class TestEmailNotificationService : IEmailNotificationService
         }
     }
 
+    public IReadOnlyList<ReservationReminderEmailRecord> ReservationReminderEmails
+    {
+        get
+        {
+            lock (_syncRoot)
+            {
+                return _reservationReminderEmails.ToList();
+            }
+        }
+    }
+
     public void Clear()
     {
         lock (_syncRoot)
@@ -109,6 +122,7 @@ public class TestEmailNotificationService : IEmailNotificationService
             _reservationDecisionEmails.Clear();
             _equipmentFaultEmails.Clear();
             _emailVerificationEmails.Clear();
+            _reservationReminderEmails.Clear();
         }
     }
 
@@ -199,6 +213,31 @@ public class TestEmailNotificationService : IEmailNotificationService
 
         return Task.FromResult(true);
     }
+
+    public Task<bool> SendReservationReminderEmailAsync(
+        string recipientEmail,
+        string recipientName,
+        DateTime datumTermina,
+        TimeSpan vrijemePocetka,
+        TimeSpan vrijemeKraja,
+        string kabinetNaziv,
+        string reminderLeadTimeText,
+        CancellationToken cancellationToken = default)
+    {
+        lock (_syncRoot)
+        {
+            _reservationReminderEmails.Add(new ReservationReminderEmailRecord(
+                recipientEmail,
+                recipientName,
+                datumTermina,
+                vrijemePocetka,
+                vrijemeKraja,
+                kabinetNaziv,
+                reminderLeadTimeText));
+        }
+
+        return Task.FromResult(true);
+    }
 }
 
 public record PasswordResetEmailRecord(
@@ -230,6 +269,15 @@ public record EmailVerificationEmailRecord(
     string RecipientName,
     string VerificationLink,
     DateTime ExpiresAtUtc);
+
+public record ReservationReminderEmailRecord(
+    string RecipientEmail,
+    string RecipientName,
+    DateTime DatumTermina,
+    TimeSpan VrijemePocetka,
+    TimeSpan VrijemeKraja,
+    string KabinetNaziv,
+    string ReminderLeadTimeText);
 
 public record MessageResponseDto(string Message);
 public record VerifyResetTokenResponseDto(bool Valid, string Message);

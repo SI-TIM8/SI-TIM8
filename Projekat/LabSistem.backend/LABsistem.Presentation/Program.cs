@@ -8,11 +8,13 @@ using LABsistem.Dal.Db;
 using LABsistem.Dal.Interfaces;
 using LABsistem.Dal.Repositories;
 using LABsistem.Api.Services;
+using LABsistem.Api.Options;
 using LABsistem.Application.DTOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using LABsistem.Api.Validators;
+using LABsistem.Presentation.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 LoadDotEnvFile(Path.Combine(builder.Environment.ContentRootPath, ".env"));
@@ -32,6 +34,8 @@ if (!builder.Environment.IsEnvironment("Testing"))
 }
 
 builder.Services.AddMemoryCache();
+builder.Services.Configure<ReservationReminderOptions>(
+    builder.Configuration.GetSection(ReservationReminderOptions.SectionName));
 builder.Services.AddSingleton(jwtSettings);
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IRevokedTokenStore, DatabaseRevokedTokenStore>();
@@ -50,10 +54,12 @@ builder.Services.AddScoped<ITerminValidator, TerminValidator>();
 builder.Services.AddScoped<ITerminService, TerminService>();
 builder.Services.AddScoped<IRezervacijaValidator, RezervacijaValidator>();
 builder.Services.AddScoped<IRezervacijaService, RezervacijaService>();
+builder.Services.AddScoped<IReservationReminderService, ReservationReminderService>();
 builder.Services.AddScoped<IOpremaValidator, OpremaValidator>();
 builder.Services.AddScoped<IOpremaService, OpremaService>();
 builder.Services.AddScoped<IObavijestService, ObavijestService>();
 builder.Services.AddHttpClient<IEmailNotificationService, ResendEmailNotificationService>();
+builder.Services.AddHostedService<ReservationReminderBackgroundService>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
