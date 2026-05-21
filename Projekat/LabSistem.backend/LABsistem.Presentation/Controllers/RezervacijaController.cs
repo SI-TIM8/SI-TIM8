@@ -100,13 +100,16 @@ namespace LABsistem.Presentation.Controllers
                 }
 
                 await _obavijestService.KreirajAsync(zahtjev.StudentID, poruka, zahtjev.TerminID);
-                await _emailNotificationService.SendReservationDecisionEmailAsync(
-                    zahtjev.StudentEmail,
-                    zahtjev.StudentImePrezime,
-                    zahtjev.DatumTermina,
-                    zahtjev.VrijemePocetka,
-                    odobri,
-                    komentar);
+                if (zahtjev.StudentEmailVerified)
+                {
+                    await _emailNotificationService.SendReservationDecisionEmailAsync(
+                        zahtjev.StudentEmail,
+                        zahtjev.StudentImePrezime,
+                        zahtjev.DatumTermina,
+                        zahtjev.VrijemePocetka,
+                        odobri,
+                        komentar);
+                }
 
                 return Ok(new { message = odobri ? "Zahtjev odobren." : "Zahtjev odbijen." });
             }

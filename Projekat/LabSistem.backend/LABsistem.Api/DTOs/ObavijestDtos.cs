@@ -15,6 +15,7 @@ namespace LABsistem.Application.DTOs
         public int TerminID { get; set; }
         public string StudentImePrezime { get; set; } = string.Empty;
         public string StudentEmail { get; set; } = string.Empty;
+        public bool StudentEmailVerified { get; set; }
         public DateTime DatumTermina { get; set; }
         public TimeSpan VrijemePocetka { get; set; }
     }

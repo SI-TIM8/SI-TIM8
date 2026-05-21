@@ -213,7 +213,10 @@ namespace LABsistem.Api.Services
             }
 
             var tehnicari = await _context.Korisnici
-                .Where(k => k.Uloga == UlogaKorisnika.Tehnicar && !string.IsNullOrWhiteSpace(k.Email))
+                .Where(k =>
+                    k.Uloga == UlogaKorisnika.Tehnicar &&
+                    k.EmailVerified &&
+                    !string.IsNullOrWhiteSpace(k.Email))
                 .Select(k => new { k.Email, k.ImePrezime })
                 .ToListAsync();
 

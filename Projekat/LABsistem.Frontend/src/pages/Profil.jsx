@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Layout from "../components/Layout";
-import api from "../api/client";
+import api, { resendVerificationEmail } from "../api/client";
 
 const FULL_NAME_MIN_LENGTH = 2;
 const FULL_NAME_MAX_LENGTH = 100;
@@ -57,11 +57,11 @@ function validateProfileField(name, value) {
     }
 
     if (normalizedValue.length > FULL_NAME_MAX_LENGTH) {
-      return "Ime i prezime moze imati najvise 100 karaktera.";
+      return "Ime i prezime može imati najviše 100 karaktera.";
     }
 
     if (!isValidFullName(normalizedValue)) {
-      return "Ime i prezime moze sadrzavati samo slova i razmake.";
+      return "Ime i prezime može sadržavati samo slova i razmake.";
     }
   }
 
@@ -75,7 +75,7 @@ function validateProfileField(name, value) {
     }
 
     if (normalizedValue.length > EMAIL_MAX_LENGTH) {
-      return "Email moze imati najvise 254 karaktera.";
+      return "Email može imati najviše 254 karaktera.";
     }
 
     if (!isValidEmail(normalizedValue)) {
@@ -85,19 +85,19 @@ function validateProfileField(name, value) {
 
   if (name === "username") {
     if (!normalizedValue) {
-      return "Korisnicko ime je obavezno.";
+      return "Korisničko ime je obavezno.";
     }
 
     if (normalizedValue.length < USERNAME_MIN_LENGTH) {
-      return "Korisnicko ime mora imati najmanje 3 karaktera.";
+      return "Korisničko ime mora imati najmanje 3 karaktera.";
     }
 
     if (normalizedValue.length > USERNAME_MAX_LENGTH) {
-      return "Korisnicko ime moze imati najvise 30 karaktera.";
+      return "Korisničko ime može imati najviše 30 karaktera.";
     }
 
     if (!isValidUsername(normalizedValue)) {
-      return "Korisnicko ime moze sadrzavati samo slova i brojeve, bez razmaka i specijalnih znakova.";
+      return "Korisničko ime može sadržavati samo slova i brojeve, bez razmaka i specijalnih znakova.";
     }
   }
 
@@ -131,7 +131,7 @@ function validatePasswordField(name, value, allValues) {
     }
 
     if (normalizedValue.length > PASSWORD_MAX_LENGTH) {
-      return "Lozinka moze imati najvise 64 karaktera.";
+      return "Lozinka može imati najviše 64 karaktera.";
     }
   }
 
@@ -160,6 +160,19 @@ function hasErrors(errors) {
   return Object.values(errors).some(Boolean);
 }
 
+function formatVerificationTimestamp(value) {
+  if (!value) {
+    return "";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  return date.toLocaleString("bs-BA");
+}
+
 function Profil() {
   const [profil, setProfil] = useState(null);
   const [osnovniPodaci, setOsnovniPodaci] = useState({
@@ -178,6 +191,8 @@ function Profil() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [uspjeh, setUspjeh] = useState("");
   const [greska, setGreska] = useState("");
+  const [verificationMessage, setVerificationMessage] = useState({ type: "", text: "" });
+  const [resendingVerification, setResendingVerification] = useState(false);
   const [passwordSuccess, setPasswordSuccess] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [profileTouched, setProfileTouched] = useState({});
@@ -198,7 +213,7 @@ function Profil() {
           username: fetchedProfile.username,
         });
       } catch (error) {
-        setGreska(extractErrorMessage(error, "Profil trenutno nije moguce ucitati."));
+        setGreska(extractErrorMessage(error, "Profil trenutno nije moguće učitati."));
       } finally {
         setLoading(false);
       }
@@ -226,12 +241,15 @@ function Profil() {
   const passwordErrors = useMemo(() => getPasswordErrors(lozinkaForma), [lozinkaForma]);
   const profileFormInvalid = hasErrors(profileErrors);
   const passwordFormInvalid = hasErrors(passwordErrors);
+  const emailVerified = Boolean(profil?.emailVerified);
+  const emailVerifiedAtLabel = formatVerificationTimestamp(profil?.emailVerifiedAtUtc);
 
   const handleOsnovniPodaciChange = (e) => {
     const { name, value } = e.target;
     setOsnovniPodaci((current) => ({ ...current, [name]: value }));
     setUspjeh("");
     setGreska("");
+    setVerificationMessage({ type: "", text: "" });
   };
 
   const handleProfileBlur = (e) => {
@@ -249,6 +267,26 @@ function Profil() {
   const handlePasswordBlur = (e) => {
     const { name } = e.target;
     setPasswordTouched((current) => ({ ...current, [name]: true }));
+  };
+
+  const handleResendVerification = async () => {
+    setResendingVerification(true);
+    setVerificationMessage({ type: "", text: "" });
+
+    try {
+      const response = await resendVerificationEmail();
+      setVerificationMessage({
+        type: "success",
+        text: response.data?.message || "Verifikacioni email je ponovo poslan.",
+      });
+    } catch (error) {
+      setVerificationMessage({
+        type: "error",
+        text: extractErrorMessage(error, "Verifikacioni email trenutno nije moguće poslati."),
+      });
+    } finally {
+      setResendingVerification(false);
+    }
   };
 
   const closePasswordModal = () => {
@@ -275,7 +313,7 @@ function Profil() {
 
     if (profileFormInvalid) {
       setUspjeh("");
-      setGreska("Molimo ispravite oznacena polja.");
+      setGreska("Molimo ispravite označena polja.");
       return;
     }
 
@@ -299,9 +337,10 @@ function Profil() {
       });
       localStorage.setItem("korisnik", updatedProfile.username);
       localStorage.setItem("korisnikEmail", updatedProfile.email);
-      setUspjeh(response.data.message || "Profil je uspjesno azuriran.");
+      setUspjeh(response.data.message || "Profil je uspješno ažuriran.");
+      setVerificationMessage({ type: "", text: "" });
     } catch (error) {
-      setGreska(extractErrorMessage(error, "Doslo je do greske pri cuvanju profila."));
+      setGreska(extractErrorMessage(error, "Došlo je do greške pri čuvanju profila."));
     } finally {
       setSavingProfile(false);
     }
@@ -318,7 +357,7 @@ function Profil() {
 
     if (passwordFormInvalid) {
       setPasswordSuccess("");
-      setPasswordError("Molimo ispravite oznacena polja.");
+      setPasswordError("Molimo ispravite označena polja.");
       return;
     }
 
@@ -332,10 +371,10 @@ function Profil() {
         newPassword: lozinkaForma.newPassword.trim(),
         confirmPassword: lozinkaForma.confirmPassword.trim(),
       });
-      setPasswordSuccess(response.data.message || "Lozinka je uspjesno promijenjena.");
+      setPasswordSuccess(response.data.message || "Lozinka je uspješno promijenjena.");
       closePasswordModal();
     } catch (error) {
-      setPasswordError(extractErrorMessage(error, "Doslo je do greske pri promjeni lozinke."));
+      setPasswordError(extractErrorMessage(error, "Došlo je do greške pri promjeni lozinke."));
     } finally {
       setChangingPassword(false);
     }
@@ -380,6 +419,15 @@ function Profil() {
 
           <div className="profil-summary-list">
             <p><strong>Email:</strong> {profil.email}</p>
+            <p>
+              <strong>Status emaila:</strong>{" "}
+              <span className={`badge ${emailVerified ? "zeleno" : "sivo"}`}>
+                {emailVerified ? "Verifikovan" : "Neverifikovan"}
+              </span>
+            </p>
+            {emailVerifiedAtLabel && (
+              <p><strong>Verifikovan:</strong> {emailVerifiedAtLabel}</p>
+            )}
             <p><strong>Uloga:</strong> {prikazanaUloga}</p>
             <p>
               <strong>Status:</strong> <span className="badge zeleno">{profil.status}</span>
@@ -392,6 +440,55 @@ function Profil() {
 
           {uspjeh && <p className="form-success">{uspjeh}</p>}
           {greska && <p className="form-error">{greska}</p>}
+          {verificationMessage.text && (
+            <p className={verificationMessage.type === "error" ? "form-error" : "form-success"}>
+              {verificationMessage.text}
+            </p>
+          )}
+
+          <div
+            style={{
+              marginBottom: 20,
+              padding: 16,
+              borderRadius: 16,
+              border: `1px solid ${emailVerified ? "#bbf7d0" : "#fde68a"}`,
+              background: emailVerified ? "#f0fdf4" : "#fffbeb",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 16,
+                flexWrap: "wrap",
+              }}
+            >
+              <div>
+                <p style={{ margin: 0, fontWeight: 700 }}>
+                  {emailVerified ? "Email verifikovan" : "Email nije verifikovan"}
+                </p>
+                <p style={{ margin: "8px 0 0", color: "#475569" }}>
+                  {emailVerified
+                    ? "Email notifikacije i oporavak lozinke putem emaila su dostupni za ovaj nalog."
+                    : "Oporavak lozinke putem emaila i email notifikacije nisu dostupni dok ne verifikujete adresu."}
+                </p>
+              </div>
+
+              {!emailVerified && (
+                <button
+                  className="button sekundarno"
+                  type="button"
+                  onClick={handleResendVerification}
+                  disabled={resendingVerification}
+                >
+                  {resendingVerification
+                    ? "Slanje..."
+                    : "Pošalji ponovo verifikacioni email"}
+                </button>
+              )}
+            </div>
+          </div>
 
           <form onSubmit={handleSacuvaj} noValidate>
             <div className="form-group">
@@ -463,7 +560,7 @@ function Profil() {
 
             <div className="profil-actions">
               <button className="button" type="submit" disabled={savingProfile || profileFormInvalid}>
-                {savingProfile ? "Cuvanje..." : "Sačuvaj"}
+                {savingProfile ? "Čuvanje..." : "Sačuvaj"}
               </button>
               <button
                 className="button sekundarno"

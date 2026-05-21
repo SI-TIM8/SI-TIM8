@@ -38,6 +38,44 @@ public class AuthServiceTests
             ExpireMinutes = 30,
             RefreshExpireDays = 7
         };
+        _emailNotificationServiceMock
+            .Setup(x => x.SendPasswordResetEmailAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+        _emailNotificationServiceMock
+            .Setup(x => x.SendEmailVerificationEmailAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+        _emailNotificationServiceMock
+            .Setup(x => x.SendReservationDecisionEmailAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<TimeSpan>(),
+                It.IsAny<bool>(),
+                It.IsAny<string?>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+        _emailNotificationServiceMock
+            .Setup(x => x.SendEquipmentFaultEmailAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<TimeSpan>(),
+                It.IsAny<TimeSpan>(),
+                It.IsAny<string>(),
+                It.IsAny<string?>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
         _configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
@@ -73,11 +111,14 @@ public class AuthServiceTests
         string email,
         string password,
         UlogaKorisnika role = UlogaKorisnika.Student,
-        bool isActive = true)
+        bool isActive = true,
+        bool emailVerified = true)
     {
         return _fixture.Build<Korisnik>()
             .With(k => k.Username, username)
             .With(k => k.Email, email)
+            .With(k => k.EmailVerified, emailVerified)
+            .With(k => k.EmailVerifiedAtUtc, emailVerified ? DateTime.UtcNow : null)
             .With(k => k.Password, password)
             .With(k => k.Uloga, role)
             .With(k => k.DeactivatedAt, isActive ? null : DateTime.UtcNow)
@@ -413,7 +454,7 @@ public class AuthServiceTests
         });
 
         Assert.False(result.Success);
-        Assert.Equal("Ne mozete uredjivati vlastiti nalog kroz ovaj panel.", result.Message);
+        Assert.Equal("Ne možete uređivati vlastiti nalog kroz ovaj panel.", result.Message);
     }
 
     [Fact]
@@ -492,7 +533,7 @@ public class AuthServiceTests
         var result = await service.DeactivateUserAsync(admin.ID, admin.ID);
 
         Assert.False(result.Success);
-        Assert.Equal("Ne mozete deaktivirati svoj nalog.", result.Message);
+        Assert.Equal("Ne možete deaktivirati svoj nalog.", result.Message);
     }
 
     [Fact]

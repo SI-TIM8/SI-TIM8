@@ -85,6 +85,10 @@ function getUserStatusLabel(user) {
   return isUserActive(user) ? "Aktivan" : "Deaktiviran";
 }
 
+function getEmailVerificationLabel(user) {
+  return user?.emailVerified ? "Verifikovan" : "Neverifikovan";
+}
+
 function validateUserForm(formState, modalMode) {
   const errors = {};
   const fullName = formState.imePrezime.trim();
@@ -97,7 +101,7 @@ function validateUserForm(formState, modalMode) {
   } else if (fullName.length < 2) {
     errors.imePrezime = "Ime mora imati najmanje 2 karaktera";
   } else if (fullName.length > 100) {
-    errors.imePrezime = "Ime i prezime moze imati najvise 100 karaktera";
+    errors.imePrezime = "Ime i prezime može imati najviše 100 karaktera";
   } else if (!isValidFullName(fullName)) {
     errors.imePrezime = "Dozvoljena su samo slova i razmaci";
   }
@@ -107,17 +111,17 @@ function validateUserForm(formState, modalMode) {
   } else if (email.length < 5) {
     errors.email = "Email mora imati najmanje 5 karaktera";
   } else if (email.length > 254) {
-    errors.email = "Email moze imati najvise 254 karaktera";
+    errors.email = "Email može imati najviše 254 karaktera";
   } else if (!isValidEmail(email)) {
     errors.email = "Email nije ispravan";
   }
 
   if (!username) {
-    errors.username = "Korisnicko ime je obavezno";
+    errors.username = "Korisničko ime je obavezno";
   } else if (username.length < 3) {
-    errors.username = "Korisnicko ime mora imati najmanje 3 karaktera";
+    errors.username = "Korisničko ime mora imati najmanje 3 karaktera";
   } else if (username.length > 30) {
-    errors.username = "Korisnicko ime moze imati najvise 30 karaktera";
+    errors.username = "Korisničko ime može imati najviše 30 karaktera";
   } else if (!isValidUsername(username)) {
     errors.username = "Dozvoljena su samo slova i brojevi bez razmaka";
   }
@@ -132,12 +136,12 @@ function validateUserForm(formState, modalMode) {
     } else if (password.trim().length < 8) {
       errors.newPassword = "Lozinka mora imati najmanje 8 karaktera";
     } else if (password.trim().length > 64) {
-      errors.newPassword = "Lozinka moze imati najvise 64 karaktera";
+      errors.newPassword = "Lozinka može imati najviše 64 karaktera";
     }
   } else if (password.trim() && password.trim().length < 8) {
     errors.newPassword = "Lozinka mora imati najmanje 8 karaktera";
   } else if (password.trim() && password.trim().length > 64) {
-    errors.newPassword = "Lozinka moze imati najvise 64 karaktera";
+    errors.newPassword = "Lozinka može imati najviše 64 karaktera";
   }
 
   return errors;
@@ -209,7 +213,7 @@ function Korisnici() {
     } catch (error) {
       setMessage({
         type: "error",
-        text: extractErrorMessage(error, "Korisnike trenutno nije moguce ucitati."),
+        text: extractErrorMessage(error, "Korisnike trenutno nije moguće učitati."),
       });
     } finally {
       setLoading(false);
@@ -289,7 +293,7 @@ function Korisnici() {
 
   function getEditTooltip(user) {
     if (isCurrentUser(user)) {
-      return "Ne mozete uredjivati vlastiti nalog kroz ovaj panel.";
+      return "Ne možete uređivati vlastiti nalog kroz ovaj panel.";
     }
 
     return "Uredi korisnika";
@@ -297,7 +301,7 @@ function Korisnici() {
 
 function getDeactivateTooltip(user) {
   if (isCurrentUser(user)) {
-    return "Ne mozete deaktivirati svoj nalog.";
+    return "Ne možete deaktivirati svoj nalog.";
   }
 
   return isUserActive(user) ? "Deaktiviraj korisnika" : "Aktiviraj korisnika";
@@ -308,14 +312,17 @@ function getDeactivateTooltip(user) {
   }
 
   async function submitCreate() {
-    await api.post(`/Auth/create-user?uloga=${formState.uloga}`, {
+    const response = await api.post(`/Auth/create-user?uloga=${formState.uloga}`, {
       imePrezime: formState.imePrezime.trim(),
       email: formState.email.trim(),
       username: formState.username.trim(),
       password: formState.newPassword,
     });
 
-    setFormMessage({ type: "success", text: "Korisnik je uspjesno kreiran." });
+    setFormMessage({
+      type: "success",
+      text: response.data?.message || "Korisnik je uspješno kreiran.",
+    });
     await loadUsers();
     setTimeout(() => {
       closeModal();
@@ -333,7 +340,7 @@ function getDeactivateTooltip(user) {
 
     setFormMessage({
       type: "success",
-      text: response.data.message || "Korisnik je uspjesno azuriran.",
+      text: response.data.message || "Korisnik je uspješno ažuriran.",
     });
     await loadUsers();
     setTimeout(() => {
@@ -357,7 +364,7 @@ function getDeactivateTooltip(user) {
     if (Object.keys(formErrors).length > 0) {
       setFormMessage({
         type: "error",
-        text: "Molimo ispravite oznacena polja.",
+        text: "Molimo ispravite označena polja.",
       });
       setSavingUser(false);
       return;
@@ -399,8 +406,8 @@ function getDeactivateTooltip(user) {
         text: extractErrorMessage(
           error,
           modalMode === "create"
-            ? "Greska pri kreiranju korisnika."
-            : "Greska pri azuriranju korisnika."
+            ? "Greška pri kreiranju korisnika."
+            : "Greška pri ažuriranju korisnika."
         ),
       });
     } finally {
@@ -430,10 +437,10 @@ function getDeactivateTooltip(user) {
     } catch (error) {
       const fallbackMessage =
         type === "deactivate"
-          ? "Greska pri deaktivaciji korisnika."
+          ? "Greška pri deaktivaciji korisnika."
           : type === "activate"
-            ? "Greska pri aktivaciji korisnika."
-            : "Greska pri cuvanju izmjena.";
+            ? "Greška pri aktivaciji korisnika."
+            : "Greška pri čuvanju izmjena.";
 
       if (type === "promote-admin" || type === "demote-admin") {
         setFormMessage({
@@ -519,7 +526,7 @@ function getDeactivateTooltip(user) {
     if (confirmState.type === "activate") {
       return {
         title: "Aktivirati korisnika?",
-        description: `Korisniku "${user.imePrezime}" ce ponovo biti omogucen pristup sistemu. Za nastavak rada morat ce se ponovo prijaviti.`,
+        description: `Korisniku "${user.imePrezime}" će ponovo biti omogućen pristup sistemu. Za nastavak rada morat će se ponovo prijaviti.`,
         actionLabel: "Aktiviraj korisnika",
         buttonClass: "button",
       };
@@ -617,7 +624,8 @@ function getDeactivateTooltip(user) {
           <div className="users-list-header users-list-row">
             <span>Ime i prezime</span>
             <span>Email</span>
-            <span>Korisnicko ime</span>
+            <span>Status emaila</span>
+            <span>Korisničko ime</span>
             <span>Uloga</span>
             <span>Status</span>
             <span>Akcije</span>
@@ -637,14 +645,19 @@ function getDeactivateTooltip(user) {
                   <div
                     className={`users-list-row users-list-item${activeUser ? "" : " is-muted"}`}
                     key={user.userId}
-                  >
-                    <span>{user.imePrezime}</span>
-                    <span>{user.email}</span>
-                    <span>{user.username}</span>
-                    <span>
-                      <span className="badge sivo">
-                        {getRoleLabel(user.role)}
+                    >
+                      <span>{user.imePrezime}</span>
+                      <span>{user.email}</span>
+                      <span>
+                        <span className={`badge ${user.emailVerified ? "zeleno" : "sivo"}`}>
+                          {getEmailVerificationLabel(user)}
+                        </span>
                       </span>
+                      <span>{user.username}</span>
+                      <span>
+                        <span className="badge sivo">
+                          {getRoleLabel(user.role)}
+                        </span>
                     </span>
                     <span>
                       <span className={`badge ${activeUser ? "zeleno" : "crveno"}`}>
@@ -763,7 +776,7 @@ function getDeactivateTooltip(user) {
               </div>
 
               <div className="form-group">
-                <label htmlFor="username">Korisnicko ime</label>
+                <label htmlFor="username">Korisničko ime</label>
                 <input
                   id="username"
                   name="username"
@@ -839,7 +852,7 @@ function getDeactivateTooltip(user) {
                   {savingUser
                     ? modalMode === "create"
                       ? "Kreiranje..."
-                      : "Cuvanje..."
+                      : "Čuvanje..."
                     : modalMode === "create"
                       ? "Kreiraj korisnika"
                       : "Sacuvaj izmjene"}
@@ -881,6 +894,7 @@ function getDeactivateTooltip(user) {
               <div className="users-confirm-details">
                 <p><strong>Ime i prezime:</strong> {confirmState.payload.user.imePrezime}</p>
                 <p><strong>Email:</strong> {confirmState.payload.user.email}</p>
+                <p><strong>Status emaila:</strong> {getEmailVerificationLabel(confirmState.payload.user)}</p>
                 <p><strong>Uloga:</strong> {getRoleLabel(confirmState.payload.user.role)}</p>
               </div>
             )}

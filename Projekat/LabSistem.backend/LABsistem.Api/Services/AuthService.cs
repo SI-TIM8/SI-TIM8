@@ -36,6 +36,24 @@ namespace LABsistem.Application.Services
         private const string ResetPasswordSuccessMessage =
             "Lozinka je uspješno promijenjena. Sada se možete prijaviti.";
 
+        private const string InvalidEmailVerificationTokenMessage =
+            "Verifikacioni link nije validan ili je istekao. Zatražite novi link.";
+
+        private const string EmailAlreadyVerifiedMessage =
+            "Email adresa je već verifikovana.";
+
+        private const string EmailVerificationSuccessMessage =
+            "Email adresa je uspješno verifikovana.";
+
+        private const string EmailVerificationResentMessage =
+            "Verifikacioni email je ponovo poslan.";
+
+        private const string EmailVerificationCooldownMessage =
+            "Verifikacioni email je već nedavno poslan. Pokušajte ponovo za minutu.";
+
+        private const int EmailVerificationTokenLifetimeHours = 24;
+        private const int EmailVerificationResendCooldownSeconds = 60;
+
         public AuthService(
             LabSistemDbContext dbContext,
             IJwtService jwtService,
@@ -264,6 +282,8 @@ namespace LABsistem.Application.Services
                     UserId = x.ID,
                     ImePrezime = x.ImePrezime,
                     Email = x.Email,
+                    EmailVerified = x.EmailVerified,
+                    EmailVerifiedAtUtc = x.EmailVerifiedAtUtc,
                     Username = x.Username,
                     Role = x.Uloga.ToString(),
                     DeactivatedAt = x.DeactivatedAt,
@@ -289,6 +309,8 @@ namespace LABsistem.Application.Services
                     UserId = x.ID,
                     ImePrezime = x.ImePrezime,
                     Email = x.Email,
+                    EmailVerified = x.EmailVerified,
+                    EmailVerifiedAtUtc = x.EmailVerifiedAtUtc,
                     Username = x.Username,
                     Role = x.Uloga.ToString(),
                     DeactivatedAt = x.DeactivatedAt,
@@ -324,21 +346,39 @@ namespace LABsistem.Application.Services
                 return (false, emailTakenMessage, null);
             }
 
+            var normalizedEmail = request.Email.Trim();
+            var emailChanged = !string.Equals(korisnik.Email, normalizedEmail, StringComparison.OrdinalIgnoreCase);
+
             korisnik.ImePrezime = request.ImePrezime.Trim();
-            korisnik.Email = request.Email.Trim();
+            korisnik.Email = normalizedEmail;
             korisnik.Username = request.Username.Trim();
+
+            if (emailChanged)
+            {
+                korisnik.EmailVerified = false;
+                korisnik.EmailVerifiedAtUtc = null;
+            }
 
             await _dbContext.SaveChangesAsync();
 
+            var message = "Profil je uspješno ažuriran.";
+            if (emailChanged)
+            {
+                var verificationEmailSent = await CreateAndSendEmailVerificationTokenAsync(korisnik);
+                message = verificationEmailSent
+                    ? "Profil je uspješno ažuriran. Poslan je novi verifikacioni email."
+                    : "Profil je uspješno ažuriran. Nova email adresa je označena kao neverifikovana.";
+            }
+
             var updatedProfile = await GetProfileAsync(userId);
-            return (true, "Profil je uspjesno azuriran.", updatedProfile);
+            return (true, message, updatedProfile);
         }
 
         public async Task<(bool Success, string Message, UserListItemDto? User)> UpdateUserAsync(int currentUserId, int targetUserId, UpdateManagedUserRequestDto request)
         {
             if (currentUserId == targetUserId)
             {
-                return (false, "Ne mozete uredjivati vlastiti nalog kroz ovaj panel.", null);
+                return (false, "Ne možete uređivati vlastiti nalog kroz ovaj panel.", null);
             }
 
             var korisnik = await _dbContext.Korisnici.FirstOrDefaultAsync(x => x.ID == targetUserId);
@@ -365,10 +405,19 @@ namespace LABsistem.Application.Services
                 return (false, emailTakenMessage, null);
             }
 
+            var normalizedEmail = request.Email.Trim();
+            var emailChanged = !string.Equals(korisnik.Email, normalizedEmail, StringComparison.OrdinalIgnoreCase);
+
             korisnik.ImePrezime = request.ImePrezime.Trim();
-            korisnik.Email = request.Email.Trim();
+            korisnik.Email = normalizedEmail;
             korisnik.Username = request.Username.Trim();
             korisnik.Uloga = request.Uloga;
+
+            if (emailChanged)
+            {
+                korisnik.EmailVerified = false;
+                korisnik.EmailVerifiedAtUtc = null;
+            }
 
             if (!string.IsNullOrWhiteSpace(request.NewPassword))
             {
@@ -383,14 +432,23 @@ namespace LABsistem.Application.Services
 
             await _dbContext.SaveChangesAsync();
 
-            return (true, "Korisnik je uspjesno azuriran.", MapUserListItem(korisnik));
+            var message = "Korisnik je uspješno ažuriran.";
+            if (emailChanged)
+            {
+                var verificationEmailSent = await CreateAndSendEmailVerificationTokenAsync(korisnik);
+                message = verificationEmailSent
+                    ? "Korisnik je uspješno ažuriran. Poslan je novi verifikacioni email."
+                    : "Korisnik je uspješno ažuriran. Nova email adresa je označena kao neverifikovana.";
+            }
+
+            return (true, message, MapUserListItem(korisnik));
         }
 
         public async Task<(bool Success, string Message, UserListItemDto? User)> ActivateUserAsync(int currentUserId, int targetUserId)
         {
             if (currentUserId == targetUserId)
             {
-                return (false, "Ne mozete aktivirati vlastiti nalog kroz ovaj panel.", null);
+                return (false, "Ne možete aktivirati vlastiti nalog kroz ovaj panel.", null);
             }
 
             var korisnik = await _dbContext.Korisnici.FirstOrDefaultAsync(x => x.ID == targetUserId);
@@ -401,21 +459,21 @@ namespace LABsistem.Application.Services
 
             if (!korisnik.DeactivatedAt.HasValue)
             {
-                return (false, "Korisnik je vec aktivan.", null);
+                return (false, "Korisnik je već aktivan.", null);
             }
 
             korisnik.DeactivatedAt = null;
 
             await _dbContext.SaveChangesAsync();
 
-            return (true, "Korisnik je uspjesno aktiviran.", MapUserListItem(korisnik));
+            return (true, "Korisnik je uspješno aktiviran.", MapUserListItem(korisnik));
         }
 
         public async Task<(bool Success, string Message, UserListItemDto? User)> DeactivateUserAsync(int currentUserId, int targetUserId)
         {
             if (currentUserId == targetUserId)
             {
-                return (false, "Ne mozete deaktivirati svoj nalog.", null);
+                return (false, "Ne možete deaktivirati svoj nalog.", null);
             }
 
             var korisnik = await _dbContext.Korisnici
@@ -429,7 +487,7 @@ namespace LABsistem.Application.Services
 
             if (korisnik.DeactivatedAt.HasValue)
             {
-                return (false, "Korisnik je vec deaktiviran.", null);
+                return (false, "Korisnik je već deaktiviran.", null);
             }
 
             korisnik.DeactivatedAt = DateTime.UtcNow;
@@ -437,7 +495,7 @@ namespace LABsistem.Application.Services
 
             await _dbContext.SaveChangesAsync();
 
-            return (true, "Korisnik je uspjesno deaktiviran.", MapUserListItem(korisnik));
+            return (true, "Korisnik je uspješno deaktiviran.", MapUserListItem(korisnik));
         }
 
         public async Task<(bool Success, string Message)> ChangePasswordAsync(int userId, ChangePasswordRequestDto request)
@@ -492,7 +550,7 @@ namespace LABsistem.Application.Services
             var korisnik = await _dbContext.Korisnici
                 .FirstOrDefaultAsync(x => x.Email == normalizedEmail, cancellationToken);
 
-            if (korisnik is null || korisnik.DeactivatedAt.HasValue)
+            if (korisnik is null || korisnik.DeactivatedAt.HasValue || !korisnik.EmailVerified)
             {
                 return (true, ForgotPasswordGenericMessage);
             }
@@ -590,6 +648,86 @@ namespace LABsistem.Application.Services
             return (validationResult.Valid, validationResult.Valid ? string.Empty : validationResult.Message);
         }
 
+        public async Task<(bool Success, string Message)> VerifyEmailAsync(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return (false, InvalidEmailVerificationTokenMessage);
+            }
+
+            var validationResult = await GetValidEmailVerificationTokenAsync(token);
+            if (!validationResult.Valid || validationResult.TokenEntity is null)
+            {
+                return (false, validationResult.Message);
+            }
+
+            var tokenEntity = validationResult.TokenEntity;
+            var korisnik = tokenEntity.Korisnik;
+            var now = DateTime.UtcNow;
+
+            if (korisnik.EmailVerified &&
+                string.Equals(korisnik.Email, tokenEntity.Email, StringComparison.OrdinalIgnoreCase))
+            {
+                if (!tokenEntity.UsedAtUtc.HasValue)
+                {
+                    tokenEntity.UsedAtUtc = now;
+                    await _dbContext.SaveChangesAsync();
+                }
+
+                return (true, EmailAlreadyVerifiedMessage);
+            }
+
+            korisnik.EmailVerified = true;
+            korisnik.EmailVerifiedAtUtc = now;
+            tokenEntity.UsedAtUtc = now;
+
+            await InvalidateActiveEmailVerificationTokensAsync(
+                korisnik.ID,
+                now,
+                excludeTokenId: tokenEntity.EmailVerificationTokenID);
+
+            await _dbContext.SaveChangesAsync();
+
+            return (true, EmailVerificationSuccessMessage);
+        }
+
+        public async Task<(bool Success, string Message)> ResendVerificationEmailAsync(
+            int userId,
+            CancellationToken cancellationToken = default)
+        {
+            var korisnik = await _dbContext.Korisnici.FirstOrDefaultAsync(x => x.ID == userId, cancellationToken);
+            if (korisnik is null || korisnik.DeactivatedAt.HasValue)
+            {
+                return (false, "Korisnik nije pronadjen.");
+            }
+
+            if (korisnik.EmailVerified)
+            {
+                return (false, EmailAlreadyVerifiedMessage);
+            }
+
+            var now = DateTime.UtcNow;
+            var activeToken = await _dbContext.EmailVerificationTokens
+                .Where(x =>
+                    x.KorisnikID == korisnik.ID &&
+                    x.Email == korisnik.Email &&
+                    !x.UsedAtUtc.HasValue &&
+                    x.ExpiresAtUtc > now)
+                .OrderByDescending(x => x.CreatedAtUtc)
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (activeToken is not null &&
+                activeToken.CreatedAtUtc > now.AddSeconds(-EmailVerificationResendCooldownSeconds))
+            {
+                return (false, EmailVerificationCooldownMessage);
+            }
+
+            var sent = await CreateAndSendEmailVerificationTokenAsync(korisnik, cancellationToken: cancellationToken);
+            return (true, sent
+                ? EmailVerificationResentMessage
+                : "Verifikacioni email trenutno nije moguće poslati.");
+        }
+
         public async Task<(bool Success, string Message)> CreateUserAsync(RegisterRequestDto request, UlogaKorisnika uloga)
         {
             var validationMessage = _businessRules.ValidateProfileFields(request.ImePrezime, request.Email, request.Username);
@@ -620,6 +758,8 @@ namespace LABsistem.Application.Services
             {
                 ImePrezime = request.ImePrezime.Trim(),
                 Email = request.Email.Trim(),
+                EmailVerified = false,
+                EmailVerifiedAtUtc = null,
                 Username = request.Username.Trim(),
                 Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 Uloga = uloga,
@@ -629,7 +769,10 @@ namespace LABsistem.Application.Services
             _dbContext.Korisnici.Add(noviKorisnik);
             await _dbContext.SaveChangesAsync();
 
-            return (true, "Korisnik uspjesno kreiran.");
+            var verificationEmailSent = await CreateAndSendEmailVerificationTokenAsync(noviKorisnik);
+            return (true, verificationEmailSent
+                ? "Korisnik uspješno kreiran. Poslan je verifikacioni email."
+                : "Korisnik uspješno kreiran. Verifikacioni email trenutno nije moguće poslati.");
         }
 
         public ClaimsPrincipal? ValidateToken(string token)
@@ -699,6 +842,8 @@ namespace LABsistem.Application.Services
                 UserId = korisnik.ID,
                 ImePrezime = korisnik.ImePrezime,
                 Email = korisnik.Email,
+                EmailVerified = korisnik.EmailVerified,
+                EmailVerifiedAtUtc = korisnik.EmailVerifiedAtUtc,
                 Username = korisnik.Username,
                 Role = korisnik.Uloga.ToString(),
                 DeactivatedAt = korisnik.DeactivatedAt,
@@ -729,6 +874,23 @@ namespace LABsistem.Application.Services
             return uriBuilder.Uri.ToString();
         }
 
+        private string? BuildEmailVerificationLink(string rawToken)
+        {
+            var frontendBaseUrl = _configuration["FRONTEND_BASE_URL"] ?? _configuration["FrontendBaseUrl"];
+            if (string.IsNullOrWhiteSpace(frontendBaseUrl) ||
+                !Uri.TryCreate(frontendBaseUrl, UriKind.Absolute, out var baseUri))
+            {
+                return null;
+            }
+
+            var uriBuilder = new UriBuilder(new Uri(baseUri, "verify-email"))
+            {
+                Query = $"token={Uri.EscapeDataString(rawToken)}"
+            };
+
+            return uriBuilder.Uri.ToString();
+        }
+
         private static string GenerateSecureToken()
         {
             var bytes = RandomNumberGenerator.GetBytes(32);
@@ -736,6 +898,43 @@ namespace LABsistem.Application.Services
                 .TrimEnd('=')
                 .Replace('+', '-')
                 .Replace('/', '_');
+        }
+
+        private async Task<bool> CreateAndSendEmailVerificationTokenAsync(
+            Korisnik korisnik,
+            CancellationToken cancellationToken = default)
+        {
+            var now = DateTime.UtcNow;
+            await InvalidateActiveEmailVerificationTokensAsync(korisnik.ID, now, cancellationToken: cancellationToken);
+
+            var rawToken = GenerateSecureToken();
+            var verificationLink = BuildEmailVerificationLink(rawToken);
+            var emailVerificationToken = new EmailVerificationToken
+            {
+                KorisnikID = korisnik.ID,
+                Email = korisnik.Email,
+                TokenHash = HashToken(rawToken),
+                CreatedAtUtc = now,
+                ExpiresAtUtc = now.AddHours(EmailVerificationTokenLifetimeHours)
+            };
+
+            _dbContext.EmailVerificationTokens.Add(emailVerificationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            if (string.IsNullOrWhiteSpace(verificationLink))
+            {
+                _logger.LogWarning(
+                    "Email verification token je kreiran za korisnika {UserId}, ali FRONTEND_BASE_URL nije pravilno konfigurisan.",
+                    korisnik.ID);
+                return false;
+            }
+
+            return await _emailNotificationService.SendEmailVerificationEmailAsync(
+                korisnik.Email,
+                korisnik.ImePrezime,
+                verificationLink,
+                emailVerificationToken.ExpiresAtUtc,
+                cancellationToken);
         }
 
         private async Task InvalidateActivePasswordResetTokensAsync(
@@ -776,6 +975,44 @@ namespace LABsistem.Application.Services
             }
         }
 
+        private async Task InvalidateActiveEmailVerificationTokensAsync(
+            int korisnikId,
+            DateTime usedAtUtc,
+            int? excludeTokenId = null,
+            CancellationToken cancellationToken = default)
+        {
+            if (_dbContext.Database.IsRelational())
+            {
+                var query = _dbContext.EmailVerificationTokens
+                    .Where(x =>
+                        x.KorisnikID == korisnikId &&
+                        !x.UsedAtUtc.HasValue &&
+                        x.ExpiresAtUtc > usedAtUtc);
+
+                if (excludeTokenId.HasValue)
+                {
+                    query = query.Where(x => x.EmailVerificationTokenID != excludeTokenId.Value);
+                }
+
+                await query.ExecuteUpdateAsync(setters => setters
+                    .SetProperty(x => x.UsedAtUtc, usedAtUtc), cancellationToken);
+                return;
+            }
+
+            var existingTokens = await _dbContext.EmailVerificationTokens
+                .Where(x =>
+                    x.KorisnikID == korisnikId &&
+                    !x.UsedAtUtc.HasValue &&
+                    x.ExpiresAtUtc > usedAtUtc &&
+                    (!excludeTokenId.HasValue || x.EmailVerificationTokenID != excludeTokenId.Value))
+                .ToListAsync(cancellationToken);
+
+            foreach (var existingToken in existingTokens)
+            {
+                existingToken.UsedAtUtc = usedAtUtc;
+            }
+        }
+
         private async Task<(bool Valid, string Message, PasswordResetToken? TokenEntity)> GetValidPasswordResetTokenAsync(
             string rawToken,
             bool includeRefreshTokens = false)
@@ -806,6 +1043,40 @@ namespace LABsistem.Application.Services
                 tokenEntity.Korisnik.DeactivatedAt.HasValue)
             {
                 return (false, InvalidResetTokenMessage, null);
+            }
+
+            return (true, string.Empty, tokenEntity);
+        }
+
+        private async Task<(bool Valid, string Message, EmailVerificationToken? TokenEntity)> GetValidEmailVerificationTokenAsync(string rawToken)
+        {
+            if (string.IsNullOrWhiteSpace(rawToken))
+            {
+                return (false, InvalidEmailVerificationTokenMessage, null);
+            }
+
+            var hashedToken = HashToken(rawToken);
+            var tokenEntity = await _dbContext.EmailVerificationTokens
+                .Include(x => x.Korisnik)
+                .FirstOrDefaultAsync(x => x.TokenHash == hashedToken);
+
+            if (tokenEntity is null || tokenEntity.Korisnik is null || tokenEntity.Korisnik.DeactivatedAt.HasValue)
+            {
+                return (false, InvalidEmailVerificationTokenMessage, null);
+            }
+
+            if (tokenEntity.UsedAtUtc.HasValue)
+            {
+                return tokenEntity.Korisnik.EmailVerified &&
+                       string.Equals(tokenEntity.Korisnik.Email, tokenEntity.Email, StringComparison.OrdinalIgnoreCase)
+                    ? (true, EmailAlreadyVerifiedMessage, tokenEntity)
+                    : (false, InvalidEmailVerificationTokenMessage, null);
+            }
+
+            if (tokenEntity.ExpiresAtUtc <= DateTime.UtcNow ||
+                !string.Equals(tokenEntity.Korisnik.Email, tokenEntity.Email, StringComparison.OrdinalIgnoreCase))
+            {
+                return (false, InvalidEmailVerificationTokenMessage, null);
             }
 
             return (true, string.Empty, tokenEntity);

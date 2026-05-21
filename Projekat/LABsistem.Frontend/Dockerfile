@@ -1,6 +1,8 @@
 FROM node:20-alpine AS build
 WORKDIR /app
 
+ENV CYPRESS_INSTALL_BINARY=0
+ENV CI=1
 
 COPY package*.json ./
 RUN npm ci

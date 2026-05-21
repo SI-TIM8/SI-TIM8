@@ -61,6 +61,36 @@ public class ResendEmailNotificationServiceTests
         Assert.Null(handler.LastRequest);
     }
 
+    [Fact]
+    public async Task SendEmailVerificationEmailAsync_WithValidConfiguration_SendsVerificationRequest()
+    {
+        var handler = new CapturingHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("{\"id\":\"email_456\"}", Encoding.UTF8, "application/json")
+        });
+
+        var service = CreateService(handler, new Dictionary<string, string?>
+        {
+            ["RESEND_API_KEY"] = "resend-test-key",
+            ["FROM_EMAIL"] = "central@hamzahadzic.site"
+        });
+
+        var expiresAtUtc = new DateTime(2026, 5, 21, 18, 30, 0, DateTimeKind.Utc);
+        var result = await service.SendEmailVerificationEmailAsync(
+            "student@test.com",
+            "Test Student",
+            "http://localhost:3001/verify-email?token=test-token",
+            expiresAtUtc);
+
+        Assert.True(result);
+        Assert.NotNull(handler.LastRequest);
+
+        var payload = await handler.LastRequest!.Content!.ReadAsStringAsync();
+        Assert.Contains("LABsistem - verifikacija email adrese", payload);
+        Assert.Contains("Verifikuj email adresu", payload);
+        Assert.Contains("test-token", payload);
+    }
+
     private static ResendEmailNotificationService CreateService(
         CapturingHttpMessageHandler handler,
         IDictionary<string, string?> configurationValues)

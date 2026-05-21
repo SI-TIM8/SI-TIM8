@@ -97,6 +97,7 @@ namespace LABsistem.Api.Services
                 TerminID = zahtjev.TerminID,
                 StudentImePrezime = zahtjev.Student.ImePrezime,
                 StudentEmail = zahtjev.Student.Email,
+                StudentEmailVerified = zahtjev.Student.EmailVerified,
                 DatumTermina = zahtjev.Termin.Datum,
                 VrijemePocetka = zahtjev.Termin.VrijemePocetka
             };

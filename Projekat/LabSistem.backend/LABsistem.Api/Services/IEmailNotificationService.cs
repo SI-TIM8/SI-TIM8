@@ -28,5 +28,12 @@ namespace LABsistem.Api.Services
             string resetLink,
             DateTime expiresAtUtc,
             CancellationToken cancellationToken = default);
+
+        Task<bool> SendEmailVerificationEmailAsync(
+            string recipientEmail,
+            string recipientName,
+            string verificationLink,
+            DateTime expiresAtUtc,
+            CancellationToken cancellationToken = default);
     }
 }

@@ -117,6 +117,16 @@ export function verifyResetToken(token) {
   });
 }
 
+export function verifyEmail(token) {
+  return authApi.get("/Auth/verify-email", {
+    params: { token },
+  });
+}
+
+export function resendVerificationEmail() {
+  return api.post("/Auth/resend-verification-email");
+}
+
 export function resetPassword(token, newPassword, confirmPassword) {
   return authApi.post("/Auth/reset-password", {
     token,

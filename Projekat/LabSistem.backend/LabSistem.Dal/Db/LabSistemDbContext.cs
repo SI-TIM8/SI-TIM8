@@ -30,6 +30,7 @@ namespace LABsistem.Dal.Db
         public DbSet<Historija> Historije { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+        public DbSet<EmailVerificationToken> EmailVerificationTokens { get; set; }
         public DbSet<RevokedAccessToken> RevokedAccessTokens { get; set; }
 
         // Spojne tabele za Many-to-Many veze
@@ -71,6 +72,16 @@ namespace LABsistem.Dal.Db
             modelBuilder.Entity<PasswordResetToken>()
                 .HasOne(x => x.Korisnik)
                 .WithMany(x => x.PasswordResetTokens)
+                .HasForeignKey(x => x.KorisnikID)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<EmailVerificationToken>()
+                .HasIndex(x => x.TokenHash)
+                .IsUnique();
+
+            modelBuilder.Entity<EmailVerificationToken>()
+                .HasOne(x => x.Korisnik)
+                .WithMany(x => x.EmailVerificationTokens)
                 .HasForeignKey(x => x.KorisnikID)
                 .OnDelete(DeleteBehavior.Cascade);
 
