@@ -95,12 +95,20 @@ builder.Services
                 var dbContext = context.HttpContext.RequestServices.GetRequiredService<LabSistemDbContext>();
                 var userState = await dbContext.Korisnici
                     .Where(x => x.ID == userId)
-                    .Select(x => new { x.DeactivatedAt })
+                    .Select(x => new { x.DeactivatedAt, x.MustChangePassword })
                     .FirstOrDefaultAsync(context.HttpContext.RequestAborted);
 
                 if (userState is null || userState.DeactivatedAt.HasValue)
                 {
                     context.Fail("User account is inactive.");
+                    return;
+                }
+
+                if (userState.MustChangePassword &&
+                    context.Principal?.Identity is ClaimsIdentity identity &&
+                    !identity.HasClaim("must_change_password", "true"))
+                {
+                    identity.AddClaim(new Claim("must_change_password", "true"));
                 }
             }
         };
@@ -158,6 +166,36 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.UseAuthentication();
+app.Use(async (context, next) =>
+{
+    if (context.User.Identity?.IsAuthenticated == true &&
+        string.Equals(
+            context.User.FindFirst("must_change_password")?.Value,
+            "true",
+            StringComparison.OrdinalIgnoreCase))
+    {
+        var allowedPaths = new[]
+        {
+            "/api/Auth/change-password",
+            "/api/Auth/logout",
+            "/api/Auth/refresh"
+        };
+
+        var requestPath = context.Request.Path.Value ?? string.Empty;
+        if (!allowedPaths.Contains(requestPath, StringComparer.OrdinalIgnoreCase))
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            await context.Response.WriteAsJsonAsync(new
+            {
+                Code = "PASSWORD_CHANGE_REQUIRED",
+                Message = "Morate promijeniti privremenu lozinku prije nastavka rada."
+            });
+            return;
+        }
+    }
+
+    await next();
+});
 app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())

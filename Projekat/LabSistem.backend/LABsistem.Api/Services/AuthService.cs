@@ -51,6 +51,9 @@ namespace LABsistem.Application.Services
         private const string EmailVerificationCooldownMessage =
             "Verifikacioni email je već nedavno poslan. Pokušajte ponovo za minutu.";
 
+        private const string PasswordChangeRequiredMessage =
+            "Morate promijeniti privremenu lozinku prije nastavka rada.";
+
         private const int EmailVerificationTokenLifetimeHours = 24;
         private const int EmailVerificationResendCooldownSeconds = 60;
 
@@ -201,7 +204,8 @@ namespace LABsistem.Application.Services
                 RefreshTokenExpiresAtUtc = newRefreshTokenExpiresAtUtc,
                 UserId = existingRefreshToken.Korisnik.ID,
                 Username = existingRefreshToken.Korisnik.Username,
-                Role = existingRefreshToken.Korisnik.Uloga.ToString()
+                Role = existingRefreshToken.Korisnik.Uloga.ToString(),
+                MustChangePassword = existingRefreshToken.Korisnik.MustChangePassword
             };
         }
 
@@ -428,6 +432,7 @@ namespace LABsistem.Application.Services
                 }
 
                 korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                korisnik.MustChangePassword = true;
             }
 
             await _dbContext.SaveChangesAsync();
@@ -507,11 +512,10 @@ namespace LABsistem.Application.Services
                 return (false, "Korisnik nije pronadjen.");
             }
 
-            if (string.IsNullOrWhiteSpace(request.CurrentPassword) ||
-                string.IsNullOrWhiteSpace(request.NewPassword) ||
+            if (string.IsNullOrWhiteSpace(request.NewPassword) ||
                 string.IsNullOrWhiteSpace(request.ConfirmPassword))
             {
-                return (false, "Sva polja za promjenu lozinke su obavezna.");
+                return (false, "Nova lozinka i potvrda lozinke su obavezne.");
             }
 
             if (request.NewPassword != request.ConfirmPassword)
@@ -519,7 +523,13 @@ namespace LABsistem.Application.Services
                 return (false, "Nova lozinka i potvrda se ne poklapaju.");
             }
 
-            if (!VerifyPassword(korisnik, request.CurrentPassword))
+            var requiresCurrentPassword = !korisnik.MustChangePassword;
+            if (requiresCurrentPassword && string.IsNullOrWhiteSpace(request.CurrentPassword))
+            {
+                return (false, "Trenutna lozinka je obavezna.");
+            }
+
+            if (requiresCurrentPassword && !VerifyPassword(korisnik, request.CurrentPassword))
             {
                 return (false, "Trenutna lozinka nije ispravna.");
             }
@@ -531,6 +541,7 @@ namespace LABsistem.Application.Services
             }
 
             korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            korisnik.MustChangePassword = false;
             await _dbContext.SaveChangesAsync();
 
             return (true, ResetPasswordSuccessMessage);
@@ -625,6 +636,7 @@ namespace LABsistem.Application.Services
             var tokenEntity = validationResult.TokenEntity;
             var korisnik = tokenEntity.Korisnik;
             korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            korisnik.MustChangePassword = false;
             tokenEntity.UsedAtUtc = DateTime.UtcNow;
 
             if (korisnik.RefreshTokens is not null)
@@ -762,6 +774,7 @@ namespace LABsistem.Application.Services
                 EmailVerifiedAtUtc = null,
                 Username = request.Username.Trim(),
                 Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                MustChangePassword = true,
                 Uloga = uloga,
                 DeactivatedAt = null
             };
@@ -822,7 +835,8 @@ namespace LABsistem.Application.Services
                 RefreshTokenExpiresAtUtc = refreshTokenExpiresAtUtc,
                 UserId = korisnik.ID,
                 Username = korisnik.Username,
-                Role = korisnik.Uloga.ToString()
+                Role = korisnik.Uloga.ToString(),
+                MustChangePassword = korisnik.MustChangePassword
             };
         }
 

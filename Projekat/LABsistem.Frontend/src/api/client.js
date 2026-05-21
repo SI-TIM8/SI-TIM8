@@ -4,6 +4,7 @@ import {
   clearSession,
   getAccessToken,
   getRefreshToken,
+  persistPasswordChangeRequirement,
   persistSession,
   shouldRefreshAccessToken,
 } from "../auth/session";
@@ -96,6 +97,14 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && token) {
       clearSession();
       window.location.href = "/login?sesija=istekla";
+    }
+
+    if (error.response?.status === 403 && error.response?.data?.code === "PASSWORD_CHANGE_REQUIRED") {
+      persistPasswordChangeRequirement(true);
+
+      if (window.location.pathname !== "/first-login-password") {
+        window.location.href = "/first-login-password";
+      }
     }
 
     return Promise.reject(error);

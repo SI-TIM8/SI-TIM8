@@ -21,6 +21,7 @@ namespace LABsistem.Dal.Db
                     Username = "admin",
                     Password = BCrypt.Net.BCrypt.HashPassword("admin123"),
                     Uloga = UlogaKorisnika.Admin,
+                    MustChangePassword = false,
                     EmailVerified = true,
                     EmailVerifiedAtUtc = verifiedAtUtc
                 },
@@ -31,6 +32,7 @@ namespace LABsistem.Dal.Db
                     Username = "profesor",
                     Password = BCrypt.Net.BCrypt.HashPassword("profesor123"),
                     Uloga = UlogaKorisnika.Profesor,
+                    MustChangePassword = false,
                     EmailVerified = true,
                     EmailVerifiedAtUtc = verifiedAtUtc
                 },
@@ -41,6 +43,7 @@ namespace LABsistem.Dal.Db
                     Username = "student",
                     Password = BCrypt.Net.BCrypt.HashPassword("student123"),
                     Uloga = UlogaKorisnika.Student,
+                    MustChangePassword = false,
                     EmailVerified = true,
                     EmailVerifiedAtUtc = verifiedAtUtc
                 },
@@ -51,6 +54,7 @@ namespace LABsistem.Dal.Db
                     Username = "tehnicar",
                     Password = BCrypt.Net.BCrypt.HashPassword("tehnicar123"),
                     Uloga = UlogaKorisnika.Tehnicar,
+                    MustChangePassword = false,
                     EmailVerified = true,
                     EmailVerifiedAtUtc = verifiedAtUtc
                 }
@@ -82,6 +86,7 @@ namespace LABsistem.Dal.Db
                 existingUser.Username = user.Username;
                 existingUser.Password = user.Password;
                 existingUser.Uloga = user.Uloga;
+                existingUser.MustChangePassword = false;
                 existingUser.DeactivatedAt = null;
                 existingUser.EmailVerified = true;
                 existingUser.EmailVerifiedAtUtc ??= verifiedAtUtc;

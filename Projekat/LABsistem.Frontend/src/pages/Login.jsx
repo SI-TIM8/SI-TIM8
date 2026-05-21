@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import api from "../api/client";
-import { hasActiveAccessToken, persistSession } from "../auth/session";
+import {
+  hasActiveAccessToken,
+  isPasswordChangeRequired,
+  persistSession,
+} from "../auth/session";
 
 function PasswordVisibilityIcon({ visible }) {
   if (visible) {
@@ -42,9 +46,8 @@ function PasswordVisibilityIcon({ visible }) {
 }
 
 function Login() {
-  const loginHeading =
-    "Prijavite se sa svojim LABsistem korisni\u010dkim nalogom";
-  const usernameLabel = "Korisni\u010dko ime ili email adresa:";
+  const loginHeading = "Prijavite se sa svojim LABsistem korisničkim nalogom";
+  const usernameLabel = "Korisničko ime ili email adresa:";
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -56,7 +59,7 @@ function Login() {
 
   useEffect(() => {
     if (hasActiveAccessToken()) {
-      navigate("/dashboard");
+      navigate(isPasswordChangeRequired() ? "/first-login-password" : "/dashboard");
     }
   }, [navigate]);
 
@@ -80,7 +83,7 @@ function Login() {
       localStorage.setItem("korisnikEmail", usernameOrEmail.includes("@") ? usernameOrEmail : "");
       localStorage.setItem("korisnik", authenticatedUsername);
 
-      navigate("/dashboard");
+      navigate(response.data?.mustChangePassword ? "/first-login-password" : "/dashboard");
     } catch (error) {
       const responseData = error.response?.data;
       const backendMessage =

@@ -257,7 +257,8 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
         string password,
         UlogaKorisnika role = UlogaKorisnika.Student,
         bool isActive = true,
-        bool emailVerified = true)
+        bool emailVerified = true,
+        bool mustChangePassword = false)
     {
         using var scope = _factory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
@@ -271,6 +272,7 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
             existingUser.DeactivatedAt = isActive ? null : DateTime.UtcNow;
             existingUser.EmailVerified = emailVerified;
             existingUser.EmailVerifiedAtUtc = emailVerified ? DateTime.UtcNow : null;
+            existingUser.MustChangePassword = mustChangePassword;
             await context.SaveChangesAsync();
             return existingUser.ID;
         }
@@ -284,6 +286,7 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
             Username = username,
             Password = BCrypt.Net.BCrypt.HashPassword(password),
             Uloga = role,
+            MustChangePassword = mustChangePassword,
             DeactivatedAt = isActive ? null : DateTime.UtcNow
         };
 
@@ -577,10 +580,108 @@ public class AuthIntegrationTests : IClassFixture<TestWebApplicationFactory>
         var createdUser = await context.Korisnici.SingleAsync(x => x.Username == "emailverifystudent");
         Assert.False(createdUser.EmailVerified);
         Assert.Null(createdUser.EmailVerifiedAtUtc);
+        Assert.True(createdUser.MustChangePassword);
 
         var storedToken = await context.EmailVerificationTokens.SingleAsync(x => x.KorisnikID == createdUser.ID);
         Assert.Equal(createdUser.Email, storedToken.Email);
         Assert.Null(storedToken.UsedAtUtc);
+    }
+
+    [Theory]
+    [InlineData(UlogaKorisnika.Student, "firstloginstudent", "first.login.student@test.com")]
+    [InlineData(UlogaKorisnika.Profesor, "firstloginprofesor", "first.login.profesor@test.com")]
+    [InlineData(UlogaKorisnika.Tehnicar, "firstlogintehnicar", "first.login.tehnicar@test.com")]
+    [InlineData(UlogaKorisnika.Admin, "firstloginadmin", "first.login.admin@test.com")]
+    public async Task LoginEndpoint_WithAdminCreatedUserOfAnyRole_ReturnsMustChangePasswordFlag(
+        UlogaKorisnika role,
+        string username,
+        string email)
+    {
+        await SeedUserAsync("admincreateverify2", "admin.create.verify2@test.com", "AdminPassword123!", UlogaKorisnika.Admin);
+
+        var adminLogin = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "admincreateverify2",
+            Password = "AdminPassword123!"
+        });
+        adminLogin.EnsureSuccessStatusCode();
+        var adminPayload = await adminLogin.Content.ReadFromJsonAsync<LoginResponseDto>();
+
+        using var createRequest = new HttpRequestMessage(HttpMethod.Post, $"/api/Auth/create-user?uloga={role}")
+        {
+            Content = JsonContent.Create(new RegisterRequestDto
+            {
+                ImePrezime = "First Login User",
+                Email = email,
+                Username = username,
+                Password = "ValidPassword123!"
+            })
+        };
+        createRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", adminPayload!.Token);
+
+        var createResponse = await _client.SendAsync(createRequest);
+        createResponse.EnsureSuccessStatusCode();
+
+        var userLogin = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = username,
+            Password = "ValidPassword123!"
+        });
+        userLogin.EnsureSuccessStatusCode();
+
+        var userPayload = await userLogin.Content.ReadFromJsonAsync<LoginResponseDto>();
+        Assert.NotNull(userPayload);
+        Assert.True(userPayload!.MustChangePassword);
+    }
+
+    [Fact]
+    public async Task MustChangePasswordUser_CannotAccessProfileUntilPasswordIsChanged()
+    {
+        await SeedUserAsync(
+            "firstloginblock",
+            "first.login.block@test.com",
+            "ValidPassword123!",
+            mustChangePassword: true);
+
+        var loginResponse = await _client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = "firstloginblock",
+            Password = "ValidPassword123!"
+        });
+        loginResponse.EnsureSuccessStatusCode();
+        var loginPayload = await loginResponse.Content.ReadFromJsonAsync<LoginResponseDto>();
+        Assert.NotNull(loginPayload);
+        Assert.True(loginPayload!.MustChangePassword);
+
+        using var profileRequest = new HttpRequestMessage(HttpMethod.Get, "/api/Auth/profile");
+        profileRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginPayload.Token);
+
+        var blockedProfileResponse = await _client.SendAsync(profileRequest);
+        Assert.Equal(HttpStatusCode.Forbidden, blockedProfileResponse.StatusCode);
+
+        using var changePasswordRequest = new HttpRequestMessage(HttpMethod.Post, "/api/Auth/change-password")
+        {
+            Content = JsonContent.Create(new ChangePasswordRequestDto
+            {
+                NewPassword = "NovaValidna123!",
+                ConfirmPassword = "NovaValidna123!"
+            })
+        };
+        changePasswordRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginPayload.Token);
+
+        var changePasswordResponse = await _client.SendAsync(changePasswordRequest);
+        changePasswordResponse.EnsureSuccessStatusCode();
+
+        var profileAfterChangeRequest = new HttpRequestMessage(HttpMethod.Get, "/api/Auth/profile");
+        profileAfterChangeRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", loginPayload.Token);
+
+        var profileAfterChangeResponse = await _client.SendAsync(profileAfterChangeRequest);
+        profileAfterChangeResponse.EnsureSuccessStatusCode();
+
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+        var updatedUser = await context.Korisnici.SingleAsync(x => x.Username == "firstloginblock");
+        Assert.False(updatedUser.MustChangePassword);
     }
 
     [Fact]

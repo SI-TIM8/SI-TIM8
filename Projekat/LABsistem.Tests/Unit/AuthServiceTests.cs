@@ -112,7 +112,8 @@ public class AuthServiceTests
         string password,
         UlogaKorisnika role = UlogaKorisnika.Student,
         bool isActive = true,
-        bool emailVerified = true)
+        bool emailVerified = true,
+        bool mustChangePassword = false)
     {
         return _fixture.Build<Korisnik>()
             .With(k => k.Username, username)
@@ -120,6 +121,7 @@ public class AuthServiceTests
             .With(k => k.EmailVerified, emailVerified)
             .With(k => k.EmailVerifiedAtUtc, emailVerified ? DateTime.UtcNow : null)
             .With(k => k.Password, password)
+            .With(k => k.MustChangePassword, mustChangePassword)
             .With(k => k.Uloga, role)
             .With(k => k.DeactivatedAt, isActive ? null : DateTime.UtcNow)
             .With(k => k.RefreshTokens, new List<RefreshToken>())
@@ -156,6 +158,7 @@ public class AuthServiceTests
         Assert.Equal("access-token", result.Session.Token);
         Assert.Equal("refresh-token", result.Session.RefreshToken);
         Assert.Equal(korisnik.ID, result.Session.UserId);
+        Assert.False(result.Session.MustChangePassword);
 
         var persistedRefreshToken = await context.RefreshTokens.SingleAsync();
         Assert.Equal(korisnik.ID, persistedRefreshToken.KorisnikID);
@@ -517,6 +520,7 @@ public class AuthServiceTests
         var updatedUser = await context.Korisnici.FindAsync(targetUser.ID);
         Assert.NotNull(updatedUser);
         Assert.True(BCrypt.Net.BCrypt.Verify(newPassword, updatedUser.Password));
+        Assert.True(updatedUser.MustChangePassword);
     }
 
   
@@ -607,6 +611,72 @@ public class AuthServiceTests
         var updatedUser = await context.Korisnici.FindAsync(user.ID);
         Assert.NotNull(updatedUser);
         Assert.True(BCrypt.Net.BCrypt.Verify(newPassword, updatedUser.Password));
+        Assert.False(updatedUser.MustChangePassword);
+    }
+
+    [Fact]
+    public async Task ChangePasswordAsync_WithFirstLoginRequirement_DoesNotRequireCurrentPassword()
+    {
+        using var context = GetInMemoryDbContext();
+        const string currentPassword = "CurrentPassword123!";
+        const string newPassword = "NewPassword123!";
+        var user = BuildUser(
+            "FirstLoginPasswordUser",
+            "first.login.password@test.com",
+            BCrypt.Net.BCrypt.HashPassword(currentPassword),
+            mustChangePassword: true);
+        context.Korisnici.Add(user);
+        await context.SaveChangesAsync();
+
+        var service = CreateService(context);
+
+        var result = await service.ChangePasswordAsync(user.ID, new ChangePasswordRequestDto
+        {
+            NewPassword = newPassword,
+            ConfirmPassword = newPassword
+        });
+
+        Assert.True(result.Success);
+
+        var updatedUser = await context.Korisnici.FindAsync(user.ID);
+        Assert.NotNull(updatedUser);
+        Assert.True(BCrypt.Net.BCrypt.Verify(newPassword, updatedUser.Password));
+        Assert.False(updatedUser.MustChangePassword);
+    }
+
+    [Fact]
+    public async Task LoginAsync_WithMustChangePasswordUser_ReturnsRestrictedSessionFlag()
+    {
+        using var context = GetInMemoryDbContext();
+        const string rawPassword = "ValidPassword123!";
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(rawPassword);
+
+        var korisnik = BuildUser(
+            "FirstLoginUser",
+            "first.login.user@test.com",
+            hashedPassword,
+            mustChangePassword: true);
+
+        context.Korisnici.Add(korisnik);
+        await context.SaveChangesAsync();
+
+        _jwtServiceMock.Setup(x => x.GenerateToken(korisnik.ID.ToString(), korisnik.Username, korisnik.Uloga.ToString()))
+            .Returns("restricted-access-token");
+        _jwtServiceMock.Setup(x => x.GetTokenExpirationUtc("restricted-access-token"))
+            .Returns(new DateTime(2030, 1, 1, 12, 0, 0, DateTimeKind.Utc));
+        _jwtServiceMock.Setup(x => x.GenerateRefreshToken())
+            .Returns("restricted-refresh-token");
+
+        var service = CreateService(context);
+
+        var result = await service.LoginAsync(new LoginRequestDto
+        {
+            Username = korisnik.Username,
+            Password = rawPassword
+        });
+
+        Assert.NotNull(result.Session);
+        Assert.True(result.Session!.MustChangePassword);
     }
 
     [Fact]

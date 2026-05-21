@@ -6,6 +6,7 @@ const USER_ID_KEY = "userId";
 const ROLE_KEY = "uloga";
 const USERNAME_KEY = "korisnik";
 const USER_EMAIL_KEY = "korisnikEmail";
+const MUST_CHANGE_PASSWORD_KEY = "mustChangePassword";
 
 export const REFRESH_THRESHOLD_MS = 2 * 60 * 1000;
 
@@ -18,6 +19,7 @@ export function clearSession() {
   localStorage.removeItem(ROLE_KEY);
   localStorage.removeItem(USERNAME_KEY);
   localStorage.removeItem(USER_EMAIL_KEY);
+  localStorage.removeItem(MUST_CHANGE_PASSWORD_KEY);
   sessionStorage.removeItem(REFRESH_TOKEN_KEY);
   sessionStorage.removeItem(REFRESH_TOKEN_EXPIRY_KEY);
 }
@@ -30,6 +32,7 @@ export function persistSession(session) {
   localStorage.setItem(USER_ID_KEY, session.userId?.toString?.() || "");
   localStorage.setItem(ROLE_KEY, session.role.toLowerCase());
   localStorage.setItem(USERNAME_KEY, session.username);
+  localStorage.setItem(MUST_CHANGE_PASSWORD_KEY, session.mustChangePassword ? "true" : "false");
 }
 
 export function getCurrentUserId() {
@@ -59,6 +62,14 @@ export function hasActiveAccessToken() {
   const token = getAccessToken();
   const expiry = getAccessTokenExpiry();
   return Boolean(token && expiry && Date.now() < expiry);
+}
+
+export function isPasswordChangeRequired() {
+  return localStorage.getItem(MUST_CHANGE_PASSWORD_KEY) === "true";
+}
+
+export function persistPasswordChangeRequirement(isRequired) {
+  localStorage.setItem(MUST_CHANGE_PASSWORD_KEY, isRequired ? "true" : "false");
 }
 
 export function shouldRefreshAccessToken(thresholdMs = REFRESH_THRESHOLD_MS) {
