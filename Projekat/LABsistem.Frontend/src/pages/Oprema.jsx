@@ -12,10 +12,15 @@ const STATUS_OPTIONS = [
   { value: 4, label: "Otpisano", color: "sivo" },
 ];
 
+const ARHIVA_OPTIONS = [
+  { value: "aktivna", label: "Aktivna oprema" },
+  { value: "arhivirana", label: "Arhivirana oprema" },
+  { value: "sve", label: "Sve stavke" },
+];
+
 const INITIAL_FORM_STATE = {
   naziv: "",
   kategorija: "",
-  serijskiBroj: "",
   stanje: 1,
   kabinetID: "",
 };
@@ -26,6 +31,7 @@ const INITIAL_FILTERS = {
   kategorija: "",
   kabinet: "",
   zgrada: "",
+  arhiva: "aktivna",
 };
 
 function extractErrorMessage(error, fallbackMessage) {
@@ -47,23 +53,24 @@ function Oprema() {
   const [saving, setSaving] = useState(false);
   const [formState, setFormState] = useState(INITIAL_FORM_STATE);
   const [message, setMessage] = useState({ type: "", text: "" });
-  const [kvarModalOpen, setKvarModalOpen] = useState(false);
-  const [kvarOprema, setKvarOprema] = useState(null);
-  const [kvarKomentar, setKvarKomentar] = useState("");
-  const [kvarSaving, setKvarSaving] = useState(false);
 
   const userRole = getLocalRole();
   const currentUserId = getCurrentUserId();
-  const isTehnicar = userRole === "tehnicar" || userRole === "admin";
-  useEffect(() => { loadAll(); }, []);
+  const isAdminOrTehnicar = userRole === "tehnicar" || userRole === "admin";
+
+  useEffect(() => {
+    loadAll();
+  }, [filters.arhiva]);
 
   async function loadAll() {
     setLoading(true);
     try {
+      const prikaz = isAdminOrTehnicar ? filters.arhiva : "aktivna";
       const [opremaRes, objektiRes] = await Promise.all([
-        api.get("/Oprema"),
+        api.get(`/Oprema?prikaz=${encodeURIComponent(prikaz)}`),
         api.get("/Objekat"),
       ]);
+
       setOpremaList(opremaRes.data);
       setObjekti(objektiRes.data);
     } catch (error) {
@@ -75,73 +82,79 @@ function Oprema() {
 
   const kabinetiZaObjekat = useMemo(() => {
     if (!selectedObjekatID) return [];
-    return objekti.find(o => o.id === Number(selectedObjekatID))?.kabineti || [];
+    return objekti.find((objekat) => objekat.id === Number(selectedObjekatID))?.kabineti || [];
   }, [selectedObjekatID, objekti]);
 
   const kabinetiOptions = useMemo(() => {
-    const unique = [...new Map(opremaList.map(o => [o.kabinetNaziv, o.kabinetNaziv])).values()];
+    const unique = [...new Map(opremaList.map((item) => [item.kabinetNaziv, item.kabinetNaziv])).values()];
     return unique.filter(Boolean);
   }, [opremaList]);
 
   const zgradaOptions = useMemo(() => {
-    const unique = [...new Map(opremaList.map(o => [o.zgradaNaziv, o.zgradaNaziv])).values()];
+    const unique = [...new Map(opremaList.map((item) => [item.zgradaNaziv, item.zgradaNaziv])).values()];
     return unique.filter(Boolean);
   }, [opremaList]);
 
   const kategorijeOptions = useMemo(() => {
-    const unique = [...new Map(opremaList.map(o => [o.kategorija, o.kategorija])).values()];
+    const unique = [...new Map(opremaList.map((item) => [item.kategorija, item.kategorija])).values()];
     return unique.filter(Boolean).sort((left, right) => left.localeCompare(right));
   }, [opremaList]);
 
-  const nextSerijskiBroj = useMemo(() => {
-    if (!opremaList.length) return 1;
-    return Math.max(...opremaList.map((item) => Number(item.serijskiBroj) || 0)) + 1;
-  }, [opremaList]);
-
   const filteredOprema = useMemo(() => {
-    return opremaList.filter(o => {
+    return opremaList.filter((item) => {
+      const trimmedSearchTerm = filters.searchTerm.toLowerCase().trim();
       const termMatch =
-        !filters.searchTerm ||
-        o.naziv.toLowerCase().includes(filters.searchTerm.toLowerCase().trim()) ||
-        (o.kategorija || "").toLowerCase().includes(filters.searchTerm.toLowerCase().trim()) ||
-        o.serijskiBroj.toString().includes(filters.searchTerm.trim());
-      const statusMatch = !filters.status || o.stanje === Number(filters.status);
-      const kategorijaMatch = !filters.kategorija || o.kategorija === filters.kategorija;
-      const kabinetMatch = !filters.kabinet || o.kabinetNaziv === filters.kabinet;
-      const zgradaMatch = !filters.zgrada || o.zgradaNaziv === filters.zgrada;
+        !trimmedSearchTerm ||
+        item.naziv.toLowerCase().includes(trimmedSearchTerm) ||
+        (item.kategorija || "").toLowerCase().includes(trimmedSearchTerm) ||
+        item.serijskiBroj.toString().includes(filters.searchTerm.trim());
+
+      const statusMatch = !filters.status || item.stanje === Number(filters.status);
+      const kategorijaMatch = !filters.kategorija || item.kategorija === filters.kategorija;
+      const kabinetMatch = !filters.kabinet || item.kabinetNaziv === filters.kabinet;
+      const zgradaMatch = !filters.zgrada || item.zgradaNaziv === filters.zgrada;
+
       return termMatch && statusMatch && kategorijaMatch && kabinetMatch && zgradaMatch;
     });
   }, [opremaList, filters]);
 
   const visibleOprema = useMemo(() => {
     if (userRole === "profesor") {
-      return filteredOprema.filter((oprema) => Number(oprema.stanje) !== 3);
+      return filteredOprema.filter((item) => Number(item.stanje) !== 3);
     }
 
     return filteredOprema;
   }, [filteredOprema, userRole]);
 
-  const activeFilterCount = Object.values(filters).filter(Boolean).length;
+  const activeFilterCount = [
+    filters.searchTerm,
+    filters.status,
+    filters.kategorija,
+    filters.kabinet,
+    filters.zgrada,
+    isAdminOrTehnicar && filters.arhiva !== INITIAL_FILTERS.arhiva ? filters.arhiva : "",
+  ].filter(Boolean).length;
 
-  function handleFilterChange(e) {
-    const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
+  function handleFilterChange(event) {
+    const { name, value } = event.target;
+    setFilters((previous) => ({ ...previous, [name]: value }));
   }
 
-  function resetFilters() { setFilters(INITIAL_FILTERS); }
+  function resetFilters() {
+    setFilters(INITIAL_FILTERS);
+  }
 
-  function handleFormChange(e) {
-    const { name, value } = e.target;
-    const processedValue =
-      name === "stanje" || name === "serijskiBroj" || name === "kabinetID"
-        ? Number(value)
-        : value;
-    setFormState(prev => ({ ...prev, [name]: processedValue }));
+  function handleFormChange(event) {
+    const { name, value } = event.target;
+    const processedValue = name === "stanje" || name === "kabinetID" ? Number(value) : value;
+
+    setFormState((previous) => ({ ...previous, [name]: processedValue }));
   }
 
   function openCreateModal() {
     setModalMode("create");
-    setFormState({ ...INITIAL_FORM_STATE, serijskiBroj: nextSerijskiBroj });
+    setEditingOprema(null);
+    setFormState(INITIAL_FORM_STATE);
     setSelectedObjekatID("");
     setMessage({ type: "", text: "" });
     setModalOpen(true);
@@ -153,61 +166,37 @@ function Oprema() {
     setFormState({
       naziv: oprema.naziv,
       kategorija: oprema.kategorija || "",
-      serijskiBroj: oprema.serijskiBroj,
       stanje: oprema.stanje,
       kabinetID: oprema.kabinetID,
     });
-    const obj = objekti.find(o => o.kabineti?.some(k => k.id === oprema.kabinetID));
-    setSelectedObjekatID(obj ? String(obj.id) : "");
+
+    const objekat = objekti.find((item) => item.kabineti?.some((kabinet) => kabinet.id === oprema.kabinetID));
+    setSelectedObjekatID(objekat ? String(objekat.id) : "");
     setMessage({ type: "", text: "" });
     setModalOpen(true);
   }
 
-  function openKvarModal(item) {
-    setKvarOprema(item);
-    setKvarKomentar("");
-    setKvarModalOpen(true);
-  }
-
-  async function handleKvarSubmit(e) {
-    e.preventDefault();
-    setKvarSaving(true);
-    try {
-      await api.post("/Evidencija", {
-        opremaID: kvarOprema.id,
-        korisnikID: Number(currentUserId),
-        status: "Kvar",
-        komentar: kvarKomentar,
-      });
-      setKvarModalOpen(false);
-      setMessage({ type: "success", text: "Kvar uspješno prijavljen!" });
-    } catch (error) {
-      setMessage({ type: "error", text: extractErrorMessage(error, "Greška pri prijavi kvara.") });
-      setKvarModalOpen(false);
-    } finally {
-      setKvarSaving(false);
-    }
-  }
-
-  async function handleSubmit(e) {
-    e.preventDefault();
+  async function handleSubmit(event) {
+    event.preventDefault();
     setSaving(true);
     setMessage({ type: "", text: "" });
+
     try {
       if (modalMode === "create") {
         await api.post("/Oprema", {
           ...formState,
           kreatorID: Number(currentUserId),
         });
-        setMessage({ type: "success", text: "Oprema uspješno dodana!" });
+        setMessage({ type: "success", text: "Oprema je uspješno dodana." });
       } else {
         await api.put(`/Oprema/${editingOprema.id}`, {
           ...formState,
           id: editingOprema.id,
           kreatorID: editingOprema.kreatorID,
         });
-        setMessage({ type: "success", text: "Izmjene sačuvane!" });
+        setMessage({ type: "success", text: "Izmjene su uspješno sačuvane." });
       }
+
       await loadAll();
       setTimeout(() => setModalOpen(false), 800);
     } catch (error) {
@@ -217,59 +206,59 @@ function Oprema() {
     }
   }
 
-  async function handleDelete(id) {
-    if (!window.confirm("Da li ste sigurni da želite obrisati ovu opremu?")) return;
+  async function handleArchive(id) {
+    if (!window.confirm("Da li ste sigurni da želite arhivirati ovu opremu?")) return;
+
     try {
       await api.delete(`/Oprema/${id}`);
       await loadAll();
-      setMessage({ type: "success", text: "Oprema obrisana." });
+      setMessage({ type: "success", text: "Oprema je uspješno arhivirana." });
     } catch (error) {
-      alert(extractErrorMessage(error, "Greška pri brisanju."));
+      setMessage({ type: "error", text: extractErrorMessage(error, "Greška pri arhiviranju opreme.") });
     }
   }
 
-  const getStatusInfo = val => STATUS_OPTIONS.find(s => s.value === Number(val)) || STATUS_OPTIONS[0];
+  async function handleRestore(id) {
+    if (!window.confirm("Da li ste sigurni da želite vratiti ovu opremu iz arhive?")) return;
+
+    try {
+      await api.post(`/Oprema/${id}/restore`);
+      await loadAll();
+      setMessage({ type: "success", text: "Oprema je vraćena iz arhive." });
+    } catch (error) {
+      setMessage({ type: "error", text: extractErrorMessage(error, "Greška pri vraćanju opreme iz arhive.") });
+    }
+  }
+
+  function getStatusInfo(value) {
+    return STATUS_OPTIONS.find((status) => status.value === Number(value)) || STATUS_OPTIONS[0];
+  }
 
   return (
     <Layout>
       <div className="page-header">
         <h1>Upravljanje opremom</h1>
+        <p>Pregledajte aktivnu i arhiviranu opremu, te upravljajte njenim statusima i lokacijama.</p>
       </div>
 
       <div className="users-page">
-        <div
-          className="card users-toolbar"
-          style={{ flexWrap: "wrap", gap: "10px", alignItems: "center" }}
-        >
-          {isTehnicar && (
+        <div className="card users-toolbar" style={{ flexWrap: "wrap", gap: "10px", alignItems: "center" }}>
+          {isAdminOrTehnicar && (
             <button className="button users-create-button" onClick={openCreateModal}>
               <span className="users-create-icon">+</span> Dodaj opremu
             </button>
           )}
 
-          <div style={{ position: "relative", flex: "1", minWidth: "200px" }}>
-            <span
-              style={{
-                position: "absolute",
-                left: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                color: "var(--text-muted)",
-                fontSize: "14px",
-                pointerEvents: "none",
-              }}
-            >
-              🔍
-            </span>
+          <div style={{ position: "relative", flex: "1", minWidth: "220px" }}>
             <input
               type="text"
               name="searchTerm"
-              placeholder="Pretraži (naziv, serijski broj)..."
+              placeholder="Pretraži po nazivu, kategoriji ili serijskom broju"
               value={filters.searchTerm}
               onChange={handleFilterChange}
               style={{
                 width: "100%",
-                padding: "8px 12px 8px 32px",
+                padding: "8px 12px",
                 border: "1px solid var(--border)",
                 borderRadius: "8px",
                 background: "var(--input-bg)",
@@ -280,201 +269,116 @@ function Oprema() {
             />
           </div>
 
-          <div style={{ position: "relative", minWidth: "160px" }}>
-            <span
-              style={{
-                position: "absolute",
-                left: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                pointerEvents: "none",
-                fontSize: "13px",
-                color: "var(--text-muted)",
-              }}
-            >
-              ⚙️
-            </span>
+          <select
+            name="status"
+            value={filters.status}
+            onChange={handleFilterChange}
+            style={{
+              minWidth: "160px",
+              padding: "8px 12px",
+              border: "1px solid var(--border)",
+              borderRadius: "8px",
+              background: "var(--input-bg)",
+              color: filters.status ? "var(--text)" : "var(--text-muted)",
+              fontSize: "14px",
+            }}
+          >
+            <option value="">Svi statusi</option>
+            {STATUS_OPTIONS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+
+          <select
+            name="kabinet"
+            value={filters.kabinet}
+            onChange={handleFilterChange}
+            style={{
+              minWidth: "160px",
+              padding: "8px 12px",
+              border: "1px solid var(--border)",
+              borderRadius: "8px",
+              background: "var(--input-bg)",
+              color: filters.kabinet ? "var(--text)" : "var(--text-muted)",
+              fontSize: "14px",
+            }}
+          >
+            <option value="">Svi kabineti</option>
+            {kabinetiOptions.map((kabinet) => (
+              <option key={kabinet} value={kabinet}>
+                {kabinet}
+              </option>
+            ))}
+          </select>
+
+          <select
+            name="zgrada"
+            value={filters.zgrada}
+            onChange={handleFilterChange}
+            style={{
+              minWidth: "160px",
+              padding: "8px 12px",
+              border: "1px solid var(--border)",
+              borderRadius: "8px",
+              background: "var(--input-bg)",
+              color: filters.zgrada ? "var(--text)" : "var(--text-muted)",
+              fontSize: "14px",
+            }}
+          >
+            <option value="">Sve zgrade</option>
+            {zgradaOptions.map((zgrada) => (
+              <option key={zgrada} value={zgrada}>
+                {zgrada}
+              </option>
+            ))}
+          </select>
+
+          <select
+            name="kategorija"
+            value={filters.kategorija}
+            onChange={handleFilterChange}
+            style={{
+              minWidth: "180px",
+              padding: "8px 12px",
+              border: "1px solid var(--border)",
+              borderRadius: "8px",
+              background: "var(--input-bg)",
+              color: filters.kategorija ? "var(--text)" : "var(--text-muted)",
+              fontSize: "14px",
+            }}
+          >
+            <option value="">Sve kategorije</option>
+            {kategorijeOptions.map((kategorija) => (
+              <option key={kategorija} value={kategorija}>
+                {kategorija}
+              </option>
+            ))}
+          </select>
+
+          {isAdminOrTehnicar && (
             <select
-              name="status"
-              value={filters.status}
+              name="arhiva"
+              value={filters.arhiva}
               onChange={handleFilterChange}
               style={{
-                width: "100%",
-                padding: "8px 12px 8px 30px",
+                minWidth: "180px",
+                padding: "8px 12px",
                 border: "1px solid var(--border)",
                 borderRadius: "8px",
                 background: "var(--input-bg)",
-                color: filters.status ? "var(--text)" : "var(--text-muted)",
+                color: "var(--text)",
                 fontSize: "14px",
-                appearance: "none",
-                cursor: "pointer",
               }}
             >
-              <option value="">Svi statusi</option>
-              {STATUS_OPTIONS.map(opt => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              {ARHIVA_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
               ))}
             </select>
-            <span
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                pointerEvents: "none",
-                fontSize: "11px",
-                color: "var(--text-muted)",
-              }}
-            >
-              ▼
-            </span>
-          </div>
-
-          <div style={{ position: "relative", minWidth: "160px" }}>
-            <span
-              style={{
-                position: "absolute",
-                left: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                pointerEvents: "none",
-                fontSize: "13px",
-                color: "var(--text-muted)",
-              }}
-            >
-              🚪
-            </span>
-            <select
-              name="kabinet"
-              value={filters.kabinet}
-              onChange={handleFilterChange}
-              style={{
-                width: "100%",
-                padding: "8px 12px 8px 30px",
-                border: "1px solid var(--border)",
-                borderRadius: "8px",
-                background: "var(--input-bg)",
-                color: filters.kabinet ? "var(--text)" : "var(--text-muted)",
-                fontSize: "14px",
-                appearance: "none",
-                cursor: "pointer",
-              }}
-            >
-              <option value="">Svi kabineti</option>
-              {kabinetiOptions.map(k => <option key={k} value={k}>{k}</option>)}
-            </select>
-            <span
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                pointerEvents: "none",
-                fontSize: "11px",
-                color: "var(--text-muted)",
-              }}
-            >
-              ▼
-            </span>
-          </div>
-
-          <div style={{ position: "relative", minWidth: "160px" }}>
-            <span
-              style={{
-                position: "absolute",
-                left: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                pointerEvents: "none",
-                fontSize: "13px",
-                color: "var(--text-muted)",
-              }}
-            >
-              🏢
-            </span>
-            <select
-              name="zgrada"
-              value={filters.zgrada}
-              onChange={handleFilterChange}
-              style={{
-                width: "100%",
-                padding: "8px 12px 8px 30px",
-                border: "1px solid var(--border)",
-                borderRadius: "8px",
-                background: "var(--input-bg)",
-                color: filters.zgrada ? "var(--text)" : "var(--text-muted)",
-                fontSize: "14px",
-                appearance: "none",
-                cursor: "pointer",
-              }}
-            >
-              <option value="">Sve zgrade</option>
-              {zgradaOptions.map(z => <option key={z} value={z}>{z}</option>)}
-            </select>
-            <span
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                pointerEvents: "none",
-                fontSize: "11px",
-                color: "var(--text-muted)",
-              }}
-            >
-              ▼
-            </span>
-          </div>
-
-          <div style={{ position: "relative", minWidth: "180px" }}>
-            <span
-              style={{
-                position: "absolute",
-                left: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                pointerEvents: "none",
-                fontSize: "13px",
-                color: "var(--text-muted)",
-              }}
-            >
-              #
-            </span>
-            <select
-              name="kategorija"
-              value={filters.kategorija}
-              onChange={handleFilterChange}
-              style={{
-                width: "100%",
-                padding: "8px 12px 8px 30px",
-                border: "1px solid var(--border)",
-                borderRadius: "8px",
-                background: "var(--input-bg)",
-                color: filters.kategorija ? "var(--text)" : "var(--text-muted)",
-                fontSize: "14px",
-                appearance: "none",
-                cursor: "pointer",
-              }}
-            >
-              <option value="">Sve kategorije</option>
-              {kategorijeOptions.map((kategorija) => (
-                <option key={kategorija} value={kategorija}>{kategorija}</option>
-              ))}
-            </select>
-            <span
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                pointerEvents: "none",
-                fontSize: "11px",
-                color: "var(--text-muted)",
-              }}
-            >
-              â–¼
-            </span>
-          </div>
+          )}
 
           {activeFilterCount > 0 && (
             <button
@@ -482,13 +386,13 @@ function Oprema() {
               onClick={resetFilters}
               style={{ whiteSpace: "nowrap", borderRadius: "8px" }}
             >
-              ✕ Resetuj ({activeFilterCount})
+              Resetuj filtere ({activeFilterCount})
             </button>
           )}
         </div>
 
         <div className="card users-list-card">
-          {message.text && !modalOpen && !kvarModalOpen && (
+          {message.text && (
             <p className={message.type === "error" ? "form-error" : "form-success"}>
               {message.text}
             </p>
@@ -499,6 +403,7 @@ function Oprema() {
             <span>Kategorija</span>
             <span>Serijski broj</span>
             <span>Status</span>
+            <span>Arhiva</span>
             <span>Kabinet</span>
             <span>Zgrada</span>
             <span>Akcije</span>
@@ -508,9 +413,9 @@ function Oprema() {
             <div className="users-empty-state">Učitavanje podataka...</div>
           ) : visibleOprema.length > 0 ? (
             <div className="users-list">
-              {visibleOprema.map(item => (
+              {visibleOprema.map((item) => (
                 <div className="users-list-row users-list-item" key={item.id}>
-                  <span style={{ fontWeight: "600" }}>{item.naziv}</span>
+                  <span style={{ fontWeight: 600 }}>{item.naziv}</span>
                   <span>{item.kategorija || "N/A"}</span>
                   <span>{item.serijskiBroj}</span>
                   <span>
@@ -518,23 +423,29 @@ function Oprema() {
                       {getStatusInfo(item.stanje).label}
                     </span>
                   </span>
+                  <span>
+                    <span className={`badge ${item.isArchived ? "sivo" : "zeleno"}`}>
+                      {item.isArchived ? "Arhivirana" : "Aktivna"}
+                    </span>
+                  </span>
                   <span>{item.kabinetNaziv}</span>
                   <span>{item.zgradaNaziv}</span>
                   <span>
                     <div className="users-actions">
-                      {isTehnicar && (
+                      {isAdminOrTehnicar && !item.isArchived && (
                         <>
                           <button className="users-action-btn" onClick={() => openEditModal(item)}>
-                            ✎ Uredi
+                            Uredi
                           </button>
-                          <button className="users-action-btn warn" onClick={() => handleDelete(item.id)}>
-                            🗑 Briši
+                          <button className="users-action-btn warn" onClick={() => handleArchive(item.id)}>
+                            Arhiviraj
                           </button>
                         </>
                       )}
-                      {false && (
-                        <button className="users-action-btn warn" onClick={() => openKvarModal(item)}>
-                          ⚠ Prijavi kvar
+
+                      {isAdminOrTehnicar && item.isArchived && (
+                        <button className="users-action-btn" onClick={() => handleRestore(item.id)}>
+                          Vrati iz arhive
                         </button>
                       )}
                     </div>
@@ -557,49 +468,51 @@ function Oprema() {
 
       {modalOpen && (
         <div className="users-modal-overlay" onClick={() => setModalOpen(false)}>
-          <div className="users-modal" onClick={e => e.stopPropagation()}>
+          <div className="users-modal" onClick={(event) => event.stopPropagation()}>
             <div className="users-modal-header">
               <h2>{modalMode === "create" ? "Nova oprema" : "Uredi opremu"}</h2>
               <button className="users-modal-close" onClick={() => setModalOpen(false)}>
                 ×
               </button>
             </div>
+
             {message.text && (
               <p className={message.type === "error" ? "form-error" : "form-success"}>
                 {message.text}
               </p>
             )}
+
             <form onSubmit={handleSubmit}>
               <div className="form-group">
                 <label>Naziv</label>
                 <input name="naziv" value={formState.naziv} onChange={handleFormChange} required />
               </div>
+
               <div className="form-group">
                 <label>Kategorija</label>
                 <input
                   name="kategorija"
                   value={formState.kategorija}
                   onChange={handleFormChange}
-                  placeholder="npr. Laptop, osciloskop, projektor"
+                  placeholder="npr. laptop, osciloskop, projektor"
                   maxLength={40}
                   required
                 />
               </div>
+
               <div className="form-group">
                 <label>Serijski broj</label>
-                <input
-                  name="serijskiBroj"
-                  type="number"
-                  value={formState.serijskiBroj}
-                  onChange={handleFormChange}
-                  readOnly
-                  required
-                />
+                <input value="Dodjeljuje se automatski nakon spremanja" readOnly />
               </div>
+
               <div className="form-group">
                 <label>Status</label>
                 <select name="stanje" value={formState.stanje} onChange={handleFormChange}>
-                  {STATUS_OPTIONS.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                  {STATUS_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -607,18 +520,21 @@ function Oprema() {
                 <label>Objekat</label>
                 <select
                   value={selectedObjekatID}
-                  onChange={e => {
-                    setSelectedObjekatID(e.target.value);
-                    setFormState(prev => ({ ...prev, kabinetID: "" }));
+                  onChange={(event) => {
+                    setSelectedObjekatID(event.target.value);
+                    setFormState((previous) => ({ ...previous, kabinetID: "" }));
                   }}
                   required
                 >
                   <option value="">-- Odaberi objekat --</option>
-                  {objekti.map(o => (
-                    <option key={o.id} value={o.id}>{o.lokacija}</option>
+                  {objekti.map((objekat) => (
+                    <option key={objekat.id} value={objekat.id}>
+                      {objekat.lokacija}
+                    </option>
                   ))}
                 </select>
               </div>
+
               <div className="form-group">
                 <label>Kabinet</label>
                 <select
@@ -631,61 +547,19 @@ function Oprema() {
                   <option value="">
                     {selectedObjekatID ? "-- Odaberi kabinet --" : "Prvo odaberi objekat"}
                   </option>
-                  {kabinetiZaObjekat.map(k => (
-                    <option key={k.id} value={k.id}>{k.naziv}</option>
+                  {kabinetiZaObjekat.map((kabinet) => (
+                    <option key={kabinet.id} value={kabinet.id}>
+                      {kabinet.naziv}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div className="users-modal-actions">
                 <button className="button" type="submit" disabled={saving}>
-                  {saving ? "Slanje..." : "Sačuvaj"}
+                  {saving ? "Spremanje..." : "Sačuvaj"}
                 </button>
                 <button className="button sekundarno" type="button" onClick={() => setModalOpen(false)}>
-                  Odustani
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {kvarModalOpen && (
-        <div className="users-modal-overlay" onClick={() => setKvarModalOpen(false)}>
-          <div className="users-modal" onClick={e => e.stopPropagation()}>
-            <div className="users-modal-header">
-              <h2>⚠ Prijava kvara — {kvarOprema?.naziv}</h2>
-              <button className="users-modal-close" onClick={() => setKvarModalOpen(false)}>
-                ×
-              </button>
-            </div>
-            <form onSubmit={handleKvarSubmit}>
-              <div className="form-group">
-                <label>Opis kvara</label>
-                <textarea
-                  value={kvarKomentar}
-                  onChange={e => setKvarKomentar(e.target.value)}
-                  maxLength={20}
-                  required
-                  rows={4}
-                  placeholder="Opišite kvar što detaljnije..."
-                  style={{
-                    width: "100%",
-                    padding: "8px",
-                    borderRadius: "6px",
-                    border: "1px solid var(--border)",
-                    resize: "vertical",
-                    background: "var(--input-bg)",
-                    color: "var(--text)",
-                    fontSize: "14px",
-                  }}
-                />
-              </div>
-              <div className="users-modal-actions">
-                <button className="button" type="submit" disabled={kvarSaving}>
-                  {kvarSaving ? "Slanje..." : "Prijavi kvar"}
-                </button>
-                <button className="button sekundarno" type="button" onClick={() => setKvarModalOpen(false)}>
                   Odustani
                 </button>
               </div>

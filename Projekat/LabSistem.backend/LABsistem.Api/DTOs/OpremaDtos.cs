@@ -27,5 +27,7 @@ namespace LABsistem.Application.DTOs
         public string KabinetNaziv { get; set; } = default!;
         public string ZgradaNaziv { get; set; } = "N/A";
         public int KreatorID { get; set; }
+        public bool IsArchived { get; set; }
+        public DateTime? ArchivedAtUtc { get; set; }
     }
 }
