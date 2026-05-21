@@ -26,6 +26,7 @@ services:
       FRONTEND_BASE_URL: ${FRONTEND_BASE_URL}
       RESEND_API_KEY: ${RESEND_API_KEY}
       FROM_EMAIL: ${FROM_EMAIL}
+      TZ: Europe/Sarajevo
     ports:
       - "8080:8080"
     networks:

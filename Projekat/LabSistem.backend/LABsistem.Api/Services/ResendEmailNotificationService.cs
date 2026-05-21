@@ -283,13 +283,13 @@ namespace LABsistem.Api.Services
         {
             if (string.IsNullOrWhiteSpace(recipientEmail))
             {
-                _logger.LogWarning("Reservation reminder email je preskocen jer primalac nema email adresu.");
+                _logger.LogWarning("Reservation reminder email je preskočen jer primalac nema email adresu.");
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(_apiKey) || string.IsNullOrWhiteSpace(_fromEmail))
             {
-                _logger.LogWarning("Reservation reminder email je preskocen jer RESEND_API_KEY ili FROM_EMAIL nisu postavljeni.");
+                _logger.LogWarning("Reservation reminder email je preskočen jer RESEND_API_KEY ili FROM_EMAIL nisu postavljeni.");
                 return false;
             }
 
@@ -321,7 +321,7 @@ namespace LABsistem.Api.Services
                 using var response = await _httpClient.SendAsync(request, cancellationToken);
                 if (response.IsSuccessStatusCode)
                 {
-                    _logger.LogInformation("Reservation reminder email je uspjesno poslan korisniku {Email}.", recipientEmail);
+                    _logger.LogInformation("Reservation reminder email je uspješno poslan korisniku {Email}.", recipientEmail);
                     return true;
                 }
 
@@ -334,7 +334,7 @@ namespace LABsistem.Api.Services
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Doslo je do greske pri slanju reservation reminder emaila za {Email}.", recipientEmail);
+                _logger.LogWarning(ex, "Došlo je do greške pri slanju reservation reminder emaila za {Email}.", recipientEmail);
                 return false;
             }
         }
@@ -636,14 +636,14 @@ namespace LABsistem.Api.Services
         {
             return string.Join(Environment.NewLine, new[]
             {
-                $"Postovani/a {recipientName},",
+                $"Poštovani/a {recipientName},",
                 string.Empty,
                 $"Podsjetnik: imate termin {reminderLeadTimeText}.",
                 $"Datum: {datumTermina:dd.MM.yyyy}",
                 $"Vrijeme: {vrijemePocetka:hh\\:mm} - {vrijemeKraja:hh\\:mm}",
                 $"Laboratorija: {kabinetNaziv}",
                 string.Empty,
-                "Molimo da termin ispratite na vrijeme ili otkazete dolazak ako vise ne mozete prisustvovati.",
+                "Molimo da termin ispratite na vrijeme ili otkažete dolazak ako više ne možete prisustvovati.",
                 string.Empty,
                 "LABsistem"
             });
@@ -678,7 +678,7 @@ namespace LABsistem.Api.Services
                           {System.Net.WebUtility.HtmlEncode(reminderLeadTimeText)}
                         </div>
                         <p style="margin:24px 0 12px;font-size:18px;line-height:1.6;color:#101828;">
-                          Postovani/a <strong>{System.Net.WebUtility.HtmlEncode(recipientName)}</strong>,
+                          Poštovani/a <strong>{System.Net.WebUtility.HtmlEncode(recipientName)}</strong>,
                         </p>
                         <p style="margin:0 0 24px;font-size:16px;line-height:1.75;color:#344054;">
                           Podsjetnik da imate laboratorijski termin {System.Net.WebUtility.HtmlEncode(reminderLeadTimeText)}.
@@ -703,7 +703,7 @@ namespace LABsistem.Api.Services
                         </div>
 
                         <p style="margin:24px 0 0;font-size:15px;line-height:1.75;color:#475467;">
-                          Ako vise ne mozete prisustvovati, termin mozete na vrijeme otkazati unutar LABsistem aplikacije.
+                          Ako više ne možete prisustvovati, termin možete na vrijeme otkazati unutar LABsistem aplikacije.
                         </p>
                       </div>
                       <div style="padding:20px 32px;background:#f8fafc;border-top:1px solid #eaecf0;color:#667085;font-size:13px;line-height:1.7;">

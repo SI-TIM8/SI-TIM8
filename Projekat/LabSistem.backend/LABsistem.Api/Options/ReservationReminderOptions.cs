@@ -11,5 +11,7 @@ namespace LABsistem.Api.Options
         public int DeliveryWindowMinutes { get; set; } = 5;
 
         public int[] OffsetsMinutes { get; set; } = [1440, 60];
+
+        public string TimeZoneId { get; set; } = "Europe/Sarajevo";
     }
 }

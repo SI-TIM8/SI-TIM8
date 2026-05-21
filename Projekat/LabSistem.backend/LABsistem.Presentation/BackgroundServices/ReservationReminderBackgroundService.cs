@@ -28,6 +28,10 @@ namespace LABsistem.Presentation.BackgroundServices
                 return;
             }
 
+            _logger.LogInformation(
+                "Reservation reminder background service koristi vremensku zonu {TimeZoneId}.",
+                _options.TimeZoneId);
+
             var intervalSeconds = Math.Max(30, _options.PollIntervalSeconds);
             using var timer = new PeriodicTimer(TimeSpan.FromSeconds(intervalSeconds));
 

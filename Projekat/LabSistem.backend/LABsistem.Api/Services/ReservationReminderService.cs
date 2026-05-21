@@ -15,6 +15,7 @@ namespace LABsistem.Api.Services
         private readonly IEmailNotificationService _emailNotificationService;
         private readonly ILogger<ReservationReminderService> _logger;
         private readonly ReservationReminderOptions _options;
+        private readonly TimeZoneInfo _timeZone;
 
         public ReservationReminderService(
             LabSistemDbContext context,
@@ -26,6 +27,7 @@ namespace LABsistem.Api.Services
             _emailNotificationService = emailNotificationService;
             _logger = logger;
             _options = options.Value;
+            _timeZone = ResolveReminderTimeZone(_options.TimeZoneId);
         }
 
         public async Task<int> SendDueRemindersAsync(
@@ -48,10 +50,9 @@ namespace LABsistem.Api.Services
                 return 0;
             }
 
-            var now = currentLocalTime ?? DateTime.Now;
-            var maxOffsetMinutes = offsets.Max();
-            var minDate = now.Date.AddDays(-1);
-            var maxDate = now.Date.AddMinutes(maxOffsetMinutes).AddDays(2);
+            var now = currentLocalTime.HasValue
+                ? DateTime.SpecifyKind(currentLocalTime.Value, DateTimeKind.Unspecified)
+                : TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, _timeZone).DateTime;
             var deliveryWindow = TimeSpan.FromMinutes(Math.Max(1, _options.DeliveryWindowMinutes));
             var sentAtUtc = DateTime.UtcNow;
 
@@ -62,9 +63,7 @@ namespace LABsistem.Api.Services
                 .Include(z => z.ReservationReminderDispatches)
                 .Where(z =>
                     z.StatusZahtjeva == StatusZahtjeva.Odobren &&
-                    z.Termin.StatusTermina == StatusTermina.Rezervisan &&
-                    z.Termin.Datum >= minDate &&
-                    z.Termin.Datum <= maxDate)
+                    z.Termin.StatusTermina == StatusTermina.Rezervisan)
                 .ToListAsync(cancellationToken);
 
             var pendingEmails = new List<ReminderEmailPayload>();
@@ -170,6 +169,33 @@ namespace LABsistem.Api.Services
             }
 
             return $"za {offsetMinutes} minuta";
+        }
+
+        private static TimeZoneInfo ResolveReminderTimeZone(string? configuredTimeZoneId)
+        {
+            var candidateIds = new[]
+            {
+                configuredTimeZoneId,
+                "Europe/Sarajevo",
+                "Central European Standard Time",
+                "Central Europe Standard Time"
+            };
+
+            foreach (var candidateId in candidateIds.Where(id => !string.IsNullOrWhiteSpace(id)))
+            {
+                try
+                {
+                    return TimeZoneInfo.FindSystemTimeZoneById(candidateId!);
+                }
+                catch (TimeZoneNotFoundException)
+                {
+                }
+                catch (InvalidTimeZoneException)
+                {
+                }
+            }
+
+            return TimeZoneInfo.Local;
         }
 
         private sealed record ReminderEmailPayload(
