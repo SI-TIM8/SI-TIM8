@@ -1,45 +1,138 @@
+# Sprint Backlog – Sprint 9
 
-#### Sprint 9 | TBD
+## Stavke sprint backloga
 
-**Cilj sprinta:** Prijava kvarova, filtriranje opreme i sistemsko testiranje 
-**Kapacitet tima:** ~65%
+| ID | Naziv zadatka ili story-a | Opis | Povezani US | Odgovorna osoba ili osobe | Status | Napomena |
+|-|-|-|-|-|-|-|
+| 1 | Prijava i evidencija kvara opreme | Implementiran je tok prijave kvara od strane profesora, uključujući validaciju, unos komentara i automatsku promjenu statusa opreme na neispravnu. | US09, US28 | Emina Hamamdžić, Hamza Hadžić | Završeno | Status opreme se odmah ažurira i prikazuje korisnicima |
+| 2 | Ograničenje aktivnih zahtjeva po studentu | Uveden je sistemski limit aktivnih studentskih zahtjeva uz validaciju i poruku upozorenja kada je limit dostignut. | US16 | Refik Mujčinović, Hamza Hadžić | Završeno | Aktivni zahtjevi su statusi Na čekanju i Odobren |
+| 3 | Sigurnost prvog pristupa | Dodana je obavezna promjena lozinke pri prvom loginu za novokreirane korisnike koje kreira administrator. | US47 | Hamza Hadžić | Završeno | Ne odnosi se na seedovane korisnike |
+| 4 | Pregled rezervacija i upravljanje zahtjevima studenta | Student na jednom ekranu vidi aktivne rezervacije i svoje zahtjeve, te može otkazati rezervaciju ili poništiti zahtjev na čekanju. | US13A, US13B | Hamza Hadžić | Završeno | Implementirani su odvojeni tabovi unutar ekrana "Moje rezervacije" |
+| 5 | Podsjetnici prije termina | Sistem šalje in-app podsjetnike svim studentima, a email podsjetnike samo kada je email adresa verifikovana. | US50 | Hamza Hadžić | Završeno | Vrijeme slanja je konfigurabilno, npr. 24h i 1h ranije |
+| 6 | Arhiviranje opreme i arhivski filteri | Trajno brisanje opreme je zamijenjeno arhiviranjem, uz pregled arhivirane opreme, vraćanje iz arhive i prilagođene filtere na stranici opreme. | US49 | Hamza Hadžić | Završeno | Arhivirana oprema nije prikazana u standardnim aktivnim listama |
+
+## **Cilj sprinta:** Pouzdanije upravljanje opremom, sigurniji korisnički nalozi i veća samostalnost studenata
 
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
 |----|-------------|------|-----|-----------|-----------|--------|
-| US09 / US28 | Prijava kvara + automatsko otkazivanje budućih rezervacija | Profesor prijavljuje kvar opreme; sistem mijenja status na "neispravna" i otkazuje sve Pending/Approved rezervacije; pogođeni korisnici primaju obavijest | Feature | 3+3 | Medium | To Do |
-| US16 | Ograničenje broja aktivnih rezervacija po studentu | Profesor postavlja limit; sistem prikazuje upozorenje kada se limit dostigne | Feature | 2 | Medium | To Do |
-| – | Sistemsko i performansno testiranje | E2E tok s kvarom opreme; load testiranje sa 50 concurrent korisnika; provjera ACID transakcija i backup mehanizma | Testing | 4 | High | To Do |
+| US09 | Prijava kvara | Profesor prijavljuje kvar opreme kako bi sistem vodio preciznu evidenciju ispravnosti. | Feature | 3 | Medium | Završeno |
+| US28 | Automatsko povlačenje neispravne opreme | Sistem automatski označava opremu kao neispravnu nakon prijave kvara i prikazuje njen ažurirani status korisnicima. | Feature | 2 | Medium | Završeno |
+| US16 | Limitiranje aktivnih zahtjeva po korisniku | Sistem ograničava maksimalan broj aktivnih zahtjeva po studentu i prikazuje poruku upozorenja kada se limit dostigne. | Feature | 2 | Medium | Završeno |
+| US47 | Obavezna promjena lozinke pri prvom loginu | Novi korisnik kojeg kreira administrator mora promijeniti privremenu lozinku prije nastavka korištenja sistema. | Feature | 3 | High | Završeno |
+| US50 | Podsjetnik prije termina | Student dobija podsjetnik prije rezervisanog termina kroz in-app kanal i email kada je adresa verifikovana. | Feature | 3 | Medium | Završeno |
+| US13A | Pregled mojih rezervacija i zahtjeva | Student na jednom mjestu vidi svoje odobrene rezervacije i poslane zahtjeve. | Feature | 2 | Medium | Završeno |
+| US13B | Otkazivanje rezervacije i povlačenje zahtjeva | Student može otkazati odobrenu rezervaciju ili poništiti zahtjev koji je još na čekanju. | Feature | 3 | Medium | Završeno |
+| US49 | Arhiviranje opreme umjesto trajnog brisanja | Tehničar ili administrator arhivira opremu, zadržava historiju i po potrebi vraća stavku iz arhive. | Feature | 2 | Medium | Završeno |
 
-
-
-| Član | Oblast odgovornosti |
-|------|---------------------|
-| M1 | Forma za prijavu kvara – frontend (US09/US28) |
-| M2 | Dodavanje općenitih obavještenja za sve korisnike |
-| M3-M4 | Ograničenje broja rezervacija po studentu (US16)|
-| M5 | E2E testiranje- ostatak sistema|
-| M6 |Load testiranje – 50 concurrent korisnika (NFR-13); ACID i backup provjera (NFR-17, NFR-19) |
-| M7-M8 | Regresijsko testiranje svih funkcionalnosti do kraja S9 |
-
+# Detaljni User Stories (US)
 
 ---
 
-#### Sprint 10 | TBD
+### US09 – Prijava kvara
 
-**Cilj sprinta:** Rješavanje problema kvarova, ocjenjivanje studenata
-**Kapacitet tima:** ~85%
+*Kao profesor, želim prijaviti kvar opreme, kako bi imali preciznu evidenciju ispravnosti.*
 
-| ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
-|----|-------------|------|-----|-----------|-----------|--------|
-| US44 | Rješavanje kvarova opreme  | Nakon forme za kvar opreme koja je poslata od strane profesora/asistenta, tehničar riješava  problem, dolazi mu na mail obavijest o kvaru, i stavlja je u to do sekciju| 2 | Low | To Do |
-| US45| Nakon obavijesti da je došlo do kvara opreme, u sekciji to do se riješava problem | Tehničar  riješava problem u sekciji To-Do, tako što isključuje datu opremu iz sistema privremeno ili odmah je popravi | Feature | 3 | Medium | To Do |
-| US29 | Ocjena studentima | Profesor  daje ocjene studentima, može ih brisati dodavati ili uređivati| Feature | 2 | Medium | To Do |
+**Acceptance Criteria:**
 
+* Forma za prijavu kvara je dostupna.
+* Omogućen je unos detaljnog opisa problema.
+* Kvar se evidentira u sistemu.
+* Nakon prijave kvara status opreme se automatski mijenja u "neispravna".
 
+---
 
-| Član | Oblast odgovornosti |
-|------|---------------------|
-| M1 | Prosljeđivanje problema u ( To-Do)|
-| M2 | Rješavanje problema |
-| M3 | Ocjenjivanje studenata |
-| M4 |Unit testiranje |
+### US28 – Automatsko povlačenje neispravne opreme
+
+*Kao sistem, želim automatski označiti opremu kao neispravnu nakon prijave kvara i prikazati njen ažurirani status korisnicima, kako bi se spriječila dalja upotreba neispravne opreme i omogućilo njeno dalje tehničko rješavanje.*
+
+**Acceptance Criteria:**
+
+* Nakon prijave kvara status opreme se automatski mijenja u "neispravna".
+* Ažurirani status opreme je vidljiv korisnicima u sistemu.
+* Oprema ostaje u neispravnom ili servisnom stanju dok tehničar ili administrator ne promijeni njen status.
+* Sistem omogućava tehničaru da kroz obradu kvara dalje upravlja statusom opreme do njenog vraćanja u ispravno stanje.
+
+---
+
+### US16 – Ograničenje broja aktivnih zahtjeva po studentu
+
+*Kao sistem, želim ograničiti maksimalan broj aktivnih zahtjeva po studentu, kako bi raspodjela termina bila pravednija i kako pojedinačni korisnici ne bi zauzimali prevelik broj mjesta u sistemu.*
+
+**Acceptance Criteria:**
+
+* Sistem onemogućava slanje novog zahtjeva ako je student dosegao definisani limit aktivnih zahtjeva.
+* Kao aktivni zahtjevi računaju se zahtjevi sa statusom "Na čekanju" i "Odobren".
+* Student dobija jasnu poruku upozorenja kada pokuša poslati novi zahtjev nakon dostizanja limita.
+* Nakon otkazivanja ili završetka postojećih zahtjeva student ponovo može slati nove zahtjeve u okviru dozvoljenog limita.
+
+---
+
+### US47 – Obavezna promjena lozinke pri prvom loginu
+
+*Kao korisnik kojem je nalog kreirao administrator, želim biti primoran promijeniti privremenu lozinku pri prvom loginu, kako bi moj nalog bio sigurniji i poznat samo meni.*
+
+**Acceptance Criteria:**
+
+* Korisnik se može prijaviti sa privremenom lozinkom samo do ekrana za promjenu lozinke.
+* Dok ne promijeni lozinku, korisnik ne može pristupiti ostatku aplikacije.
+* Nova lozinka mora zadovoljiti postojeća sigurnosna pravila sistema.
+* Nakon uspješne promjene lozinke, korisnik dobija normalan pristup aplikaciji.
+* Sistem više ne traži obaveznu promjenu lozinke nakon što je korisnik jednom uspješno postavi.
+
+---
+
+### US50 – Podsjetnik prije termina
+
+*Kao student, želim dobiti podsjetnik prije rezervisanog termina, kako ne bih propustio laboratorijsku vježbu.*
+
+**Acceptance Criteria:**
+
+* Sistem šalje in-app i/ili email podsjetnik prije termina.
+* Vrijeme podsjetnika je konfigurabilno, npr. 24h i 1h ranije.
+* Podsjetnik sadrži datum, vrijeme i laboratoriju.
+* Ne šalju se podsjetnici za otkazane termine.
+* Email podsjetnik se šalje samo korisnicima sa verifikovanom email adresom, dok je in-app obavijest dostupna u svakom slučaju.
+
+---
+
+### US13A – Pregled mojih rezervacija i zahtjeva
+
+*Kao student, želim na jednom mjestu vidjeti svoje odobrene rezervacije i poslane zahtjeve, kako bih imao jasan pregled statusa svojih prijava i budućih termina.*
+
+**Acceptance Criteria:**
+
+* Student može otvoriti ekran "Moje rezervacije" iz postojećeg menija.
+* Ekran prikazuje tab "Aktivne rezervacije" sa odobrenim budućim terminima studenta.
+* Ekran prikazuje tab "Moji zahtjevi" sa studentskim zahtjevima koji nisu odobrene rezervacije.
+* Za svaku stavku prikazuju se datum, vrijeme, kabinet, profesor i status.
+* Student vidi samo svoje podatke i ne može pristupiti tuđim rezervacijama ili zahtjevima.
+
+---
+
+### US13B – Otkazivanje rezervacije i povlačenje zahtjeva
+
+*Kao student, želim otkazati odobrenu rezervaciju ili poništiti zahtjev koji je još na čekanju, kako bih mogao odustati od termina bez posrednika i osloboditi mjesto drugima kada je to potrebno.*
+
+**Acceptance Criteria:**
+
+* Student može otkazati svoju buduću odobrenu rezervaciju iz taba "Aktivne rezervacije".
+* Student može poništiti svoj zahtjev sa statusom "Na čekanju" iz taba "Moji zahtjevi".
+* Nakon otkazivanja ili poništavanja status stavke se mijenja u "Otkazan".
+* Otkazana odobrena rezervacija više se ne prikazuje kao aktivna rezervacija i termin se ponovo oslobađa u sistemu.
+* Zahtjevi koji su već odbijeni, otkazani ili termini koji su već počeli ne mogu se ponovo otkazivati.
+* Nakon uspješne akcije student dobija jasnu potvrdu u interfejsu.
+
+---
+
+### US49 – Arhiviranje opreme umjesto trajnog brisanja
+
+*Kao tehničar, želim arhivirati opremu koja se više ne koristi, kako bih zadržao historiju bez prikaza u aktivnim listama.*
+
+**Acceptance Criteria:**
+
+* Oprema se može označiti kao arhivirana.
+* Arhivirana oprema nije vidljiva u standardnim aktivnim listama.
+* Historija evidencija i kvarova ostaje dostupna.
+* Administrator ili tehničar može vratiti arhiviranu opremu.
+
+---
