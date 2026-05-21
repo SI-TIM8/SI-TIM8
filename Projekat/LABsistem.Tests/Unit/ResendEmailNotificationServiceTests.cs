@@ -91,6 +91,38 @@ public class ResendEmailNotificationServiceTests
         Assert.Contains("test-token", payload);
     }
 
+    [Fact]
+    public async Task SendReservationReminderEmailAsync_WithValidConfiguration_SendsReminderRequest()
+    {
+        var handler = new CapturingHttpMessageHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent("{\"id\":\"email_789\"}", Encoding.UTF8, "application/json")
+        });
+
+        var service = CreateService(handler, new Dictionary<string, string?>
+        {
+            ["RESEND_API_KEY"] = "resend-test-key",
+            ["FROM_EMAIL"] = "central@hamzahadzic.site"
+        });
+
+        var result = await service.SendReservationReminderEmailAsync(
+            "student@test.com",
+            "Test Student",
+            new DateTime(2026, 5, 25),
+            new TimeSpan(9, 0, 0),
+            new TimeSpan(10, 0, 0),
+            "Kabinet A1",
+            "za 1 sat");
+
+        Assert.True(result);
+        Assert.NotNull(handler.LastRequest);
+
+        var payload = await handler.LastRequest!.Content!.ReadAsStringAsync();
+        Assert.Contains("LABsistem - podsjetnik prije termina", payload);
+        Assert.Contains("Kabinet A1", payload);
+        Assert.Contains("za 1 sat", payload);
+    }
+
     private static ResendEmailNotificationService CreateService(
         CapturingHttpMessageHandler handler,
         IDictionary<string, string?> configurationValues)

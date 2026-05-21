@@ -311,5 +311,90 @@ namespace LABsistem.Tests.Unit
 
             await validator.ValidateZahtjev(studentId, termin.ID);
         }
+
+        [Fact]
+        public async Task ValidateStudentOtkazivanje_ThrowsException_WhenApprovedReservationDoesNotExist()
+        {
+            using var context = GetInMemoryDbContext();
+            var termin = new Termin
+            {
+                ID = 21,
+                KreatorID = 1,
+                ProfesorID = 2,
+                Datum = DateTime.Today.AddDays(2),
+                VrijemePocetka = new TimeSpan(10, 0, 0),
+                VrijemeKraja = new TimeSpan(11, 0, 0),
+                StatusTermina = StatusTermina.Rezervisan
+            };
+            context.Termini.Add(termin);
+            await context.SaveChangesAsync();
+
+            var validator = new RezervacijaValidator(context);
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => validator.ValidateStudentOtkazivanje(21, 100));
+
+            Assert.Equal("Nemate aktivnu odobrenu rezervaciju za ovaj termin.", ex.Message);
+        }
+
+        [Fact]
+        public async Task ValidateStudentOtkazivanje_ThrowsException_WhenTerminAlreadyStarted()
+        {
+            using var context = GetInMemoryDbContext();
+            var startedAt = DateTime.Now.AddMinutes(-10);
+            var termin = new Termin
+            {
+                ID = 22,
+                KreatorID = 1,
+                ProfesorID = 2,
+                Datum = startedAt.Date,
+                VrijemePocetka = startedAt.TimeOfDay,
+                VrijemeKraja = startedAt.AddHours(1).TimeOfDay,
+                StatusTermina = StatusTermina.Rezervisan
+            };
+            context.Termini.Add(termin);
+            context.Zahtjevi.Add(new Zahtjev
+            {
+                StudentID = 101,
+                TerminID = 22,
+                StatusZahtjeva = StatusZahtjeva.Odobren,
+                Komentar = string.Empty
+            });
+            await context.SaveChangesAsync();
+
+            var validator = new RezervacijaValidator(context);
+
+            var ex = await Assert.ThrowsAsync<Exception>(() => validator.ValidateStudentOtkazivanje(22, 101));
+
+            Assert.Equal("Rezervaciju je moguce otkazati samo prije pocetka termina.", ex.Message);
+        }
+
+        [Fact]
+        public async Task ValidateStudentOtkazivanje_Succeeds_WhenApprovedReservationIsInFuture()
+        {
+            using var context = GetInMemoryDbContext();
+            var termin = new Termin
+            {
+                ID = 23,
+                KreatorID = 1,
+                ProfesorID = 2,
+                Datum = DateTime.Today.AddDays(3),
+                VrijemePocetka = new TimeSpan(14, 0, 0),
+                VrijemeKraja = new TimeSpan(15, 0, 0),
+                StatusTermina = StatusTermina.Rezervisan
+            };
+            context.Termini.Add(termin);
+            context.Zahtjevi.Add(new Zahtjev
+            {
+                StudentID = 102,
+                TerminID = 23,
+                StatusZahtjeva = StatusZahtjeva.Odobren,
+                Komentar = string.Empty
+            });
+            await context.SaveChangesAsync();
+
+            var validator = new RezervacijaValidator(context);
+
+            await validator.ValidateStudentOtkazivanje(23, 102);
+        }
     }
 }

@@ -1,5 +1,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using LABsistem.Api.Services;
+using LABsistem.Api.Options;
 using LABsistem.Api.Validators;
 using LABsistem.Application.DTOs;
 using LABsistem.Application.DTOs.Auth;
@@ -9,6 +11,8 @@ using LABsistem.Domain.Enums;
 using LabSistem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 
 namespace LABsistem.Tests.Integration
 {
@@ -39,6 +43,8 @@ namespace LABsistem.Tests.Integration
                 existingUser.Email = email;
                 existingUser.Uloga = role;
                 existingUser.DeactivatedAt = null;
+                existingUser.EmailVerified = true;
+                existingUser.EmailVerifiedAtUtc = DateTime.UtcNow;
                 await context.SaveChangesAsync();
                 return existingUser.ID;
             }
@@ -47,6 +53,8 @@ namespace LABsistem.Tests.Integration
             {
                 ImePrezime = $"{role} Test User",
                 Email = email,
+                EmailVerified = true,
+                EmailVerifiedAtUtc = DateTime.UtcNow,
                 Username = username,
                 Password = BCrypt.Net.BCrypt.HashPassword(password),
                 Uloga = role
@@ -68,6 +76,29 @@ namespace LABsistem.Tests.Integration
             response.EnsureSuccessStatusCode();
             var payload = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
             return payload!.Token;
+        }
+
+        private TestEmailNotificationService GetEmailService()
+        {
+            using var scope = _factory.Services.CreateScope();
+            return scope.ServiceProvider.GetRequiredService<TestEmailNotificationService>();
+        }
+
+        private IReservationReminderService CreateReminderService(IServiceScope scope)
+        {
+            var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+            var emailService = scope.ServiceProvider.GetRequiredService<IEmailNotificationService>();
+
+            return new ReservationReminderService(
+                context,
+                emailService,
+                Options.Create(new ReservationReminderOptions
+                {
+                    Enabled = true,
+                    DeliveryWindowMinutes = 5,
+                    OffsetsMinutes = [1440, 60]
+                }),
+                NullLogger<ReservationReminderService>.Instance);
         }
 
         [Fact]
@@ -420,6 +451,240 @@ namespace LABsistem.Tests.Integration
 
             Assert.NotNull(updatedZahtjev);
             Assert.Equal(StatusZahtjeva.Otkazan, updatedZahtjev!.StatusZahtjeva);
+        }
+
+        [Fact]
+        public async Task OtkaziTermin_WhenStudentCancelsApprovedReservation_CancelsOnlyStudentsReservation()
+        {
+            var tehnicarId = await SeedUserAsync("student-cancel-tech", "student.cancel.tech@test.com", "TehnicarPassword123!", UlogaKorisnika.Tehnicar);
+            var profesorId = await SeedUserAsync("student-cancel-prof", "student.cancel.prof@test.com", "ProfesorPassword123!", UlogaKorisnika.Profesor);
+            var studentId = await SeedUserAsync("student-cancel-user", "student.cancel.user@test.com", "StudentPassword123!", UlogaKorisnika.Student);
+
+            int terminId;
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+
+                var objekat = new Objekat
+                {
+                    Lokacija = "Student cancel objekat",
+                    RadnoVrijeme = "08-16"
+                };
+                context.Objekti.Add(objekat);
+                await context.SaveChangesAsync();
+
+                var kabinet = new Kabinet
+                {
+                    Naziv = "Student cancel kabinet",
+                    KorisnikID = profesorId,
+                    ObjekatID = objekat.ID,
+                    Kapacitet = 20
+                };
+                context.Kabineti.Add(kabinet);
+                await context.SaveChangesAsync();
+
+                var termin = new Termin
+                {
+                    Datum = DateTime.Today.AddDays(3),
+                    VrijemePocetka = new TimeSpan(15, 0, 0),
+                    VrijemeKraja = new TimeSpan(16, 0, 0),
+                    KreatorID = tehnicarId,
+                    KabinetID = kabinet.ID,
+                    ProfesorID = profesorId,
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true,
+                    LimitOsoba = 5
+                };
+                context.Termini.Add(termin);
+                await context.SaveChangesAsync();
+                terminId = termin.ID;
+
+                context.Zahtjevi.Add(new Zahtjev
+                {
+                    StudentID = studentId,
+                    TerminID = terminId,
+                    StatusZahtjeva = StatusZahtjeva.Odobren,
+                    Komentar = string.Empty
+                });
+                await context.SaveChangesAsync();
+            }
+
+            var studentToken = await LoginAsync("student-cancel-user", "StudentPassword123!");
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"/api/Rezervacija/otkazi/{terminId}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", studentToken);
+
+            var response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            using var verificationScope = _factory.Services.CreateScope();
+            var verificationContext = verificationScope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+            var updatedZahtjev = await verificationContext.Zahtjevi
+                .FirstOrDefaultAsync(z => z.StudentID == studentId && z.TerminID == terminId);
+            var profesorObavijest = await verificationContext.Obavijesti
+                .FirstOrDefaultAsync(o => o.KorisnikID == profesorId && o.TerminID == terminId);
+
+            Assert.NotNull(updatedZahtjev);
+            Assert.Equal(StatusZahtjeva.Otkazan, updatedZahtjev!.StatusZahtjeva);
+            Assert.NotNull(profesorObavijest);
+            Assert.Contains("otkazao dolazak", profesorObavijest!.Novosti, StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public async Task ReservationReminderService_SendsInAppAndEmailReminder_ForVerifiedStudent()
+        {
+            var emailService = GetEmailService();
+            emailService.Clear();
+
+            var tehnicarId = await SeedUserAsync("reminder-tech", "reminder.tech@test.com", "TehnicarPassword123!", UlogaKorisnika.Tehnicar);
+            var profesorId = await SeedUserAsync("reminder-prof", "reminder.prof@test.com", "ProfesorPassword123!", UlogaKorisnika.Profesor);
+            var studentId = await SeedUserAsync("reminder-student", "reminder.student@test.com", "StudentPassword123!", UlogaKorisnika.Student);
+
+            DateTime currentTime;
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+
+                var objekat = new Objekat
+                {
+                    Lokacija = "Reminder objekat",
+                    RadnoVrijeme = "08-16"
+                };
+                context.Objekti.Add(objekat);
+                await context.SaveChangesAsync();
+
+                var kabinet = new Kabinet
+                {
+                    Naziv = "Reminder kabinet",
+                    KorisnikID = profesorId,
+                    ObjekatID = objekat.ID,
+                    Kapacitet = 20
+                };
+                context.Kabineti.Add(kabinet);
+                await context.SaveChangesAsync();
+
+                currentTime = new DateTime(2099, 1, 10, 9, 0, 0);
+                var termin = new Termin
+                {
+                    Datum = currentTime.Date,
+                    VrijemePocetka = currentTime.AddMinutes(58).TimeOfDay,
+                    VrijemeKraja = currentTime.AddHours(1).TimeOfDay,
+                    KreatorID = tehnicarId,
+                    KabinetID = kabinet.ID,
+                    ProfesorID = profesorId,
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true,
+                    LimitOsoba = 5
+                };
+                context.Termini.Add(termin);
+                await context.SaveChangesAsync();
+
+                context.Zahtjevi.Add(new Zahtjev
+                {
+                    StudentID = studentId,
+                    TerminID = termin.ID,
+                    StatusZahtjeva = StatusZahtjeva.Odobren,
+                    Komentar = string.Empty
+                });
+                await context.SaveChangesAsync();
+            }
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var reminderService = CreateReminderService(scope);
+                var sent = await reminderService.SendDueRemindersAsync(currentTime);
+                Assert.Equal(1, sent);
+
+                var sentAgain = await reminderService.SendDueRemindersAsync(currentTime);
+                Assert.Equal(0, sentAgain);
+            }
+
+            using var verificationScope = _factory.Services.CreateScope();
+            var verificationContext = verificationScope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+            var obavijest = await verificationContext.Obavijesti
+                .FirstOrDefaultAsync(o => o.KorisnikID == studentId && o.Novosti.Contains("Podsjetnik:", StringComparison.Ordinal));
+            var dispatch = await verificationContext.ReservationReminderDispatches.SingleAsync();
+
+            Assert.NotNull(obavijest);
+            Assert.Equal(60, dispatch.ReminderOffsetMinutes);
+
+            var sentEmail = Assert.Single(emailService.ReservationReminderEmails);
+            Assert.Equal("reminder.student@test.com", sentEmail.RecipientEmail);
+            Assert.Equal("Reminder kabinet", sentEmail.KabinetNaziv);
+            Assert.Equal("za 1 sat", sentEmail.ReminderLeadTimeText);
+        }
+
+        [Fact]
+        public async Task ReservationReminderService_DoesNotSendEmail_ForUnverifiedStudent()
+        {
+            var emailService = GetEmailService();
+            emailService.Clear();
+
+            var tehnicarId = await SeedUserAsync("unverified-reminder-tech", "unverified.reminder.tech@test.com", "TehnicarPassword123!", UlogaKorisnika.Tehnicar);
+            var profesorId = await SeedUserAsync("unverified-reminder-prof", "unverified.reminder.prof@test.com", "ProfesorPassword123!", UlogaKorisnika.Profesor);
+            var studentId = await SeedUserAsync("unverified-reminder-student", "unverified.reminder.student@test.com", "StudentPassword123!", UlogaKorisnika.Student);
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+                var student = await context.Korisnici.FirstAsync(x => x.ID == studentId);
+                student.EmailVerified = false;
+                student.EmailVerifiedAtUtc = null;
+
+                var objekat = new Objekat
+                {
+                    Lokacija = "Unverified reminder objekat",
+                    RadnoVrijeme = "08-16"
+                };
+                context.Objekti.Add(objekat);
+                await context.SaveChangesAsync();
+
+                var kabinet = new Kabinet
+                {
+                    Naziv = "Unverified reminder kabinet",
+                    KorisnikID = profesorId,
+                    ObjekatID = objekat.ID,
+                    Kapacitet = 20
+                };
+                context.Kabineti.Add(kabinet);
+                await context.SaveChangesAsync();
+
+                var currentTime = new DateTime(2099, 1, 12, 9, 0, 0);
+                var termin = new Termin
+                {
+                    Datum = currentTime.Date,
+                    VrijemePocetka = currentTime.AddMinutes(58).TimeOfDay,
+                    VrijemeKraja = currentTime.AddHours(1).TimeOfDay,
+                    KreatorID = tehnicarId,
+                    KabinetID = kabinet.ID,
+                    ProfesorID = profesorId,
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true,
+                    LimitOsoba = 5
+                };
+                context.Termini.Add(termin);
+                await context.SaveChangesAsync();
+
+                context.Zahtjevi.Add(new Zahtjev
+                {
+                    StudentID = studentId,
+                    TerminID = termin.ID,
+                    StatusZahtjeva = StatusZahtjeva.Odobren,
+                    Komentar = string.Empty
+                });
+                await context.SaveChangesAsync();
+
+                var reminderService = CreateReminderService(scope);
+                var sent = await reminderService.SendDueRemindersAsync(currentTime);
+                Assert.Equal(1, sent);
+            }
+
+            using var verificationScope = _factory.Services.CreateScope();
+            var verificationContext = verificationScope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+            var obavijest = await verificationContext.Obavijesti
+                .FirstOrDefaultAsync(o => o.KorisnikID == studentId && o.Novosti.Contains("Podsjetnik:", StringComparison.Ordinal));
+
+            Assert.NotNull(obavijest);
+            Assert.Empty(emailService.ReservationReminderEmails);
         }
 
         [Fact]
