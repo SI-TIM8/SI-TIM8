@@ -30,7 +30,12 @@ function Rezervacije() {
   }
 
   async function otkaziRezervaciju(id) {
-    if (!window.confirm("Da li ste sigurni da zelite otkazati rezervaciju?")) return;
+    const confirmMessage =
+      uloga === "student"
+        ? "Da li ste sigurni da zelite otkazati svoj dolazak na termin?"
+        : "Da li ste sigurni da zelite otkazati rezervaciju?";
+
+    if (!window.confirm(confirmMessage)) return;
     try {
       await api.post(`/Rezervacija/otkazi/${id}`);
       setMessage({ type: "success", text: "Rezervacija uspjesno otkazana." });
@@ -60,7 +65,7 @@ function Rezervacije() {
           <span>Kabinet</span>
           {uloga === "student" && <span>Profesor</span>}
           <span>Status</span>
-          {uloga === "profesor" && <span>Akcija</span>}
+          {(uloga === "profesor" || uloga === "student") && <span>Akcija</span>}
         </div>
 
         {loading ? (
@@ -82,7 +87,7 @@ function Rezervacije() {
                     {t.statusTermina}
                   </span>
                 </span>
-                {uloga === "profesor" && (
+                {(uloga === "profesor" || uloga === "student") && (
                   <span>
                     <button className="button warn" onClick={() => otkaziRezervaciju(t.id)}>
                       Otkazi

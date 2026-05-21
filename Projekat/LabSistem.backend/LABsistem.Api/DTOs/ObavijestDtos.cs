@@ -19,4 +19,14 @@ namespace LABsistem.Application.DTOs
         public DateTime DatumTermina { get; set; }
         public TimeSpan VrijemePocetka { get; set; }
     }
+
+    public class StudentReservationCancellationDto
+    {
+        public int StudentID { get; set; }
+        public string StudentImePrezime { get; set; } = string.Empty;
+        public int TerminID { get; set; }
+        public int? ProfesorID { get; set; }
+        public DateTime DatumTermina { get; set; }
+        public TimeSpan VrijemePocetka { get; set; }
+    }
 }

@@ -11,6 +11,8 @@ namespace LABsistem.Api.Services
 
         Task OtkaziTermin(int profesorId, int terminId);
 
+        Task<StudentReservationCancellationDto> OtkaziStudentovuRezervaciju(int studentId, int terminId);
+
         Task PosaljiZahtjev(int studentId, int terminId);
 
         Task<IEnumerable<TerminDTO>> GetSlobodniTerminiAsync();

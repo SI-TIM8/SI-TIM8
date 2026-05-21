@@ -44,16 +44,36 @@ namespace LABsistem.Presentation.Controllers
         }
 
         [HttpPost("otkazi/{id}")]
-        [Authorize(Roles = "Profesor")]
+        [Authorize(Roles = "Profesor,Student")]
         public async Task<IActionResult> Otkazi(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
-            var profesorId = int.Parse(userId);
+            if (!int.TryParse(userId, out var korisnikId)) return Unauthorized();
+
+            var role = User.FindFirstValue(ClaimTypes.Role)?.ToLowerInvariant();
             try
             {
-                await _service.OtkaziTermin(profesorId, id);
-                return Ok(new { message = "Rezervacija otkazana." });
+                if (role == "profesor")
+                {
+                    await _service.OtkaziTermin(korisnikId, id);
+                    return Ok(new { message = "Rezervacija otkazana." });
+                }
+
+                if (role == "student")
+                {
+                    var rezultat = await _service.OtkaziStudentovuRezervaciju(korisnikId, id);
+                    if (rezultat.ProfesorID.HasValue)
+                    {
+                        var poruka =
+                            $"Student {rezultat.StudentImePrezime} je otkazao dolazak na termin {rezultat.DatumTermina:dd.MM.yyyy} u {rezultat.VrijemePocetka:hh\\:mm}.";
+                        await _obavijestService.KreirajAsync(rezultat.ProfesorID.Value, poruka, rezultat.TerminID);
+                    }
+
+                    return Ok(new { message = "Rezervacija otkazana." });
+                }
+
+                return Forbid();
             }
             catch (Exception ex)
             {

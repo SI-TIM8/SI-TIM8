@@ -12,6 +12,7 @@ namespace LABsistem.Api.Validators
     {
         Task ValidateRezervacija(int terminId, int profesorId, int limitOsoba);
         Task ValidateOtkazivanje(int terminId, int profesorId);
+        Task ValidateStudentOtkazivanje(int terminId, int studentId);
         Task ValidateZahtjev(int studentId, int terminId);
         Task ValidateOdgovor(int zahtjevId, int profesorId, bool odobri);
     }
@@ -125,6 +126,23 @@ namespace LABsistem.Api.Validators
 
             if (konflikt)
                 throw new Exception("Student već ima drugi termin u ovom vremenu.");
+        }
+
+        public async Task ValidateStudentOtkazivanje(int terminId, int studentId)
+        {
+            var zahtjev = await _context.Zahtjevi
+                .Include(z => z.Termin)
+                .FirstOrDefaultAsync(z =>
+                    z.TerminID == terminId &&
+                    z.StudentID == studentId &&
+                    z.StatusZahtjeva == StatusZahtjeva.Odobren);
+
+            if (zahtjev == null)
+                throw new Exception("Nemate aktivnu odobrenu rezervaciju za ovaj termin.");
+
+            var terminStart = zahtjev.Termin.Datum.Date.Add(zahtjev.Termin.VrijemePocetka);
+            if (terminStart <= DateTime.Now)
+                throw new Exception("Rezervaciju je moguce otkazati samo prije pocetka termina.");
         }
 
         public async Task ValidateOdgovor(int zahtjevId, int profesorId, bool odobri)

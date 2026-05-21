@@ -62,6 +62,33 @@ namespace LABsistem.Api.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task<StudentReservationCancellationDto> OtkaziStudentovuRezervaciju(int studentId, int terminId)
+        {
+            await _validator.ValidateStudentOtkazivanje(terminId, studentId);
+
+            var zahtjev = await _context.Zahtjevi
+                .Include(z => z.Student)
+                .Include(z => z.Termin)
+                .FirstAsync(z =>
+                    z.TerminID == terminId &&
+                    z.StudentID == studentId &&
+                    z.StatusZahtjeva == StatusZahtjeva.Odobren);
+
+            zahtjev.StatusZahtjeva = StatusZahtjeva.Otkazan;
+
+            await _context.SaveChangesAsync();
+
+            return new StudentReservationCancellationDto
+            {
+                StudentID = zahtjev.StudentID,
+                StudentImePrezime = zahtjev.Student.ImePrezime,
+                TerminID = zahtjev.TerminID,
+                ProfesorID = zahtjev.Termin.ProfesorID,
+                DatumTermina = zahtjev.Termin.Datum,
+                VrijemePocetka = zahtjev.Termin.VrijemePocetka
+            };
+        }
+
         public async Task PosaljiZahtjev(int studentId, int terminId)
         {
             await _validator.ValidateZahtjev(studentId, terminId);
