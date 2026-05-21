@@ -8,8 +8,7 @@
 | 2 | Ograničenje aktivnih zahtjeva po studentu | Uveden je sistemski limit aktivnih studentskih zahtjeva uz validaciju i poruku upozorenja kada je limit dostignut. | US16 | Refik Mujčinović | Završeno | Aktivni zahtjevi su statusi Na čekanju i Odobren |
 | 3 | Sigurnost prvog pristupa | Dodana je obavezna promjena lozinke pri prvom loginu za novokreirane korisnike koje kreira administrator. | US47 | Hamza Hadžić | Završeno | Ne odnosi se na seedovane korisnike |
 | 4 | Pregled rezervacija i upravljanje zahtjevima studenta | Student na jednom ekranu vidi aktivne rezervacije i svoje zahtjeve, te može otkazati rezervaciju ili poništiti zahtjev na čekanju. | US13A, US13B | Hamza Hadžić | Završeno | Implementirani su odvojeni tabovi unutar ekrana "Moje rezervacije" |
-| 5 | Podsjetnici prije termina | Sistem šalje in-app podsjetnike svim studentima, a email podsjetnike samo kada je email adresa verifikovana. | US50 | Hamza Hadžić | Završeno | Vrijeme slanja je konfigurabilno, npr. 24h i 1h ranije |
-| 6 | Arhiviranje opreme i arhivski filteri | Trajno brisanje opreme je zamijenjeno arhiviranjem, uz pregled arhivirane opreme, vraćanje iz arhive i prilagođene filtere na stranici opreme. | US49 | Hamza Hadžić | Završeno | Arhivirana oprema nije prikazana u standardnim aktivnim listama |
+| 5 | Arhiviranje opreme i arhivski filteri | Trajno brisanje opreme je zamijenjeno arhiviranjem, uz pregled arhivirane opreme, vraćanje iz arhive i prilagođene filtere na stranici opreme. | US49 | Hamza Hadžić | Završeno | Arhivirana oprema nije prikazana u standardnim aktivnim listama |
 
 ## **Cilj sprinta:** Pouzdanije upravljanje opremom, sigurniji korisnički nalozi i veća samostalnost studenata
 
@@ -19,7 +18,6 @@
 | US28 | Automatsko povlačenje neispravne opreme | Sistem automatski označava opremu kao neispravnu nakon prijave kvara i prikazuje njen ažurirani status korisnicima. | Feature | 2 | Medium | Završeno |
 | US16 | Limitiranje aktivnih zahtjeva po korisniku | Sistem ograničava maksimalan broj aktivnih zahtjeva po studentu i prikazuje poruku upozorenja kada se limit dostigne. | Feature | 2 | Medium | Završeno |
 | US47 | Obavezna promjena lozinke pri prvom loginu | Novi korisnik kojeg kreira administrator mora promijeniti privremenu lozinku prije nastavka korištenja sistema. | Feature | 3 | High | Završeno |
-| US50 | Podsjetnik prije termina | Student dobija podsjetnik prije rezervisanog termina kroz in-app kanal i email kada je adresa verifikovana. | Feature | 3 | Medium | Završeno |
 | US13A | Pregled mojih rezervacija i zahtjeva | Student na jednom mjestu vidi svoje odobrene rezervacije i poslane zahtjeve. | Feature | 2 | Medium | Završeno |
 | US13B | Otkazivanje rezervacije i povlačenje zahtjeva | Student može otkazati odobrenu rezervaciju ili poništiti zahtjev koji je još na čekanju. | Feature | 3 | Medium | Završeno |
 | US49 | Arhiviranje opreme umjesto trajnog brisanja | Tehničar ili administrator arhivira opremu, zadržava historiju i po potrebi vraća stavku iz arhive. | Feature | 2 | Medium | Završeno |
@@ -78,20 +76,6 @@
 * Nova lozinka mora zadovoljiti postojeća sigurnosna pravila sistema.
 * Nakon uspješne promjene lozinke, korisnik dobija normalan pristup aplikaciji.
 * Sistem više ne traži obaveznu promjenu lozinke nakon što je korisnik jednom uspješno postavi.
-
----
-
-### US50 – Podsjetnik prije termina
-
-*Kao student, želim dobiti podsjetnik prije rezervisanog termina, kako ne bih propustio laboratorijsku vježbu.*
-
-**Acceptance Criteria:**
-
-* Sistem šalje in-app i/ili email podsjetnik prije termina.
-* Vrijeme podsjetnika je konfigurabilno, npr. 24h i 1h ranije.
-* Podsjetnik sadrži datum, vrijeme i laboratoriju.
-* Ne šalju se podsjetnici za otkazane termine.
-* Email podsjetnik se šalje samo korisnicima sa verifikovanom email adresom, dok je in-app obavijest dostupna u svakom slučaju.
 
 ---
 
