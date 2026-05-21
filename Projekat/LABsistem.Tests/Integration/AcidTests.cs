@@ -168,8 +168,8 @@ public class AcidTests
 
         var datumString = datumObj.ToString("yyyy-MM-ddT00:00:00.000Z");
 
-        var vrijemePocetka = "11:00:00";
-        var vrijemeKraja = "12:30:00";
+        var vrijemePocetka = "14:00:00";
+        var vrijemeKraja = "15:30:00";
 
         
         // 2. Kreiranje termina
@@ -287,5 +287,8 @@ public class AcidTests
             postojiZahtjev,
             "Zahtjev nije trajno sačuvan u sistemu."
         );
+        // Cleanup
+        SetToken(tehnicarToken);
+        await _client.DeleteAsync($"/api/Termin/{terminId}");
     }
 }
