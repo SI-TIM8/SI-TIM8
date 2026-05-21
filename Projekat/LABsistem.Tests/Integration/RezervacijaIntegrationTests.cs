@@ -287,6 +287,116 @@ namespace LABsistem.Tests.Integration
         }
 
         [Fact]
+        public async Task GetMojiZahtjevi_ForStudent_ReturnsNonApprovedRequests()
+        {
+            var tehnicarId = await SeedUserAsync("requests-tech", "requests.tech@test.com", "TehnicarPassword123!", UlogaKorisnika.Tehnicar);
+            var profesorId = await SeedUserAsync("requests-prof", "requests.prof@test.com", "ProfesorPassword123!", UlogaKorisnika.Profesor);
+            var studentId = await SeedUserAsync("requests-student", "requests.student@test.com", "StudentPassword123!", UlogaKorisnika.Student);
+
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+
+                var objekat = new Objekat
+                {
+                    Lokacija = "Zahtjevi objekat",
+                    RadnoVrijeme = "08-16"
+                };
+                context.Objekti.Add(objekat);
+                await context.SaveChangesAsync();
+
+                var kabinet = new Kabinet
+                {
+                    Naziv = "Zahtjevi kabinet",
+                    KorisnikID = profesorId,
+                    ObjekatID = objekat.ID,
+                    Kapacitet = 20
+                };
+                context.Kabineti.Add(kabinet);
+                await context.SaveChangesAsync();
+
+                var pendingTermin = new Termin
+                {
+                    Datum = DateTime.Today.AddDays(4),
+                    VrijemePocetka = new TimeSpan(9, 0, 0),
+                    VrijemeKraja = new TimeSpan(10, 0, 0),
+                    KreatorID = tehnicarId,
+                    KabinetID = kabinet.ID,
+                    ProfesorID = profesorId,
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true,
+                    LimitOsoba = 10
+                };
+                var rejectedTermin = new Termin
+                {
+                    Datum = DateTime.Today.AddDays(5),
+                    VrijemePocetka = new TimeSpan(11, 0, 0),
+                    VrijemeKraja = new TimeSpan(12, 0, 0),
+                    KreatorID = tehnicarId,
+                    KabinetID = kabinet.ID,
+                    ProfesorID = profesorId,
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true,
+                    LimitOsoba = 10
+                };
+                var approvedTermin = new Termin
+                {
+                    Datum = DateTime.Today.AddDays(6),
+                    VrijemePocetka = new TimeSpan(13, 0, 0),
+                    VrijemeKraja = new TimeSpan(14, 0, 0),
+                    KreatorID = tehnicarId,
+                    KabinetID = kabinet.ID,
+                    ProfesorID = profesorId,
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true,
+                    LimitOsoba = 10
+                };
+
+                context.Termini.AddRange(pendingTermin, rejectedTermin, approvedTermin);
+                await context.SaveChangesAsync();
+
+                context.Zahtjevi.AddRange(
+                    new Zahtjev
+                    {
+                        StudentID = studentId,
+                        TerminID = pendingTermin.ID,
+                        StatusZahtjeva = StatusZahtjeva.NaCekanju,
+                        Komentar = string.Empty
+                    },
+                    new Zahtjev
+                    {
+                        StudentID = studentId,
+                        TerminID = rejectedTermin.ID,
+                        StatusZahtjeva = StatusZahtjeva.Odbijen,
+                        Komentar = string.Empty
+                    },
+                    new Zahtjev
+                    {
+                        StudentID = studentId,
+                        TerminID = approvedTermin.ID,
+                        StatusZahtjeva = StatusZahtjeva.Odobren,
+                        Komentar = string.Empty
+                    });
+                await context.SaveChangesAsync();
+            }
+
+            var studentToken = await LoginAsync("requests-student", "StudentPassword123!");
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/api/Rezervacija/moji-zahtjevi");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", studentToken);
+
+            var response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            var payload = await response.Content.ReadFromJsonAsync<List<StudentZahtjevDTO>>();
+
+            Assert.NotNull(payload);
+            Assert.Equal(2, payload.Count);
+            Assert.Contains(payload, z => z.StatusZahtjeva == "NaCekanju" && z.MozeOtkazati);
+            Assert.Contains(payload, z => z.StatusZahtjeva == "Odbijen" && !z.MozeOtkazati);
+            Assert.DoesNotContain(payload, z => z.StatusZahtjeva == "Odobren");
+        }
+
+        [Fact]
         public async Task OdgovoriNaZahtjev_WhenProfesorApproves_UpdatesStatusAndRemovesPendingEntry()
         {
             var tehnicarId = await SeedUserAsync("approve-tech", "approve.tech@test.com", "TehnicarPassword123!", UlogaKorisnika.Tehnicar);
@@ -527,6 +637,78 @@ namespace LABsistem.Tests.Integration
             Assert.Equal(StatusZahtjeva.Otkazan, updatedZahtjev!.StatusZahtjeva);
             Assert.NotNull(profesorObavijest);
             Assert.Contains("otkazao dolazak", profesorObavijest!.Novosti, StringComparison.OrdinalIgnoreCase);
+        }
+
+        [Fact]
+        public async Task OtkaziStudentovZahtjev_StudentCancelsPendingRequest()
+        {
+            var tehnicarId = await SeedUserAsync("pending-cancel-tech", "pending.cancel.tech@test.com", "TehnicarPassword123!", UlogaKorisnika.Tehnicar);
+            var profesorId = await SeedUserAsync("pending-cancel-prof", "pending.cancel.prof@test.com", "ProfesorPassword123!", UlogaKorisnika.Profesor);
+            var studentId = await SeedUserAsync("pending-cancel-student", "pending.cancel.student@test.com", "StudentPassword123!", UlogaKorisnika.Student);
+
+            int zahtjevId;
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+
+                var objekat = new Objekat
+                {
+                    Lokacija = "Povlačenje zahtjeva objekat",
+                    RadnoVrijeme = "08-16"
+                };
+                context.Objekti.Add(objekat);
+                await context.SaveChangesAsync();
+
+                var kabinet = new Kabinet
+                {
+                    Naziv = "Povlačenje zahtjeva kabinet",
+                    KorisnikID = profesorId,
+                    ObjekatID = objekat.ID,
+                    Kapacitet = 20
+                };
+                context.Kabineti.Add(kabinet);
+                await context.SaveChangesAsync();
+
+                var termin = new Termin
+                {
+                    Datum = DateTime.Today.AddDays(4),
+                    VrijemePocetka = new TimeSpan(10, 0, 0),
+                    VrijemeKraja = new TimeSpan(11, 0, 0),
+                    KreatorID = tehnicarId,
+                    KabinetID = kabinet.ID,
+                    ProfesorID = profesorId,
+                    StatusTermina = StatusTermina.Rezervisan,
+                    VidljivoStudentima = true,
+                    LimitOsoba = 5
+                };
+                context.Termini.Add(termin);
+                await context.SaveChangesAsync();
+
+                var zahtjev = new Zahtjev
+                {
+                    StudentID = studentId,
+                    TerminID = termin.ID,
+                    StatusZahtjeva = StatusZahtjeva.NaCekanju,
+                    Komentar = string.Empty
+                };
+                context.Zahtjevi.Add(zahtjev);
+                await context.SaveChangesAsync();
+                zahtjevId = zahtjev.ID;
+            }
+
+            var studentToken = await LoginAsync("pending-cancel-student", "StudentPassword123!");
+            using var request = new HttpRequestMessage(HttpMethod.Post, $"/api/Rezervacija/otkazi-zahtjev/{zahtjevId}");
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", studentToken);
+
+            var response = await _client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            using var verificationScope = _factory.Services.CreateScope();
+            var verificationContext = verificationScope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+            var updatedZahtjev = await verificationContext.Zahtjevi.FindAsync(zahtjevId);
+
+            Assert.NotNull(updatedZahtjev);
+            Assert.Equal(StatusZahtjeva.Otkazan, updatedZahtjev!.StatusZahtjeva);
         }
 
         [Fact]

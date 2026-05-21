@@ -13,6 +13,8 @@ namespace LABsistem.Api.Services
 
         Task<StudentReservationCancellationDto> OtkaziStudentovuRezervaciju(int studentId, int terminId);
 
+        Task OtkaziStudentovZahtjev(int studentId, int zahtjevId);
+
         Task PosaljiZahtjev(int studentId, int terminId);
 
         Task<IEnumerable<TerminDTO>> GetSlobodniTerminiAsync();
@@ -20,6 +22,8 @@ namespace LABsistem.Api.Services
         Task<IEnumerable<TerminDTO>> GetMojeRezervacijeAsync(int korisnikId, string uloga);
         
         Task<IEnumerable<ZahtjevDTO>> GetDolazniZahtjeviAsync(int profesorId);
+
+        Task<IEnumerable<StudentZahtjevDTO>> GetMojeZahtjeveAsync(int studentId);
         
         Task<IEnumerable<TerminDTO>> GetDostupniTerminiZaStudenteAsync(int studentId);
     

@@ -89,6 +89,21 @@ namespace LABsistem.Api.Services
             };
         }
 
+        public async Task OtkaziStudentovZahtjev(int studentId, int zahtjevId)
+        {
+            await _validator.ValidateStudentOtkazivanjeZahtjeva(zahtjevId, studentId);
+
+            var zahtjev = await _context.Zahtjevi
+                .FirstAsync(z =>
+                    z.ID == zahtjevId &&
+                    z.StudentID == studentId &&
+                    z.StatusZahtjeva == StatusZahtjeva.NaCekanju);
+
+            zahtjev.StatusZahtjeva = StatusZahtjeva.Otkazan;
+
+            await _context.SaveChangesAsync();
+        }
+
         public async Task PosaljiZahtjev(int studentId, int terminId)
         {
             await _validator.ValidateZahtjev(studentId, terminId);
@@ -180,6 +195,31 @@ namespace LABsistem.Api.Services
                     StudentIme = z.Student.ImePrezime,
                     StatusZahtjeva = z.StatusZahtjeva.ToString(),
                     KreiranoU = DateTime.Now
+                })
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<StudentZahtjevDTO>> GetMojeZahtjeveAsync(int studentId)
+        {
+            return await _context.Zahtjevi
+                .Include(z => z.Termin)
+                    .ThenInclude(t => t.Kabinet)
+                .Include(z => z.Termin)
+                    .ThenInclude(t => t.Profesor)
+                .Where(z => z.StudentID == studentId && z.StatusZahtjeva != StatusZahtjeva.Odobren)
+                .OrderBy(z => z.Termin.Datum)
+                .ThenBy(z => z.Termin.VrijemePocetka)
+                .Select(z => new StudentZahtjevDTO
+                {
+                    ID = z.ID,
+                    TerminID = z.TerminID,
+                    KabinetNaziv = z.Termin.Kabinet != null ? z.Termin.Kabinet.Naziv : "N/A",
+                    Datum = z.Termin.Datum,
+                    VrijemePocetka = z.Termin.VrijemePocetka,
+                    VrijemeKraja = z.Termin.VrijemeKraja,
+                    ProfesorIme = z.Termin.Profesor != null ? z.Termin.Profesor.ImePrezime : "N/A",
+                    StatusZahtjeva = z.StatusZahtjeva.ToString(),
+                    MozeOtkazati = z.StatusZahtjeva == StatusZahtjeva.NaCekanju
                 })
                 .ToListAsync();
         }
