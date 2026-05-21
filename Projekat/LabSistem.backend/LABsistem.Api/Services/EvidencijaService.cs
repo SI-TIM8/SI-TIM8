@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using LABsistem.Application.DTOs;
 using LABsistem.Dal.Db;
@@ -163,9 +165,11 @@ namespace LABsistem.Api.Services
                 return;
             }
 
+            var normalizedStatus = NormalizeStatusKey(dto.Status);
+
             evidencija.Status = dto.Status;
             evidencija.ObradioKorisnikID = obradioKorisnikId;
-            evidencija.RijesenoU = DateTime.UtcNow;
+            evidencija.RijesenoU = normalizedStatus == "rijeseno" ? DateTime.UtcNow : null;
 
             if (!string.IsNullOrWhiteSpace(dto.Rjesenje))
             {
@@ -175,11 +179,11 @@ namespace LABsistem.Api.Services
             var oprema = await _context.Oprema.FirstOrDefaultAsync(o => o.ID == evidencija.OpremaID);
             if (oprema != null)
             {
-                if (dto.Status.Equals("Rijeseno", StringComparison.OrdinalIgnoreCase) || dto.Status.Equals("Riješeno", StringComparison.OrdinalIgnoreCase))
+                if (normalizedStatus == "rijeseno")
                 {
                     oprema.stanje = StatusOpreme.Ispravno;
                 }
-                else if (dto.Status.Equals("U obradi", StringComparison.OrdinalIgnoreCase))
+                else if (normalizedStatus == "u obradi")
                 {
                     oprema.stanje = StatusOpreme.NaServisu;
                 }
@@ -265,6 +269,27 @@ namespace LABsistem.Api.Services
             return value.Kind == DateTimeKind.Utc
                 ? TimeZoneInfo.ConvertTimeFromUtc(value, businessTimeZone)
                 : value;
+        }
+
+        private static string NormalizeStatusKey(string? status)
+        {
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                return string.Empty;
+            }
+
+            var normalized = status.Trim().Normalize(NormalizationForm.FormD);
+            var builder = new StringBuilder(normalized.Length);
+
+            foreach (var character in normalized)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark)
+                {
+                    builder.Append(char.ToLowerInvariant(character));
+                }
+            }
+
+            return builder.ToString().Normalize(NormalizationForm.FormC);
         }
     }
 }

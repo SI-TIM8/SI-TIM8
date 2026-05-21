@@ -19,7 +19,7 @@ namespace LABsistem.Domain.Entities
         public string Status { get; set; }
         
 
-        [StringLength(20)]
+        [StringLength(500)]
         public string Komentar { get; set; }
         
 

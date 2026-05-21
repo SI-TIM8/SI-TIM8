@@ -29,9 +29,12 @@ namespace LABsistem.Presentation.Controllers
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (string.IsNullOrEmpty(userId)) return Unauthorized();
+                if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out var parsedUserId))
+                {
+                    return Unauthorized();
+                }
 
-                await _service.KreirajEvidenciju(dto, int.Parse(userId));
+                await _service.KreirajEvidenciju(dto, parsedUserId);
                 return Ok(new { message = "Kvar uspjesno prijavljen" });
             }
             catch (InvalidOperationException ex)
@@ -51,9 +54,12 @@ namespace LABsistem.Presentation.Controllers
             try
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (string.IsNullOrEmpty(userId)) return Unauthorized();
+                if (string.IsNullOrEmpty(userId) || !int.TryParse(userId, out var parsedUserId))
+                {
+                    return Unauthorized();
+                }
 
-                await _service.AzurirajStatus(id, dto, int.Parse(userId));
+                await _service.AzurirajStatus(id, dto, parsedUserId);
                 return Ok(new { message = "Status azuriran" });
             }
             catch (InvalidOperationException ex)

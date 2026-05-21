@@ -47,16 +47,14 @@ function Oprema() {
   const [saving, setSaving] = useState(false);
   const [formState, setFormState] = useState(INITIAL_FORM_STATE);
   const [message, setMessage] = useState({ type: "", text: "" });
-
   const [kvarModalOpen, setKvarModalOpen] = useState(false);
   const [kvarOprema, setKvarOprema] = useState(null);
   const [kvarKomentar, setKvarKomentar] = useState("");
   const [kvarSaving, setKvarSaving] = useState(false);
 
   const userRole = getLocalRole();
-  const isTehnicar = userRole === "tehnicar" || userRole === "admin";
   const currentUserId = getCurrentUserId();
-
+  const isTehnicar = userRole === "tehnicar" || userRole === "admin";
   useEffect(() => { loadAll(); }, []);
 
   async function loadAll() {
@@ -534,7 +532,7 @@ function Oprema() {
                           </button>
                         </>
                       )}
-                      {userRole === "student" && (
+                      {false && (
                         <button className="users-action-btn warn" onClick={() => openKvarModal(item)}>
                           ⚠ Prijavi kvar
                         </button>

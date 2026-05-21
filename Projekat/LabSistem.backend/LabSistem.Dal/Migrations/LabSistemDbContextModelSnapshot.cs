@@ -72,8 +72,8 @@ namespace LabSistem.Dal.Migrations
 
                     b.Property<string>("Komentar")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<int>("KorisnikID")
                         .HasColumnType("integer");
