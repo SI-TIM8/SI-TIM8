@@ -5,6 +5,8 @@ using LABsistem.Application.DTOs;
 using LABsistem.Dal.Interfaces;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 using Moq;
 using Xunit;
 
@@ -15,6 +17,7 @@ namespace LABsistem.Tests.Unit
         private readonly IFixture _fixture;
         private readonly Mock<IOpremaRepository> _repoMock;
         private readonly Mock<IOpremaValidator> _validatorMock;
+        private readonly Mock<IWebHostEnvironment> _environmentMock;
         private readonly OpremaService _service;
 
         public OpremaServiceTests()
@@ -25,7 +28,9 @@ namespace LABsistem.Tests.Unit
 
             _repoMock = new Mock<IOpremaRepository>();
             _validatorMock = new Mock<IOpremaValidator>();
-            _service = new OpremaService(_repoMock.Object, _validatorMock.Object);
+            _environmentMock = new Mock<IWebHostEnvironment>();
+            _environmentMock.SetupGet(x => x.ContentRootPath).Returns(Path.GetTempPath());
+            _service = new OpremaService(_repoMock.Object, _validatorMock.Object, _environmentMock.Object);
         }
 
         [Fact]
@@ -47,6 +52,7 @@ namespace LABsistem.Tests.Unit
             _repoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(existingOprema);
 
             var dto = _fixture.Create<OpremaCreateDTO>();
+            dto.DokumentacijaUrl = null;
 
             var result = await _service.KreirajOpremu(dto);
 
@@ -104,6 +110,7 @@ namespace LABsistem.Tests.Unit
         {
             _repoMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Oprema?)null);
             var dto = _fixture.Create<OpremaCreateDTO>();
+            dto.DokumentacijaUrl = null;
 
             var result = await _service.AzurirajOpremu(999, dto);
 

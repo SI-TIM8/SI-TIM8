@@ -5,8 +5,10 @@ using LABsistem.Dal.Repositories;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Hosting;
 using Moq;
 using Xunit;
+using System.IO;
 
 namespace LABsistem.Tests.Integration
 {
@@ -25,7 +27,9 @@ namespace LABsistem.Tests.Integration
         {
             using var context = GetInMemoryDbContext();
             var repo = new OpremaRepository(context);
-            var service = new OpremaService(repo, new Mock<LABsistem.Api.Validators.IOpremaValidator>().Object);
+            var envMock = new Mock<IWebHostEnvironment>();
+            envMock.SetupGet(x => x.ContentRootPath).Returns(Path.GetTempPath());
+            var service = new OpremaService(repo, new Mock<LABsistem.Api.Validators.IOpremaValidator>().Object, envMock.Object);
 
             var oprema = new Oprema
             {
@@ -70,7 +74,9 @@ namespace LABsistem.Tests.Integration
         {
             using var context = GetInMemoryDbContext();
             var repo = new OpremaRepository(context);
-            var service = new OpremaService(repo, new Mock<LABsistem.Api.Validators.IOpremaValidator>().Object);
+            var envMock = new Mock<IWebHostEnvironment>();
+            envMock.SetupGet(x => x.ContentRootPath).Returns(Path.GetTempPath());
+            var service = new OpremaService(repo, new Mock<LABsistem.Api.Validators.IOpremaValidator>().Object, envMock.Object);
 
             var oprema = new Oprema
             {

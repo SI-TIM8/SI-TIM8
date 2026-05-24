@@ -146,17 +146,18 @@ namespace LABsistem.Tests.Integration
             };
             kabinetRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", studentToken);
 
+            var opremaForm = new MultipartFormDataContent
+            {
+                { new StringContent("OprS1"), "Naziv" },
+                { new StringContent("Studentska kategorija"), "Kategorija" },
+                { new StringContent("10"), "SerijskiBroj" },
+                { new StringContent(((int)StatusOpreme.Ispravno).ToString()), "Stanje" },
+                { new StringContent(kabinetId.ToString()), "KabinetID" },
+                { new StringContent("1"), "KreatorID" }
+            };
             using var opremaRequest = new HttpRequestMessage(HttpMethod.Post, "/api/Oprema")
             {
-                Content = JsonContent.Create(new OpremaCreateDTO
-                {
-                    Naziv = "OprS1",
-                    Kategorija = "Studentska kategorija",
-                    SerijskiBroj = 10,
-                    Stanje = (int)StatusOpreme.Ispravno,
-                    KabinetID = kabinetId,
-                    KreatorID = 1
-                })
+                Content = opremaForm
             };
             opremaRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", studentToken);
 
@@ -258,17 +259,18 @@ namespace LABsistem.Tests.Integration
             };
             profesorTerminPost.Headers.Authorization = new AuthenticationHeaderValue("Bearer", profesorToken);
 
+            var tehnicarOpremaForm = new MultipartFormDataContent
+            {
+                { new StringContent("OprT1"), "Naziv" },
+                { new StringContent("Tehnicka kategorija"), "Kategorija" },
+                { new StringContent("11"), "SerijskiBroj" },
+                { new StringContent(((int)StatusOpreme.Ispravno).ToString()), "Stanje" },
+                { new StringContent(kabinetId.ToString()), "KabinetID" },
+                { new StringContent(tehnicarId.ToString()), "KreatorID" }
+            };
             using var tehnicarOpremaPost = new HttpRequestMessage(HttpMethod.Post, "/api/Oprema")
             {
-                Content = JsonContent.Create(new OpremaCreateDTO
-                {
-                    Naziv = "OprT1",
-                    Kategorija = "Tehnička kategorija",
-                    SerijskiBroj = 11,
-                    Stanje = (int)StatusOpreme.Ispravno,
-                    KabinetID = kabinetId,
-                    KreatorID = tehnicarId
-                })
+                Content = tehnicarOpremaForm
             };
             tehnicarOpremaPost.Headers.Authorization = new AuthenticationHeaderValue("Bearer", tehnicarToken);
 
