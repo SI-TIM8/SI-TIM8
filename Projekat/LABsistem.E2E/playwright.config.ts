@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'https://labsistem.serveblog.net';
+const baseURL = process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3001';
 
 export default defineConfig({
   testDir: './tests',
