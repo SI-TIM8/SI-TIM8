@@ -93,12 +93,9 @@ function Layout({ children }) {
         <header className="topbar">
           <div className="topbar-spacer" />
 
-          {/* Bell ikonica — samo za studente*/}
-          {(uloga === "student") && (
-            <div style={{ display: "flex", alignItems: "center", marginRight: "8px" }}>
-              <NotifikacijaBell />
-            </div>
-          )}
+          <div style={{ display: "flex", alignItems: "center", marginRight: "8px" }}>
+            <NotifikacijaBell />
+          </div>
 
           <div className="topbar-account" ref={accountMenuRef}>
             <button

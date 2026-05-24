@@ -9,6 +9,7 @@ using LABsistem.Dal.Db;
 using LABsistem.Dal.Interfaces;
 using LABsistem.Domain.Entities;
 using LABsistem.Domain.Enums;
+using LabSistem.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace LABsistem.Api.Services
@@ -128,7 +129,9 @@ namespace LABsistem.Api.Services
 
             oprema.stanje = StatusOpreme.UKvaru;
 
-            await _repo.AddAsync(nova);
+            await _context.Evidencije.AddAsync(nova);
+            await OtkaziBuduceRezervacijeZaKabinetAsync(oprema);
+            await _context.SaveChangesAsync();
 
             if (termin != null)
             {
@@ -243,6 +246,72 @@ namespace LABsistem.Api.Services
                     evidencija.Komentar,
                     appLinkText);
             }
+        }
+
+        private async Task<int> OtkaziBuduceRezervacijeZaKabinetAsync(Oprema oprema)
+        {
+            if (_context is null)
+            {
+                return 0;
+            }
+
+            var businessTimeZone = GetBusinessTimeZone();
+            var sada = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, businessTimeZone);
+
+            var termini = await _context.Termini
+                .Include(t => t.Zahtjevi)
+                    .ThenInclude(z => z.Student)
+                .Where(t =>
+                    t.KabinetID == oprema.KabinetID &&
+                    t.StatusTermina == StatusTermina.Rezervisan)
+                .ToListAsync();
+
+            var buduciTermini = termini
+                .Where(t =>
+                {
+                    var datumTermina = ToBusinessDate(t.Datum, businessTimeZone).Date;
+                    return datumTermina > sada.Date ||
+                        (datumTermina == sada.Date && t.VrijemePocetka > sada.TimeOfDay);
+                })
+                .ToList();
+
+            var brojOtkazanihZahtjeva = 0;
+            foreach (var termin in buduciTermini)
+            {
+                var aktivniZahtjevi = termin.Zahtjevi
+                    .Where(z =>
+                        z.StatusZahtjeva == StatusZahtjeva.NaCekanju ||
+                        z.StatusZahtjeva == StatusZahtjeva.Odobren)
+                    .ToList();
+
+                if (!aktivniZahtjevi.Any())
+                {
+                    continue;
+                }
+
+                foreach (var zahtjev in aktivniZahtjevi)
+                {
+                    zahtjev.StatusZahtjeva = StatusZahtjeva.Otkazan;
+                    brojOtkazanihZahtjeva++;
+
+                    var poruka =
+                        $"Vasa rezervacija/zahtjev za termin {termin.Datum:dd.MM.yyyy} u {termin.VrijemePocetka:hh\\:mm} je otkazana zbog kvara opreme {oprema.Naziv}.";
+
+                    await _context.Obavijesti.AddAsync(new Obavijest
+                    {
+                        KorisnikID = zahtjev.StudentID,
+                        Novosti = poruka,
+                        Dostupnost = false,
+                        DatumKreiranja = DateTime.UtcNow,
+                        TerminID = termin.ID
+                    });
+                }
+
+                termin.StatusTermina = StatusTermina.Otkazan;
+                termin.VidljivoStudentima = false;
+            }
+
+            return brojOtkazanihZahtjeva;
         }
 
         private static TimeZoneInfo GetBusinessTimeZone()

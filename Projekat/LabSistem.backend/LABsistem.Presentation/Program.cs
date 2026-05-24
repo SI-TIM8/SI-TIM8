@@ -135,19 +135,6 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-// Debug: Log users
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
-    var users = await db.Korisnici.ToListAsync();
-    Console.WriteLine("--- KORISNICI U BAZI ---");
-    foreach (var u in users)
-    {
-        Console.WriteLine($"User: {u.Username}, Email: {u.Email}, Role: {u.Uloga}");
-    }
-    Console.WriteLine("-------------------------");
-}
-
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

@@ -9,6 +9,11 @@ namespace LABsistem.Application.DTOs
         public int? TerminID { get; set; }
     }
 
+    public class OpcaObavijestCreateDTO
+    {
+        public string Poruka { get; set; } = default!;
+    }
+
     public class OdgovorNaZahtjevDTO
     {
         public int StudentID { get; set; }

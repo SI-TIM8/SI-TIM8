@@ -65,5 +65,38 @@ namespace LABsistem.Api.Services
             return await _context.Obavijesti
                 .CountAsync(o => o.KorisnikID == korisnikId && !o.Dostupnost);
         }
+
+        public async Task<int> KreirajZaSveAktivneKorisnikeAsync(string poruka)
+        {
+            var trimmedPoruka = poruka?.Trim();
+            if (string.IsNullOrWhiteSpace(trimmedPoruka))
+            {
+                throw new InvalidOperationException("Poruka obavijesti je obavezna.");
+            }
+
+            if (trimmedPoruka.Length > 500)
+            {
+                throw new InvalidOperationException("Poruka obavijesti moze imati najvise 500 karaktera.");
+            }
+
+            var korisnici = await _context.Korisnici
+                .Where(k => k.DeactivatedAt == null)
+                .Select(k => k.ID)
+                .ToListAsync();
+
+            var sada = DateTime.UtcNow;
+            var obavijesti = korisnici.Select(korisnikId => new Obavijest
+            {
+                KorisnikID = korisnikId,
+                Novosti = trimmedPoruka,
+                Dostupnost = false,
+                DatumKreiranja = sada
+            });
+
+            await _context.Obavijesti.AddRangeAsync(obavijesti);
+            await _context.SaveChangesAsync();
+
+            return korisnici.Count;
+        }
     }
 }
