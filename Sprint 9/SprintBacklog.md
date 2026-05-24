@@ -23,6 +23,8 @@
 | US13B | Otkazivanje rezervacije i povlačenje zahtjeva | Student može otkazati odobrenu rezervaciju ili poništiti zahtjev koji je još na čekanju. | Feature | 3 | Medium | Završeno |
 | US49 | Arhiviranje opreme umjesto trajnog brisanja | Tehničar ili administrator arhivira opremu, zadržava historiju i po potrebi vraća stavku iz arhive. | Feature | 2 | Medium | Završeno |
 | US51 | Dokumentacija i uputstva za opremu | Laboratorijski tehničar prilaže PDF uputstva, video linkove ili sigurnosne protokole uz specifičnu opremu radi pravilnog korištenja. | Feature | 2 | Low | Završeno |
+| US50 | Obavijesti korisnicima o otkazivanju rezervacija zbog kvara | Sistem automatski obavještava pogođene korisnike kada se njihove buduće rezervacije otkažu zbog prijavljenog kvara opreme. | Feature | 2 | Medium | To Do |
+| US51 | Općenite obavijesti o kvarovima i dostupnosti opreme | Ovlašteni korisnik šalje kratku općenitu obavijest svim korisnicima o važnim kvarovima, servisima ili promjenama dostupnosti opreme. | Feature | 2 | Medium | To Do |
 
 # Detaljni User Stories (US)
 
@@ -133,3 +135,30 @@
 * Student i profesor mogu vidjeti priloženu dokumentaciju i linkove na detaljnom prikazu pojedinačne opreme.
 * Korisnici mogu direktno preuzeti PDF dokumentaciju ili klikom otvoriti eksterni video/sigurnosni protokol.
 * Sistem onemogućava upload fajlova većih od 10MB i prikazuje odgovarajuću poruku validacije.
+### US50 – Obavijesti korisnicima o otkazivanju rezervacija zbog kvara
+
+*Kao korisnik koji ima rezervaciju, želim dobiti obavijest kada je moja rezervacija otkazana zbog kvara opreme, kako bih na vrijeme znao da termin više nije važeći.*
+
+**Acceptance Criteria:**
+
+* Kada prijava kvara automatski otkaže buduću rezervaciju, sistem kreira obavijest za pogođenog korisnika.
+* Obavijest sadrži razlog otkazivanja i osnovne informacije o terminu ili opremi.
+* Obavijest se prikazuje u postojećem zvonu za obavijesti.
+* Broj nepročitanih obavijesti se povećava nakon kreiranja obavijesti.
+* Korisnik može označiti obavijest kao pročitanu ili je obrisati iz svog prikaza.
+
+---
+
+### US51 – Općenite obavijesti o kvarovima i dostupnosti opreme
+
+*Kao ovlašteni korisnik, želim poslati kratku općenitu obavijest svim korisnicima o kvarovima, servisima ili promjenama dostupnosti opreme, kako bi svi korisnici bili informisani o stanju sistema.*
+
+**Acceptance Criteria:**
+
+* Ovlašteni korisnik može unijeti tekst općenite obavijesti vezane za kvar, servis ili dostupnost opreme.
+* Tekst obavijesti je obavezan i ograničen na razumnu dužinu.
+* Sistem kreira nepročitanu obavijest za svakog aktivnog korisnika.
+* Općenita obavijest se prikazuje u postojećem zvonu za obavijesti.
+* Pošiljalac dobija potvrdu da je obavijest poslana.
+
+---

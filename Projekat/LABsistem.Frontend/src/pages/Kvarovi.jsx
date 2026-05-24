@@ -26,6 +26,8 @@ function Kvarovi() {
   const [selected, setSelected] = useState(null);
   const [resolutionText, setResolutionText] = useState("");
   const [saving, setSaving] = useState(false);
+  const [notificationText, setNotificationText] = useState("");
+  const [notificationSaving, setNotificationSaving] = useState(false);
 
   useEffect(() => {
     loadEvidencije();
@@ -77,6 +79,40 @@ function Kvarovi() {
     }
   }
 
+  async function sendGeneralNotification(event) {
+    event.preventDefault();
+
+    if (!notificationText.trim()) {
+      setMessage({ type: "error", text: "Unesite tekst obavijesti." });
+      return;
+    }
+
+    setNotificationSaving(true);
+    try {
+      const response = await api.post("/Obavijest/opca", {
+        poruka: notificationText.trim(),
+      });
+
+      setNotificationText("");
+      setMessage({
+        type: "success",
+        text: response.data?.message || "Obavijest je poslana korisnicima.",
+      });
+    } catch (error) {
+      const apiMessage =
+        typeof error.response?.data === "string"
+          ? error.response.data
+          : error.response?.data?.message;
+
+      setMessage({
+        type: "error",
+        text: apiMessage || "Greska pri slanju obavijesti.",
+      });
+    } finally {
+      setNotificationSaving(false);
+    }
+  }
+
   const sortedEvidencije = useMemo(() => {
     return [...evidencije].sort((left, right) => {
       return String(right.prijavljenoU || "").localeCompare(String(left.prijavljenoU || ""));
@@ -95,6 +131,32 @@ function Kvarovi() {
           {message.text}
         </div>
       )}
+
+      <div className="card" style={{ marginBottom: 20 }}>
+        <h2 style={{ fontSize: 18, marginBottom: 8 }}>Opca obavijest korisnicima</h2>
+        <p style={{ color: "var(--text-muted, #64748b)", marginBottom: 16 }}>
+          Posaljite kratku obavijest o kvarovima, servisu ili promjeni dostupnosti opreme svim aktivnim korisnicima.
+        </p>
+        <form onSubmit={sendGeneralNotification}>
+          <div className="form-group">
+            <label>Tekst obavijesti</label>
+            <textarea
+              value={notificationText}
+              onChange={(event) => setNotificationText(event.target.value)}
+              rows={3}
+              maxLength={500}
+              required
+              placeholder="Npr. Projektor u Lab 101 je privremeno van upotrebe zbog servisa."
+            />
+            <small style={{ color: "var(--text-muted, #64748b)" }}>
+              {notificationText.length}/500 karaktera
+            </small>
+          </div>
+          <button className="button" type="submit" disabled={notificationSaving}>
+            {notificationSaving ? "Slanje..." : "Posalji obavijest"}
+          </button>
+        </form>
+      </div>
 
       <div className="card">
         {loading ? (
