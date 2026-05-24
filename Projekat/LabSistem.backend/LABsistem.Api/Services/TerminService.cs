@@ -5,11 +5,15 @@ using System.Threading.Tasks;
 using LABsistem.Application.DTOs;
 using LABsistem.Dal.Interfaces;
 using LABsistem.Domain.Entities;
+using System.Threading;
 
 namespace LABsistem.Api.Services
 {
     public class TerminService : ITerminService
     {
+        // Serializes schedule mutations so overlapping term checks cannot race each other.
+        private static readonly SemaphoreSlim TerminMutationLock = new(1, 1);
+
         private readonly ITerminRepository _repo;
         private readonly Validators.ITerminValidator _validator;
 
@@ -42,33 +46,49 @@ namespace LABsistem.Api.Services
 
         public async Task KreirajTermin(TerminCreateDTO dto)
         {
-            await _validator.ValidateCreateAsync(dto.Datum, dto.VrijemePocetka, dto.VrijemeKraja, dto.KabinetID);
-
-            var novi = new Termin
+            await TerminMutationLock.WaitAsync();
+            try
             {
-                VrijemePocetka = dto.VrijemePocetka,
-                VrijemeKraja = dto.VrijemeKraja,
-                Datum = dto.Datum,
-                KreatorID = dto.KreatorID,
-                KabinetID = dto.KabinetID
-            };
-            await _repo.AddAsync(novi);
+                await _validator.ValidateCreateAsync(dto.Datum, dto.VrijemePocetka, dto.VrijemeKraja, dto.KabinetID);
+
+                var novi = new Termin
+                {
+                    VrijemePocetka = dto.VrijemePocetka,
+                    VrijemeKraja = dto.VrijemeKraja,
+                    Datum = dto.Datum,
+                    KreatorID = dto.KreatorID,
+                    KabinetID = dto.KabinetID
+                };
+                await _repo.AddAsync(novi);
+            }
+            finally
+            {
+                TerminMutationLock.Release();
+            }
         }
 
         public async Task<bool> AzurirajTermin(int id, TerminCreateDTO dto)
         {
-            var t = await _repo.GetByIdAsync(id);
-            if (t == null) return false;
+            await TerminMutationLock.WaitAsync();
+            try
+            {
+                var t = await _repo.GetByIdAsync(id);
+                if (t == null) return false;
 
-            await _validator.ValidateUpdateAsync(id, dto.Datum, dto.VrijemePocetka, dto.VrijemeKraja, dto.KabinetID);
+                await _validator.ValidateUpdateAsync(id, dto.Datum, dto.VrijemePocetka, dto.VrijemeKraja, dto.KabinetID);
 
-            t.VrijemePocetka = dto.VrijemePocetka;
-            t.VrijemeKraja = dto.VrijemeKraja;
-            t.Datum = dto.Datum;
-            t.KreatorID = dto.KreatorID;
-            t.KabinetID = dto.KabinetID;
-            await _repo.UpdateAsync(t);
-            return true;
+                t.VrijemePocetka = dto.VrijemePocetka;
+                t.VrijemeKraja = dto.VrijemeKraja;
+                t.Datum = dto.Datum;
+                t.KreatorID = dto.KreatorID;
+                t.KabinetID = dto.KabinetID;
+                await _repo.UpdateAsync(t);
+                return true;
+            }
+            finally
+            {
+                TerminMutationLock.Release();
+            }
         }
 
         public async Task<bool> ObrisiTermin(int id)

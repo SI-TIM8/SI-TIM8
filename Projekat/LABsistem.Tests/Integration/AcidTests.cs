@@ -1,294 +1,335 @@
-﻿using System.Net;
+using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text.Json;
+using LABsistem.Application.DTOs;
+using LABsistem.Application.DTOs.Auth;
+using LABsistem.Dal.Db;
+using LABsistem.Domain.Entities;
+using LABsistem.Domain.Enums;
+using LabSistem.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace LABsistem.Tests.Integration;
 
-public class AcidTests
+public class AcidTests : IClassFixture<TestWebApplicationFactory>
 {
-    private readonly HttpClient _client;
-    private readonly string _baseUrl = "https://labsistem.duckdns.org/";
+    private readonly TestWebApplicationFactory _factory;
 
-    public AcidTests()
+    public AcidTests(TestWebApplicationFactory factory)
     {
-        _client = new HttpClient { BaseAddress = new Uri(_baseUrl) };
+        _factory = factory;
     }
 
-    // ─── Pomoćna metoda za login ──────────────────────────────────────────
-    private async Task<string> LoginAsync(string username, string password)
+    private static string Unique(string prefix)
     {
-        var res = await _client.PostAsJsonAsync("/api/Auth/login", new { username, password });
-        var rawBody = await res.Content.ReadAsStringAsync();
-        var body = JsonSerializer.Deserialize<Dictionary<string, object>>(rawBody);
-
-        if (body == null || !body.ContainsKey("token"))
-            throw new Exception($"Login neuspješan za {username}: {rawBody}");
-
-        return body["token"]?.ToString() ?? string.Empty;
+        return $"{prefix}{Guid.NewGuid():N}"[..Math.Min(prefix.Length + 10, prefix.Length + 32)];
     }
 
-    private void SetToken(string token)
+    private async Task<int> SeedUserAsync(
+        string username,
+        string email,
+        string password,
+        UlogaKorisnika role)
     {
-        _client.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+
+        var existingUser = await context.Korisnici.FirstOrDefaultAsync(x => x.Username == username);
+        if (existingUser is not null)
+        {
+            existingUser.Password = BCrypt.Net.BCrypt.HashPassword(password);
+            existingUser.Email = email;
+            existingUser.Uloga = role;
+            existingUser.DeactivatedAt = null;
+            existingUser.EmailVerified = true;
+            existingUser.EmailVerifiedAtUtc = DateTime.UtcNow;
+            existingUser.MustChangePassword = false;
+            await context.SaveChangesAsync();
+            return existingUser.ID;
+        }
+
+        var user = new Korisnik
+        {
+            ImePrezime = $"{role} test",
+            Email = email,
+            EmailVerified = true,
+            EmailVerifiedAtUtc = DateTime.UtcNow,
+            Username = username,
+            Password = BCrypt.Net.BCrypt.HashPassword(password),
+            Uloga = role,
+            MustChangePassword = false
+        };
+
+        context.Korisnici.Add(user);
+        await context.SaveChangesAsync();
+        return user.ID;
     }
 
+    private async Task<string> LoginAsync(HttpClient client, string username, string password)
+    {
+        var response = await client.PostAsJsonAsync("/api/Auth/login", new LoginRequestDto
+        {
+            Username = username,
+            Password = password
+        });
 
-    // =========================================================================
-    // ATOMICITY
-    // =========================================================================
+        var rawBody = await response.Content.ReadAsStringAsync();
+        response.EnsureSuccessStatusCode();
+
+        var payload = System.Text.Json.JsonSerializer.Deserialize<LoginResponseDto>(
+            rawBody,
+            new System.Text.Json.JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+        return payload?.Token ?? throw new Exception($"Login nije uspio za {username}: {rawBody}");
+    }
+
+    private async Task<HttpClient> CreateAuthorizedClientAsync(string username, string password)
+    {
+        var client = _factory.CreateClient();
+        var token = await LoginAsync(client, username, password);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        return client;
+    }
+
+    private async Task<(int KabinetId, int ObjekatId)> SeedKabinetAsync(string kabinetNaziv, int profesorId)
+    {
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+
+        var objekat = new Objekat
+        {
+            Lokacija = Unique("Obj"),
+            RadnoVrijeme = "08-16"
+        };
+        context.Objekti.Add(objekat);
+        await context.SaveChangesAsync();
+
+        var kabinet = new Kabinet
+        {
+            Naziv = kabinetNaziv,
+            KorisnikID = profesorId,
+            ObjekatID = objekat.ID,
+            Kapacitet = 20
+        };
+        context.Kabineti.Add(kabinet);
+        await context.SaveChangesAsync();
+
+        return (kabinet.ID, objekat.ID);
+    }
+
+    private async Task<int> SeedTerminAsync(
+        int tehnicarId,
+        int kabinetId,
+        int profesorId,
+        DateTime datum,
+        TimeSpan vrijemePocetka,
+        TimeSpan vrijemeKraja,
+        StatusTermina statusTermina = StatusTermina.Rezervisan,
+        bool vidljivoStudentima = true,
+        int? limitOsoba = 10)
+    {
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+
+        var termin = new Termin
+        {
+            Datum = datum,
+            VrijemePocetka = vrijemePocetka,
+            VrijemeKraja = vrijemeKraja,
+            KreatorID = tehnicarId,
+            KabinetID = kabinetId,
+            ProfesorID = profesorId,
+            StatusTermina = statusTermina,
+            VidljivoStudentima = vidljivoStudentima,
+            LimitOsoba = limitOsoba
+        };
+
+        context.Termini.Add(termin);
+        await context.SaveChangesAsync();
+        return termin.ID;
+    }
 
     [Fact]
     public async Task Atomicity_PrijavaNePostojeciTermin_NemaUpisa()
     {
-        var token = await LoginAsync("student", "student123");
-        SetToken(token);
+        var username = Unique("acidstudent");
+        await SeedUserAsync(username, $"{username}@test.com", "Student123!", UlogaKorisnika.Student);
 
-        var response = await _client.PostAsJsonAsync("/api/Rezervacija/zahtjev/99999", new { });
+        using var client = await CreateAuthorizedClientAsync(username, "Student123!");
+
+        var response = await client.PostAsJsonAsync("/api/Rezervacija/zahtjev/99999", new { });
 
         Assert.True(
             response.StatusCode == HttpStatusCode.NotFound ||
             response.StatusCode == HttpStatusCode.BadRequest,
-            $"Očekivana greška, dobijen: {response.StatusCode}"
-        );
+            $"Ocekivana kontrolisana greska, dobijen status: {response.StatusCode}");
     }
 
     [Fact]
     public async Task Atomicity_PrijavaTerminaSaNevalidnimPodacima_NemaUpisa()
     {
-        var token = await LoginAsync("tehnicar", "tehnicar123");
-        SetToken(token);
+        var username = Unique("acidtech");
+        await SeedUserAsync(username, $"{username}@test.com", "Tehnicar123!", UlogaKorisnika.Tehnicar);
 
-        // Pokušaj kreiranja termina sa nepostojećim kabinetom
-        var response = await _client.PostAsJsonAsync("/api/Termin", new
+        using var client = await CreateAuthorizedClientAsync(username, "Tehnicar123!");
+
+        var response = await client.PostAsJsonAsync("/api/Termin", new TerminCreateDTO
         {
-            datum = "2026-08-01T00:00:00.000Z",
-            vrijemePocetka = "10:00:00",
-            vrijemeKraja = "09:00:00", // kraj prije početka — nevalidno
-            kreatorID = 3,
-            kabinetID = 99999,      // nepostoji
+            Datum = DateTime.Today.AddDays(10),
+            VrijemePocetka = new TimeSpan(10, 0, 0),
+            VrijemeKraja = new TimeSpan(9, 0, 0),
+            KreatorID = 3,
+            KabinetID = 99999
         });
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
-
-    // =========================================================================
-    // ISOLATION
-    // =========================================================================
-
     [Fact]
     public async Task Isolation_DvaStudentaKonkurentno_NemaKorumpcijePodataka()
     {
-        // Dva odvojena klijenta — simulira dva različita korisnika
-        var client1 = new HttpClient { BaseAddress = new Uri(_baseUrl) };
-        var client2 = new HttpClient { BaseAddress = new Uri(_baseUrl) };
+        var profesorUsername = Unique("acidprof");
+        var tehnicarUsername = Unique("acidtech");
+        var studentUsername1 = Unique("acidstud");
+        var studentUsername2 = Unique("acidstud");
 
-        var token1 = await LoginAsync("student1", "student123");
-        var token2 = await LoginAsync("student2", "student123");
+        var profesorId = await SeedUserAsync(profesorUsername, $"{profesorUsername}@test.com", "Profesor123!", UlogaKorisnika.Profesor);
+        var tehnicarId = await SeedUserAsync(tehnicarUsername, $"{tehnicarUsername}@test.com", "Tehnicar123!", UlogaKorisnika.Tehnicar);
+        var studentId1 = await SeedUserAsync(studentUsername1, $"{studentUsername1}@test.com", "Student123!", UlogaKorisnika.Student);
+        var studentId2 = await SeedUserAsync(studentUsername2, $"{studentUsername2}@test.com", "Student123!", UlogaKorisnika.Student);
 
-        client1.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token1);
-        client2.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token2);
+        var (kabinetId, _) = await SeedKabinetAsync(Unique("Kab"), profesorId);
+        var terminId = await SeedTerminAsync(
+            tehnicarId,
+            kabinetId,
+            profesorId,
+            DateTime.Today.AddDays(5),
+            new TimeSpan(9, 0, 0),
+            new TimeSpan(10, 0, 0));
 
-        // Oba studenta se prijavljuju na isti termin istovremeno
-        var task1 = client1.PostAsJsonAsync("/api/Rezervacija/zahtjev/1", new { });
-        var task2 = client2.PostAsJsonAsync("/api/Rezervacija/zahtjev/1", new { });
+        using var client1 = await CreateAuthorizedClientAsync(studentUsername1, "Student123!");
+        using var client2 = await CreateAuthorizedClientAsync(studentUsername2, "Student123!");
+
+        var task1 = client1.PostAsJsonAsync($"/api/Rezervacija/zahtjev/{terminId}", new { });
+        var task2 = client2.PostAsJsonAsync($"/api/Rezervacija/zahtjev/{terminId}", new { });
 
         var rezultati = await Task.WhenAll(task1, task2);
 
-        // Provjeri da nema 500 grešaka — sistem mora ostati stabilan
         Assert.DoesNotContain(rezultati, r => r.StatusCode == HttpStatusCode.InternalServerError);
-
-        // Svaki rezultat mora biti ili uspjeh ili kontrolirana greška (409 conflict)
         Assert.All(rezultati, r =>
             Assert.True(
                 r.StatusCode == HttpStatusCode.OK ||
                 r.StatusCode == HttpStatusCode.Created ||
                 r.StatusCode == HttpStatusCode.Conflict ||
                 r.StatusCode == HttpStatusCode.BadRequest,
-                $"Neočekivan status: {r.StatusCode}"
-            )
-        );
+                $"Neocekivan status: {r.StatusCode}"));
+
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+        var savedRequests = await context.Zahtjevi
+            .Where(z => z.TerminID == terminId && (z.StudentID == studentId1 || z.StudentID == studentId2))
+            .ToListAsync();
+
+        Assert.Equal(savedRequests.Count, savedRequests.Select(z => z.ID).Distinct().Count());
+        Assert.All(savedRequests, z => Assert.Equal(StatusZahtjeva.NaCekanju, z.StatusZahtjeva));
     }
 
     [Fact]
     public async Task Isolation_PreklapanjeTerminaUIstoVrijeme_SamoJedanProlazi()
     {
-        var client1 = new HttpClient { BaseAddress = new Uri(_baseUrl) };
-        var client2 = new HttpClient { BaseAddress = new Uri(_baseUrl) };
+        var profesorUsername = Unique("isoprof");
+        var tehnicarUsername = Unique("isotech");
 
-        var tehnicarToken1 = await LoginAsync("tehnicar", "tehnicar123");
-        var tehnicarToken2 = await LoginAsync("tehnicar", "tehnicar123");
+        var profesorId = await SeedUserAsync(profesorUsername, $"{profesorUsername}@test.com", "Profesor123!", UlogaKorisnika.Profesor);
+        var tehnicarId = await SeedUserAsync(tehnicarUsername, $"{tehnicarUsername}@test.com", "Tehnicar123!", UlogaKorisnika.Tehnicar);
+        var (kabinetId, _) = await SeedKabinetAsync(Unique("IsoKab"), profesorId);
 
-        client1.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tehnicarToken1);
-        client2.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tehnicarToken2);
+        using var client1 = await CreateAuthorizedClientAsync(tehnicarUsername, "Tehnicar123!");
+        using var client2 = await CreateAuthorizedClientAsync(tehnicarUsername, "Tehnicar123!");
 
-        // Isti termin u isto vrijeme, isti kabinet — samo jedan smije proći
-        var isti = new
+        var istiTermin = new TerminCreateDTO
         {
-            datum = "2026-08-10T00:00:00.000Z",
-            vrijemePocetka = "10:00:00",
-            vrijemeKraja = "12:00:00",
-            kreatorID = 3,
-            kabinetID = 3,
+            Datum = DateTime.Today.AddDays(7),
+            VrijemePocetka = new TimeSpan(10, 0, 0),
+            VrijemeKraja = new TimeSpan(12, 0, 0),
+            KreatorID = tehnicarId,
+            KabinetID = kabinetId
         };
 
-        var task1 = client1.PostAsJsonAsync("/api/Termin", isti);
-        var task2 = client2.PostAsJsonAsync("/api/Termin", isti);
+        var task1 = client1.PostAsJsonAsync("/api/Termin", istiTermin);
+        var task2 = client2.PostAsJsonAsync("/api/Termin", istiTermin);
 
         var rezultati = await Task.WhenAll(task1, task2);
-
-        int uspjesnih = rezultati.Count(r =>
+        var uspjesnih = rezultati.Count(r =>
             r.StatusCode == HttpStatusCode.OK ||
             r.StatusCode == HttpStatusCode.Created);
 
-        // Maksimalno jedan smije proći
-        Assert.True(uspjesnih <= 1, $"Očekivan max 1 uspjeh, dobijeno: {uspjesnih}");
+        Assert.True(uspjesnih <= 1, $"Ocekivan je najvise jedan uspjesan upis, dobijeno: {uspjesnih}.");
     }
 
-
-    // =========================================================================
-    // DURABILITY
-    // =========================================================================
     [Fact]
     public async Task Durability_NakonPrijaveZahtjevSeTrajnoSacuva()
     {
-        
-        // 1. Login kao tehnicar
-        
-        var tehnicarToken = await LoginAsync("tehnicar", "tehnicar123");
-        SetToken(tehnicarToken);
+        var profesorUsername = Unique("durprof");
+        var tehnicarUsername = Unique("durtech");
+        var studentUsername = Unique("durstud");
 
-        var datumObj = DateTime.UtcNow.AddDays(5);
+        var profesorId = await SeedUserAsync(profesorUsername, $"{profesorUsername}@test.com", "Profesor123!", UlogaKorisnika.Profesor);
+        var tehnicarId = await SeedUserAsync(tehnicarUsername, $"{tehnicarUsername}@test.com", "Tehnicar123!", UlogaKorisnika.Tehnicar);
+        await SeedUserAsync(studentUsername, $"{studentUsername}@test.com", "Student123!", UlogaKorisnika.Student);
 
-        var datumString = datumObj.ToString("yyyy-MM-ddT00:00:00.000Z");
+        var (kabinetId, _) = await SeedKabinetAsync(Unique("DurKab"), profesorId);
 
-        var vrijemePocetka = "14:00:00";
-        var vrijemeKraja = "15:30:00";
-
-        
-        // 2. Kreiranje termina
-        
-        var terminRes = await _client.PostAsJsonAsync("/api/Termin", new
+        int terminId;
+        using (var scope = _factory.Services.CreateScope())
         {
-            datum = datumString,
-            vrijemePocetka,
-            vrijemeKraja,
-            kreatorID = 4,
-            kabinetID = 4
-        });
+            var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+            var termin = new Termin
+            {
+                Datum = DateTime.Today.AddDays(5),
+                VrijemePocetka = new TimeSpan(14, 0, 0),
+                VrijemeKraja = new TimeSpan(15, 30, 0),
+                KreatorID = tehnicarId,
+                KabinetID = kabinetId,
+                StatusTermina = StatusTermina.Slobodan
+            };
+            context.Termini.Add(termin);
+            await context.SaveChangesAsync();
+            terminId = termin.ID;
+        }
 
-        Assert.True(
-            terminRes.IsSuccessStatusCode,
-            $"Kreiranje termina nije uspjelo: {await terminRes.Content.ReadAsStringAsync()}"
-        );
-
-        
-        // 3. Dohvat svih termina
-        
-        var termini =
-            await _client.GetFromJsonAsync<List<Dictionary<string, object>>>(
-                "/api/Termin");
-
-        Assert.NotNull(termini);
-
-        
-        // 4. Pronalaženje upravo kreiranog termina
-        
-        var kreiraniTermin = termini.FirstOrDefault(t =>
-        {
-            var datum = t["datum"]?.ToString();
-            var pocetak = t["vrijemePocetka"]?.ToString();
-            var kraj = t["vrijemeKraja"]?.ToString();
-
-            return datum != null &&
-                   datum.Contains(datumObj.ToString("yyyy-MM-dd")) &&
-                   pocetak == vrijemePocetka &&
-                   kraj == vrijemeKraja;
-        });
-
-        Assert.NotNull(kreiraniTermin);
-
-        var terminId = kreiraniTermin["id"].ToString();
-
-        Assert.False(string.IsNullOrEmpty(terminId));
-
-        
-        // 5. Login kao profesor
-        
-        var profesorToken = await LoginAsync("profesor", "profesor123");
-        SetToken(profesorToken);
-
-        
-        // 6. Otvaranje rezervacije
-        
-        var rezervacijaRes =
-            await _client.PostAsJsonAsync(
-                $"/api/Rezervacija/rezervisi/{terminId}",
-                new
-                {
-                    limitOsoba = 20,
-                    maxKapacitet = 20,
-                    vidljivoStudentima = true
-                });
+        using var profesorClient = await CreateAuthorizedClientAsync(profesorUsername, "Profesor123!");
+        var rezervacijaRes = await profesorClient.PostAsJsonAsync(
+            $"/api/Rezervacija/rezervisi/{terminId}",
+            new RezervacijaCreateDTO
+            {
+                LimitOsoba = 20,
+                VidljivoStudentima = true
+            });
 
         Assert.True(
             rezervacijaRes.IsSuccessStatusCode,
-            $"Greška pri otvaranju rezervacije: {await rezervacijaRes.Content.ReadAsStringAsync()}"
-        );
+            $"Otvaranje rezervacije nije uspjelo: {await rezervacijaRes.Content.ReadAsStringAsync()}");
 
-        
-        // 7. Login kao student
-        
-        var studentToken = await LoginAsync("student", "student123");
-        SetToken(studentToken);
-
-        
-        // 8. Student šalje zahtjev
-        
-        var prijavaRes =
-            await _client.PostAsJsonAsync(
-                $"/api/Rezervacija/zahtjev/{terminId}",
-                new { });
+        using var studentClient = await CreateAuthorizedClientAsync(studentUsername, "Student123!");
+        var prijavaRes = await studentClient.PostAsJsonAsync($"/api/Rezervacija/zahtjev/{terminId}", new { });
 
         Assert.True(
             prijavaRes.IsSuccessStatusCode,
-            $"Prijava nije uspjela: {await prijavaRes.Content.ReadAsStringAsync()}"
-        );
+            $"Prijava nije uspjela: {await prijavaRes.Content.ReadAsStringAsync()}");
 
-        
-        // 9. Profesor provjerava zahtjeve
-        
-        SetToken(profesorToken);
+        var zahtjeviRequest = new HttpRequestMessage(HttpMethod.Get, "/api/Rezervacija/dolazni-zahtjevi");
+        var zahtjeviResponse = await profesorClient.SendAsync(zahtjeviRequest);
+        zahtjeviResponse.EnsureSuccessStatusCode();
 
-        var zahtjevi =
-            await _client.GetFromJsonAsync<List<Dictionary<string, object>>>(
-                "/api/Rezervacija/dolazni-zahtjevi");
+        var zahtjevi = await zahtjeviResponse.Content.ReadFromJsonAsync<List<ZahtjevDTO>>();
 
         Assert.NotNull(zahtjevi);
-
-        
-        // 10. Provjera perzistencije
-        
-        var postojiZahtjev = zahtjevi.Any(z =>
-        {
-            if (!z.ContainsKey("terminID"))
-                return false;
-
-            return z["terminID"]?.ToString() == terminId;
-        });
-
-        Assert.True(
-            postojiZahtjev,
-            "Zahtjev nije trajno sačuvan u sistemu."
-        );
-        // Cleanup
-        SetToken(tehnicarToken);
-        await _client.DeleteAsync($"/api/Termin/{terminId}");
+        Assert.Contains(zahtjevi, z => z.TerminID == terminId);
     }
 }
