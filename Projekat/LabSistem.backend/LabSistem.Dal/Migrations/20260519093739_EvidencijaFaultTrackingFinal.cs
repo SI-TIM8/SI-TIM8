@@ -53,16 +53,6 @@ namespace LabSistem.Dal.Migrations
                 type: "integer",
                 nullable: true);
 
-            migrationBuilder.AlterColumn<string>(
-                name: "Komentar",
-                table: "Evidencije",
-                type: "character varying(500)",
-                maxLength: 500,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "character varying(20)",
-                oldMaxLength: 20);
-
             migrationBuilder.CreateIndex(
                 name: "IX_Evidencije_ObradioKorisnikID",
                 table: "Evidencije",
@@ -165,16 +155,6 @@ namespace LabSistem.Dal.Migrations
             migrationBuilder.DropColumn(
                 name: "TerminID",
                 table: "Evidencije");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "Komentar",
-                table: "Evidencije",
-                type: "character varying(20)",
-                maxLength: 20,
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "character varying(500)",
-                oldMaxLength: 500);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Evidencije_Korisnici_KorisnikID",
