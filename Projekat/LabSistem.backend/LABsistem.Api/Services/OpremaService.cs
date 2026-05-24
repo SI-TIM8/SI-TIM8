@@ -20,9 +20,10 @@ namespace LABsistem.Api.Services
             _validator = validator;
         }
 
-        public async Task<OpremaDTO> KreirajOpremu(OpremaCreateDTO dto)
+        public async Task<OpremaDTO> KreirajOpremu(OpremaCreateDTO dto, OpremaDokumentacijaUpload? dokumentacija = null)
         {
             _validator.ValidateSave(dto.Naziv, dto.Kategorija, dto.KabinetID);
+            ValidateDocumentationUrl(dto.DokumentacijaUrl);
 
             var postojecaOprema = await _repo.GetAllAsync();
             var nextSerijskiBroj = postojecaOprema.Any()
@@ -38,8 +39,12 @@ namespace LABsistem.Api.Services
                 KabinetID = dto.KabinetID,
                 KreatorID = dto.KreatorID,
                 IsArchived = false,
-                ArchivedAtUtc = null
+                ArchivedAtUtc = null,
+                DokumentacijaUrl = !string.IsNullOrWhiteSpace(dto.DokumentacijaUrl) 
+                    ? dto.DokumentacijaUrl.Trim() 
+                    : null
             };
+
             await _repo.AddAsync(nova);
             return new OpremaDTO
             {
@@ -48,7 +53,9 @@ namespace LABsistem.Api.Services
                 Kategorija = nova.Kategorija,
                 SerijskiBroj = nova.SerijskiBroj,
                 IsArchived = nova.IsArchived,
-                ArchivedAtUtc = nova.ArchivedAtUtc
+                ArchivedAtUtc = nova.ArchivedAtUtc,
+                DokumentacijaUrl = nova.DokumentacijaUrl,
+                DokumentacijaFileName = nova.DokumentacijaFileName
             };
         }
 
@@ -74,20 +81,28 @@ namespace LABsistem.Api.Services
                 KabinetNaziv = x.kabinetNaziv,
                 ZgradaNaziv = x.zgradaNaziv,
                 IsArchived = x.oprema.IsArchived,
-                ArchivedAtUtc = x.oprema.ArchivedAtUtc
+                ArchivedAtUtc = x.oprema.ArchivedAtUtc,
+                DokumentacijaUrl = x.oprema.DokumentacijaUrl,
+                DokumentacijaFileName = x.oprema.DokumentacijaFileName
             }).ToList();
         }
 
-        public async Task<bool> AzurirajOpremu(int id, OpremaCreateDTO dto)
+        public async Task<bool> AzurirajOpremu(int id, OpremaCreateDTO dto, OpremaDokumentacijaUpload? dokumentacija = null)
         {
             _validator.ValidateSave(dto.Naziv, dto.Kategorija, dto.KabinetID);
+            ValidateDocumentationUrl(dto.DokumentacijaUrl);
 
             var p = await _repo.GetByIdAsync(id);
             if (p == null) return false;
+            
             p.Naziv = dto.Naziv;
             p.Kategorija = dto.Kategorija;
             p.stanje = (StatusOpreme)dto.Stanje;
             p.KabinetID = dto.KabinetID;
+            p.DokumentacijaUrl = !string.IsNullOrWhiteSpace(dto.DokumentacijaUrl) 
+                ? dto.DokumentacijaUrl.Trim() 
+                : null;
+
             await _repo.UpdateAsync(p);
             return true;
         }
@@ -129,8 +144,41 @@ namespace LABsistem.Api.Services
                     SerijskiBroj = o.SerijskiBroj,
                     Stanje = (int)o.stanje,
                     IsArchived = o.IsArchived,
-                    ArchivedAtUtc = o.ArchivedAtUtc
+                    ArchivedAtUtc = o.ArchivedAtUtc,
+                    DokumentacijaUrl = o.DokumentacijaUrl,
+                    DokumentacijaFileName = o.DokumentacijaFileName
                 }).ToList();
+        }
+
+        public async Task<OpremaDokumentacijaFile?> VratiDokumentacijuFajlAsync(int id)
+        {
+            var oprema = await _repo.GetByIdAsync(id);
+            if (oprema == null || string.IsNullOrWhiteSpace(oprema.DokumentacijaUrl))
+            {
+                return null;
+            }
+
+            return new OpremaDokumentacijaFile(oprema.DokumentacijaUrl, "dokumentacija");
+        }
+
+        private void ValidateDocumentationUrl(string? dokumentacijaUrl)
+        {
+            if (string.IsNullOrWhiteSpace(dokumentacijaUrl))
+            {
+                return;
+            }
+
+            var trimmed = dokumentacijaUrl.Trim();
+            if (trimmed.Length > 500)
+            {
+                throw new Exception("URL dokumentacije može imati najviše 500 karaktera.");
+            }
+
+            if (!Uri.TryCreate(trimmed, UriKind.Absolute, out var uri) ||
+                (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+            {
+                throw new Exception("URL dokumentacije mora biti ispravan http/https link.");
+            }
         }
     }
 }

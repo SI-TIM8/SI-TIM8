@@ -1,6 +1,9 @@
+using System.IO;
 using LABsistem.Api.Services;
 using LABsistem.Application.DTOs;
+using LABsistem.Presentation.Requests;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LABsistem.Presentation.Controllers
@@ -23,18 +26,22 @@ namespace LABsistem.Presentation.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin,Tehnicar")]
-        public async Task<IActionResult> Post([FromBody] OpremaCreateDTO dto)
+        public async Task<IActionResult> Post([FromForm] OpremaUpsertRequest request)
         {
-            await _service.KreirajOpremu(dto);
-            return Ok(new { message = "Oprema uspješno dodana." });
+            var dto = MapToCreateDto(request);
+            var upload = BuildDokumentacijaUpload(request.DokumentacijaFile);
+            await _service.KreirajOpremu(dto, upload);
+            return Ok(new { message = "Oprema uspjesno dodana." });
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Tehnicar")]
-        public async Task<IActionResult> Put(int id, [FromBody] OpremaCreateDTO dto)
+        public async Task<IActionResult> Put(int id, [FromForm] OpremaUpsertRequest request)
         {
-            await _service.AzurirajOpremu(id, dto);
-            return Ok(new { message = "Oprema ažurirana." });
+            var dto = MapToCreateDto(request);
+            var upload = BuildDokumentacijaUpload(request.DokumentacijaFile);
+            await _service.AzurirajOpremu(id, dto, upload);
+            return Ok(new { message = "Oprema azurirana." });
         }
 
         [HttpDelete("{id}")]
@@ -61,6 +68,47 @@ namespace LABsistem.Presentation.Controllers
         {
             var oprema = await _service.VratiOpremuPoKabinetu(kabinetId);
             return Ok(oprema);
+        }
+
+        [HttpGet("{id}/documentation/file")]
+        [Authorize]
+        public async Task<IActionResult> GetDocumentationFile(int id)
+        {
+            var dokumentacija = await _service.VratiDokumentacijuFajlAsync(id);
+            if (dokumentacija == null || !System.IO.File.Exists(dokumentacija.FilePath))
+            {
+                return NotFound();
+            }
+
+            return PhysicalFile(dokumentacija.FilePath, "application/pdf", dokumentacija.FileName, enableRangeProcessing: true);
+        }
+
+        private static OpremaCreateDTO MapToCreateDto(OpremaUpsertRequest request)
+        {
+            return new OpremaCreateDTO
+            {
+                Naziv = request.Naziv,
+                Kategorija = request.Kategorija,
+                SerijskiBroj = request.SerijskiBroj,
+                Stanje = request.Stanje,
+                KabinetID = request.KabinetID,
+                KreatorID = request.KreatorID,
+                DokumentacijaUrl = request.DokumentacijaUrl
+            };
+        }
+
+        private static OpremaDokumentacijaUpload? BuildDokumentacijaUpload(IFormFile? file)
+        {
+            if (file == null)
+            {
+                return null;
+            }
+
+            return new OpremaDokumentacijaUpload(
+                file.FileName,
+                file.ContentType ?? string.Empty,
+                file.OpenReadStream,
+                file.Length);
         }
     }
 }

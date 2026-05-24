@@ -8,10 +8,11 @@ namespace LABsistem.Api.Services
     public interface IOpremaService
     {
         Task<IEnumerable<OpremaDTO>> VratiSvuOpremu(string prikaz);
-        Task<OpremaDTO> KreirajOpremu(OpremaCreateDTO dto);
-        Task<bool> AzurirajOpremu(int id, OpremaCreateDTO dto);
+        Task<OpremaDTO> KreirajOpremu(OpremaCreateDTO dto, OpremaDokumentacijaUpload? dokumentacija = null);
+        Task<bool> AzurirajOpremu(int id, OpremaCreateDTO dto, OpremaDokumentacijaUpload? dokumentacija = null);
         Task<bool> ArhivirajOpremu(int id);
         Task<bool> VratiIzArhive(int id);
         Task<IEnumerable<OpremaDTO>> VratiOpremuPoKabinetu(int kabinetId);
+        Task<OpremaDokumentacijaFile?> VratiDokumentacijuFajlAsync(int id);
     }
 }

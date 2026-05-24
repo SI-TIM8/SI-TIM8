@@ -333,6 +333,18 @@ namespace LabSistem.Dal.Migrations
                     b.Property<DateTime?>("ArchivedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("DokumentacijaFileName")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("DokumentacijaFilePath")
+                        .HasMaxLength(260)
+                        .HasColumnType("character varying(260)");
+
+                    b.Property<string>("DokumentacijaUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
                     b.Property<bool>("IsArchived")
                         .HasColumnType("boolean");
 
