@@ -1,6 +1,3 @@
-
-## 1. Upravljanje pristupom
-
 ### USER STORY – Kreiranje korisnika
 **ID storyja:** US01  
 **Naziv storyja:** Kreiranje korisnika  
@@ -82,8 +79,6 @@
 **Veza sa Product Backlogom:** 41
 
 ---
-
-## 2. Upravljanje opremom
 
 ### USER STORY – Kreiranje nove opreme
 **ID storyja:** US06  
@@ -167,25 +162,6 @@
 **Veza sa Product Backlogom:** 40
 
 ---
-
-### USER STORY – Arhiviranje opreme umjesto trajnog brisanja
-**ID storyja:** US49  
-**Naziv storyja:** Arhiviranje opreme umjesto trajnog brisanja  
-**Opis:** Kao tehničar, želim arhivirati opremu koja se više ne koristi, kako bih zadržao historiju bez prikaza u aktivnim listama.  
-**Poslovna vrijednost:** Očuvanje podataka uz čišći aktivni pregled.  
-**Prioritet:** Medium  
-**Pretpostavke:** Oprema postoji u sistemu i ima povezanu historiju korištenja ili evidencije.  
-**Veze:** US06, US07, US08  
-**Acceptance Criteria:** 1. Oprema se može označiti kao arhivirana.
-2. Arhivirana oprema nije vidljiva u standardnim aktivnim listama.
-3. Historija evidencija i kvarova ostaje dostupna.
-4. Administrator ili tehničar može vratiti arhiviranu opremu.  
-**Sprint:** 9  
-**Veza sa Product Backlogom:** 49
-
----
-
-## 3. Rezervisanje
 
 ### USER STORY – Kreiranje rezervacije
 **ID storyja:** US11  
@@ -303,8 +279,6 @@
 
 ---
 
-## 4. Upravljanje terminima
-
 ### USER STORY – Kreiranje radnog vremena
 **ID storyja:** US17  
 **Naziv storyja:** Kreiranje radnog vremena  
@@ -382,8 +356,6 @@
 
 ---
 
-## 5. Upravljanje kabinetima i resursima
-
 ### USER STORY – Upravljanje kabinetima
 **ID storyja:** US22  
 **Naziv storyja:** Dodavanje i uređivanje kabineta  
@@ -410,7 +382,6 @@
 **Veza sa Product Backlogom:** 27
 
 ---
-## 6. Kalendarski prikaz i UI
 
 ### USER STORY – Kalendarski prikaz termina
 **ID storyja:** US24  
@@ -455,8 +426,6 @@
 
 ---
 
-## 8. Obavijesti i statusi
-
 ### USER STORY – Notifikacija o statusu zahtjeva
 **ID storyja:** US27  
 **Naziv storyja:** Obavještenje o odobrenju/odbijanju  
@@ -487,25 +456,6 @@
 **Veza sa Product Backlogom:** 37
 
 ---
-
-### USER STORY – Podsjetnik prije termina
-**ID storyja:** US50  
-**Naziv storyja:** Podsjetnik prije termina  
-**Opis:** Kao student, želim dobiti podsjetnik prije rezervisanog termina, kako ne bih propustio laboratorijsku vježbu.  
-**Poslovna vrijednost:** Manje izostanaka i bolje korištenje resursa.  
-**Prioritet:** Medium  
-**Pretpostavke:** Student ima odobren termin i aktivan kanal za primanje obavijesti. Email podsjetnik se šalje samo ako je email verifikovan, a in-app obavijest se šalje u svakom slučaju.  
-**Veze:** US11, US12, US27  
-**Acceptance Criteria:** 1. Sistem šalje in-app i/ili email podsjetnik prije termina.
-2. Vrijeme podsjetnika je konfigurabilno, npr. 24h i 1h ranije.
-3. Podsjetnik sadrži datum, vrijeme i laboratoriju.
-4. Ne šalju se podsjetnici za otkazane termine.  
-**Sprint:** 9  
-**Veza sa Product Backlogom:** 48
-
----
-
-## 9. Autentifikacija i Sigurnost
 
 ### USER STORY –Prijava putem JWT tokena
 **ID storyja:** US29  
@@ -577,42 +527,6 @@
 
 ---
 
-### USER STORY – Verifikacija email adrese
-**ID storyja:** US46  
-**Naziv storyja:** Verifikacija email adrese  
-**Opis:** Kao korisnik, želim potvrditi svoju email adresu putem verifikacionog linka, kako bi sistem znao da koristim validnu i dostupnu email adresu.  
-**Poslovna vrijednost:** Povećava sigurnost naloga i pouzdanost email komunikacije sistema.  
-**Prioritet:** High  
-**Pretpostavke:** Korisnik ima registrovan nalog i pristup unesenoj email adresi.  
-**Veze:** US01, US03, US33  
-**Acceptance Criteria:** 1. Nakon kreiranja naloga ili promjene email adrese sistem šalje verifikacioni email sa jedinstvenim linkom.
-2. Klik na verifikacioni link potvrđuje email adresu korisnika.
-3. Sistem ne otkriva osjetljive podatke kroz verifikacioni link.
-4. Korisnik vidi jasan status da li je email verifikovan ili nije.
-5. Neverifikovan korisnik može ponovo zatražiti slanje verifikacionog emaila.  
-**Sprint:** 10  
-**Veza sa Product Backlogom:** 46
-
----
-
-### USER STORY – Obavezna promjena lozinke pri prvom loginu
-**ID storyja:** US47  
-**Naziv storyja:** Obavezna promjena lozinke pri prvom loginu  
-**Opis:** Kao korisnik kojem je nalog kreirao administrator, želim biti primoran promijeniti privremenu lozinku pri prvom loginu, kako bi moj nalog bio sigurniji i poznat samo meni.  
-**Poslovna vrijednost:** Smanjuje sigurnosni rizik dijeljenih ili privremenih lozinki.  
-**Prioritet:** High  
-**Pretpostavke:** Administrator je kreirao korisnika sa početnom lozinkom.  
-**Veze:** US01, US03, US04  
-**Acceptance Criteria:** 1. Korisnik se može prijaviti sa privremenom lozinkom samo do ekrana za promjenu lozinke.
-2. Dok ne promijeni lozinku, korisnik ne može pristupiti ostatku aplikacije.
-3. Nova lozinka mora zadovoljiti postojeća sigurnosna pravila sistema.
-4. Nakon uspješne promjene lozinke, korisnik dobija normalan pristup aplikaciji.
-5. Sistem više ne traži obaveznu promjenu lozinke nakon što je korisnik jednom uspješno postavi.  
-**Sprint:** 9  
-**Veza sa Product Backlogom:** 47
-
----
-
 ### USER STORY –Evidencija
 **ID storyja:** US34  
 **Naziv storyja:** Praćenje aktivnosti prijava  
@@ -661,3 +575,161 @@
 5. Administrator može resetovati filtere i vratiti puni prikaz liste korisnika.  
 **Sprint:** 6  
 **Veza sa Product Backlogom:** 36
+
+---
+
+### USER STORY – Upravljanje tipovima opreme
+**ID storyja:** US37  
+**Naziv storyja:** Upravljanje tipovima opreme  
+**Opis:** Kao tehničar, želim dodavati, uređivati i brisati tipove opreme kako bi sistem sadržavao ažurne kategorije laboratorijske opreme.  
+**Poslovna vrijednost:** Olakšava pretraživanje i klasifikaciju opreme.  
+**Prioritet:** Medium  
+**Pretpostavke:** Tehničar je prijavljen i ima pristup listi opreme.  
+**Veze:** US06, US07, US08  
+**Acceptance Criteria:** 1. Tehničar može dodati novi tip opreme.
+2. Tehničar  može izmijeniti postojeći tip opreme.
+3. Tehničar  može obrisati tip opreme koji nije u upotrebi.
+4. Prikazuje se lista svih tipova opreme.
+5. Sistem validira da naziv tipa opreme nije prazan.
+6. Nakon izmjena, lista tipova opreme se automatski ažurira.
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 36
+
+---
+
+### USER STORY – Verifikacija email adrese
+**ID storyja:** US38  
+**Naziv storyja:** Verifikacija email adrese  
+**Opis:** Kao korisnik, želim potvrditi svoju email adresu putem verifikacionog linka, kako bi sistem znao da koristim validnu i dostupnu email adresu.  
+**Poslovna vrijednost:** Povećava sigurnost naloga i pouzdanost email komunikacije sistema.  
+**Prioritet:** High  
+**Pretpostavke:** Korisnik ima registrovan nalog i pristup unesenoj email adresi.  
+**Veze:** US01, US03, US33  
+**Acceptance Criteria:** 1. Nakon kreiranja naloga ili promjene email adrese sistem šalje verifikacioni email sa jedinstvenim linkom.
+2. Klik na verifikacioni link potvrđuje email adresu korisnika.
+3. Sistem ne otkriva osjetljive podatke kroz verifikacioni link.
+4. Korisnik vidi jasan status da li je email verifikovan ili nije.
+5. Neverifikovan korisnik može ponovo zatražiti slanje verifikacionog emaila.  
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 46
+
+---
+
+### USER STORY – Obavezna promjena lozinke pri prvom loginu
+**ID storyja:** US39  
+**Naziv storyja:** Obavezna promjena lozinke pri prvom loginu  
+**Opis:** Kao korisnik kojem je nalog kreirao administrator, želim biti primoran promijeniti privremenu lozinku pri prvom loginu, kako bi moj nalog bio sigurniji i poznat samo meni.  
+**Poslovna vrijednost:** Smanjuje sigurnosni rizik dijeljenih ili privremenih lozinki.  
+**Prioritet:** High  
+**Pretpostavke:** Administrator je kreirao korisnika sa početnom lozinkom.  
+**Veze:** US01, US03, US04  
+**Acceptance Criteria:** 1. Korisnik se može prijaviti sa privremenom lozinkom samo do ekrana za promjenu lozinke.
+2. Dok ne promijeni lozinku, korisnik ne može pristupiti ostatku aplikacije.
+3. Nova lozinka mora zadovoljiti postojeća sigurnosna pravila sistema.
+4. Nakon uspješne promjene lozinke, korisnik dobija normalan pristup aplikaciji.
+5. Sistem više ne traži obaveznu promjenu lozinke nakon što je korisnik jednom uspješno postavi.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 47
+
+---
+
+### USER STORY – Podsjetnik prije termina
+**ID storyja:** US40  
+**Naziv storyja:** Podsjetnik prije termina  
+**Opis:** Kao student, želim dobiti podsjetnik prije rezervisanog termina, kako ne bih propustio laboratorijsku vježbu.  
+**Poslovna vrijednost:** Manje izostanaka i bolje korištenje resursa.  
+**Prioritet:** Medium  
+**Pretpostavke:** Student ima odobren termin i aktivan kanal za primanje obavijesti. Email podsjetnik se šalje samo ako je email verifikovan, a in-app obavijest se šalje u svakom slučaju.  
+**Veze:** US11, US12, US27  
+**Acceptance Criteria:** 1. Sistem šalje in-app i/ili email podsjetnik prije termina.
+2. Vrijeme podsjetnika je konfigurabilno, npr. 24h i 1h ranije.
+3. Podsjetnik sadrži datum, vrijeme i laboratoriju.
+4. Ne šalju se podsjetnici za otkazane termine.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 48
+
+---
+
+### USER STORY – Arhiviranje opreme umjesto trajnog brisanja
+**ID storyja:** US41  
+**Naziv storyja:** Arhiviranje opreme umjesto trajnog brisanja  
+**Opis:** Kao laboratorijski tehničar, želim arhivirati opremu koja se više ne koristi, kako bih zadržao historiju bez prikaza u aktivnim listama.  
+**Poslovna vrijednost:** Očuvanje podataka uz čišći aktivni pregled.  
+**Prioritet:** Medium  
+**Pretpostavke:** Oprema postoji u sistemu i ima povezanu historiju korištenja ili evidencije.  
+**Veze:** US06, US07, US08  
+**Acceptance Criteria:** 1. Oprema se može označiti kao arhivirana.
+2. Arhivirana oprema nije vidljiva u standardnim aktivnim listama.
+3. Historija evidencija i kvarova ostaje dostupna.
+4. Administrator ili tehničar može vratiti arhiviranu opremu.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 49
+
+---
+
+### USER STORY – Dokumentacija i uputstva za opremu
+**ID storyja:** US42  
+**Naziv storyja:** Dokumentacija i uputstva za opremu  
+**Opis:** Kao laboratorijski tehničar, želim priložiti PDF uputstva, video linkove ili sigurnosne protokole uz specifičnu opremu, kako bi korisnici znali kako je pravilno i sigurno koristiti. 
+**Poslovna vrijednost:** Osiguravanje optimalnijeg korištenja laboratorijske opreme.  
+**Prioritet:** Medium  
+**Pretpostavke:** Oprema postoji u sistemu i ima povezanu historiju korištenja ili evidencije.  
+**Veze:** US06, US07, US08  
+**Acceptance Criteria:** 1. Prilikom kreiranja ili uređivanja opreme, tehničar može uploadovati PDF fajl (maksimalno 10MB) ili unijeti eksterni URL.
+2. Student i profesor mogu vidjeti priloženu dokumentaciju i linkove na detaljnom prikazu pojedinačne opreme.
+3. Korisnici mogu direktno preuzeti PDF dokumentaciju ili klikom otvoriti eksterni video/sigurnosni protokol.
+4. Sistem onemogućava upload fajlova većih od 10MB i prikazuje odgovarajuću poruku validacije.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 49
+
+---
+
+### USER STORY – Obavijesti korisnicima o otkazivanju rezervacija zbog kvara
+**ID storyja:** US43  
+**Naziv storyja:** Obavijesti korisnicima o otkazivanju rezervacija zbog kvara  
+**Opis:** Kao korisnik koji ima rezervaciju, želim dobiti obavijest kada je moja rezervacija otkazana zbog kvara opreme, kako bih na vrijeme znao da termin više nije važeći. 
+**Poslovna vrijednost:** Osiguravanje transparentne komunikacije između korisnika i sistema.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen u termin sa opremom koja je označena kao neispravna.  
+**Veze:** US09, US28  
+**Acceptance Criteria:** 1. Kada prijava kvara automatski otkaže buduću rezervaciju, sistem kreira obavijest za pogođenog korisnika.
+2. Obavijest sadrži razlog otkazivanja i osnovne informacije o terminu ili opremi.
+3. Obavijest se prikazuje u postojećem zvonu za obavijesti.
+4. Broj nepročitanih obavijesti se povećava nakon kreiranja obavijesti.
+5. Korisnik može označiti obavijest kao pročitanu ili je obrisati iz svog prikaza.
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 43
+
+---
+
+### USER STORY – Općenite obavijesti o kvarovima i dostupnosti opreme
+**ID storyja:** US44 
+**Naziv storyja:** Općenite obavijesti o kvarovima i dostupnosti opreme
+**Opis:** Kao ovlašteni korisnik, želim poslati kratku općenitu obavijest svim korisnicima o kvarovima, servisima ili promjenama dostupnosti opreme, kako bi svi korisnici bili informisani o stanju sistema.
+**Poslovna vrijednost:** Osiguravanje transparentne komunikacije između korisnika i sistema.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen u termin sa opremom koja je označena kao neispravna.  
+**Veze:** US09, US28  
+**Acceptance Criteria:** 1. Ovlašteni korisnik može unijeti tekst općenite obavijesti vezane za kvar, servis ili dostupnost opreme.
+2. Tekst obavijesti je obavezan i ograničen na razumnu dužinu.
+3. Sistem kreira nepročitanu obavijest za svakog aktivnog korisnika.
+4. Općenita obavijest se prikazuje u postojećem zvonu za obavijesti.
+5. Pošiljalac dobija potvrdu da je obavijest poslana.
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 49
+
+---
+
+### USER STORY – Detalji o kabinetima
+**ID storyja:** US45  
+**Naziv storyja:** Detalji o kabinetima
+**Opis:** Kao ovlašteni korisnik, Želim da imam uvid u lokaciju, kakcitet i dostupnu opremu određenog kabineta.
+**Poslovna vrijednost:** Omogućavanje preglednosti i poboljšanje organizovanosti.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen sistem i ima potrebne permisije (student nema uvid u detalje kabineta).  
+**Veze:** US22, US25  
+**Acceptance Criteria:** 1. OOvlašteni korisnik otvara detalje kabineta.
+2. Ima pregled naziva, lokacije, odgovornog profesora i kapaciteta kabineta.
+3.Otvara listu dostupne opreme u odabranom kabinetu..
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 22

@@ -52,3 +52,4 @@
 | 48 | Podsjetnik prije termina | Sistem šalje podsjetnike prije termina kroz in-app kanal, a email samo korisnicima sa verifikovanom email adresom | feature | Medium | 3 | Done | Sprint 9 | US50; vrijeme slanja je konfigurabilno |
 | 49 | Arhiviranje opreme umjesto trajnog brisanja | Tehničar ili administrator arhivira opremu, zadržava historiju i po potrebi vraća stavku iz arhive | feature | Medium | 2 | Done | Sprint 9 | US49; arhivirana oprema se ne prikazuje u standardnim aktivnim listama |
 | 50 | Otkazivanje rezervacije i povlačenje zahtjeva | Student može otkazati odobrenu rezervaciju ili poništiti zahtjev koji je još na čekanju | feature | Medium | 3 | Done | Sprint 9 | US13B |
+| 51 | Obavijesti korisnika | Korisnik prima obavijesti o terminima, zahtjevima i opremi. | feature | Medium | 3 | Done | Sprint 9 | US40, US43, US44 |
