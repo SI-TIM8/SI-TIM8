@@ -665,7 +665,7 @@
 ## 10. Dodatne funkcionalnosti
 
 ### USER STORY – Detalji kabineta sa pregledom opreme
-**ID storyja:** US37  
+**ID storyja:** US51  
 **Naziv storyja:** Detalji kabineta sa pregledom opreme  
 **Opis:** Kao profesor, tehničar ili administrator, želim kliknuti na naziv kabineta unutar termina i vidjeti detaljne informacije o kabinetu, kako bih imao sve relevantne informacije na jednom mjestu.  
 **Poslovna vrijednost:** Omogućava brzi uvid u informacije o kabinetu bez potrebe za odlaskom na drugu stranicu, što štedi vrijeme i poboljšava korisničko iskustvo.  
@@ -684,7 +684,7 @@
 ---
 
 ### USER STORY – Dugme za povratak na vrh stranice
-**ID storyja:** US38  
+**ID storyja:** US52  
 **Naziv storyja:** Dugme za povratak na vrh stranice  
 **Opis:** Kao korisnik sistema, želim imati dugme koje me vraća na vrh stranice kada skrolujem prema dolje, kako bih se mogao brzo vratiti na početak bez ručnog skrolovanja.  
 **Poslovna vrijednost:** Poboljšava korisničko iskustvo na dugim stranicama (liste termina, korisnika, opreme) i smanjuje vrijeme potrebno za navigaciju.  
