@@ -9,8 +9,9 @@
 | 3 | Sigurnost prvog pristupa | Dodana je obavezna promjena lozinke pri prvom loginu za novokreirane korisnike koje kreira administrator. | US47 | Hamza Hadžić | Završeno | Ne odnosi se na seedovane korisnike |
 | 4 | Pregled rezervacija i upravljanje zahtjevima studenta | Student na jednom ekranu vidi aktivne rezervacije i svoje zahtjeve, te može otkazati rezervaciju ili poništiti zahtjev na čekanju. | US13A, US13B | Hamza Hadžić | Završeno | Implementirani su odvojeni tabovi unutar ekrana "Moje rezervacije" |
 | 5 | Arhiviranje opreme i arhivski filteri | Trajno brisanje opreme je zamijenjeno arhiviranjem, uz pregled arhivirane opreme, vraćanje iz arhive i prilagođene filtere na stranici opreme. | US49 | Hamza Hadžić | Završeno | Arhivirana oprema nije prikazana u standardnim aktivnim listama |
+| 6 | Dokumentacija i digitalna uputstva za opremu | Omogućen je upload PDF uputstava (do 10MB) i unos URL linkova za video ili protokole pri kreiranju/uređivanju opreme, uz prikaz i preuzimanje na detaljima opreme. | US51 | Emina Hamamdžić | Završeno | Linkovi se validiraju na ispravan URL format |
 
-## **Cilj sprinta:** Pouzdanije upravljanje opremom, sigurniji korisnički nalozi i veća samostalnost studenata
+## **Cilj sprinta:** Pouzdanije upravljanje opremom, sigurniji korisnički nalozi, veća samostalnost studenata i dostupnost edukacijskih materijala
 
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
 |----|-------------|------|-----|-----------|-----------|--------|
@@ -21,6 +22,9 @@
 | US13A | Pregled mojih rezervacija i zahtjeva | Student na jednom mjestu vidi svoje odobrene rezervacije i poslane zahtjeve. | Feature | 2 | Medium | Završeno |
 | US13B | Otkazivanje rezervacije i povlačenje zahtjeva | Student može otkazati odobrenu rezervaciju ili poništiti zahtjev koji je još na čekanju. | Feature | 3 | Medium | Završeno |
 | US49 | Arhiviranje opreme umjesto trajnog brisanja | Tehničar ili administrator arhivira opremu, zadržava historiju i po potrebi vraća stavku iz arhive. | Feature | 2 | Medium | Završeno |
+| US51 | Dokumentacija i uputstva za opremu | Laboratorijski tehničar prilaže PDF uputstva, video linkove ili sigurnosne protokole uz specifičnu opremu radi pravilnog korištenja. | Feature | 2 | Low | Završeno |
+| US50 | Obavijesti korisnicima o otkazivanju rezervacija zbog kvara | Sistem automatski obavještava pogođene korisnike kada se njihove buduće rezervacije otkažu zbog prijavljenog kvara opreme. | Feature | 2 | Medium | To Do |
+| US51 | Općenite obavijesti o kvarovima i dostupnosti opreme | Ovlašteni korisnik šalje kratku općenitu obavijest svim korisnicima o važnim kvarovima, servisima ili promjenama dostupnosti opreme. | Feature | 2 | Medium | To Do |
 
 # Detaljni User Stories (US)
 
@@ -118,5 +122,43 @@
 * Arhivirana oprema nije vidljiva u standardnim aktivnim listama.
 * Historija evidencija i kvarova ostaje dostupna.
 * Administrator ili tehničar može vratiti arhiviranu opremu.
+
+---
+
+### US51 – Dokumentacija i uputstva za opremu
+
+*Kao laboratorijski tehničar, želim priložiti PDF uputstva, video linkove ili sigurnosne protokole uz specifičnu opremu, kako bi korisnici znali kako je pravilno i sigurno koristiti.*
+
+**Acceptance Criteria:**
+
+* Prilikom kreiranja ili uređivanja opreme, tehničar može uploadovati PDF fajl (maksimalno 10MB) ili unijeti eksterni URL.
+* Student i profesor mogu vidjeti priloženu dokumentaciju i linkove na detaljnom prikazu pojedinačne opreme.
+* Korisnici mogu direktno preuzeti PDF dokumentaciju ili klikom otvoriti eksterni video/sigurnosni protokol.
+* Sistem onemogućava upload fajlova većih od 10MB i prikazuje odgovarajuću poruku validacije.
+### US50 – Obavijesti korisnicima o otkazivanju rezervacija zbog kvara
+
+*Kao korisnik koji ima rezervaciju, želim dobiti obavijest kada je moja rezervacija otkazana zbog kvara opreme, kako bih na vrijeme znao da termin više nije važeći.*
+
+**Acceptance Criteria:**
+
+* Kada prijava kvara automatski otkaže buduću rezervaciju, sistem kreira obavijest za pogođenog korisnika.
+* Obavijest sadrži razlog otkazivanja i osnovne informacije o terminu ili opremi.
+* Obavijest se prikazuje u postojećem zvonu za obavijesti.
+* Broj nepročitanih obavijesti se povećava nakon kreiranja obavijesti.
+* Korisnik može označiti obavijest kao pročitanu ili je obrisati iz svog prikaza.
+
+---
+
+### US51 – Općenite obavijesti o kvarovima i dostupnosti opreme
+
+*Kao ovlašteni korisnik, želim poslati kratku općenitu obavijest svim korisnicima o kvarovima, servisima ili promjenama dostupnosti opreme, kako bi svi korisnici bili informisani o stanju sistema.*
+
+**Acceptance Criteria:**
+
+* Ovlašteni korisnik može unijeti tekst općenite obavijesti vezane za kvar, servis ili dostupnost opreme.
+* Tekst obavijesti je obavezan i ograničen na razumnu dužinu.
+* Sistem kreira nepročitanu obavijest za svakog aktivnog korisnika.
+* Općenita obavijest se prikazuje u postojećem zvonu za obavijesti.
+* Pošiljalac dobija potvrdu da je obavijest poslana.
 
 ---

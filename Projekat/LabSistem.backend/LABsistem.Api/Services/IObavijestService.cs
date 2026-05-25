@@ -9,5 +9,6 @@ namespace LABsistem.Api.Services
         Task OznaciKaoProcitanuAsync(int id, int korisnikId);
         Task OznaciSveKaoProcitaneAsync(int korisnikId);
         Task<int> BrojNeprocitanihAsync(int korisnikId);
+        Task<int> KreirajZaSveAktivneKorisnikeAsync(string poruka);
     }
 }

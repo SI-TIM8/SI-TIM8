@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using LABsistem.Dal.Db;
 using Microsoft.EntityFrameworkCore;
+using LABsistem.Application.DTOs;
 
 namespace LABsistem.Presentation.Controllers
 {
@@ -37,6 +38,25 @@ namespace LABsistem.Presentation.Controllers
             if (string.IsNullOrEmpty(userId)) return Unauthorized();
             var broj = await _service.BrojNeprocitanihAsync(int.Parse(userId));
             return Ok(new { broj });
+        }
+
+        [HttpPost("opca")]
+        [Authorize(Roles = "Admin,Tehnicar")]
+        public async Task<IActionResult> KreirajOpcu([FromBody] OpcaObavijestCreateDTO dto)
+        {
+            try
+            {
+                var brojKorisnika = await _service.KreirajZaSveAktivneKorisnikeAsync(dto.Poruka);
+                return Ok(new
+                {
+                    message = $"Obavijest je poslana za {brojKorisnika} korisnika.",
+                    brojKorisnika
+                });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPut("{id}/procitana")]

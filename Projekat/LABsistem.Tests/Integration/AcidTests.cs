@@ -74,16 +74,43 @@ public class AcidTests : IClassFixture<TestWebApplicationFactory>
         return payload!.Token;
     }
 
-    private void SetToken(string token)
+    private async Task<(int KabinetId, int ObjekatId)> SeedKabinetAsync(string kabinetNaziv, int profesorId)
     {
         _client.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", token);
     }
 
+    private async Task<int> SeedTerminAsync(
+        int tehnicarId,
+        int kabinetId,
+        int profesorId,
+        DateTime datum,
+        TimeSpan vrijemePocetka,
+        TimeSpan vrijemeKraja,
+        StatusTermina statusTermina = StatusTermina.Rezervisan,
+        bool vidljivoStudentima = true,
+        int? limitOsoba = 10)
+    {
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
 
-    // =========================================================================
-    // ATOMICITY
-    // =========================================================================
+        var termin = new Termin
+        {
+            Datum = datum,
+            VrijemePocetka = vrijemePocetka,
+            VrijemeKraja = vrijemeKraja,
+            KreatorID = tehnicarId,
+            KabinetID = kabinetId,
+            ProfesorID = profesorId,
+            StatusTermina = statusTermina,
+            VidljivoStudentima = vidljivoStudentima,
+            LimitOsoba = limitOsoba
+        };
+
+        context.Termini.Add(termin);
+        await context.SaveChangesAsync();
+        return termin.ID;
+    }
 
     [Fact]
     public async Task Atomicity_PrijavaNePostojeciTermin_NemaUpisa()
@@ -94,13 +121,12 @@ public class AcidTests : IClassFixture<TestWebApplicationFactory>
         var token = await LoginAsync("acid-student", "student123");
         SetToken(token);
 
-        var response = await _client.PostAsJsonAsync("/api/Rezervacija/zahtjev/99999", new { });
+        var response = await client.PostAsJsonAsync("/api/Rezervacija/zahtjev/99999", new { });
 
         Assert.True(
             response.StatusCode == HttpStatusCode.NotFound ||
             response.StatusCode == HttpStatusCode.BadRequest,
-            $"Očekivana greška, dobijen: {response.StatusCode}"
-        );
+            $"Ocekivana kontrolisana greska, dobijen status: {response.StatusCode}");
     }
 
     [Fact]
@@ -111,8 +137,9 @@ public class AcidTests : IClassFixture<TestWebApplicationFactory>
         var token = await LoginAsync("acid-tehnicar", "tehnicar123");
         SetToken(token);
 
-        // Pokušaj kreiranja termina sa nepostojećim kabinetom
-        var response = await _client.PostAsJsonAsync("/api/Termin", new
+        using var client = await CreateAuthorizedClientAsync(username, "Tehnicar123!");
+
+        var response = await client.PostAsJsonAsync("/api/Termin", new TerminCreateDTO
         {
             datum = "2026-08-01T00:00:00.000Z",
             vrijemePocetka = "10:00:00",
@@ -123,11 +150,6 @@ public class AcidTests : IClassFixture<TestWebApplicationFactory>
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
-
-
-    // =========================================================================
-    // ISOLATION
-    // =========================================================================
 
     [Fact]
     public async Task Isolation_DvaStudentaKonkurentno_NemaKorumpcijePodataka()
@@ -152,19 +174,23 @@ public class AcidTests : IClassFixture<TestWebApplicationFactory>
 
         var rezultati = await Task.WhenAll(task1, task2);
 
-        // Provjeri da nema 500 grešaka — sistem mora ostati stabilan
         Assert.DoesNotContain(rezultati, r => r.StatusCode == HttpStatusCode.InternalServerError);
-
-        // Svaki rezultat mora biti ili uspjeh ili kontrolirana greška (409 conflict)
         Assert.All(rezultati, r =>
             Assert.True(
                 r.StatusCode == HttpStatusCode.OK ||
                 r.StatusCode == HttpStatusCode.Created ||
                 r.StatusCode == HttpStatusCode.Conflict ||
                 r.StatusCode == HttpStatusCode.BadRequest,
-                $"Neočekivan status: {r.StatusCode}"
-            )
-        );
+                $"Neocekivan status: {r.StatusCode}"));
+
+        using var scope = _factory.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<LabSistemDbContext>();
+        var savedRequests = await context.Zahtjevi
+            .Where(z => z.TerminID == terminId && (z.StudentID == studentId1 || z.StudentID == studentId2))
+            .ToListAsync();
+
+        Assert.Equal(savedRequests.Count, savedRequests.Select(z => z.ID).Distinct().Count());
+        Assert.All(savedRequests, z => Assert.Equal(StatusZahtjeva.NaCekanju, z.StatusZahtjeva));
     }
 
     [Fact]
@@ -204,13 +230,10 @@ public class AcidTests : IClassFixture<TestWebApplicationFactory>
         var tehnicarToken1 = await LoginAsync("acid-tehnicar1", "tehnicar123");
         var tehnicarToken2 = await LoginAsync("acid-tehnicar2", "tehnicar123");
 
-        client1.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tehnicarToken1);
-        client2.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tehnicarToken2);
+        using var client1 = await CreateAuthorizedClientAsync(tehnicarUsername, "Tehnicar123!");
+        using var client2 = await CreateAuthorizedClientAsync(tehnicarUsername, "Tehnicar123!");
 
-        // Isti termin u isto vrijeme, isti kabinet — samo jedan smije proći
-        var isti = new
+        var istiTermin = new TerminCreateDTO
         {
             datum = "2026-08-10T00:00:00.000Z",
             vrijemePocetka = "10:00:00",
@@ -219,22 +242,17 @@ public class AcidTests : IClassFixture<TestWebApplicationFactory>
             kabinetID = kabinetId,
         };
 
-        var task1 = client1.PostAsJsonAsync("/api/Termin", isti);
-        var task2 = client2.PostAsJsonAsync("/api/Termin", isti);
+        var task1 = client1.PostAsJsonAsync("/api/Termin", istiTermin);
+        var task2 = client2.PostAsJsonAsync("/api/Termin", istiTermin);
 
         var rezultati = await Task.WhenAll(task1, task2);
-
-        int uspjesnih = rezultati.Count(r =>
+        var uspjesnih = rezultati.Count(r =>
             r.StatusCode == HttpStatusCode.OK ||
             r.StatusCode == HttpStatusCode.Created);
 
         Assert.True(uspjesnih <= 2, $"Očekivan max 2 uspjeha, dobijeno: {uspjesnih}");
     }
 
-
-    // =========================================================================
-    // DURABILITY
-    // =========================================================================
     [Fact]
     public async Task Durability_NakonPrijaveZahtjevSeTrajnoSacuva()
     {
@@ -275,15 +293,14 @@ public class AcidTests : IClassFixture<TestWebApplicationFactory>
 
         var datumObj = DateTime.UtcNow.AddDays(5);
 
-        var datumString = datumObj.ToString("yyyy-MM-ddT00:00:00.000Z");
+        var profesorId = await SeedUserAsync(profesorUsername, $"{profesorUsername}@test.com", "Profesor123!", UlogaKorisnika.Profesor);
+        var tehnicarId = await SeedUserAsync(tehnicarUsername, $"{tehnicarUsername}@test.com", "Tehnicar123!", UlogaKorisnika.Tehnicar);
+        await SeedUserAsync(studentUsername, $"{studentUsername}@test.com", "Student123!", UlogaKorisnika.Student);
 
-        var vrijemePocetka = "14:00:00";
-        var vrijemeKraja = "15:30:00";
+        var (kabinetId, _) = await SeedKabinetAsync(Unique("DurKab"), profesorId);
 
-        
-        // 2. Kreiranje termina
-        
-        var terminRes = await _client.PostAsJsonAsync("/api/Termin", new
+        int terminId;
+        using (var scope = _factory.Services.CreateScope())
         {
             datum = datumString,
             vrijemePocetka,
@@ -367,37 +384,15 @@ public class AcidTests : IClassFixture<TestWebApplicationFactory>
 
         Assert.True(
             prijavaRes.IsSuccessStatusCode,
-            $"Prijava nije uspjela: {await prijavaRes.Content.ReadAsStringAsync()}"
-        );
+            $"Prijava nije uspjela: {await prijavaRes.Content.ReadAsStringAsync()}");
 
-        
-        // 9. Profesor provjerava zahtjeve
-        
-        SetToken(profesorToken);
+        var zahtjeviRequest = new HttpRequestMessage(HttpMethod.Get, "/api/Rezervacija/dolazni-zahtjevi");
+        var zahtjeviResponse = await profesorClient.SendAsync(zahtjeviRequest);
+        zahtjeviResponse.EnsureSuccessStatusCode();
 
-        var zahtjevi =
-            await _client.GetFromJsonAsync<List<Dictionary<string, object>>>(
-                "/api/Rezervacija/dolazni-zahtjevi");
+        var zahtjevi = await zahtjeviResponse.Content.ReadFromJsonAsync<List<ZahtjevDTO>>();
 
         Assert.NotNull(zahtjevi);
-
-        
-        // 10. Provjera perzistencije
-        
-        var postojiZahtjev = zahtjevi.Any(z =>
-        {
-            if (!z.ContainsKey("terminID"))
-                return false;
-
-            return z["terminID"]?.ToString() == terminId;
-        });
-
-        Assert.True(
-            postojiZahtjev,
-            "Zahtjev nije trajno sačuvan u sistemu."
-        );
-        // Cleanup
-        SetToken(tehnicarToken);
-        await _client.DeleteAsync($"/api/Termin/{terminId}");
+        Assert.Contains(zahtjevi, z => z.TerminID == terminId);
     }
 }
