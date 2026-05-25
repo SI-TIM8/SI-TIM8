@@ -75,7 +75,8 @@ function Termini() {
   const [selectedCabinetEquipment, setSelectedCabinetEquipment] = useState([]);
   const [selectedCabinetName, setSelectedCabinetName] = useState("");
   const [loadingEquipment, setLoadingEquipment] = useState(false);
-
+  const [activeTab, setActiveTab] = useState("details");
+  const [kabinetDetails, setKabinetDetails] = useState(null);
   const currentUserId = getCurrentUserId();
   const currentRole = getCurrentRole();
   const canManageTermini =
@@ -107,12 +108,19 @@ function Termini() {
   async function loadEquipment(kabinetId, kabinetNaziv) {
     setLoadingEquipment(true);
     setSelectedCabinetName(kabinetNaziv);
+    setActiveTab("details");  // Prvo otvori detalje
     setEquipmentModalOpen(true);
+    
     try {
-      const response = await api.get(`/Oprema/kabinet/${kabinetId}`);
-      setSelectedCabinetEquipment(response.data);
+      // Dohvati detalje kabineta
+      const kabinetResponse = await api.get(`/Kabinet/${kabinetId}`);
+      setKabinetDetails(kabinetResponse.data);
+      
+      // Dohvati opremu
+      const equipmentResponse = await api.get(`/Oprema/kabinet/${kabinetId}`);
+      setSelectedCabinetEquipment(equipmentResponse.data);
     } catch (error) {
-      console.error("Greska pri ucitavanju opreme:", error);
+      console.error("Greška pri učitavanju:", error);
     } finally {
       setLoadingEquipment(false);
     }
@@ -743,9 +751,9 @@ function Termini() {
       {/* Oprema Modal */}
       {equipmentModalOpen && (
         <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: "500px" }}>
+          <div className="modal-content" style={{ maxWidth: "550px" }}>
             <div className="modal-header">
-              <h2>Oprema u kabinetu: {selectedCabinetName}</h2>
+              <h2>{selectedCabinetName}</h2>
               <button 
                 className="close-button" 
                 onClick={() => setEquipmentModalOpen(false)}
@@ -753,39 +761,110 @@ function Termini() {
                 &times;
               </button>
             </div>
+            
+            {/* TABOVI */}
+            <div style={{ display: "flex", borderBottom: "1px solid var(--border)", padding: "0 20px" }}>
+              <button
+                onClick={() => setActiveTab("details")}
+                style={{
+                  padding: "10px 16px",
+                  background: "none",
+                  border: "none",
+                  borderBottom: activeTab === "details" ? "2px solid #0f766e" : "none",
+                  color: activeTab === "details" ? "#0f766e" : "var(--text-muted)",
+                  cursor: "pointer",
+                  fontWeight: activeTab === "details" ? "600" : "400"
+                }}
+              >
+                📋 Detalji kabineta
+              </button>
+              <button
+                onClick={() => setActiveTab("equipment")}
+                style={{
+                  padding: "10px 16px",
+                  background: "none",
+                  border: "none",
+                  borderBottom: activeTab === "equipment" ? "2px solid #0f766e" : "none",
+                  color: activeTab === "equipment" ? "#0f766e" : "var(--text-muted)",
+                  cursor: "pointer",
+                  fontWeight: activeTab === "equipment" ? "600" : "400"
+                }}
+              >
+                🔧 Oprema ({selectedCabinetEquipment.length})
+              </button>
+            </div>
+            
             <div className="modal-body">
-              {loadingEquipment ? (
-                <p>Učitavanje opreme...</p>
-              ) : selectedCabinetEquipment.length > 0 ? (
-                <table className="equipment-table">
-                  <thead>
-                    <tr>
-                      <th>Naziv</th>
-                      <th>Serijski broj</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {selectedCabinetEquipment.map(o => (
-                      <tr key={o.id}>
-                        <td>{o.naziv}</td>
-                        <td>{o.serijskiBroj}</td>
-                        <td>
-                          <span className={`badge ${o.stanje === 1 ? 'zeleno' : 'crveno'}`}>
-                            {o.stanje === 1 ? 'U funkciji' : 'Kvar'}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                <p>Ovaj kabinet trenutno nema registrovane opreme.</p>
+              {/* TAB - DETALJI KABINETA */}
+              {activeTab === "details" && (
+                <div>
+                  {kabinetDetails ? (
+                    <div style={{ display: "grid", gap: "12px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--border)", paddingBottom: "8px" }}>
+                        <strong>Naziv:</strong>
+                        <span>{kabinetDetails.naziv}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--border)", paddingBottom: "8px" }}>
+                        <strong>Kapacitet:</strong>
+                        <span>{kabinetDetails.kapacitet} studenata</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--border)", paddingBottom: "8px" }}>
+                        <strong>Odgovorni profesor:</strong>
+                        <span>{kabinetDetails.odgovorniKorisnik || "Nije dodijeljen"}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between", borderBottom: "1px solid var(--border)", paddingBottom: "8px" }}>
+                        <strong>Lokacija:</strong>
+                        <span>{kabinetDetails.objekatLokacija || "N/A"}</span>
+                      </div>
+                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <strong>ID kabineta:</strong>
+                        <span>{kabinetDetails.id}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <p>Učitavanje detalja...</p>
+                  )}
+                </div>
+              )}
+
+              {/* TAB - OPREMA (postojeća funkcionalnost) */}
+              {activeTab === "equipment" && (
+                <>
+                  {loadingEquipment ? (
+                    <p>Učitavanje opreme...</p>
+                  ) : selectedCabinetEquipment.length > 0 ? (
+                    <table className="equipment-table">
+                      <thead>
+                        <tr>
+                          <th>Naziv</th>
+                          <th>Serijski broj</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedCabinetEquipment.map(o => (
+                          <tr key={o.id}>
+                            <td>{o.naziv}</td>
+                            <td>{o.serijskiBroj}</td>
+                            <td>
+                              <span className={`badge ${o.stanje === 1 ? 'zeleno' : 'crveno'}`}>
+                                {o.stanje === 1 ? 'U funkciji' : 'Kvar'}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <p>Ovaj kabinet trenutno nema registrovane opreme.</p>
+                  )}
+                </>
               )}
             </div>
+            
             <div className="modal-footer">
               <button 
-                className="button secondary" 
+                className="button sekundarno" 
                 onClick={() => setEquipmentModalOpen(false)}
               >
                 Zatvori

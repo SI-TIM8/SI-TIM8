@@ -99,6 +99,10 @@ export default function Objekti() {
   const [form, setForm] = useState({});
   const [saving, setSaving] = useState(false);
   const [formMsg, setFormMsg] = useState({ type: "", text: "" });
+  
+  // Story 1: state za detalje kabineta
+  const [selectedKabinet, setSelectedKabinet] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   const isAdmin = getLocalRole() === "admin";
 
@@ -112,7 +116,6 @@ export default function Objekti() {
         api.get("/Auth/users"),
       ]);
       setObjekti(objRes.data);
-      // Samo profesori
       setKorisnici(korRes.data.filter(k => k.role === "Profesor"));
     } catch (e) {
       setMessage({ type: "error", text: "Greška pri učitavanju podataka." });
@@ -123,6 +126,12 @@ export default function Objekti() {
 
   function toggleExpand(id) {
     setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
+  }
+
+  // Story 1: otvaranje modala sa detaljima kabineta
+  function openKabinetDetails(kabinet) {
+    setSelectedKabinet(kabinet);
+    setShowDetailsModal(true);
   }
 
   const filtered = useMemo(() => {
@@ -284,12 +293,17 @@ export default function Objekti() {
                           {isAdmin && <span>Akcije</span>}
                         </div>
                         {objekat.kabineti.map(k => (
-                          <div className="users-list-row users-list-item" key={k.id}>
+                          <div 
+                            className="users-list-row users-list-item" 
+                            key={k.id}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => openKabinetDetails(k)}
+                          >
                             <span style={{ fontWeight: "600" }}>{k.naziv}</span>
                             <span>{k.odgovorniKorisnik}</span>
                             <span>{k.kapacitet}</span>
                             {isAdmin && (
-                              <span>
+                              <span onClick={e => e.stopPropagation()}>
                                 <div className="users-actions">
                                   <button className="users-action-btn" onClick={() => openModal("kabinet-edit", k)}>✎ Uredi</button>
                                   <button className="users-action-btn warn" onClick={() => deleteKabinet(k.id)}>🗑 Briši</button>
@@ -308,6 +322,39 @@ export default function Objekti() {
         </div>
       </div>
 
+      {/* Story 1: Modal za detalje kabineta */}
+      {showDetailsModal && selectedKabinet && (
+        <div className="users-modal-overlay" onClick={() => setShowDetailsModal(false)}>
+          <div className="users-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: "500px" }}>
+            <div className="users-modal-header">
+              <h2>Detalji kabineta: {selectedKabinet.naziv}</h2>
+              <button className="users-modal-close" onClick={() => setShowDetailsModal(false)}>×</button>
+            </div>
+            <div style={{ padding: "16px 0" }}>
+              <div style={{ marginBottom: "12px" }}>
+                <strong>Naziv:</strong> {selectedKabinet.naziv}
+              </div>
+              <div style={{ marginBottom: "12px" }}>
+                <strong>Odgovorni profesor:</strong> {selectedKabinet.odgovorniKorisnik}
+              </div>
+              <div style={{ marginBottom: "12px" }}>
+                <strong>Kapacitet:</strong> {selectedKabinet.kapacitet} studenata
+              </div>
+              <div style={{ marginBottom: "12px" }}>
+                <strong>Lokacija (Objekat):</strong> {objekti.find(o => o.id === selectedKabinet.objekatID)?.lokacija || "N/A"}
+              </div>
+              <div>
+                <strong>ID u sistemu:</strong> {selectedKabinet.id}
+              </div>
+            </div>
+            <div className="users-modal-actions">
+              <button className="button sekundarno" onClick={() => setShowDetailsModal(false)}>Zatvori</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal za create/edit objekta i kabineta */}
       {modal && (
         <div className="users-modal-overlay" onClick={closeModal}>
           <div className="users-modal" onClick={e => e.stopPropagation()}>

@@ -58,5 +58,22 @@ namespace LABsistem.Api.Services
             await _repo.DeleteAsync(id);
             return true;
         }
+
+        public async Task<KabinetDTO?> VratiKabinetPoId(int id)
+        {
+            var rezultat = await _repo.GetByIdWithDetailsAsync(id);
+            if (rezultat == null) return null;
+            
+            return new KabinetDTO
+            {
+                ID = rezultat.Value.kabinet.ID,
+                Naziv = rezultat.Value.kabinet.Naziv,
+                KorisnikID = rezultat.Value.kabinet.KorisnikID,
+                OdgovorniKorisnik = rezultat.Value.odgovorniKorisnik,
+                ObjekatID = rezultat.Value.kabinet.ObjekatID,
+                ObjekatLokacija = rezultat.Value.objekatLokacija,
+                Kapacitet = rezultat.Value.kabinet.Kapacitet
+            };
+        }
     }
 }
