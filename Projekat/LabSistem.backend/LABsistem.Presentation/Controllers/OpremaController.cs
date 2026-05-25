@@ -30,8 +30,8 @@ namespace LABsistem.Presentation.Controllers
         {
             var dto = MapToCreateDto(request);
             var upload = BuildDokumentacijaUpload(request.DokumentacijaFile);
-            await _service.KreirajOpremu(dto, upload);
-            return Ok(new { message = "Oprema uspjesno dodana." });
+            var created = await _service.KreirajOpremu(dto, upload);
+            return Ok(created);
         }
 
         [HttpPut("{id}")]
