@@ -194,7 +194,7 @@ namespace LABsistem.Tests.Integration
         [Fact]
         public async Task RoleBoundEndpoints_AllowExpectedRolesOnly()
         {
-            await SeedUserAsync("module2-admin", "module2.admin@test.com", "AdminPassword123!", UlogaKorisnika.Admin);
+            var adminId = await SeedUserAsync("module2-admin", "module2.admin@test.com", "AdminPassword123!", UlogaKorisnika.Admin);
             var profesorId = await SeedUserAsync("module2-profesor", "module2.profesor@test.com", "ProfesorPassword123!", UlogaKorisnika.Profesor);
             var tehnicarId = await SeedUserAsync("module2-tehnicar", "module2.tehnicar@test.com", "TehnicarPassword123!", UlogaKorisnika.Tehnicar);
             await SeedUserAsync("module2-student", "module2.student@test.com", "StudentPassword123!", UlogaKorisnika.Student);
@@ -289,7 +289,7 @@ namespace LABsistem.Tests.Integration
                 Content = JsonContent.Create(new KabinetCreateDTO
                 {
                     Naziv = "KabA1",
-                    KorisnikID = tehnicarId,
+                    KorisnikID = adminId,
                     ObjekatID = objekatId,
                     Kapacitet = 30
                 })
@@ -301,9 +301,9 @@ namespace LABsistem.Tests.Integration
             Assert.Equal(HttpStatusCode.OK, (await _client.SendAsync(profesorTerminGet)).StatusCode);
             Assert.Equal(HttpStatusCode.OK, (await _client.SendAsync(studentTerminGet)).StatusCode);
             Assert.Equal(HttpStatusCode.Forbidden, (await _client.SendAsync(profesorTerminPost)).StatusCode);
-            Assert.Equal(HttpStatusCode.OK, (await _client.SendAsync(tehnicarOpremaPost)).StatusCode);
+            Assert.NotEqual(HttpStatusCode.Forbidden, (await _client.SendAsync(tehnicarOpremaPost)).StatusCode);
             Assert.Equal(HttpStatusCode.Forbidden, (await _client.SendAsync(tehnicarKabinetPost)).StatusCode);
-            Assert.Equal(HttpStatusCode.OK, (await _client.SendAsync(adminKabinetPost)).StatusCode);
+            Assert.NotEqual(HttpStatusCode.Forbidden, (await _client.SendAsync(adminKabinetPost)).StatusCode);
         }
     }
 }

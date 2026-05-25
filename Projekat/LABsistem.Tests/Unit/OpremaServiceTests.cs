@@ -25,6 +25,10 @@ namespace LABsistem.Tests.Unit
 
             _repoMock = new Mock<IOpremaRepository>();
             _validatorMock = new Mock<IOpremaValidator>();
+            
+            // Mock validator da ne baca exception
+            _validatorMock.Setup(v => v.ValidateSave(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
+            
             _service = new OpremaService(_repoMock.Object, _validatorMock.Object);
         }
 
@@ -46,7 +50,15 @@ namespace LABsistem.Tests.Unit
             };
             _repoMock.Setup(x => x.GetAllAsync()).ReturnsAsync(existingOprema);
 
-            var dto = _fixture.Create<OpremaCreateDTO>();
+            var dto = new OpremaCreateDTO
+            {
+                Naziv = "Nova oprema",
+                Kategorija = "Test kategorija",
+                Stanje = (int)StatusOpreme.Ispravno,
+                KabinetID = 1,
+                KreatorID = 1,
+                DokumentacijaUrl = "https://example.com/docs.pdf"
+            };
 
             var result = await _service.KreirajOpremu(dto);
 
@@ -103,7 +115,15 @@ namespace LABsistem.Tests.Unit
         public async Task AzurirajOpremu_NonExistingId_ReturnsFalse()
         {
             _repoMock.Setup(x => x.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Oprema?)null);
-            var dto = _fixture.Create<OpremaCreateDTO>();
+            var dto = new OpremaCreateDTO
+            {
+                Naziv = "Test",
+                Kategorija = "Test",
+                Stanje = 1,
+                KabinetID = 1,
+                KreatorID = 1,
+                DokumentacijaUrl = "https://example.com/docs.pdf"
+            };
 
             var result = await _service.AzurirajOpremu(999, dto);
 

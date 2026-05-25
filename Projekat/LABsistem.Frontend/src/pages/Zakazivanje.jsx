@@ -10,6 +10,8 @@ function Zakazivanje() {
   const [selectedCabinetEquipment, setSelectedCabinetEquipment] = useState([]);
   const [selectedCabinetName, setSelectedCabinetName] = useState("");
   const [loadingEquipment, setLoadingEquipment] = useState(false);
+  const [equipmentDetailsOpen, setEquipmentDetailsOpen] = useState(false);
+  const [selectedEquipmentDetails, setSelectedEquipmentDetails] = useState(null);
 
   useEffect(() => {
     loadDostupniTermini();
@@ -59,6 +61,35 @@ function Zakazivanje() {
       console.error("Greska pri ucitavanju opreme:", error);
     } finally {
       setLoadingEquipment(false);
+    }
+  }
+
+  function openEquipmentDetails(oprema) {
+    setSelectedEquipmentDetails(oprema);
+    setEquipmentDetailsOpen(true);
+  }
+
+  function closeEquipmentDetails() {
+    setEquipmentDetailsOpen(false);
+    setSelectedEquipmentDetails(null);
+  }
+
+  async function downloadDocumentationFile(oprema) {
+    try {
+      const response = await api.get(`/Oprema/${oprema.id}/documentation/file`, {
+        responseType: "blob",
+      });
+      const fileName = oprema.dokumentacijaFileName || "dokumentacija.pdf";
+      const blobUrl = window.URL.createObjectURL(response.data);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      setMessage({ type: "error", text: "Greska pri preuzimanju dokumentacije." });
     }
   }
 
@@ -156,6 +187,7 @@ function Zakazivanje() {
                       <th>Naziv</th>
                       <th>Serijski broj</th>
                       <th>Status</th>
+                      <th>Detalji</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -167,6 +199,11 @@ function Zakazivanje() {
                           <span className={`badge ${o.stanje === 1 ? 'zeleno' : 'crveno'}`}>
                             {o.stanje === 1 ? 'U funkciji' : 'Kvar'}
                           </span>
+                        </td>
+                        <td>
+                          <button className="button sekundarno" onClick={() => openEquipmentDetails(o)}>
+                            Detalji
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -181,6 +218,55 @@ function Zakazivanje() {
                 className="button secondary" 
                 onClick={() => setEquipmentModalOpen(false)}
               >
+                Zatvori
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {equipmentDetailsOpen && selectedEquipmentDetails && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: "520px" }}>
+            <div className="modal-header">
+              <h2>Detalji opreme</h2>
+              <button className="close-button" onClick={closeEquipmentDetails}>
+                &times;
+              </button>
+            </div>
+            <div className="modal-body">
+              <div style={{ display: "grid", gap: "10px" }}>
+                <div><strong>Naziv:</strong> {selectedEquipmentDetails.naziv}</div>
+                <div><strong>Kategorija:</strong> {selectedEquipmentDetails.kategorija || "N/A"}</div>
+                <div><strong>Serijski broj:</strong> {selectedEquipmentDetails.serijskiBroj}</div>
+                <div>
+                  <strong>Status:</strong> {selectedEquipmentDetails.stanje === 1 ? "U funkciji" : "Kvar"}
+                </div>
+              </div>
+
+              <div style={{ marginTop: "18px" }}>
+                <strong>Dokumentacija</strong>
+                {!selectedEquipmentDetails.dokumentacijaUrl && !selectedEquipmentDetails.dokumentacijaFileName && (
+                  <div style={{ marginTop: "8px", color: "var(--text-muted)" }}>Nema dostupne dokumentacije.</div>
+                )}
+                {selectedEquipmentDetails.dokumentacijaUrl && (
+                  <div style={{ marginTop: "8px" }}>
+                    <a href={selectedEquipmentDetails.dokumentacijaUrl} target="_blank" rel="noreferrer">
+                      Otvori link uputstva
+                    </a>
+                  </div>
+                )}
+                {selectedEquipmentDetails.dokumentacijaFileName && (
+                  <div style={{ marginTop: "10px" }}>
+                    <button className="button sekundarno" onClick={() => downloadDocumentationFile(selectedEquipmentDetails)}>
+                      Preuzmi PDF ({selectedEquipmentDetails.dokumentacijaFileName})
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="button secondary" onClick={closeEquipmentDetails}>
                 Zatvori
               </button>
             </div>

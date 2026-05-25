@@ -68,6 +68,19 @@ function Layout({ children }) {
     }
   };
 
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollButton(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   return (
     <div className="app-layout">
       <aside className="sidebar">
@@ -134,7 +147,31 @@ function Layout({ children }) {
         </header>
 
         <main className="main-content">{children}</main>
-      </div>
+
+        {/* Dugme za povratak na vrh */}
+        {showScrollButton && (
+          <button
+            onClick={scrollToTop}
+            style={{
+              position: "fixed",
+              bottom: "30px",
+              right: "30px",
+              background: "#0f766e",
+              color: "white",
+              border: "none",
+              borderRadius: "50%",
+              width: "50px",
+              height: "50px",
+              fontSize: "24px",
+              cursor: "pointer",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+              zIndex: 999
+            }}
+          >
+            ↑
+          </button>
+        )}
+       </div>
     </div>
   );
 }

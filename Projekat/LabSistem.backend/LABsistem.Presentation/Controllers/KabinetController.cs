@@ -44,5 +44,16 @@ namespace LABsistem.Presentation.Controllers
             await _service.ObrisiKabinet(id);
             return Ok(new { message = "Kabinet obrisan" });
         }
+
+        [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,Profesor,Tehnicar")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var kabinet = await _service.VratiKabinetPoId(id);
+            if (kabinet == null)
+                return NotFound(new { message = "Kabinet nije pronađen" });
+            
+            return Ok(kabinet);
+        }
     }
 }

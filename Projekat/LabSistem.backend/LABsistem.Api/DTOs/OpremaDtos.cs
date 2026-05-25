@@ -14,6 +14,8 @@ namespace LABsistem.Application.DTOs
         public int Stanje { get; set; }
         public int KabinetID { get; set; }
         public int KreatorID { get; set; }
+        [StringLength(500)]
+        public string? DokumentacijaUrl { get; set; }
     }
 
     public class OpremaDTO
@@ -29,5 +31,7 @@ namespace LABsistem.Application.DTOs
         public int KreatorID { get; set; }
         public bool IsArchived { get; set; }
         public DateTime? ArchivedAtUtc { get; set; }
+        public string? DokumentacijaUrl { get; set; }
+        public string? DokumentacijaFileName { get; set; }
     }
 }

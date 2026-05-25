@@ -13,4 +13,8 @@
     <ProjectReference Include="..\LabSistem.Domain\LabSistem.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
 </Project>
