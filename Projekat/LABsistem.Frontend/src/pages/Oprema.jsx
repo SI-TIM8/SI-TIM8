@@ -18,11 +18,14 @@ const ARHIVA_OPTIONS = [
   { value: "sve", label: "Sve stavke" },
 ];
 
+const MAX_DOCUMENTATION_FILE_SIZE = 10 * 1024 * 1024;
+
 const INITIAL_FORM_STATE = {
   naziv: "",
   kategorija: "",
   stanje: 1,
   kabinetID: "",
+  dokumentacijaUrl: "",
 };
 
 const INITIAL_FILTERS = {
@@ -52,6 +55,10 @@ function Oprema() {
   const [editingOprema, setEditingOprema] = useState(null);
   const [saving, setSaving] = useState(false);
   const [formState, setFormState] = useState(INITIAL_FORM_STATE);
+  const [documentationFile, setDocumentationFile] = useState(null);
+  const [existingDocumentationFile, setExistingDocumentationFile] = useState("");
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [detailsOprema, setDetailsOprema] = useState(null);
   const [message, setMessage] = useState({ type: "", text: "" });
 
   const userRole = getLocalRole();
@@ -151,11 +158,76 @@ function Oprema() {
     setFormState((previous) => ({ ...previous, [name]: processedValue }));
   }
 
+  function handleDocumentationFileChange(event) {
+    const file = event.target.files?.[0];
+    if (!file) {
+      setDocumentationFile(null);
+      return;
+    }
+
+    if (file.size > MAX_DOCUMENTATION_FILE_SIZE) {
+      setMessage({ type: "error", text: "PDF fajl ne smije biti veci od 10MB." });
+      event.target.value = "";
+      return;
+    }
+
+    if (file.type && file.type !== "application/pdf") {
+      setMessage({ type: "error", text: "Dozvoljeni su samo PDF fajlovi." });
+      event.target.value = "";
+      return;
+    }
+
+    setDocumentationFile(file);
+    setExistingDocumentationFile("");
+    setFormState((previous) => ({ ...previous, dokumentacijaUrl: "" }));
+  }
+
+  function handleDocumentationUrlChange(event) {
+    const { value } = event.target;
+    setFormState((previous) => ({ ...previous, dokumentacijaUrl: value }));
+
+    if (value.trim()) {
+      setDocumentationFile(null);
+      setExistingDocumentationFile("");
+    }
+  }
+
+  function openDetailsModal(oprema) {
+    setDetailsOprema(oprema);
+    setDetailsModalOpen(true);
+  }
+
+  function closeDetailsModal() {
+    setDetailsModalOpen(false);
+    setDetailsOprema(null);
+  }
+
+  async function downloadDocumentationFile(oprema) {
+    try {
+      const response = await api.get(`/Oprema/${oprema.id}/documentation/file`, {
+        responseType: "blob",
+      });
+      const fileName = oprema.dokumentacijaFileName || "dokumentacija.pdf";
+      const blobUrl = window.URL.createObjectURL(response.data);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      setMessage({ type: "error", text: extractErrorMessage(error, "Greska pri preuzimanju dokumentacije.") });
+    }
+  }
+
   function openCreateModal() {
     setModalMode("create");
     setEditingOprema(null);
     setFormState(INITIAL_FORM_STATE);
     setSelectedObjekatID("");
+    setDocumentationFile(null);
+    setExistingDocumentationFile("");
     setMessage({ type: "", text: "" });
     setModalOpen(true);
   }
@@ -168,10 +240,13 @@ function Oprema() {
       kategorija: oprema.kategorija || "",
       stanje: oprema.stanje,
       kabinetID: oprema.kabinetID,
+      dokumentacijaUrl: oprema.dokumentacijaUrl || "",
     });
 
     const objekat = objekti.find((item) => item.kabineti?.some((kabinet) => kabinet.id === oprema.kabinetID));
     setSelectedObjekatID(objekat ? String(objekat.id) : "");
+    setDocumentationFile(null);
+    setExistingDocumentationFile(oprema.dokumentacijaFileName || "");
     setMessage({ type: "", text: "" });
     setModalOpen(true);
   }
@@ -182,17 +257,38 @@ function Oprema() {
     setMessage({ type: "", text: "" });
 
     try {
+      const payload = new FormData();
+      payload.append("naziv", formState.naziv);
+      payload.append("kategorija", formState.kategorija);
+      payload.append("stanje", String(formState.stanje));
+      payload.append("kabinetID", String(formState.kabinetID));
+
       if (modalMode === "create") {
-        await api.post("/Oprema", {
-          ...formState,
-          kreatorID: Number(currentUserId),
+        payload.append("kreatorID", String(Number(currentUserId)));
+        payload.append("serijskiBroj", "0");
+
+        if (documentationFile) {
+          payload.append("dokumentacijaFile", documentationFile);
+        } else if (formState.dokumentacijaUrl?.trim()) {
+          payload.append("dokumentacijaUrl", formState.dokumentacijaUrl.trim());
+        }
+
+        await api.post("/Oprema", payload, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
         setMessage({ type: "success", text: "Oprema je uspješno dodana." });
       } else {
-        await api.put(`/Oprema/${editingOprema.id}`, {
-          ...formState,
-          id: editingOprema.id,
-          kreatorID: editingOprema.kreatorID,
+        payload.append("kreatorID", String(editingOprema.kreatorID));
+        payload.append("serijskiBroj", String(editingOprema.serijskiBroj || 0));
+
+        if (documentationFile) {
+          payload.append("dokumentacijaFile", documentationFile);
+        } else if (formState.dokumentacijaUrl?.trim()) {
+          payload.append("dokumentacijaUrl", formState.dokumentacijaUrl.trim());
+        }
+
+        await api.put(`/Oprema/${editingOprema.id}`, payload, {
+          headers: { "Content-Type": "multipart/form-data" },
         });
         setMessage({ type: "success", text: "Izmjene su uspješno sačuvane." });
       }
@@ -432,6 +528,9 @@ function Oprema() {
                   <span>{item.zgradaNaziv}</span>
                   <span>
                     <div className="users-actions">
+                      <button className="users-action-btn" onClick={() => openDetailsModal(item)}>
+                        Detalji
+                      </button>
                       {isAdminOrTehnicar && !item.isArchived && (
                         <>
                           <button className="users-action-btn" onClick={() => openEditModal(item)}>
@@ -555,6 +654,32 @@ function Oprema() {
                 </select>
               </div>
 
+              <div className="form-group">
+                <label>PDF uputstvo (max 10MB)</label>
+                <input type="file" accept="application/pdf" onChange={handleDocumentationFileChange} />
+                {documentationFile && (
+                  <div className="users-field-hint">Odabrano: {documentationFile.name}</div>
+                )}
+                {!documentationFile && existingDocumentationFile && (
+                  <div className="users-field-hint">Trenutni PDF: {existingDocumentationFile}</div>
+                )}
+                {!documentationFile && !existingDocumentationFile && (
+                  <div className="users-field-hint">Opcionalno polje za PDF dokumentaciju.</div>
+                )}
+              </div>
+
+              <div className="form-group">
+                <label>URL uputstva ili video materijala</label>
+                <input
+                  type="url"
+                  name="dokumentacijaUrl"
+                  value={formState.dokumentacijaUrl}
+                  onChange={handleDocumentationUrlChange}
+                  placeholder="https://example.com/uputstvo"
+                />
+                <div className="users-field-hint">Unesite link samo ako ne dodajete PDF.</div>
+              </div>
+
               <div className="users-modal-actions">
                 <button className="button" type="submit" disabled={saving}>
                   {saving ? "Spremanje..." : "Sačuvaj"}
@@ -564,6 +689,56 @@ function Oprema() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {detailsModalOpen && detailsOprema && (
+        <div className="users-modal-overlay" onClick={closeDetailsModal}>
+          <div className="users-modal users-confirm-modal" onClick={(event) => event.stopPropagation()}>
+            <div className="users-modal-header">
+              <div>
+                <h2>Detalji opreme</h2>
+                <p>Pregled osnovnih informacija i dostupne dokumentacije.</p>
+              </div>
+              <button className="users-modal-close" onClick={closeDetailsModal}>
+                ×
+              </button>
+            </div>
+
+            <div className="users-confirm-details">
+              <p><strong>Naziv:</strong> {detailsOprema.naziv}</p>
+              <p><strong>Kategorija:</strong> {detailsOprema.kategorija || "N/A"}</p>
+              <p><strong>Serijski broj:</strong> {detailsOprema.serijskiBroj}</p>
+              <p><strong>Status:</strong> {getStatusInfo(detailsOprema.stanje).label}</p>
+              <p><strong>Kabinet:</strong> {detailsOprema.kabinetNaziv || "N/A"}</p>
+              <p><strong>Zgrada:</strong> {detailsOprema.zgradaNaziv || "N/A"}</p>
+            </div>
+
+            <div className="form-group">
+              <label>Dokumentacija</label>
+              {!detailsOprema.dokumentacijaUrl && !detailsOprema.dokumentacijaFileName && (
+                <div className="users-field-hint">Nema dostupne dokumentacije.</div>
+              )}
+              {detailsOprema.dokumentacijaUrl && (
+                <div style={{ marginBottom: "8px" }}>
+                  <a href={detailsOprema.dokumentacijaUrl} target="_blank" rel="noreferrer">
+                    Otvori link uputstva
+                  </a>
+                </div>
+              )}
+              {detailsOprema.dokumentacijaFileName && (
+                <button className="button sekundarno" type="button" onClick={() => downloadDocumentationFile(detailsOprema)}>
+                  Preuzmi PDF ({detailsOprema.dokumentacijaFileName})
+                </button>
+              )}
+            </div>
+
+            <div className="users-modal-actions">
+              <button className="button sekundarno" type="button" onClick={closeDetailsModal}>
+                Zatvori
+              </button>
+            </div>
           </div>
         </div>
       )}

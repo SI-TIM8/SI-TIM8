@@ -27,6 +27,15 @@ namespace LABsistem.Domain.Entities
         public int KreatorID { get; set; } 
         public int KabinetID { get; set; } 
 
+        [StringLength(500)]
+        public string? DokumentacijaUrl { get; set; }
+
+        [StringLength(260)]
+        public string? DokumentacijaFilePath { get; set; }
+
+        [StringLength(255)]
+        public string? DokumentacijaFileName { get; set; }
+
         public ICollection<Evidencija> Evidencije { get; set; }
     }
 }

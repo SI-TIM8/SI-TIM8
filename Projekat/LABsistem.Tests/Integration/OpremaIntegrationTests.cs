@@ -49,7 +49,8 @@ namespace LABsistem.Tests.Integration
                 SerijskiBroj = 45,
                 Stanje = (int)StatusOpreme.UKvaru,
                 KabinetID = 1,
-                KreatorID = 1
+                KreatorID = 1,
+                DokumentacijaUrl = "https://example.com/docs.pdf"
             };
 
             var result = await service.AzurirajOpremu(oprema.ID, updateDto);
