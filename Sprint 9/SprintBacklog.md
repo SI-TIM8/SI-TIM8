@@ -8,8 +8,11 @@
 | 2 | Ograničenje aktivnih zahtjeva po studentu | Uveden je sistemski limit aktivnih studentskih zahtjeva uz validaciju i poruku upozorenja kada je limit dostignut. | US16 | Refik Mujčinović | Završeno | Aktivni zahtjevi su statusi Na čekanju i Odobren |
 | 3 | Sigurnost prvog pristupa | Dodana je obavezna promjena lozinke pri prvom loginu za novokreirane korisnike koje kreira administrator. | US47 | Hamza Hadžić | Završeno | Ne odnosi se na seedovane korisnike |
 | 4 | Pregled rezervacija i upravljanje zahtjevima studenta | Student na jednom ekranu vidi aktivne rezervacije i svoje zahtjeve, te može otkazati rezervaciju ili poništiti zahtjev na čekanju. | US13A, US13B | Hamza Hadžić | Završeno | Implementirani su odvojeni tabovi unutar ekrana "Moje rezervacije" |
-| 5 | Arhiviranje opreme i arhivski filteri | Trajno brisanje opreme je zamijenjeno arhiviranjem, uz pregled arhivirane opreme, vraćanje iz arhive i prilagođene filtere na stranici opreme. | US49 | Hamza Hadžić | Završeno | Arhivirana oprema nije prikazana u standardnim aktivnim listama |
-| 6 | Dokumentacija i digitalna uputstva za opremu | Omogućen je upload PDF uputstava (do 10MB) i unos URL linkova za video ili protokole pri kreiranju/uređivanju opreme, uz prikaz i preuzimanje na detaljima opreme. | US51 | Emina Hamamdžić | Završeno | Linkovi se validiraju na ispravan URL format |
+| 5 | Arhiviranje opreme i arhivski filteri | Trajno brisanje opreme je zamijenjeno arhiviranjem, uz pregled arhivirane opreme, vraćanje iz arhive i prilagođene filtere na stranici opreme. | US41 | Merima Glušac | Završeno | Arhivirana oprema nije prikazana u standardnim aktivnim listama |
+| 6 | Dokumentacija i digitalna uputstva za opremu | Omogućen je upload PDF uputstava (do 10MB) i unos URL linkova za video ili protokole pri kreiranju/uređivanju opreme, uz prikaz i preuzimanje na detaljima opreme. | US42 | Haris Sadiković | Završeno | Linkovi se validiraju na ispravan URL format |
+| 7 | Load testiranje – 50 concurrent korisnika (NFR-13); ACID i backup provjera (NFR-17, NFR-19) | Testirani su nefunkcionalni zahtjevi NFR-13, NFR-17 i NFR-19| - | Alma Jusufbegović | Završeno | Testirane su osnovne performanse sistema - pri velikom opterećenju i pri izazivanju greške.|
+| 8 | Općenite obavijesti o kvarovima i dostupnosti opreme |Omogućeno slanje obavijesti korisnicima o dostupnosti opreme.| US43, US44 | Haris Macić | Završeno | Dodane us obavijesti |
+| 9 | Detalji o kabinetima | Uveden pregled kabineta.| Aner Atović | Završeno | Omogućen pregled detalja o kabinetima uključujući naziv, lokaciju, odgovornog profesora i listu dostupne opreme|
 
 ## **Cilj sprinta:** Pouzdanije upravljanje opremom, sigurniji korisnički nalozi, veća samostalnost studenata i dostupnost edukacijskih materijala
 
@@ -21,10 +24,10 @@
 | US47 | Obavezna promjena lozinke pri prvom loginu | Novi korisnik kojeg kreira administrator mora promijeniti privremenu lozinku prije nastavka korištenja sistema. | Feature | 3 | High | Završeno |
 | US13A | Pregled mojih rezervacija i zahtjeva | Student na jednom mjestu vidi svoje odobrene rezervacije i poslane zahtjeve. | Feature | 2 | Medium | Završeno |
 | US13B | Otkazivanje rezervacije i povlačenje zahtjeva | Student može otkazati odobrenu rezervaciju ili poništiti zahtjev koji je još na čekanju. | Feature | 3 | Medium | Završeno |
-| US49 | Arhiviranje opreme umjesto trajnog brisanja | Tehničar ili administrator arhivira opremu, zadržava historiju i po potrebi vraća stavku iz arhive. | Feature | 2 | Medium | Završeno |
-| US51 | Dokumentacija i uputstva za opremu | Laboratorijski tehničar prilaže PDF uputstva, video linkove ili sigurnosne protokole uz specifičnu opremu radi pravilnog korištenja. | Feature | 2 | Low | Završeno |
-| US50 | Obavijesti korisnicima o otkazivanju rezervacija zbog kvara | Sistem automatski obavještava pogođene korisnike kada se njihove buduće rezervacije otkažu zbog prijavljenog kvara opreme. | Feature | 2 | Medium | To Do |
-| US51 | Općenite obavijesti o kvarovima i dostupnosti opreme | Ovlašteni korisnik šalje kratku općenitu obavijest svim korisnicima o važnim kvarovima, servisima ili promjenama dostupnosti opreme. | Feature | 2 | Medium | To Do |
+| US41 | Arhiviranje opreme umjesto trajnog brisanja | Tehničar ili administrator arhivira opremu, zadržava historiju i po potrebi vraća stavku iz arhive. | Feature | 2 | Medium | Završeno |
+| US42 | Dokumentacija i uputstva za opremu | Laboratorijski tehničar prilaže PDF uputstva, video linkove ili sigurnosne protokole uz specifičnu opremu radi pravilnog korištenja. | Feature | 2 | Low | Završeno |
+| US43 | Obavijesti korisnicima o otkazivanju rezervacija zbog kvara | Sistem automatski obavještava pogođene korisnike kada se njihove buduće rezervacije otkažu zbog prijavljenog kvara opreme. | Feature | 2 | Medium | Završeno |
+| US44 | Detalji o kabinetima| Ovlašteni korisnik šalje kratku općenitu obavijest svim korisnicima o važnim kvarovima, servisima ili promjenama dostupnosti opreme. | Feature | 2 | Medium | Završeno |
 
 # Detaljni User Stories (US)
 
@@ -69,7 +72,7 @@
 
 ---
 
-### US47 – Obavezna promjena lozinke pri prvom loginu
+### US39 – Obavezna promjena lozinke pri prvom loginu
 
 *Kao korisnik kojem je nalog kreirao administrator, želim biti primoran promijeniti privremenu lozinku pri prvom loginu, kako bi moj nalog bio sigurniji i poznat samo meni.*
 
@@ -112,7 +115,7 @@
 
 ---
 
-### US49 – Arhiviranje opreme umjesto trajnog brisanja
+### US41 – Arhiviranje opreme umjesto trajnog brisanja
 
 *Kao tehničar, želim arhivirati opremu koja se više ne koristi, kako bih zadržao historiju bez prikaza u aktivnim listama.*
 
@@ -125,7 +128,7 @@
 
 ---
 
-### US51 – Dokumentacija i uputstva za opremu
+### US42 – Dokumentacija i uputstva za opremu
 
 *Kao laboratorijski tehničar, želim priložiti PDF uputstva, video linkove ili sigurnosne protokole uz specifičnu opremu, kako bi korisnici znali kako je pravilno i sigurno koristiti.*
 
@@ -135,7 +138,10 @@
 * Student i profesor mogu vidjeti priloženu dokumentaciju i linkove na detaljnom prikazu pojedinačne opreme.
 * Korisnici mogu direktno preuzeti PDF dokumentaciju ili klikom otvoriti eksterni video/sigurnosni protokol.
 * Sistem onemogućava upload fajlova većih od 10MB i prikazuje odgovarajuću poruku validacije.
-### US50 – Obavijesti korisnicima o otkazivanju rezervacija zbog kvara
+
+---
+
+### US43 – Obavijesti korisnicima o otkazivanju rezervacija zbog kvara
 
 *Kao korisnik koji ima rezervaciju, želim dobiti obavijest kada je moja rezervacija otkazana zbog kvara opreme, kako bih na vrijeme znao da termin više nije važeći.*
 
@@ -149,7 +155,7 @@
 
 ---
 
-### US51 – Općenite obavijesti o kvarovima i dostupnosti opreme
+### US44 – Općenite obavijesti o kvarovima i dostupnosti opreme
 
 *Kao ovlašteni korisnik, želim poslati kratku općenitu obavijest svim korisnicima o kvarovima, servisima ili promjenama dostupnosti opreme, kako bi svi korisnici bili informisani o stanju sistema.*
 
@@ -162,3 +168,13 @@
 * Pošiljalac dobija potvrdu da je obavijest poslana.
 
 ---
+
+### US45 - Detalji o kabinetima
+
+*Kao ovlašteni korisnik, Želim da imam uvid u lokaciju, kakcitet i dostupnu opremu određenog kabineta.*
+
+**Acceptance Criteria:**
+
+* Ovlašteni korisnik otvara detalje kabineta.
+* Ima pregled naziva, lokacije, odgovornog profesora i kapaciteta kabineta.
+* Otvara listu dostupne opreme u odabranom kabinetu.

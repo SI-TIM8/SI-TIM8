@@ -1,4 +1,4 @@
-# Proof of Testing – Modul Rezervacije (Termini & Zahtjevi)
+# Proof of Testing – Sprint 9
 
 Ovaj izvještaj dokumentuje validaciju sistema pod visokim opterećenjem i simulacijom stvarnih korisnika. Fokus testiranja je provjera **NFR-13 (Non-Functional Requirement)**: stabilnost sistema i odziv API-ja prilikom konkurentnog pristupa 50 korisnika istovremeno.
 
@@ -8,7 +8,7 @@ Fokus testiranja je verifikacija **ACID svojstava baze podataka (Atomicity, Isol
 
 ---
 
-## 1. Modul: Load Testiranje (k6 Performance Engine)
+## 1. Load Testiranje (k6 Performance Engine)
 
 **Fokus:** Evaluacija ponašanja backend servisa pod stresom, mjerenje brzine odziva ključnih endpointa (/api/Rezervacija/dostupni-studentima, /api/Rezervacija/zahtjev, /api/Oprema), identifikacija potencijalnih uskih grla (bottlenecks) i stabilnost baze podataka pri konkurentnim upisima.
 
@@ -74,7 +74,7 @@ Unutar glavnog scenarija simulirano je ponašanje dvije ključne uloge u omjeru 
 
 ---
 
-## 2. Modul: Transakcijska Pouzdanost (ACID Integration Core)
+## 2. Transakcijska Pouzdanost (ACID Integration Core)
 
 **Fokus:** Osiguravanje da aplikacija i baza podataka ispravno reaguju na nevalidne unose (Atomicity), sprečavanje korupcije podataka i preklapanja resursa prilikom istovremenih klikova (Isolation), te garancija da jednom upisan zahtjev ostaje trajno zapisan u sistemu (Durability).
 

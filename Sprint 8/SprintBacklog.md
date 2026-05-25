@@ -64,7 +64,7 @@
 
 ---
 
-### US34 – Upravljanje tipovima opreme
+### US37 – Upravljanje tipovima opreme
 
 *Kao tehničar, želim dodavati, uređivati i brisati tipove opreme kako bi sistem sadržavao ažurne kategorije laboratorijske opreme.*
 
