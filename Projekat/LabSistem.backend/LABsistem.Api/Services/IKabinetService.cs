@@ -10,5 +10,6 @@ namespace LABsistem.Api.Services
         Task KreirajKabinet(KabinetCreateDTO dto);
         Task<bool> AzurirajKabinet(int id, KabinetCreateDTO dto);
         Task<bool> ObrisiKabinet(int id);
+        Task<KabinetDTO?> VratiKabinetPoId(int id);
     }
 }

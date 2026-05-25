@@ -661,3 +661,39 @@
 5. Administrator može resetovati filtere i vratiti puni prikaz liste korisnika.  
 **Sprint:** 6  
 **Veza sa Product Backlogom:** 36
+
+## 10. Dodatne funkcionalnosti
+
+### USER STORY – Detalji kabineta sa pregledom opreme
+**ID storyja:** US37  
+**Naziv storyja:** Detalji kabineta sa pregledom opreme  
+**Opis:** Kao profesor, tehničar ili administrator, želim kliknuti na naziv kabineta unutar termina i vidjeti detaljne informacije o kabinetu, kako bih imao sve relevantne informacije na jednom mjestu.  
+**Poslovna vrijednost:** Omogućava brzi uvid u informacije o kabinetu bez potrebe za odlaskom na drugu stranicu, što štedi vrijeme i poboljšava korisničko iskustvo.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen u sistem. Termin je definisan i kabinet je povezan sa terminom.  
+**Veze:** US18, US22, US24  
+**Acceptance Criteria:** 
+1. U listi termina, naziv kabineta je prikazan kao klikabilni link/dugme.
+2. Klikom na naziv kabineta otvara se modalni dijalog.
+3. Modal prikazuje detalje kabineta: naziv, kapacitet, odgovornog profesora, lokaciju objekta i ID kabineta.
+4. Korisnik može zatvoriti modal klikom na dugme "Zatvori" ili na "X" u gornjem desnom uglu.
+5. Funkcionalnost je dostupna profesorima, tehničarima i administratorima.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 51
+
+---
+
+### USER STORY – Dugme za povratak na vrh stranice
+**ID storyja:** US38  
+**Naziv storyja:** Dugme za povratak na vrh stranice  
+**Opis:** Kao korisnik sistema, želim imati dugme koje me vraća na vrh stranice kada skrolujem prema dolje, kako bih se mogao brzo vratiti na početak bez ručnog skrolovanja.  
+**Poslovna vrijednost:** Poboljšava korisničko iskustvo na dugim stranicama (liste termina, korisnika, opreme) i smanjuje vrijeme potrebno za navigaciju.  
+**Prioritet:** Low  
+**Pretpostavke:** Korisnik je prijavljen u sistem.  
+**Veze:** -  
+**Acceptance Criteria:** 
+1. Dugme se pojavljuje tek kada korisnik skroluje više od 300px od vrha stranice.
+2. Dugme je dostupno na svim stranicama u aplikaciji.
+3. Dugme nestaje kada je korisnik na vrhu stranice.  
+**Sprint:** 9  
+**Veza sa Product Backlogom:** 52

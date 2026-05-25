@@ -50,5 +50,22 @@ namespace LABsistem.Dal.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<(Kabinet kabinet, string odgovorniKorisnik, string objekatLokacija)?> GetByIdWithDetailsAsync(int id)
+        {
+            var result = await (
+                from k in _context.Kabineti
+                where k.ID == id
+                join u in _context.Korisnici on k.KorisnikID equals u.ID into uGroup
+                from u in uGroup.DefaultIfEmpty()
+                join o in _context.Objekti on k.ObjekatID equals o.ID into oGroup
+                from o in oGroup.DefaultIfEmpty()
+                select new { k, ImePrezime = u != null ? u.ImePrezime : "N/A", Lokacija = o != null ? o.Lokacija : "N/A" }
+            ).FirstOrDefaultAsync();
+            
+            if (result == null) return null;
+            
+            return (result.k, result.ImePrezime, result.Lokacija);
+        }
     }
 }

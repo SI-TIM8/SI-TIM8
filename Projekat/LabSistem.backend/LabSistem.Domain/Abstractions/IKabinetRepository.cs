@@ -11,5 +11,6 @@ namespace LABsistem.Dal.Interfaces
         Task AddAsync(Kabinet kabinet);
         Task UpdateAsync(Kabinet kabinet);
         Task DeleteAsync(int id);
+        Task<(Kabinet kabinet, string odgovorniKorisnik, string objekatLokacija)?> GetByIdWithDetailsAsync(int id);
     }
 }
