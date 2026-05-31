@@ -4,28 +4,31 @@
 
 | ID | Naziv zadatka ili story-a | Opis | Povezani US | Odgovorna osoba ili osobe | Status | Napomena |
 |-|-|-|-|-|-|-|
-| 1 | Verifikacija email adrese i status verifikacije | Implementiran je tok verifikacije email adrese sa slanjem verifikacionog linka, prikazom statusa na profilu i mogućnošću ponovnog slanja emaila. | US46 | Hamza Hadžić | Završeno | Email-zavisne funkcionalnosti dostupne su tek nakon verifikacije |
-| 2 | Podsjetnici prije termina | Sistem šalje in-app podsjetnike prije termina, a email podsjetnike samo korisnicima sa verifikovanom email adresom. | US50 | Hamza Hadžić | Završeno | Vrijeme slanja je konfigurabilno, npr. 24h i 1h ranije |
+| 1 | Verifikacija email adrese i status verifikacije | Implementiran je tok verifikacije email adrese sa slanjem verifikacionog linka, prikazom statusa na profilu i mogućnošću ponovnog slanja emaila. | US38 | Hamza Hadžić | Završeno | Email-zavisne funkcionalnosti dostupne su tek nakon verifikacije |
+| 2 | Podsjetnici prije termina | Sistem šalje in-app podsjetnike prije termina, a email podsjetnike samo korisnicima sa verifikovanom email adresom. | US40 | Hamza Hadžić | Završeno | Vrijeme slanja je konfigurabilno, npr. 24h i 1h ranije |
 | 3 | Prikaz i uređivanje profila korisnika | Korisnik na stranici "Moj profil" vidi osnovne podatke, status email verifikacije i može ažurirati ime i prezime, email adresu i korisničko ime. | US51, US52 | Emina Hamamdžić | Završeno | Prikaz uloge i statusa naloga je read-only |
 | 4 | Promjena lozinke iz profila | Korisnik može iz profila otvoriti formu za promjenu lozinke i sačuvati novu lozinku uz odgovarajuće validacije. | US04 | Emina Hamamdžić | Završeno | Odvojeno od flowa prve prijave |
 | 5 | Prikaz nedavnih aktivnosti | Na profilu je prikazana lista nedavnih aktivnosti relevantnih za prijavljenog korisnika. | US53 | Aner Atović | Završeno | Prikazuju se naslov, opis i meta informacije o aktivnosti |
+| 6 | Filtriranje rezervacija po datumu i kabinetu | Omogućavanje profesoru lakši pregled rezervisanih termina i njihov eksport | US49, US50 | Alma Jusufbegović | Završeno | Fitritanje po datumu i kabinetu, eksport kao csv ili pdf file |
 
-## **Cilj sprinta:** Potpuniji korisnički profil i pouzdanija email komunikacija
+## **Cilj sprinta:** Potpuniji korisnički profil, pouzdanija email komunikacija, popunjavanje detalja
 
 | ID | Naziv storyja | Opis | Tip | Story Pts | Prioritet | Status |
 |----|-------------|------|-----|-----------|-----------|--------|
-| US46 | Verifikacija email adrese | Korisnik potvrđuje svoju email adresu putem verifikacionog linka i dobija jasan prikaz statusa verifikacije. | Feature | 3 | High | Završeno |
-| US50 | Podsjetnik prije termina | Student dobija podsjetnik prije rezervisanog termina kroz in-app kanal i email kada je adresa verifikovana. | Feature | 3 | Medium | Završeno |
-| US51 | Prikaz profila | Korisnik pregledava svoje profilne podatke, status naloga i status email verifikacije na jednom mjestu. | Feature | 2 | Medium | Završeno |
-| US52 | Uređivanje podataka na profilu | Korisnik ažurira svoje osnovne podatke na profilu uz validaciju unosa i trenutno osvježavanje prikaza. | Feature | 2 | Medium | Završeno |
+| US38 | Verifikacija email adrese | Korisnik potvrđuje svoju email adresu putem verifikacionog linka i dobija jasan prikaz statusa verifikacije. | Feature | 3 | High | Završeno |
+| US40 | Podsjetnik prije termina | Student dobija podsjetnik prije rezervisanog termina kroz in-app kanal i email kada je adresa verifikovana. | Feature | 3 | Medium | Završeno |
+| US46 | Prikaz profila | Korisnik pregledava svoje profilne podatke, status naloga i status email verifikacije na jednom mjestu. | Feature | 2 | Medium | Završeno |
+| US47 | Uređivanje podataka na profilu | Korisnik ažurira svoje osnovne podatke na profilu uz validaciju unosa i trenutno osvježavanje prikaza. | Feature | 2 | Medium | Završeno |
 | US04 | Promjena lozinke | Korisnik mijenja svoju lozinku iz profila kako bi dodatno osigurao nalog. | Feature | 3 | Medium | Završeno |
-| US53 | Prikaz nedavnih aktivnosti | Korisnik vidi listu svojih nedavnih aktivnosti u sistemu radi boljeg pregleda i transparentnosti. | Feature | 2 | Medium | Završeno |
+| US48 | Prikaz nedavnih aktivnosti | Korisnik vidi listu svojih nedavnih aktivnosti u sistemu radi boljeg pregleda i transparentnosti. | Feature | 2 | Medium | Završeno |
+| US49 | Filtriranje rezervacija po datumu i kabinetu | Filtriranje rezervacija po datumu i kabinetu | Feature | 2 | Medium | Završeno |
+| US50 | Export rezervacija i historije termina u PDF i CSV | Profesor može da eksportuje listu historije rezervacija i otvorenih rezervacija u csv ili pdf file | Feature | 2 | Medium | Završeno |
 
 # Detaljni User Stories (US)
 
 ---
 
-### US46 – Verifikacija email adrese
+### US38 – Verifikacija email adrese
 
 *Kao korisnik, želim potvrditi svoju email adresu putem verifikacionog linka, kako bi sistem znao da koristim validnu i dostupnu email adresu.*
 
@@ -39,7 +42,7 @@
 
 ---
 
-### US50 – Podsjetnik prije termina
+### US40 – Podsjetnik prije termina
 
 *Kao student, želim dobiti podsjetnik prije rezervisanog termina, kako ne bih propustio laboratorijsku vježbu.*
 
@@ -53,7 +56,7 @@
 
 ---
 
-### US51 – Prikaz profila
+### US46 – Prikaz profila
 
 *Kao korisnik, želim pregledati svoje profilne podatke, kako bih imao uvid u informacije povezane sa svojim nalogom.*
 
@@ -67,7 +70,7 @@
 
 ---
 
-### US52 – Uređivanje podataka na profilu
+### US47 – Uređivanje podataka na profilu
 
 *Kao korisnik, želim izmijeniti svoje profilne podatke, kako bih održavao tačne i ažurne informacije o svom nalogu.*
 
@@ -94,7 +97,7 @@
 
 ---
 
-### US53 – Prikaz nedavnih aktivnosti
+### US48 – Prikaz nedavnih aktivnosti
 
 *Kao korisnik, želim vidjeti svoje nedavne aktivnosti u sistemu, kako bih imao pregled posljednjih radnji vezanih za moj nalog i korištenje aplikacije.*
 
@@ -104,5 +107,35 @@
 * Aktivnosti uključuju naslov, opis i meta informacije o radnji.
 * Prikazuju se samo aktivnosti relevantne za prijavljenog korisnika.
 * Ako nema aktivnosti, prikazuje se odgovarajuća prazna poruka.
+
+---
+
+### US-49 – Filtriranje rezervacija po datumu i kabinetu
+
+*Kao profesor, želim filtrirati listu rezervacija po datumu i kabinetu, kako bih lakše pronašao relevantne termine.*
+
+**Acceptance Criteria:**
+
+* Dostupni su filteri za početni datum (Od), krajnji datum (Do) i kabinet.
+* Dropdown za kabinet prikazuje samo kabinete koji postoje u učitanim rezervacijama.
+* Filteri se mogu kombinovati istovremeno.
+* Tabela se ažurira odmah pri promjeni bilo kojeg filtera.
+* Dugme "Resetuj filtere" prikazuje se samo kada je barem jedan filter aktivan.
+* Nakon resetovanja prikazuju se sve rezervacije.
+* Ako nema rezultata za odabrane filtere, prikazuje se odgovarajuća poruka.
+
+---
+
+### US-50 – Export rezervacija i historije termina u PDF i CSV
+
+*Kao profesor, želim exportovati listu rezervacija i historiju termina u PDF ili CSV format, kako bih mogao čuvati ili dijeliti podatke izvan aplikacije.*
+
+**Acceptance Criteria:**
+
+* Na stranici liste rezervacija i historije termina dostupna su dva dugmeta — Export CSV i Export PDF.
+* Dugmad su vidljiva samo kada postoje podaci za export.
+* Export uključuje samo trenutno filtrirane podatke, ne cijelu listu.
+* CSV fajl se ispravno otvara u Excelu sa bosanskim karakterima.
+* PDF fajl sadrži naslov, datum generisanja i tabelu sa svim relevantnim kolonama.
 
 ---

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Layout from "../components/Layout";
 import api from "../api/client";
 import { getCurrentRole } from "../auth/routeAccess";
+import { exportRezervacijeCSV, exportRezervacijePDF } from "../utils/exportUtils";
 
 function Rezervacije() {
   const [rezervacije, setRezervacije] = useState([]);
@@ -9,7 +10,26 @@ function Rezervacije() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState({ type: "", text: "" });
   const [aktivniTab, setAktivniTab] = useState("rezervacije");
+  const [filterOd, setFilterOd] = useState("");
+  const [filterDo, setFilterDo] = useState("");
+  const [filterKabinet, setFilterKabinet] = useState("");
   const uloga = getCurrentRole();
+
+  const kabineti = [...new Set(rezervacije.map((r) => r.kabinetNaziv).filter(Boolean))].sort();
+
+  const filtrirane = rezervacije.filter((r) => {
+    const datum = r.datum?.split("T")[0];
+    if (filterOd && datum < filterOd) return false;
+    if (filterDo && datum > filterDo) return false;
+    if (filterKabinet && r.kabinetNaziv !== filterKabinet) return false;
+    return true;
+  });
+
+  function resetujFiltere() {
+    setFilterOd("");
+    setFilterDo("");
+    setFilterKabinet("");
+  }
 
   useEffect(() => {
     loadPodatke();
@@ -117,13 +137,31 @@ function Rezervacije() {
 
   return (
     <Layout>
-      <div className="page-header">
-        <h1>{uloga === "profesor" ? "Lista rezervacija" : "Moje rezervacije"}</h1>
-        <p>
-          {uloga === "profesor"
-            ? "Termini koje ste rezervisali za nastavu."
-            : "Pregled vaših odobrenih rezervacija i poslanih zahtjeva."}
-        </p>
+      <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div>
+          <h1>{uloga === "profesor" ? "Lista rezervacija" : "Moje rezervacije"}</h1>
+          <p>
+            {uloga === "profesor"
+              ? "Termini koje ste rezervisali za nastavu."
+              : "Pregled vaših odobrenih rezervacija i poslanih zahtjeva."}
+          </p>
+        </div>
+        {rezervacije.length > 0 && (
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <button
+              className="button warn"
+              onClick={() => exportRezervacijeCSV(filtrirane, uloga)}
+            >
+              Export CSV
+            </button>
+            <button
+              className="button warn"
+              onClick={() => exportRezervacijePDF(filtrirane, uloga)}
+            >
+              Export PDF
+            </button>
+          </div>
+        )}
       </div>
 
       <div className="card">
@@ -154,6 +192,29 @@ function Rezervacije() {
 
         {aktivniTab === "rezervacije" || uloga !== "student" ? (
           <>
+            <div style={{ display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap", marginBottom: 16 }}>
+              <div className="form-group" style={{ margin: 0 }}>
+                <label style={{ fontSize: 13 }}>Od</label>
+                <input type="date" value={filterOd} onChange={(e) => setFilterOd(e.target.value)} />
+              </div>
+              <div className="form-group" style={{ margin: 0 }}>
+                <label style={{ fontSize: 13 }}>Do</label>
+                <input type="date" value={filterDo} onChange={(e) => setFilterDo(e.target.value)} />
+              </div>
+              <div className="form-group" style={{ margin: 0 }}>
+                <label style={{ fontSize: 13 }}>Kabinet</label>
+                <select value={filterKabinet} onChange={(e) => setFilterKabinet(e.target.value)}>
+                  <option value="">Svi kabineti</option>
+                  {kabineti.map((k) => <option key={k} value={k}>{k}</option>)}
+                </select>
+              </div>
+              {(filterOd || filterDo || filterKabinet) && (
+                <button className="button sekundarno" onClick={resetujFiltere} style={{ marginBottom: 1 }}>
+                  Resetuj filtere
+                </button>
+              )}
+            </div>
+
             <div className="termini-list-header termini-list-row">
               <span>Datum</span>
               <span>Vrijeme</span>
@@ -165,9 +226,9 @@ function Rezervacije() {
 
             {loading ? (
               <div className="users-empty-state">Učitavanje...</div>
-            ) : rezervacije.length > 0 ? (
+            ) : filtrirane.length > 0 ? (
               <div className="users-list">
-                {rezervacije.map((termin) => (
+                {filtrirane.map((termin) => (
                   <div className="termini-list-row users-list-item" key={termin.id}>
                     <span style={{ fontWeight: 700 }}>
                       {new Date(termin.datum).toLocaleDateString("de-DE")}
@@ -195,7 +256,9 @@ function Rezervacije() {
                 ))}
               </div>
             ) : (
-              <div className="users-empty-state">Nema aktivnih rezervacija.</div>
+              <div className="users-empty-state">
+                {rezervacije.length > 0 ? "Nema rezultata za odabrane filtere." : "Nema aktivnih rezervacija."}
+              </div>
             )}
           </>
         ) : (

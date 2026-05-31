@@ -726,10 +726,103 @@
 **Opis:** Kao ovlašteni korisnik, Želim da imam uvid u lokaciju, kakcitet i dostupnu opremu određenog kabineta.
 **Poslovna vrijednost:** Omogućavanje preglednosti i poboljšanje organizovanosti.  
 **Prioritet:** Medium  
-**Pretpostavke:** Korisnik je prijavljen sistem i ima potrebne permisije (student nema uvid u detalje kabineta).  
+**Pretpostavke:** Korisnik je prijavljen u sistem i ima potrebne permisije (student nema uvid u detalje kabineta).  
 **Veze:** US22, US25  
 **Acceptance Criteria:** 1. OOvlašteni korisnik otvara detalje kabineta.
 2. Ima pregled naziva, lokacije, odgovornog profesora i kapaciteta kabineta.
 3.Otvara listu dostupne opreme u odabranom kabinetu..
 **Sprint:** 9  
 **Veza sa Product Backlogom:** 22
+
+---
+
+### USER STORY – Prikaz profila
+**ID storyja:** US46  
+**Naziv storyja:** Prikaz profila
+**Opis:** Kao korisnik, želim pregledati svoje profilne podatke, kako bih imao uvid u informacije povezane sa svojim nalogom.
+**Poslovna vrijednost:** Omogućavanje preglednosti i poboljšanje organizovanosti.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen u sistem.  
+**Veze:** US03  
+**Acceptance Criteria:** 1. Korisnik može otvoriti stranicu profila iz navigacije ili menija naloga.
+2. Prikazuju se osnovni podaci kao što su ime i prezime, email, korisničko ime i uloga.
+3. Prikazuje se status naloga i status email verifikacije.
+4. Korisnik ne može vidjeti tuđe profilne podatke preko ovog prikaza.
+5. Ako podaci nisu dostupni, sistem prikazuje jasnu poruku o grešci.
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 20
+
+---
+
+### USER STORY – Uređivanje podataka na profilu
+**ID storyja:** US47  
+**Naziv storyja:** Uređivanje podataka na profilu
+**Opis:** Kao korisnik, želim izmijeniti svoje profilne podatke, kako bih održavao tačne i ažurne informacije o svom nalogu.
+**Poslovna vrijednost:** Omogućavanje preglednosti i poboljšanje organizovanosti.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen u sistem.  
+**Veze:** US03, US47 
+**Acceptance Criteria:** 1. Korisnik može izmijeniti dozvoljena polja profila.
+2. Sistem validira unesene podatke prije spremanja.
+3. Nakon uspješne izmjene prikazuje se potvrda o ažuriranju.
+4. Ažurirani podaci su odmah vidljivi na profilu.
+5. Ako korisnik promijeni email adresu, nova adresa se označava kao neverifikovana.
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 20
+
+---
+
+### USER STORY – Prikaz nedavnih aktivnosti
+**ID storyja:** US48 
+**Naziv storyja:** Prikaz nedavnih aktivnosti
+**Opis:** Kao korisnik, želim vidjeti svoje nedavne aktivnosti u sistemu, kako bih imao pregled posljednjih radnji vezanih za moj nalog i korištenje aplikacije.
+**Poslovna vrijednost:** Omogućavanje preglednosti i poboljšanje organizovanosti.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen u sistem.  
+**Veze:** US03
+**Acceptance Criteria:** 1. Profil prikazuje listu nedavnih aktivnosti korisnika.
+2. Aktivnosti uključuju naslov, opis i meta informacije o radnji.
+3. Prikazuju se samo aktivnosti relevantne za prijavljenog korisnika.
+4. Ako nema aktivnosti, prikazuje se odgovarajuća prazna poruka.
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 33
+
+---
+
+### USER STORY – Filtriranje rezervacija po datumu i kabinetu
+**ID storyja:** US49 
+**Naziv storyja:** Filtriranje rezervacija po datumu i kabinetu
+**Opis:** Kao profesor, želim filtrirati listu rezervacija po datumu i kabinetu, kako bih lakše pronašao relevantne termine.
+**Poslovna vrijednost:** Omogućavanje preglednosti i poboljšanje organizovanosti.  
+**Prioritet:** Medium  
+**Pretpostavke:** Profesor ima rezervisane termine.  
+**Veze:** US11, US13
+**Acceptance Criteria:** 1. Dostupni su filteri za početni datum (Od), krajnji datum (Do) i kabinet.
+2. Dropdown za kabinet prikazuje samo kabinete koji postoje u učitanim rezervacijama.
+3. Filteri se mogu kombinovati istovremeno.
+4. Tabela se ažurira odmah pri promjeni bilo kojeg filtera.
+5. Dugme "Resetuj filtere" prikazuje se samo kada je barem jedan filter aktivan.
+6. Nakon resetovanja prikazuju se sve rezervacije.
+7. Ako nema rezultata za odabrane filtere, prikazuje se odgovarajuća poruka.
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 31
+
+---
+
+### USER STORY – Export rezervacija i historije termina u PDF i CSV
+**ID storyja:** US50
+**Naziv storyja:** Export rezervacija i historije termina u PDF i CSV
+**Opis:** Kao profesor, želim exportovati listu rezervacija i historiju termina u PDF ili CSV format, kako bih mogao čuvati ili dijeliti podatke izvan aplikacije.
+**Poslovna vrijednost:** Omogućavanje preglednosti i poboljšanje organizovanosti.  
+**Prioritet:** Medium  
+**Pretpostavke:** Profesor ima rezervisane termine.
+**Veze:** US11, US13, US49
+**Acceptance Criteria:** 1. Na stranici liste rezervacija i historije termina dostupna su dva dugmeta — Export CSV i Export PDF.
+2. Dugmad su vidljiva samo kada postoje podaci za export.
+3. Export uključuje samo trenutno filtrirane podatke, ne cijelu listu.
+4. CSV fajl se ispravno otvara u Excelu sa bosanskim karakterima.
+5. PDF fajl sadrži naslov, datum generisanja i tabelu sa svim relevantnim kolonama.
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 31
+
+---

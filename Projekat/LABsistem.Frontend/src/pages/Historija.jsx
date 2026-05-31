@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Layout from "../components/Layout";
 import api from "../api/client";
 import { getCurrentRole } from "../auth/routeAccess";
+import { exportHistorijaCSV, exportHistorijaPDF } from "../utils/exportUtils";
 
 function formatDate(value) {
   if (!value) return "N/A";
@@ -40,6 +41,17 @@ function Historija() {
   const [reportModal, setReportModal] = useState(null);
   const [komentar, setKomentar] = useState("");
   const [saving, setSaving] = useState(false);
+  const [filterOd, setFilterOd] = useState("");
+  const [filterDo, setFilterDo] = useState("");
+  const [filterKabinet, setFilterKabinet] = useState("");
+
+  const kabineti = [...new Set(termini.map((t) => t.kabinetNaziv).filter(Boolean))].sort();
+
+  function resetujFiltere() {
+    setFilterOd("");
+    setFilterDo("");
+    setFilterKabinet("");
+  }
 
   const visibleEquipment = useMemo(() => {
     return selectedEquipment.filter((oprema) => Number(oprema.stanje) === 1);
@@ -128,11 +140,37 @@ function Historija() {
     });
   }, [termini]);
 
+  const filtriraniTermini = sortedTermini.filter((t) => {
+    const datum = t.datum?.split("T")[0];
+    if (filterOd && datum < filterOd) return false;
+    if (filterDo && datum > filterDo) return false;
+    if (filterKabinet && t.kabinetNaziv !== filterKabinet) return false;
+    return true;
+  });
+
   return (
     <Layout>
-      <div className="page-header">
-        <h1>Historija termina</h1>
-        <p>Prikaz zavrsenih termina i prijava kvarova opreme u roku od 24 sata nakon termina.</p>
+      <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <div>
+          <h1>Historija termina</h1>
+          <p>Prikaz zavrsenih termina i prijava kvarova opreme u roku od 24 sata nakon termina.</p>
+        </div>
+        {sortedTermini.length > 0 && (
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <button
+              className="button warn"
+              onClick={() => exportHistorijaCSV(filtriraniTermini)}
+            >
+              Export CSV
+            </button>
+            <button
+              className="button warn"
+              onClick={() => exportHistorijaPDF(filtriraniTermini)}
+            >
+              Export PDF
+            </button>
+          </div>
+        )}
       </div>
 
       {message.text && (
@@ -142,11 +180,36 @@ function Historija() {
       )}
 
       <div className="card">
+        {sortedTermini.length > 0 && (
+          <div style={{ display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap", marginBottom: 16 }}>
+            <div className="form-group" style={{ margin: 0 }}>
+              <label style={{ fontSize: 13 }}>Od</label>
+              <input type="date" value={filterOd} onChange={(e) => setFilterOd(e.target.value)} />
+            </div>
+            <div className="form-group" style={{ margin: 0 }}>
+              <label style={{ fontSize: 13 }}>Do</label>
+              <input type="date" value={filterDo} onChange={(e) => setFilterDo(e.target.value)} />
+            </div>
+            <div className="form-group" style={{ margin: 0 }}>
+              <label style={{ fontSize: 13 }}>Kabinet</label>
+              <select value={filterKabinet} onChange={(e) => setFilterKabinet(e.target.value)}>
+                <option value="">Svi kabineti</option>
+                {kabineti.map((k) => <option key={k} value={k}>{k}</option>)}
+              </select>
+            </div>
+            {(filterOd || filterDo || filterKabinet) && (
+              <button className="button sekundarno" onClick={resetujFiltere} style={{ marginBottom: 1 }}>
+                Resetuj filtere
+              </button>
+            )}
+          </div>
+        )}
+
         {loading ? (
           <div className="users-empty-state">Ucitavanje historije...</div>
-        ) : sortedTermini.length > 0 ? (
+        ) : filtriraniTermini.length > 0 ? (
           <div className="users-list">
-            {sortedTermini.map((termin) => {
+            {filtriraniTermini.map((termin) => {
               const allowed = canReportFault(termin);
               return (
                 <div className="users-list-item termini-list-row" key={termin.id} style={{ cursor: "pointer" }} onClick={() => otvoriTermin(termin)}>
@@ -168,7 +231,9 @@ function Historija() {
             })}
           </div>
         ) : (
-          <div className="users-empty-state">Nema zavrsenih termina za prikaz.</div>
+          <div className="users-empty-state">
+            {sortedTermini.length > 0 ? "Nema rezultata za odabrane filtere." : "Nema zavrsenih termina za prikaz."}
+          </div>
         )}
       </div>
 
