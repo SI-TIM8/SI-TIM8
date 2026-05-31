@@ -24,6 +24,7 @@ namespace LABsistem.Application.Services
         private readonly JwtSettings _jwtSettings;
         private readonly AuthBusinessRules _businessRules;
         private readonly IEmailNotificationService _emailNotificationService;
+        private readonly IObavijestService _obavijestService;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthService> _logger;
 
@@ -63,6 +64,7 @@ namespace LABsistem.Application.Services
             JwtSettings jwtSettings,
             AuthBusinessRules businessRules,
             IEmailNotificationService emailNotificationService,
+            IObavijestService obavijestService,
             IConfiguration configuration,
             ILogger<AuthService> logger)
         {
@@ -71,6 +73,7 @@ namespace LABsistem.Application.Services
             _jwtSettings = jwtSettings;
             _businessRules = businessRules;
             _emailNotificationService = emailNotificationService;
+            _obavijestService = obavijestService;
             _configuration = configuration;
             _logger = logger;
         }
@@ -352,6 +355,8 @@ namespace LABsistem.Application.Services
 
             var normalizedEmail = request.Email.Trim();
             var emailChanged = !string.Equals(korisnik.Email, normalizedEmail, StringComparison.OrdinalIgnoreCase);
+            var previousEmail = korisnik.Email;
+            var previousEmailVerified = korisnik.EmailVerified;
 
             korisnik.ImePrezime = request.ImePrezime.Trim();
             korisnik.Email = normalizedEmail;
@@ -364,6 +369,16 @@ namespace LABsistem.Application.Services
             }
 
             await _dbContext.SaveChangesAsync();
+
+            if (emailChanged)
+            {
+                await SendProfileChangeAlertAsync(
+                    korisnik,
+                    "promijenjena email adresa",
+                    DateTime.UtcNow,
+                    previousEmail,
+                    previousEmailVerified);
+            }
 
             var message = "Profil je uspješno ažuriran.";
             if (emailChanged)
@@ -543,6 +558,13 @@ namespace LABsistem.Application.Services
             korisnik.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
             korisnik.MustChangePassword = false;
             await _dbContext.SaveChangesAsync();
+
+            await SendProfileChangeAlertAsync(
+                korisnik,
+                "promijenjena lozinka",
+                DateTime.UtcNow,
+                korisnik.Email,
+                korisnik.EmailVerified);
 
             return (true, ResetPasswordSuccessMessage);
         }
@@ -903,6 +925,44 @@ namespace LABsistem.Application.Services
             };
 
             return uriBuilder.Uri.ToString();
+        }
+
+        private string? BuildForgotPasswordLink()
+        {
+            var frontendBaseUrl = _configuration["FRONTEND_BASE_URL"] ?? _configuration["FrontendBaseUrl"];
+            if (string.IsNullOrWhiteSpace(frontendBaseUrl) ||
+                !Uri.TryCreate(frontendBaseUrl, UriKind.Absolute, out var baseUri))
+            {
+                return null;
+            }
+
+            return new Uri(baseUri, "forgot-password").ToString();
+        }
+
+        private async Task SendProfileChangeAlertAsync(
+            Korisnik korisnik,
+            string changeSummary,
+            DateTime changedAtUtc,
+            string recipientEmail,
+            bool recipientEmailVerified)
+        {
+            var inAppMessage =
+                $"Sigurnosna obavijest: na vasem nalogu je {changeSummary}. Ako ovo niste vi, resetujte lozinku. ({changedAtUtc:dd.MM.yyyy HH:mm} UTC)";
+
+            await _obavijestService.KreirajAsync(korisnik.ID, inAppMessage);
+
+            if (!recipientEmailVerified)
+            {
+                return;
+            }
+
+            var actionUrl = BuildForgotPasswordLink();
+            await _emailNotificationService.SendProfileChangeAlertEmailAsync(
+                recipientEmail,
+                korisnik.ImePrezime,
+                changeSummary,
+                changedAtUtc,
+                actionUrl);
         }
 
         private static string GenerateSecureToken()

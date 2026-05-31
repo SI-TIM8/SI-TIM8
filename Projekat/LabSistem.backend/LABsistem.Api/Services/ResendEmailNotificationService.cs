@@ -339,6 +339,64 @@ namespace LABsistem.Api.Services
             }
         }
 
+          public async Task<bool> SendProfileChangeAlertEmailAsync(
+            string recipientEmail,
+            string recipientName,
+            string changeSummary,
+            DateTime changedAtUtc,
+            string? actionUrl = null,
+            CancellationToken cancellationToken = default)
+          {
+            if (string.IsNullOrWhiteSpace(recipientEmail))
+            {
+              _logger.LogWarning("Profile change alert email je preskočen jer primalac nema email adresu.");
+              return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(_apiKey) || string.IsNullOrWhiteSpace(_fromEmail))
+            {
+              _logger.LogWarning("Profile change alert email je preskočen jer RESEND_API_KEY ili FROM_EMAIL nisu postavljeni.");
+              return false;
+            }
+
+            var safeChangeSummary = string.IsNullOrWhiteSpace(changeSummary)
+              ? "promjena profila"
+              : changeSummary.Trim();
+
+            try
+            {
+              using var request = new HttpRequestMessage(HttpMethod.Post, ResendEndpoint);
+              request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _apiKey);
+              request.Content = JsonContent.Create(new
+              {
+                from = _fromEmail,
+                to = recipientEmail,
+                subject = "LABsistem - sigurnosna promjena profila",
+                html = BuildProfileChangeAlertHtmlBody(recipientName, safeChangeSummary, changedAtUtc, actionUrl),
+                text = BuildProfileChangeAlertTextBody(recipientName, safeChangeSummary, changedAtUtc, actionUrl)
+              });
+
+              using var response = await _httpClient.SendAsync(request, cancellationToken);
+              if (response.IsSuccessStatusCode)
+              {
+                _logger.LogInformation("Profile change alert email je uspješno poslan korisniku {Email}.", recipientEmail);
+                return true;
+              }
+
+              var responseBody = await response.Content.ReadAsStringAsync(cancellationToken);
+              _logger.LogWarning(
+                "Slanje profile change alert emaila nije uspjelo. Status: {StatusCode}. Odgovor: {ResponseBody}",
+                (int)response.StatusCode,
+                responseBody);
+              return false;
+            }
+            catch (Exception ex)
+            {
+              _logger.LogWarning(ex, "Došlo je do greške pri slanju profile change alert emaila za {Email}.", recipientEmail);
+              return false;
+            }
+          }
+
         private static string BuildSubject(bool odobri)
             => odobri
                 ? "LABsistem - zahtjev za rezervaciju je odobren"
@@ -707,6 +765,115 @@ namespace LABsistem.Api.Services
                         </p>
                       </div>
                       <div style="padding:20px 32px;background:#f8fafc;border-top:1px solid #eaecf0;color:#667085;font-size:13px;line-height:1.7;">
+                        Ova poruka je automatski generisana iz LABsistem aplikacije.
+                      </div>
+                    </div>
+                  </div>
+                </body>
+                </html>
+                """;
+        }
+
+        private static string BuildProfileChangeAlertTextBody(
+            string recipientName,
+            string changeSummary,
+            DateTime changedAtUtc,
+            string? actionUrl)
+        {
+            var lines = new List<string>
+            {
+                $"Poštovani/a {recipientName},",
+                string.Empty,
+                $"Na vašem LABsistem nalogu je evidentirana promjena: {changeSummary}.",
+                $"Vrijeme promjene: {changedAtUtc:dd.MM.yyyy HH:mm} UTC",
+                string.Empty,
+                "Ako ste vi napravili ovu promjenu, slobodno zanemarite ovu poruku.",
+                "Ako niste, odmah resetujte lozinku i kontaktirajte podršku."
+            };
+
+            if (!string.IsNullOrWhiteSpace(actionUrl))
+            {
+                lines.Add($"Link za resetovanje lozinke: {actionUrl}");
+            }
+            else
+            {
+                lines.Add("Resetovanje lozinke možete pokrenuti iz opcije 'Zaboravljena lozinka'.");
+            }
+
+            lines.Add(string.Empty);
+            lines.Add("Srdačan pozdrav,");
+            lines.Add("LABsistem");
+
+            return string.Join(Environment.NewLine, lines);
+        }
+
+        private static string BuildProfileChangeAlertHtmlBody(
+            string recipientName,
+            string changeSummary,
+            DateTime changedAtUtc,
+            string? actionUrl)
+        {
+            var actionBlock = string.IsNullOrWhiteSpace(actionUrl)
+                ? """
+                    <p style=\"margin:24px 0 0;font-size:15px;line-height:1.75;color:#475467;\">
+                      Resetovanje lozinke možete pokrenuti u LABsistem aplikaciji kroz opciju \"Zaboravljena lozinka\".
+                    </p>
+                    """
+                : $"""
+                    <div style=\"margin-top:24px;padding:18px;border-radius:16px;background:#fef3f2;border:1px solid #fda29b;\">
+                      <div style=\"font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#b42318;margin-bottom:10px;\">Sigurnosna akcija</div>
+                      <p style=\"margin:0 0 16px;font-size:15px;line-height:1.7;color:#7a271a;\">
+                        Ako niste vi napravili promjenu, odmah resetujte lozinku.
+                      </p>
+                      <a href=\"{System.Net.WebUtility.HtmlEncode(actionUrl)}\" style=\"display:inline-block;padding:12px 20px;border-radius:999px;background:#b42318;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;\">
+                        Resetuj lozinku
+                      </a>
+                      <p style=\"margin:14px 0 0;font-size:13px;line-height:1.7;color:#b42318;word-break:break-all;\">
+                        {System.Net.WebUtility.HtmlEncode(actionUrl)}
+                      </p>
+                    </div>
+                    """;
+
+            return $"""
+                <!DOCTYPE html>
+                <html lang=\"bs\">
+                <head>
+                  <meta charset=\"utf-8\" />
+                  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+                  <title>LABsistem sigurnosna obavijest</title>
+                </head>
+                <body style=\"margin:0;padding:0;background:#f4f7fb;font-family:Segoe UI,Arial,sans-serif;color:#101828;\">
+                  <div style=\"padding:32px 16px;\">
+                    <div style=\"max-width:640px;margin:0 auto;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(15,23,42,0.12);\">
+                      <div style=\"padding:24px 32px;background:linear-gradient(135deg,#b42318 0%,#7a271a 100%);color:#ffffff;\">
+                        <div style=\"font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.9;\">LABsistem</div>
+                        <div style=\"margin-top:10px;font-size:28px;font-weight:700;line-height:1.25;\">Sigurnosna obavijest</div>
+                        <div style=\"margin-top:8px;font-size:15px;line-height:1.6;opacity:0.92;\">Detektovana je promjena osjetljivih profilnih podataka.</div>
+                      </div>
+                      <div style=\"padding:32px;\">
+                        <div style=\"display:inline-block;padding:8px 14px;border-radius:999px;background:#fef3f2;color:#b42318;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;\">
+                          Profile change alert
+                        </div>
+                        <p style=\"margin:24px 0 12px;font-size:18px;line-height:1.6;color:#101828;\">
+                          Poštovani/a <strong>{System.Net.WebUtility.HtmlEncode(recipientName)}</strong>,
+                        </p>
+                        <p style=\"margin:0 0 12px;font-size:16px;line-height:1.75;color:#344054;\">
+                          Na vašem LABsistem nalogu je evidentirana promjena: <strong>{System.Net.WebUtility.HtmlEncode(changeSummary)}</strong>.
+                        </p>
+                        <p style=\"margin:0 0 24px;font-size:15px;line-height:1.7;color:#475467;\">
+                          Vrijeme promjene: <strong>{changedAtUtc:dd.MM.yyyy HH:mm} UTC</strong>.
+                        </p>
+
+                        <div style=\"padding:18px;border-radius:16px;background:#f8fafc;border:1px solid #e4e7ec;\">
+                          <div style=\"font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#475467;margin-bottom:8px;\">Napomena</div>
+                          <p style=\"margin:0;font-size:15px;line-height:1.7;color:#344054;\">
+                            Ako ste vi napravili ovu promjenu, slobodno zanemarite ovu poruku. Ako niste, preporučujemo hitno resetovanje lozinke.
+                          </p>
+                        </div>
+
+                        {actionBlock}
+                      </div>
+                      <div style=\"padding:20px 32px;background:#f8fafc;border-top:1px solid #eaecf0;color:#667085;font-size:13px;line-height:1.7;\">
                         Ova poruka je automatski generisana iz LABsistem aplikacije.
                       </div>
                     </div>
