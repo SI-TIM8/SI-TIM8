@@ -9,6 +9,7 @@
 | 3 | Prikaz i uređivanje profila korisnika | Korisnik na stranici "Moj profil" vidi osnovne podatke, status email verifikacije i može ažurirati ime i prezime, email adresu i korisničko ime. | US51, US52 | Emina Hamamdžić | Završeno | Prikaz uloge i statusa naloga je read-only |
 | 4 | Promjena lozinke iz profila | Korisnik može iz profila otvoriti formu za promjenu lozinke i sačuvati novu lozinku uz odgovarajuće validacije. | US04 | Emina Hamamdžić | Završeno | Odvojeno od flowa prve prijave |
 | 5 | Prikaz nedavnih aktivnosti | Na profilu je prikazana lista nedavnih aktivnosti relevantnih za prijavljenog korisnika. | US53 | Aner Atović | Završeno | Prikazuju se naslov, opis i meta informacije o aktivnosti |
+| 6 | Sigurnosni email alert za promjene profila | Sistem šalje sigurnosni email alert kada korisniku bude promijenjen email ili lozinka. | US54 | Refik Mujčinović | Završeno | Email se šalje samo verifikovanim korisnicima |
 
 ## **Cilj sprinta:** Potpuniji korisnički profil i pouzdanija email komunikacija
 
@@ -20,6 +21,7 @@
 | US52 | Uređivanje podataka na profilu | Korisnik ažurira svoje osnovne podatke na profilu uz validaciju unosa i trenutno osvježavanje prikaza. | Feature | 2 | Medium | Završeno |
 | US04 | Promjena lozinke | Korisnik mijenja svoju lozinku iz profila kako bi dodatno osigurao nalog. | Feature | 3 | Medium | Završeno |
 | US53 | Prikaz nedavnih aktivnosti | Korisnik vidi listu svojih nedavnih aktivnosti u sistemu radi boljeg pregleda i transparentnosti. | Feature | 2 | Medium | Završeno |
+| US54 | Sigurnosni alert za promjene profila | Korisnik dobija sigurnosnu email obavijest kada dođe do promjene osjetljivih profilnih podataka. | Feature | 2 | Medium | Završeno |
 
 # Detaljni User Stories (US)
 
@@ -104,5 +106,18 @@
 * Aktivnosti uključuju naslov, opis i meta informacije o radnji.
 * Prikazuju se samo aktivnosti relevantne za prijavljenog korisnika.
 * Ako nema aktivnosti, prikazuje se odgovarajuća prazna poruka.
+
+---
+
+### US54 – Sigurnosni alert za promjene profila
+
+*Kao korisnik, želim dobiti sigurnosni email kada dođe do promjene osjetljivih podataka na mom profilu, kako bih mogao reagovati ako promjena nije bila moja.*
+
+**Acceptance Criteria:**
+
+* Sistem šalje sigurnosni email kada korisniku bude promijenjen email ili lozinka.
+* Obavijest sadrži tip promjene i vrijeme promjene.
+* Email se šalje samo korisnicima sa verifikovanom email adresom.
+* Ako korisnik nije napravio promjenu, obavijest sadrži jasnu preporuku za resetovanje lozinke.
 
 ---
