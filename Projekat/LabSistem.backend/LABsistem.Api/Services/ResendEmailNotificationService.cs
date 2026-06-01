@@ -815,23 +815,23 @@ namespace LABsistem.Api.Services
         {
             var actionBlock = string.IsNullOrWhiteSpace(actionUrl)
                 ? """
-                    <div style=\"margin-top:24px;padding:16px;border-radius:14px;background:#f8fafc;border:1px solid #e2e8f0;\">
-                      <div style=\"font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#64748b;margin-bottom:8px;\">Sigurnosna akcija</div>
-                      <p style=\"margin:0;font-size:15px;line-height:1.7;color:#334155;\">
+                    <div style="margin-top:24px;padding:16px;border-radius:14px;background:#f8fafc;border:1px solid #e2e8f0;">
+                      <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#64748b;margin-bottom:8px;">Sigurnosna akcija</div>
+                      <p style="margin:0;font-size:15px;line-height:1.7;color:#334155;">
                         Resetovanje lozinke možete pokrenuti u LABsistem aplikaciji kroz opciju \"Zaboravljena lozinka\".
                       </p>
                     </div>
                     """
                 : $"""
-                    <div style=\"margin-top:24px;padding:20px;border-radius:16px;background:#fff5f5;border:1px solid #fecaca;text-align:center;\">
-                      <div style=\"font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#b91c1c;margin-bottom:10px;\">Sigurnosna akcija</div>
-                      <p style=\"margin:0 0 16px;font-size:15px;line-height:1.7;color:#7f1d1d;\">
+                    <div style="margin-top:24px;padding:20px;border-radius:16px;background:#fff5f5;border:1px solid #fecaca;text-align:center;">
+                      <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#b91c1c;margin-bottom:10px;">Sigurnosna akcija</div>
+                      <p style="margin:0 0 16px;font-size:15px;line-height:1.7;color:#7f1d1d;">
                         Ako niste vi napravili promjenu, odmah resetujte lozinku.
                       </p>
-                      <a href=\"{System.Net.WebUtility.HtmlEncode(actionUrl)}\" style=\"display:inline-block;padding:12px 22px;border-radius:999px;background:#0f766e;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;\">
+                      <a href="{System.Net.WebUtility.HtmlEncode(actionUrl)}" style="display:inline-block;padding:12px 22px;border-radius:999px;background:#0f766e;color:#ffffff;text-decoration:none;font-size:15px;font-weight:700;">
                         Osiguraj nalog
                       </a>
-                      <p style=\"margin:14px 0 0;font-size:12px;line-height:1.7;color:#b91c1c;word-break:break-all;\">
+                      <p style="margin:14px 0 0;font-size:12px;line-height:1.7;color:#b91c1c;word-break:break-all;">
                         {System.Net.WebUtility.HtmlEncode(actionUrl)}
                       </p>
                     </div>
@@ -839,45 +839,45 @@ namespace LABsistem.Api.Services
 
             return $"""
                 <!DOCTYPE html>
-                <html lang=\"bs\">
+                <html lang="bs">
                 <head>
-                  <meta charset=\"utf-8\" />
-                  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+                  <meta charset="utf-8" />
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                   <title>LABsistem sigurnosna obavijest</title>
                 </head>
-                <body style=\"margin:0;padding:0;background:#f1f5f9;font-family:Segoe UI,Arial,sans-serif;color:#0f172a;\">
-                  <div style=\"padding:32px 16px;\">
-                    <div style=\"max-width:640px;margin:0 auto;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(15,23,42,0.12);\">
-                      <div style=\"padding:26px 32px;background:linear-gradient(135deg,#0f766e 0%,#0e7490 100%);color:#ffffff;\">
-                        <div style=\"font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.9;\">LABsistem</div>
-                        <div style=\"margin-top:10px;font-size:28px;font-weight:700;line-height:1.25;\">Sigurnosna promjena profila</div>
-                        <div style=\"margin-top:8px;font-size:15px;line-height:1.6;opacity:0.92;\">Detektovana je promjena osjetljivih profilnih podataka.</div>
+                <body style="margin:0;padding:0;background:#f1f5f9;font-family:Segoe UI,Arial,sans-serif;color:#0f172a;">
+                  <div style="padding:32px 16px;">
+                    <div style="max-width:640px;margin:0 auto;background:#ffffff;border-radius:20px;overflow:hidden;box-shadow:0 18px 44px rgba(15,23,42,0.12);">
+                      <div style="padding:26px 32px;background:linear-gradient(135deg,#0f766e 0%,#0e7490 100%);color:#ffffff;">
+                        <div style="font-size:13px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.9;">LABsistem</div>
+                        <div style="margin-top:10px;font-size:28px;font-weight:700;line-height:1.25;">Sigurnosna promjena profila</div>
+                        <div style="margin-top:8px;font-size:15px;line-height:1.6;opacity:0.92;">Detektovana je promjena osjetljivih profilnih podataka.</div>
                       </div>
-                      <div style=\"padding:32px;\">
-                        <div style=\"display:inline-block;padding:8px 14px;border-radius:999px;background:#e0f2f1;color:#0f766e;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;\">Sigurnosna obavijest</div>
-                        <p style=\"margin:24px 0 12px;font-size:18px;line-height:1.6;color:#101828;\">
+                      <div style="padding:32px;">
+                        <div style="display:inline-block;padding:8px 14px;border-radius:999px;background:#e0f2f1;color:#0f766e;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;">Sigurnosna obavijest</div>
+                        <p style="margin:24px 0 12px;font-size:18px;line-height:1.6;color:#101828;">
                           Poštovani/a <strong>{System.Net.WebUtility.HtmlEncode(recipientName)}</strong>,
                         </p>
-                        <p style=\"margin:0 0 12px;font-size:16px;line-height:1.75;color:#344054;\">
+                        <p style="margin:0 0 12px;font-size:16px;line-height:1.75;color:#344054;">
                           Na vašem LABsistem nalogu je evidentirana promjena: <strong>{System.Net.WebUtility.HtmlEncode(changeSummary)}</strong>.
                         </p>
-                        <div style=\"margin:20px 0 24px;padding:18px;border-radius:16px;background:#f8fafc;border:1px solid #e2e8f0;\">
-                          <div style=\"font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#64748b;margin-bottom:12px;\">Detalji promjene</div>
-                          <table role=\"presentation\" style=\"width:100%;border-collapse:collapse;\">
+                        <div style="margin:20px 0 24px;padding:18px;border-radius:16px;background:#f8fafc;border:1px solid #e2e8f0;">
+                          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#64748b;margin-bottom:12px;">Detalji promjene</div>
+                          <table role="presentation" style="width:100%;border-collapse:collapse;">
                             <tr>
-                              <td style=\"padding:6px 0;font-size:14px;color:#64748b;\">Tip promjene</td>
-                              <td style=\"padding:6px 0;font-size:14px;font-weight:600;color:#0f172a;text-align:right;\">{System.Net.WebUtility.HtmlEncode(changeSummary)}</td>
+                              <td style="padding:6px 0;font-size:14px;color:#64748b;">Tip promjene</td>
+                              <td style="padding:6px 0;font-size:14px;font-weight:600;color:#0f172a;text-align:right;">{System.Net.WebUtility.HtmlEncode(changeSummary)}</td>
                             </tr>
                             <tr>
-                              <td style=\"padding:6px 0;font-size:14px;color:#64748b;\">Vrijeme</td>
-                              <td style=\"padding:6px 0;font-size:14px;font-weight:600;color:#0f172a;text-align:right;\">{changedAtUtc:dd.MM.yyyy HH:mm} UTC</td>
+                              <td style="padding:6px 0;font-size:14px;color:#64748b;">Vrijeme</td>
+                              <td style="padding:6px 0;font-size:14px;font-weight:600;color:#0f172a;text-align:right;">{changedAtUtc:dd.MM.yyyy HH:mm} UTC</td>
                             </tr>
                           </table>
                         </div>
 
-                        <div style=\"padding:18px;border-radius:16px;background:#fff7ed;border:1px solid #fed7aa;\">
-                          <div style=\"font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9a3412;margin-bottom:8px;\">Napomena</div>
-                          <p style=\"margin:0;font-size:15px;line-height:1.7;color:#7c2d12;\">
+                        <div style="padding:18px;border-radius:16px;background:#fff7ed;border:1px solid #fed7aa;">
+                          <div style="font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9a3412;margin-bottom:8px;">Napomena</div>
+                          <p style="margin:0;font-size:15px;line-height:1.7;color:#7c2d12;">
                             Ako ste vi napravili ovu promjenu, slobodno zanemarite ovu poruku. Ako niste, preporučujemo hitno resetovanje lozinke.
                           </p>
                         </div>
