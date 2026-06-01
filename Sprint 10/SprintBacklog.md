@@ -9,7 +9,8 @@
 | 3 | Prikaz i uređivanje profila korisnika | Korisnik na stranici "Moj profil" vidi osnovne podatke, status email verifikacije i može ažurirati ime i prezime, email adresu i korisničko ime. | US51, US52 | Emina Hamamdžić | Završeno | Prikaz uloge i statusa naloga je read-only |
 | 4 | Promjena lozinke iz profila | Korisnik može iz profila otvoriti formu za promjenu lozinke i sačuvati novu lozinku uz odgovarajuće validacije. | US04 | Emina Hamamdžić | Završeno | Odvojeno od flowa prve prijave |
 | 5 | Prikaz nedavnih aktivnosti | Na profilu je prikazana lista nedavnih aktivnosti relevantnih za prijavljenog korisnika. | US53 | Aner Atović | Završeno | Prikazuju se naslov, opis i meta informacije o aktivnosti |
-| 6 | Filtriranje rezervacija po datumu i kabinetu | Omogućavanje profesoru lakši pregled rezervisanih termina i njihov eksport | US49, US50 | Alma Jusufbegović | Završeno | Fitritanje po datumu i kabinetu, eksport kao csv ili pdf file |
+| 6 | Sigurnosni email alert za promjene profila | Sistem šalje sigurnosni email alert kada korisniku bude promijenjen email ili lozinka. | US54 | Refik Mujčinović | Završeno | Email se šalje samo verifikovanim korisnicima |
+| 7 | Filtriranje rezervacija po datumu i kabinetu | Omogućavanje profesoru lakši pregled rezervisanih termina i njihov eksport | US49, US50 | Alma Jusufbegović | Završeno | Fitritanje po datumu i kabinetu, eksport kao csv ili pdf file |
 
 ## **Cilj sprinta:** Potpuniji korisnički profil, pouzdanija email komunikacija, popunjavanje detalja
 
@@ -21,8 +22,7 @@
 | US47 | Uređivanje podataka na profilu | Korisnik ažurira svoje osnovne podatke na profilu uz validaciju unosa i trenutno osvježavanje prikaza. | Feature | 2 | Medium | Završeno |
 | US04 | Promjena lozinke | Korisnik mijenja svoju lozinku iz profila kako bi dodatno osigurao nalog. | Feature | 3 | Medium | Završeno |
 | US48 | Prikaz nedavnih aktivnosti | Korisnik vidi listu svojih nedavnih aktivnosti u sistemu radi boljeg pregleda i transparentnosti. | Feature | 2 | Medium | Završeno |
-| US49 | Filtriranje rezervacija po datumu i kabinetu | Filtriranje rezervacija po datumu i kabinetu | Feature | 2 | Medium | Završeno |
-| US50 | Export rezervacija i historije termina u PDF i CSV | Profesor može da eksportuje listu historije rezervacija i otvorenih rezervacija u csv ili pdf file | Feature | 2 | Medium | Završeno |
+| US51 | Sigurnosni alert za promjene profila | Korisnik dobija sigurnosnu email obavijest kada dođe do promjene osjetljivih profilnih podataka. | Feature | 2 | Medium | Završeno |
 
 # Detaljni User Stories (US)
 
@@ -110,6 +110,18 @@
 
 ---
 
+### US51 – Sigurnosni alert za promjene profila
+
+*Kao korisnik, želim dobiti sigurnosni email kada dođe do promjene osjetljivih podataka na mom profilu, kako bih mogao reagovati ako promjena nije bila moja.*
+
+**Acceptance Criteria:**
+
+* Sistem šalje sigurnosni email kada korisniku bude promijenjen email ili lozinka.
+* Obavijest sadrži tip promjene i vrijeme promjene.
+* Email se šalje samo korisnicima sa verifikovanom email adresom.
+* Ako korisnik nije napravio promjenu, obavijest sadrži jasnu preporuku za resetovanje lozinke.
+
+---
 ### US-49 – Filtriranje rezervacija po datumu i kabinetu
 
 *Kao profesor, želim filtrirati listu rezervacija po datumu i kabinetu, kako bih lakše pronašao relevantne termine.*
