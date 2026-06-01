@@ -826,3 +826,52 @@
 **Veza sa Product Backlogom:** 31
 
 ---
+
+### USER STORY – Sigurnosni alert za promjene profila
+**ID storyja:** US51
+**Naziv storyja:** Sigurnosni alert za promjene profila
+**Opis:** Kao korisnik, želim dobiti sigurnosni email kada dođe do promjene osjetljivih podataka na mom profilu, kako bih mogao reagovati ako promjena nije bila moja.
+**Poslovna vrijednost:** Osiguravanje transparentne komunikacije između korisnika i sistema.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen u sistem.
+**Veze:** US03, US04, US05
+**Acceptance Criteria:** 1. Sistem šalje sigurnosni email kada korisniku bude promijenjen email ili lozinka.
+2. Obavijest sadrži tip promjene i vrijeme promjene.
+3. Email se šalje samo korisnicima sa verifikovanom email adresom.
+4. Ako korisnik nije napravio promjenu, obavijest sadrži jasnu preporuku za resetovanje lozinke.
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 41
+
+---
+
+### USER STORY – Dark/Light mode
+**ID storyja:** US52
+**Naziv storyja:** Dark/Light mode
+**Opis:** Kao korisnik, želim moći promijeniti izgled UI-a, kako bi si popravio vlastito korisničko iskustvo.
+**Poslovna vrijednost:** Osiguravanje boljeg korisničkog iskustva.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen u sistem.
+**Veze:** US03
+**Acceptance Criteria:** 1. Korisnik je prijavljen u sistem
+2. Ikona za mijenjanje mode-a je na vidljivom lako-uočljivoj poziciji.
+3. Korisnik odabere željeni mod koji sistem pamti bez potrebe za novim podešavanjem.
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 21
+
+---
+
+### USER STORY – Prsten zdravlja opreme
+**ID storyja:** US53
+**Naziv storyja:** Prsten zdravlja opreme
+**Opis:** Kao tehničar/admin/profesor, želim imati uvid u količinu ispravne/neispravne opreme, kako bih imao bolji uvid u rad sistema.
+**Poslovna vrijednost:** Poboljšanje preglednosti.  
+**Prioritet:** Medium  
+**Pretpostavke:** Korisnik je prijavljen u sistem.
+**Veze:** US08, US09
+**Acceptance Criteria:** 1. Korisnik je prijavljen u sistem.
+2. Na dashboard-u ima vizualni prikaz i procenat ispravne opreme
+3. Sve je color-coded u odnosu na status opreme.
+**Sprint:** 10  
+**Veza sa Product Backlogom:** 43 
+
+---
