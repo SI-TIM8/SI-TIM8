@@ -58,6 +58,7 @@ public class TestEmailNotificationService : IEmailNotificationService
     private readonly List<EquipmentFaultEmailRecord> _equipmentFaultEmails = [];
     private readonly List<EmailVerificationEmailRecord> _emailVerificationEmails = [];
     private readonly List<ReservationReminderEmailRecord> _reservationReminderEmails = [];
+    private readonly List<ProfileChangeAlertEmailRecord> _profileChangeAlertEmails = [];
 
     public IReadOnlyList<PasswordResetEmailRecord> PasswordResetEmails
     {
@@ -114,6 +115,17 @@ public class TestEmailNotificationService : IEmailNotificationService
         }
     }
 
+    public IReadOnlyList<ProfileChangeAlertEmailRecord> ProfileChangeAlertEmails
+    {
+        get
+        {
+            lock (_syncRoot)
+            {
+                return _profileChangeAlertEmails.ToList();
+            }
+        }
+    }
+
     public void Clear()
     {
         lock (_syncRoot)
@@ -123,6 +135,7 @@ public class TestEmailNotificationService : IEmailNotificationService
             _equipmentFaultEmails.Clear();
             _emailVerificationEmails.Clear();
             _reservationReminderEmails.Clear();
+            _profileChangeAlertEmails.Clear();
         }
     }
 
@@ -238,6 +251,27 @@ public class TestEmailNotificationService : IEmailNotificationService
 
         return Task.FromResult(true);
     }
+
+    public Task<bool> SendProfileChangeAlertEmailAsync(
+        string recipientEmail,
+        string recipientName,
+        string changeSummary,
+        DateTime changedAtUtc,
+        string? actionUrl = null,
+        CancellationToken cancellationToken = default)
+    {
+        lock (_syncRoot)
+        {
+            _profileChangeAlertEmails.Add(new ProfileChangeAlertEmailRecord(
+                recipientEmail,
+                recipientName,
+                changeSummary,
+                changedAtUtc,
+                actionUrl));
+        }
+
+        return Task.FromResult(true);
+    }
 }
 
 public record PasswordResetEmailRecord(
@@ -278,6 +312,13 @@ public record ReservationReminderEmailRecord(
     TimeSpan VrijemeKraja,
     string KabinetNaziv,
     string ReminderLeadTimeText);
+
+public record ProfileChangeAlertEmailRecord(
+    string RecipientEmail,
+    string RecipientName,
+    string ChangeSummary,
+    DateTime ChangedAtUtc,
+    string? ActionUrl);
 
 public record MessageResponseDto(string Message);
 public record VerifyResetTokenResponseDto(bool Valid, string Message);

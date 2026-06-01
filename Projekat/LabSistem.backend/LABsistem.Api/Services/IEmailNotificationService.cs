@@ -45,5 +45,13 @@ namespace LABsistem.Api.Services
             string kabinetNaziv,
             string reminderLeadTimeText,
             CancellationToken cancellationToken = default);
+
+        Task<bool> SendProfileChangeAlertEmailAsync(
+            string recipientEmail,
+            string recipientName,
+            string changeSummary,
+            DateTime changedAtUtc,
+            string? actionUrl = null,
+            CancellationToken cancellationToken = default);
     }
 }

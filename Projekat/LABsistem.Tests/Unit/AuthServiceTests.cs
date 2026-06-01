@@ -17,6 +17,7 @@ public class AuthServiceTests
     private readonly IFixture _fixture;
     private readonly Mock<IJwtService> _jwtServiceMock;
     private readonly Mock<IEmailNotificationService> _emailNotificationServiceMock;
+    private readonly Mock<IObavijestService> _obavijestServiceMock;
     private readonly Mock<ILogger<AuthService>> _loggerMock;
     private readonly JwtSettings _jwtSettings;
     private readonly IConfiguration _configuration;
@@ -29,6 +30,7 @@ public class AuthServiceTests
 
         _jwtServiceMock = new Mock<IJwtService>(MockBehavior.Strict);
         _emailNotificationServiceMock = new Mock<IEmailNotificationService>();
+        _obavijestServiceMock = new Mock<IObavijestService>();
         _loggerMock = new Mock<ILogger<AuthService>>();
         _jwtSettings = new JwtSettings
         {
@@ -64,6 +66,21 @@ public class AuthServiceTests
                 It.IsAny<string?>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
+        _emailNotificationServiceMock
+            .Setup(x => x.SendProfileChangeAlertEmailAsync(
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<DateTime>(),
+                It.IsAny<string?>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+        _obavijestServiceMock
+            .Setup(x => x.KreirajAsync(
+                It.IsAny<int>(),
+                It.IsAny<string>(),
+                It.IsAny<int?>()))
+            .Returns(Task.CompletedTask);
         _emailNotificationServiceMock
             .Setup(x => x.SendEquipmentFaultEmailAsync(
                 It.IsAny<string>(),
@@ -102,6 +119,7 @@ public class AuthServiceTests
             _jwtSettings,
             businessRules,
             _emailNotificationServiceMock.Object,
+            _obavijestServiceMock.Object,
             _configuration,
             _loggerMock.Object);
     }
