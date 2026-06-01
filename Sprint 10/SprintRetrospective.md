@@ -1,13 +1,15 @@
-###  Sprint Retrospective Summary - Sprint 9
+### Sprint Retrospective Summary - Sprint 10
 
 #### Šta je išlo dobro
-Dogovor o dodavanju dodatnih funkcionalnosti je protekao zadovoljavajuće. Tim je imao kvalitetne ideje za unaprijeđenje sistema.
+Sve planirane funkcionalnosti iz sprint backloga uspješno su implementirane i završene u predviđenom roku.
+Uspješno su realizovane dodatne funkcionalnosti za poboljšanje korisničkog iskustva, uključujući Dark/Light mode i vizualizaciju stanja opreme. Saradnja među članovima tima bila je dobra, a integracija funkcionalnosti nije izazvala značajnije konflikte.
 
 #### Šta nije išlo dobro
-Radi problema sa domenom, tim je morao preći na drugu da bi nastavio sa kontinuiranim deployment-om.
+Pojedine funkcionalnosti zavisile su od drugih modula, što je povremeno usporavalo razvoj i integraciju.
+Određeni UI elementi zahtijevali su više iteracija kako bi bili usklađeni sa ostatkom sistema.
 
 #### Šta treba promijeniti
-Nakon upozorenja PO, tim je se usaglasio da dodajemo više funkcionalnosti da bismo poboljšali cjelokupno iskustvo korištenja i unaprijedili sistem.
+Standardizovati pristup dizajnu korisničkog interfejsa radi lakšeg održavanja i razvoja novih funkcionalnosti.
 
 #### Koje konkretne akcije tim uvodi u narednom sprintu
-Tim će voditi više računa na korisničko iskustvo i sve dokumentovati radi preglednosti.
+Uspostaviti standarde za UI komponente kako bi buduće funkcionalnosti imale konzistentan izgled i ponašanje.

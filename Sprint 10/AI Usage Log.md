@@ -1,319 +1,319 @@
-# AI Usage Log – Sprint 9
+# AI Usage Log – Sprint 10
 
 ## Unos #1
 
-| Polje                                      | Detalji                                                                                                               |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- |
-| Datum                                      | 24.04.2026                                                                                                            |
-| Alat koji je korišten                      | Lovable AI                                                                                                            |
-| Svrha korištenja                           | Pomoć pri implementaciji login UI-a i validacije forme                                                                |
-| Kratak opis zadatka ili upita              | Izrada login forme sa validacijom unosa (email i password).                                                           |
-| Šta je AI predložio ili generisao          | AI je predložio strukturu login komponente, validaciju forme (required polja, email format) i prikaz poruka o grešci. |
-| Šta je tim prihvatio                       | Većinu validacione logike i osnovnu strukturu forme.                                                                  |
-| Šta je tim izmijenio                       | Izgled forme i stilove kako bi se uklopili u dizajn aplikacije.                                                       |
-| Šta je tim odbacio                         | Automatsko generisane stilove koji nisu odgovarali dizajnu projekta.                                                  |
-| Rizici, problemi ili greške koje su uočene | Potreba za dodatnom provjerom validacije kako bi se izbjegle sigurnosne greške.                                       |
-| Ko je koristio alat                        | Aner Atović                                                                                                           |
+| Polje | Detalji |
+|---|---|
+| Datum | 24.04.2026 |
+| Alat koji je korišten | Lovable AI |
+| Svrha korištenja | Pomoć pri implementaciji login UI-a i validacije forme |
+| Kratak opis zadatka ili upita | Izrada login forme sa validacijom unosa (email i password). |
+| Šta je AI predložio ili generisao | AI je predložio strukturu login komponente, validaciju forme (required polja, email format) i prikaz poruka o grešci. |
+| Šta je tim prihvatio | Većinu validacione logike i osnovnu strukturu forme. |
+| Šta je tim izmijenio | Izgled forme i stilove kako bi se uklopili u dizajn aplikacije. |
+| Šta je tim odbacio | Automatsko generisane stilove koji nisu odgovarali dizajnu projekta. |
+| Rizici, problemi ili greške koje su uočene | Potreba za dodatnom provjerom validacije kako bi se izbjegle sigurnosne greške. |
+| Ko je koristio alat | Aner Atović ž|
 
 ## Unos #2
 
-| Polje                                      | Detalji                                                                                   |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| Datum                                      | 25.04.2026                                                                                |
-| Alat koji je korišten                      | Github Copilot                                                                            |
-| Svrha korištenja                           | Pomoć pri implementaciji JWT autentifikacije                                              |
-| Kratak opis zadatka ili upita              | Generisanje i verifikacija JWT tokena na backendu.                                        |
-| Šta je AI predložio ili generisao          | AI je predložio primjer koda za generisanje JWT tokena i middleware za validaciju tokena. |
-| Šta je tim prihvatio                       | Osnovnu logiku za generisanje i verifikaciju tokena.                                      |
-| Šta je tim izmijenio                       | Podešavanja trajanja tokena i sadržaj JWT claims-a.                                       |
-| Šta je tim odbacio                         | Predložene default tajne ključeve (zamijenjeni sigurnijim vrijednostima).                 |
-| Rizici, problemi ili greške koje su uočene | Rizik korištenja nesigurnih ključeva ako se preuzmu direktno iz AI primjera.              |
-| Ko je koristio alat                        | Haris Sadiković                                                                           |
+| Polje | Detalji |
+|---|---|
+| Datum | 25.04.2026 |
+| Alat koji je korišten | Github Copilot |
+| Svrha korištenja | Pomoć pri implementaciji JWT autentifikacije |
+| Kratak opis zadatka ili upita | Generisanje i verifikacija JWT tokena na backendu. |
+| Šta je AI predložio ili generisao | AI je predložio primjer koda za generisanje JWT tokena i middleware za validaciju tokena. |
+| Šta je tim prihvatio | Osnovnu logiku za generisanje i verifikaciju tokena. |
+| Šta je tim izmijenio | Podešavanja trajanja tokena i sadržaj JWT claims-a. |
+| Šta je tim odbacio | Predložene default tajne ključeve (zamijenjeni sigurnijim vrijednostima). |
+| Rizici, problemi ili greške koje su uočene | Rizik korištenja nesigurnih ključeva ako se preuzmu direktno iz AI primjera. |
+| Ko je koristio alat | Haris Sadiković |
 
 ## Unos #3
 
-| Polje                                      | Detalji                                                              |
-| ------------------------------------------ | -------------------------------------------------------------------- |
-| Datum                                      | 25.04.2026                                                           |
-| Alat koji je korišten                      | Claude Sonnet                                                        |
-| Svrha korištenja                           | Implementacija RBAC logike i zaštite ruta                            |
-| Kratak opis zadatka ili upita              | Definisanje korisničkih uloga i zaštita ruta na osnovu uloge.        |
-| Šta je AI predložio ili generisao          | AI je predložio primjer middleware-a za provjeru korisničkih uloga.  |
-| Šta je tim prihvatio                       | Logiku provjere role prije pristupa određenim rutama.                |
-| Šta je tim izmijenio                       | Nazive uloga i strukturu permisija prema potrebama sistema.          |
-| Šta je tim odbacio                         | Previše generičku strukturu permisija.                               |
+| Polje | Detalji |
+|---|---|
+| Datum | 25.04.2026 |
+| Alat koji je korišten | Claude Sonnet |
+| Svrha korištenja | Implementacija RBAC logike i zaštite ruta |
+| Kratak opis zadatka ili upita | Definisanje korisničkih uloga i zaštita ruta na osnovu uloge. |
+| Šta je AI predložio ili generisao | AI je predložio primjer middleware-a za provjeru korisničkih uloga. |
+| Šta je tim prihvatio | Logiku provjere role prije pristupa određenim rutama. |
+| Šta je tim izmijenio | Nazive uloga i strukturu permisija prema potrebama sistema. |
+| Šta je tim odbacio | Previše generičku strukturu permisija. |
 | Rizici, problemi ili greške koje su uočene | Mogućnost pogrešne konfiguracije uloga ako se ne testira svaka ruta. |
-| Ko je koristio alat                        | Emina Hamamdžić                                                      |
+| Ko je koristio alat | Emina Hamamdžić |
 
 ## Unos #4
 
-| Polje                                      | Detalji                                                                   |
-| ------------------------------------------ | ------------------------------------------------------------------------- |
-| Datum                                      | 25.04.2026                                                                |
-| Alat koji je korišten                      | Github Copilot                                                            |
-| Svrha korištenja                           | Implementacija logout funkcionalnosti                                     |
-| Kratak opis zadatka ili upita              | Sigurno uklanjanje tokena i redirect korisnika na login stranicu.         |
-| Šta je AI predložio ili generisao          | AI je predložio funkciju za brisanje tokena iz localStorage-a i redirect. |
-| Šta je tim prihvatio                       | Logiku za uklanjanje tokena i redirect.                                   |
-| Šta je tim izmijenio                       | Dodali dodatnu provjeru stanja autentifikacije.                           |
-| Šta je tim odbacio                         | Automatsko osvježavanje stranice nakon logout-a.                          |
-| Rizici, problemi ili greške koje su uočene | Rizik da token ostane u memoriji ako logout nije pravilno implementiran.  |
-| Ko je koristio alat                        | Hamza Hadžić                                                              |
+| Polje | Detalji |
+|---|---|
+| Datum | 25.04.2026 |
+| Alat koji je korišten | Github Copilot |
+| Svrha korištenja | Implementacija logout funkcionalnosti |
+| Kratak opis zadatka ili upita | Sigurno uklanjanje tokena i redirect korisnika na login stranicu. |
+| Šta je AI predložio ili generisao | AI je predložio funkciju za brisanje tokena iz localStorage-a i redirect. |
+| Šta je tim prihvatio | Logiku za uklanjanje tokena i redirect. |
+| Šta je tim izmijenio | Dodali dodatnu provjeru stanja autentifikacije. |
+| Šta je tim odbacio | Automatsko osvježavanje stranice nakon logout-a. |
+| Rizici, problemi ili greške koje su uočene | Rizik da token ostane u memoriji ako logout nije pravilno implementiran. |
+| Ko je koristio alat | Hamza Hadžić |
 
 ## Unos #5
 
-| Polje                                      | Detalji                                                                              |
-| ------------------------------------------ | ------------------------------------------------------------------------------------ |
-| Datum                                      | 25.04.2026                                                                           |
-| Alat koji je korišten                      | Claude Sonnet                                                                        |
-| Svrha korištenja                           | Implementacija automatskog isteka sesije                                             |
-| Kratak opis zadatka ili upita              | Implementacija logike za automatsko odjavljivanje korisnika nakon isteka JWT tokena. |
-| Šta je AI predložio ili generisao          | AI je predložio korištenje timeout funkcije i provjeru vremena isteka tokena.        |
-| Šta je tim prihvatio                       | Logiku za provjeru expiration vremena tokena.                                        |
-| Šta je tim izmijenio                       | Način prikaza poruke korisniku prije isteka sesije.                                  |
-| Šta je tim odbacio                         | Predloženo prečesto provjeravanje tokena zbog performansi.                           |
-| Rizici, problemi ili greške koje su uočene | Mogućnost nepravilnog logout-a ako vrijeme isteka nije pravilno očitano.             |
-| Ko je koristio alat                        | Alma Jusufbegović                                                                    |
+| Polje | Detalji |
+|---|---|
+| Datum | 25.04.2026 |
+| Alat koji je korišten | Claude Sonnet |
+| Svrha korištenja | Implementacija automatskog isteka sesije |
+| Kratak opis zadatka ili upita | Implementacija logike za automatsko odjavljivanje korisnika nakon isteka JWT tokena. |
+| Šta je AI predložio ili generisao | AI je predložio korištenje timeout funkcije i provjeru vremena isteka tokena. |
+| Šta je tim prihvatio | Logiku za provjeru expiration vremena tokena. |
+| Šta je tim izmijenio | Način prikaza poruke korisniku prije isteka sesije. |
+| Šta je tim odbacio | Predloženo prečesto provjeravanje tokena zbog performansi. |
+| Rizici, problemi ili greške koje su uočene | Mogućnost nepravilnog logout-a ako vrijeme isteka nije pravilno očitano. |
+| Ko je koristio alat | Alma Jusufbegović |
 
 ## Unos #6
 
-| Polje                                      | Detalji                                                                  |
-| ------------------------------------------ | ------------------------------------------------------------------------ |
-| Datum                                      | 27.04.2026                                                               |
-| Alat koji je korišten                      | Claude Sonnet                                                            |
-| Svrha korištenja                           | Pomoć pri pisanju testova                                                |
-| Kratak opis zadatka ili upita              | Kreiranje unit i integration testova za autentifikaciju.                 |
-| Šta je AI predložio ili generisao          | AI je predložio primjere testova za login i validaciju tokena.           |
-| Šta je tim prihvatio                       | Osnovne testne scenarije.                                                |
-| Šta je tim izmijenio                       | Testne podatke i strukturu testova.                                      |
-| Šta je tim odbacio                         | Automatski generisane testove koji nisu odgovarali arhitekturi projekta. |
-| Rizici, problemi ili greške koje su uočene | Testovi mogu biti nepotpuni ako se slijepo prihvate AI prijedlozi.       |
-| Ko je koristio alat                        | Merima Glušac                                                            |
+| Polje | Detalji |
+|---|---|
+| Datum | 27.04.2026 |
+| Alat koji je korišten | Claude Sonnet |
+| Svrha korištenja | Pomoć pri pisanju testova |
+| Kratak opis zadatka ili upita | Kreiranje unit i integration testova za autentifikaciju. |
+| Šta je AI predložio ili generisao | AI je predložio primjere testova za login i validaciju tokena. |
+| Šta je tim prihvatio | Osnovne testne scenarije. |
+| Šta je tim izmijenio | Testne podatke i strukturu testova. |
+| Šta je tim odbacio | Automatski generisane testove koji nisu odgovarali arhitekturi projekta. |
+| Rizici, problemi ili greške koje su uočene | Testovi mogu biti nepotpuni ako se slijepo prihvate AI prijedlozi. |
+| Ko je koristio alat | Merima Glušac |
 
 ## Unos #7
 
-| Polje                                      | Detalji                                                                             |
-| ------------------------------------------ | ----------------------------------------------------------------------------------- |
-| Datum                                      | 27.04.2026                                                                          |
-| Alat koji je korišten                      | Claude Sonnet                                                                       |
-| Svrha korištenja                           | Konfiguracija CI/CD pipeline-a                                                      |
-| Kratak opis zadatka ili upita              | Kreiranje Docker konfiguracije i CI/CD pipeline-a.                                  |
-| Šta je AI predložio ili generisao          | AI je generisao primjer Dockerfile-a i osnovni CI/CD workflow.                      |
-| Šta je tim prihvatio                       | Osnovnu strukturu Docker konfiguracije.                                             |
-| Šta je tim izmijenio                       | Varijable okruženja i build korake.                                                 |
-| Šta je tim odbacio                         | Predložene default konfiguracije koje nisu odgovarale projektu.                     |
+| Polje | Detalji |
+|---|---|
+| Datum | 27.04.2026 |
+| Alat koji je korišten | Claude Sonnet |
+| Svrha korištenja | Konfiguracija CI/CD pipeline-a |
+| Kratak opis zadatka ili upita | Kreiranje Docker konfiguracije i CI/CD pipeline-a. |
+| Šta je AI predložio ili generisao | AI je generisao primjer Dockerfile-a i osnovni CI/CD workflow. |
+| Šta je tim prihvatio | Osnovnu strukturu Docker konfiguracije. |
+| Šta je tim izmijenio | Varijable okruženja i build korake. |
+| Šta je tim odbacio | Predložene default konfiguracije koje nisu odgovarale projektu. |
 | Rizici, problemi ili greške koje su uočene | Rizik pogrešne konfiguracije pipeline-a koji može uzrokovati neuspješan deployment. |
-| Ko je koristio alat                        | Haris Macić                                                                         |
+| Ko je koristio alat | Haris Macić |
 
 ## Unos #8
 
-| Polje                                      | Detalji                                               |
-| ------------------------------------------ | ----------------------------------------------------- |
-| Datum                                      | 27.04.2026                                            |
-| Alat koji je korišten                      | ChatGPT                                               |
-| Svrha korištenja                           | Dokumentacija API endpointa                           |
-| Kratak opis zadatka ili upita              | Kreiranje dokumentacije za API rute.                  |
-| Šta je AI predložio ili generisao          | AI je generisao primjer dokumentacije endpointa.      |
-| Šta je tim prihvatio                       | Strukturu dokumentacije.                              |
-| Šta je tim izmijenio                       | Opise parametara i odgovora.                          |
-| Šta je tim odbacio                         | Previše generičke opise endpointa.                    |
+| Polje | Detalji |
+|---|---|
+| Datum | 27.04.2026 |
+| Alat koji je korišten | ChatGPT |
+| Svrha korištenja | Dokumentacija API endpointa |
+| Kratak opis zadatka ili upita | Kreiranje dokumentacije za API rute. |
+| Šta je AI predložio ili generisao | AI je generisao primjer dokumentacije endpointa. |
+| Šta je tim prihvatio | Strukturu dokumentacije. |
+| Šta je tim izmijenio | Opise parametara i odgovora. |
+| Šta je tim odbacio | Previše generičke opise endpointa. |
 | Rizici, problemi ili greške koje su uočene | Rizik netačne dokumentacije ako se ne provjeri ručno. |
-| Ko je koristio alat                        | Refik Mujčinović                                      |
+| Ko je koristio alat | Refik Mujčinović |
 
 ## Unos #9
 
-| Polje                                      | Detalji                                                                                                            |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| Datum                                      | 30.04.2026                                                                                                         |
-| Alat koji je korišten                      | Gemini                                                                                                             |
-| Svrha korištenja                           | Implementacija korisničkog CRUD-a                                                                                  |
-| Kratak opis zadatka ili upita              | Kreiranje CRUD operacija za korisnike (frontend, backend i baza), uključujući aktivaciju i deaktivaciju korisnika. |
-| Šta je AI predložio ili generisao          | AI je predložio strukturu API endpointa, primjer kontrolera i modela za korisnika, kao i validaciju podataka.      |
-| Šta je tim prihvatio                       | Osnovnu strukturu CRUD operacija i validaciju inputa.                                                              |
-| Šta je tim izmijenio                       | Način deaktivacije korisnika (soft delete umjesto brisanja).                                                       |
-| Šta je tim odbacio                         | Direktno brisanje korisnika iz baze.                                                                               |
-| Rizici, problemi ili greške koje su uočene | Potencijalna sigurnosna ranjivost ako se ne validiraju svi input podaci.                                           |
-| Ko je koristio alat                        | Hamza Hadžić                                                                                                       |
+| Polje | Detalji |
+|---|---|
+| Datum | 30.04.2026 |
+| Alat koji je korišten | Gemini |
+| Svrha korištenja | Implementacija korisničkog CRUD-a |
+| Kratak opis zadatka ili upita | Kreiranje CRUD operacija za korisnike (frontend, backend i baza), uključujući aktivaciju i deaktivaciju korisnika. |
+| Šta je AI predložio ili generisao | AI je predložio strukturu API endpointa, primjer kontrolera i modela za korisnika, kao i validaciju podataka. |
+| Šta je tim prihvatio | Osnovnu strukturu CRUD operacija i validaciju inputa. |
+| Šta je tim izmijenio | Način deaktivacije korisnika (soft delete umjesto brisanja). |
+| Šta je tim odbacio | Direktno brisanje korisnika iz baze. |
+| Rizici, problemi ili greške koje su uočene | Potencijalna sigurnosna ranjivost ako se ne validiraju svi input podaci. |
+| Ko je koristio alat | Hamza Hadžić |
 
 ## Unos #10
 
-| Polje                                      | Detalji                                                                               |
-| ------------------------------------------ | ------------------------------------------------------------------------------------- |
-| Datum                                      | 02.05.2026                                                                            |
-| Alat koji je korišten                      | Claude Sonnet                                                                         |
-| Svrha korištenja                           | Implementacija CRUD operacija za opremu                                               |
-| Kratak opis zadatka ili upita              | Kreiranje CRUD funkcionalnosti za upravljanje opremom i logike za status opreme.      |
-| Šta je AI predložio ili generisao          | AI je predložio strukturu backend servisa i frontend komponenti za prikaz opreme.     |
-| Šta je tim prihvatio                       | Osnovnu logiku CRUD operacija i prikaz liste opreme.                                  |
-| Šta je tim izmijenio                       | Logiku statusa opreme (dodane dodatne vrijednosti poput "u kvaru", "ispravno").       |
-| Šta je tim odbacio                         | Previše pojednostavljenu logiku statusa (npr. samo aktivno/neaktivno).                |
-| Rizici, problemi ili greške koje su uočene | Mogućnost nekonzistentnog stanja opreme ako se status ne ažurira pravilno.            |
-| Ko je koristio alat                        | Aner Atović                                                                           |
+| Polje | Detalji |
+|---|---|
+| Datum | 02.05.2026 |
+| Alat koji je korišten | Claude Sonnet |
+| Svrha korištenja | Implementacija CRUD operacija za opremu |
+| Kratak opis zadatka ili upita | Kreiranje CRUD funkcionalnosti za upravljanje opremom i logike za status opreme. |
+| Šta je AI predložio ili generisao | AI je predložio strukturu backend servisa i frontend komponenti za prikaz opreme. |
+| Šta je tim prihvatio | Osnovnu logiku CRUD operacija i prikaz liste opreme. |
+| Šta je tim izmijenio | Logiku statusa opreme (dodane dodatne vrijednosti poput "u kvaru", "ispravno"). |
+| Šta je tim odbacio | Previše pojednostavljenu logiku statusa (npr. samo aktivno/neaktivno). |
+| Rizici, problemi ili greške koje su uočene | Mogućnost nekonzistentnog stanja opreme ako se status ne ažurira pravilno. |
+| Ko je koristio alat | Aner Atović |
 
 ## Unos #11
 
-| Polje                                      | Detalji                                                                                             |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------- |
-| Datum                                      | 04.05.2026                                                                                          |
-| Alat koji je korišten                      | Claude Sonnet                                                                                       |
-| Svrha korištenja                           | Implementacija termina i radnog vremena                                                             |
-| Kratak opis zadatka ili upita              | Definisanje radnog vremena laboratorija, upravljanje kabinetima i kreiranje termina sa validacijom. |
-| Šta je AI predložio ili generisao          | AI je predložio logiku za provjeru preklapanja termina i validaciju radnog vremena.                 |
-| Šta je tim prihvatio                       | Osnovni algoritam za provjeru konflikta termina.                                                    |
-| Šta je tim izmijenio                       | Pravila za blokiranje perioda i ograničenja termina.                                                |
-| Šta je tim odbacio                         | Generički pristup bez uzimanja u obzir radnog vremena laboratorije.                                 |
-| Rizici, problemi ili greške koje su uočene | Kompleksnost logike može dovesti do bugova ako se ne testira dovoljno.                              |
-| Ko je koristio alat                        | Refik Mujčinović                                                                                    |
+| Polje | Detalji |
+|---|---|
+| Datum | 04.05.2026 |
+| Alat koji je korišten | Claude Sonnet |
+| Svrha korištenja | Implementacija termina i radnog vremena |
+| Kratak opis zadatka ili upita | Definisanje radnog vremena laboratorija, upravljanje kabinetima i kreiranje termina sa validacijom. |
+| Šta je AI predložio ili generisao | AI je predložio logiku za provjeru preklapanja termina i validaciju radnog vremena. |
+| Šta je tim prihvatio | Osnovni algoritam za provjeru konflikta termina. |
+| Šta je tim izmijenio | Pravila za blokiranje perioda i ograničenja termina. |
+| Šta je tim odbacio | Generički pristup bez uzimanja u obzir radnog vremena laboratorije. ž|
+| Rizici, problemi ili greške koje su uočene | Kompleksnost logike može dovesti do bugova ako se ne testira dovoljno. |
+| Ko je koristio alat | Refik Mujčinović |
 
 ## Unos #12
 
-| Polje                                      | Detalji                                                                        |
-| ------------------------------------------ | ------------------------------------------------------------------------------ |
-| Datum                                      | 04.05.2026                                                                     |
-| Alat koji je korišten                      | Claude Sonnet                                                                  |
-| Svrha korištenja                           | Pisanje integracijskih testova                                                 |
-| Kratak opis zadatka ili upita              | Kreiranje integracijskih testova za sve CRUD operacije u sistemu.              |
-| Šta je AI predložio ili generisao          | AI je generisao primjere test slučajeva i strukturu testova za API.            |
-| Šta je tim prihvatio                       | Osnovne test scenarije za CRUD operacije.                                      |
-| Šta je tim izmijenio                       | Testne podatke i način inicijalizacije test okruženja.                         |
-| Šta je tim odbacio                         | Testove koji nisu pokrivali specifične edge-case scenarije.                    |
+| Polje | Detalji |
+|---|---|
+| Datum | 04.05.2026 |
+| Alat koji je korišten | Claude Sonnet |
+| Svrha korištenja | Pisanje integracijskih testova |
+| Kratak opis zadatka ili upita | Kreiranje integracijskih testova za sve CRUD operacije u sistemu. |
+| Šta je AI predložio ili generisao | AI je generisao primjere test slučajeva i strukturu testova za API. |
+| Šta je tim prihvatio | Osnovne test scenarije za CRUD operacije. |
+| Šta je tim izmijenio | Testne podatke i način inicijalizacije test okruženja. |
+| Šta je tim odbacio | Testove koji nisu pokrivali specifične edge-case scenarije. |
 | Rizici, problemi ili greške koje su uočene | Mogućnost nedovoljne pokrivenosti testovima ako se koriste generički primjeri. |
-| Ko je koristio alat                        | Emina Hamamdžić, Alma Jusufbegović                                             |
+| Ko je koristio alat | Emina Hamamdžić, Alma Jusufbegović |
 
 ## Unos #13
 
-| Polje                                      | Detalji                                                                                                                 |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| Datum                                      | 06.05.2026                                                                                                              |
-| Alat koji je korišten                      | Gemini                                                                                                                  |
-| Svrha korištenja                           | Implementacija kalendar UI prikaza                                                                                      |
-| Kratak opis zadatka ili upita              | Izrada kalendarskog prikaza rezervacija i color-coding sistema za različite statuse termina.                            |
-| Šta je AI predložio ili generisao          | AI je predložio strukturu React komponenti za kalendar, način prikaza događaja i mapiranje boja za statuse rezervacija. |
-| Šta je tim prihvatio                       | Osnovni raspored kalendara i logiku za color-coding termina.                                                            |
-| Šta je tim izmijenio                       | Prikaz detalja termina i boje statusa radi bolje preglednosti korisnicima.                                              |
-| Šta je tim odbacio                         | Previše kompleksan drag-and-drop pristup za upravljanje terminima.                                                      |
-| Rizici, problemi ili greške koje su uočene | Moguć problem sa preglednošću pri velikom broju termina u jednom danu.                                                  |
-| Ko je koristio alat                        | Merima Glušac                                                                                                           |
+| Polje | Detalji |
+|---|---|
+| Datum | 06.05.2026 |
+| Alat koji je korišten | Gemini |
+| Svrha korištenja | Implementacija kalendar UI prikaza |
+| Kratak opis zadatka ili upita | Izrada kalendarskog prikaza rezervacija i color-coding sistema za različite statuse termina. |
+| Šta je AI predložio ili generisao | AI je predložio strukturu React komponenti za kalendar, način prikaza događaja i mapiranje boja za statuse rezervacija. |
+| Šta je tim prihvatio | Osnovni raspored kalendara i logiku za color-coding termina. |
+| Šta je tim izmijenio | Prikaz detalja termina i boje statusa radi bolje preglednosti korisnicima. |
+| Šta je tim odbacio | Previše kompleksan drag-and-drop pristup za upravljanje terminima. |
+| Rizici, problemi ili greške koje su uočene | Moguć problem sa preglednošću pri velikom broju termina u jednom danu. |
+| Ko je koristio alat | Merima Glušac ž|
 
 ## Unos #14
 
-| Polje                                      | Detalji                                                                                                         |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| Datum                                      | 08.05.2026                                                                                                      |
-| Alat koji je korišten                      | Claude Sonnet                                                                                                   |
-| Svrha korištenja                           | Implementacija prikaza slobodnih termina                                                                        |
-| Kratak opis zadatka ili upita              | Kreiranje logike za dohvat i prikaz slobodnih termina laboratorija.                                             |
-| Šta je AI predložio ili generisao          | AI je predložio backend filtriranje dostupnih termina i frontend prikaz liste sa filtrima po datumu i kabinetu. |
-| Šta je tim prihvatio                       | Logiku filtriranja i osnovni prikaz slobodnih termina.                                                          |
-| Šta je tim izmijenio                       | Dodane dodatne validacije za preklapanje termina i radno vrijeme laboratorije.                                  |
-| Šta je tim odbacio                         | Prikaz svih termina bez paginacije ili filtriranja.                                                             |
-| Rizici, problemi ili greške koje su uočene | Rizik od prikaza zastarjelih termina pri konkurentnim rezervacijama.                                            |
-| Ko je koristio alat                        | Emina Hamamdžić                                                                                                 |
+| Polje | Detalji |
+|---|---|
+| Datum | 08.05.2026 |
+| Alat koji je korišten | Claude Sonnet |
+| Svrha korištenja | Implementacija prikaza slobodnih termina |
+| Kratak opis zadatka ili upita | Kreiranje logike za dohvat i prikaz slobodnih termina laboratorija. |
+| Šta je AI predložio ili generisao | AI je predložio backend filtriranje dostupnih termina i frontend prikaz liste sa filtrima po datumu i kabinetu. |
+| Šta je tim prihvatio | Logiku filtriranja i osnovni prikaz slobodnih termina. |
+| Šta je tim izmijenio | Dodane dodatne validacije za preklapanje termina i radno vrijeme laboratorije. |
+| Šta je tim odbacio | Prikaz svih termina bez paginacije ili filtriranja. |
+| Rizici, problemi ili greške koje su uočene | Rizik od prikaza zastarjelih termina pri konkurentnim rezervacijama. |
+| Ko je koristio alat | Emina Hamamdžić |
 
 ## Unos #15
 
-| Polje                                      | Detalji                                                                                 |
-| ------------------------------------------ | --------------------------------------------------------------------------------------- |
-| Datum                                      | 08.05.2026                                                                              |
-| Alat koji je korišten                      | ChatGPT                                                                                 |
-| Svrha korištenja                           | Implementacija CRUD operacija za rezervacije                                            |
-| Kratak opis zadatka ili upita              | Razvoj frontend i backend funkcionalnosti za kreiranje, izmjenu i brisanje rezervacija. |
-| Šta je AI predložio ili generisao          | AI je generisao prijedlog API endpointa, DTO modela i validacije rezervacija.           |
-| Šta je tim prihvatio                       | Osnovnu strukturu CRUD operacija i validaciju zahtjeva.                                 |
-| Šta je tim izmijenio                       | Poslovna pravila za rezervacije i način provjere konflikta termina.                     |
-| Šta je tim odbacio                         | Direktno brisanje rezervacija bez evidencije statusa zahtjeva.                          |
-| Rizici, problemi ili greške koje su uočene | Mogućnost race-condition problema kod paralelnih rezervacija.                           |
-| Ko je koristio alat                        | Refik Mujčinović                                                                        |
+| Polje | Detalji |
+|---|---|
+| Datum | 08.05.2026 |
+| Alat koji je korišten | ChatGPT |
+| Svrha korištenja | Implementacija CRUD operacija za rezervacije |
+| Kratak opis zadatka ili upita | Razvoj frontend i backend funkcionalnosti za kreiranje, izmjenu i brisanje rezervacija. |
+| Šta je AI predložio ili generisao | AI je generisao prijedlog API endpointa, DTO modela i validacije rezervacija. |
+| Šta je tim prihvatio | Osnovnu strukturu CRUD operacija i validaciju zahtjeva. |
+| Šta je tim izmijenio | Poslovna pravila za rezervacije i način provjere konflikta termina. |
+| Šta je tim odbacio | Direktno brisanje rezervacija bez evidencije statusa zahtjeva. |
+| Rizici, problemi ili greške koje su uočene | Mogućnost race-condition problema kod paralelnih rezervacija. |
+| Ko je koristio alat | Refik Mujčinović |
 
 ## Unos #16
 
-| Polje                                      | Detalji                                                                                |
-| ------------------------------------------ | -------------------------------------------------------------------------------------- |
-| Datum                                      | 09.05.2026                                                                             |
-| Alat koji je korišten                      | Claude Sonnet                                                                          |
-| Svrha korištenja                           | Implementacija odobravanja i odbijanja zahtjeva                                        |
-| Kratak opis zadatka ili upita              | Kreiranje funkcionalnosti za pregled, odobravanje i odbijanje zahtjeva za rezervacije. |
-| Šta je AI predložio ili generisao          | AI je predložio statusni model rezervacija i tok obrade zahtjeva.                      |
-| Šta je tim prihvatio                       | Statusni workflow (na čekanju, odobreno, odbijeno).                                    |
-| Šta je tim izmijenio                       | Dodane validacije profesorovih privilegija.                                            |
-| Šta je tim odbacio                         | Automatsko odobravanje svih zahtjeva bez ručne provjere.                               |
-| Rizici, problemi ili greške koje su uočene | Rizik nekonzistentnog statusa rezervacije pri simultanim zahtjevima.                   |
-| Ko je koristio alat                        | Alma Jusufbegović                                                                      |
+| Polje | Detalji |
+|---|---|
+| Datum | 09.05.2026 |
+| Alat koji je korišten | Claude Sonnet |
+| Svrha korištenja | Implementacija odobravanja i odbijanja zahtjeva |
+| Kratak opis zadatka ili upita | Kreiranje funkcionalnosti za pregled, odobravanje i odbijanje zahtjeva za rezervacije. |
+| Šta je AI predložio ili generisao | AI je predložio statusni model rezervacija i tok obrade zahtjeva. |
+| Šta je tim prihvatio | Statusni workflow (na čekanju, odobreno, odbijeno). |
+| Šta je tim izmijenio | Dodane validacije profesorovih privilegija. |
+| Šta je tim odbacio | Automatsko odobravanje svih zahtjeva bez ručne provjere. |
+| Rizici, problemi ili greške koje su uočene | Rizik nekonzistentnog statusa rezervacije pri simultanim zahtjevima. |
+| Ko je koristio alat | Alma Jusufbegović |
 
 ## Unos #17
 
-| Polje                                      | Detalji                                                                                            |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------- |
-| Datum                                      | 10.05.2026                                                                                         |
-| Alat koji je korišten                      | Github Copilot                                                                                     |
-| Svrha korištenja                           | Testiranje kalendara i rezervacija                                                                 |
-| Kratak opis zadatka ili upita              | Pisanje unit i integracijskih testova za funkcionalnosti kalendara i rezervacija.                  |
-| Šta je AI predložio ili generisao          | AI je generisao primjere test scenarija za rezervacije, validaciju termina i API endpoint testove. |
-| Šta je tim prihvatio                       | Većinu osnovnih test scenarija za rezervacije i validaciju konflikta termina.                      |
-| Šta je tim izmijenio                       | Testne podatke i edge-case scenarije za preklapanje rezervacija.                                   |
-| Šta je tim odbacio                         | Generičke testove bez provjere poslovnih pravila sistema.                                          |
-| Rizici, problemi ili greške koje su uočene | Nedovoljna pokrivenost concurrency scenarija može dovesti do neotkrivenih bugova.                  |
-| Ko je koristio alat                        | Aner Atović, Haris Sadiković                                                                       |
+| Polje | Detalji |
+|---|---|
+| Datum | 10.05.2026 |
+| Alat koji je korišten | Github Copilot |
+| Svrha korištenja | Testiranje kalendara i rezervacija |
+| Kratak opis zadatka ili upita | Pisanje unit i integracijskih testova za funkcionalnosti kalendara i rezervacija. |
+| Šta je AI predložio ili generisao | AI je generisao primjere test scenarija za rezervacije, validaciju termina i API endpoint testove. |
+| Šta je tim prihvatio | Većinu osnovnih test scenarija za rezervacije i validaciju konflikta termina. |
+| Šta je tim izmijenio | Testne podatke i edge-case scenarije za preklapanje rezervacija. |
+| Šta je tim odbacio | Generičke testove bez provjere poslovnih pravila sistema. |
+| Rizici, problemi ili greške koje su uočene | Nedovoljna pokrivenost concurrency scenarija može dovesti do neotkrivenih bugova. |
+| Ko je koristio alat | Aner Atović, Haris Sadiković |
 
 ## Unos #18
 
-| Polje                                      | Detalji                                                                                                     |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| Datum                                      | 13.05.2026                                                                                                  |
-| Alat koji je korišten                      | Github Copilot                                                                                              |
-| Svrha korištenja                           | Implementacija validacije konflikta termina i opreme                                                        |
-| Kratak opis zadatka ili upita              | Razvoj logike za automatsku provjeru preklapanja rezervacija laboratorija i zauzetosti opreme.              |
-| Šta je AI predložio ili generisao          | AI je predložio backend validaciju konflikta termina pomoću provjere vremenskih intervala i statusa opreme. |
-| Šta je tim prihvatio                       | Većinu logike za validaciju preklapanja termina i rezervacija opreme.                                       |
-| Šta je tim izmijenio                       | Dodane dodatne provjere za specifične statuse rezervacija i laboratorija.                                   |
-| Šta je tim odbacio                         | Isključivo frontend validaciju bez backend provjere.                                                        |
-| Rizici, problemi ili greške koje su uočene | Potencijalni race-condition problemi kod paralelnih rezervacija.                                            |
-| Ko je koristio alat                        | Aner Atović, Haris Sadiković                                                                                |
+| Polje | Detalji |
+|---|---|
+| Datum | 13.05.2026 |
+| Alat koji je korišten | Github Copilot |
+| Svrha korištenja | Implementacija validacije konflikta termina i opreme |
+| Kratak opis zadatka ili upita | Razvoj logike za automatsku provjeru preklapanja rezervacija laboratorija i zauzetosti opreme. |
+| Šta je AI predložio ili generisao | AI je predložio backend validaciju konflikta termina pomoću provjere vremenskih intervala i statusa opreme. |
+| Šta je tim prihvatio | Većinu logike za validaciju preklapanja termina i rezervacija opreme. |
+| Šta je tim izmijenio | Dodane dodatne provjere za specifične statuse rezervacija i laboratorija. |
+| Šta je tim odbacio | Isključivo frontend validaciju bez backend provjere. |
+| Rizici, problemi ili greške koje su uočene | Potencijalni race-condition problemi kod paralelnih rezervacija. |
+| Ko je koristio alat | Aner Atović, Haris Sadiković |
 
 ## Unos #19
 
-| Polje                                      | Detalji                                                                                |
-| ------------------------------------------ | -------------------------------------------------------------------------------------- |
-| Datum                                      | 13.05.2026                                                                             |
-| Alat koji je korišten                      | Gemini                                                                                 |
-| Svrha korištenja                           | Implementacija email i in-app notifikacija                                             |
-| Kratak opis zadatka ili upita              | Kreiranje sistema obavijesti za promjene statusa rezervacija.                          |
-| Šta je AI predložio ili generisao          | AI je predložio event-based sistem notifikacija i predloške email poruka za korisnike. |
-| Šta je tim prihvatio                       | Osnovni tok slanja email notifikacija i prikaz in-app obavijesti.                      |
-| Šta je tim izmijenio                       | Dizajn i sadržaj notifikacija prilagođen potrebama projekta.                           |
-| Šta je tim odbacio                         | Push notifikacije preko eksternih servisa.                                             |
-| Rizici, problemi ili greške koje su uočene | Mogućnost kašnjenja email notifikacija zbog SMTP konfiguracije.                        |
-| Ko je koristio alat                        | Emina Hamamdžić, Alma Jusufbegović                                                     |
+| Polje | Detalji |
+|---|---|
+| Datum | 13.05.2026 |
+| Alat koji je korišten | Gemini |
+| Svrha korištenja | Implementacija email i in-app notifikacija |
+| Kratak opis zadatka ili upita | Kreiranje sistema obavijesti za promjene statusa rezervacija. |
+| Šta je AI predložio ili generisao | AI je predložio event-based sistem notifikacija i predloške email poruka za korisnike. |
+| Šta je tim prihvatio | Osnovni tok slanja email notifikacija i prikaz in-app obavijesti. |
+| Šta je tim izmijenio | Dizajn i sadržaj notifikacija prilagođen potrebama projekta. |
+| Šta je tim odbacio | Push notifikacije preko eksternih servisa. |
+| Rizici, problemi ili greške koje su uočene | Mogućnost kašnjenja email notifikacija zbog SMTP konfiguracije. |
+| Ko je koristio alat | Emina Hamamdžić, Alma Jusufbegović |
 
 ## Unos #20
 
-| Polje                                      | Detalji                                                                                       |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| Datum                                      | 14.05.2026                                                                                    |
-| Alat koji je korišten                      | ChatGPT                                                                                       |
-| Svrha korištenja                           | Automatska promjena statusa opreme                                                            |
-| Kratak opis zadatka ili upita              | Implementacija logike za zauzimanje i oslobađanje opreme nakon rezervacije.                   |
-| Šta je AI predložio ili generisao          | AI je predložio statusni model opreme i automatsko ažuriranje stanja pri potvrdi rezervacije. |
-| Šta je tim prihvatio                       | Automatsku promjenu statusa opreme tokom rezervacijskog workflowa.                            |
-| Šta je tim izmijenio                       | Dodane dodatne provjere dostupnosti opreme pri izmjeni rezervacija.                           |
-| Šta je tim odbacio                         | Ručno upravljanje statusima opreme od strane administratora za svaku rezervaciju.             |
-| Rizici, problemi ili greške koje su uočene | Rizik nekonzistentnog statusa opreme pri neuspješnom rollback-u rezervacije.                  |
-| Ko je koristio alat                        | Hamza Hadžić, Merima Glušac                                                                   |
+| Polje | Detalji |
+|---|---|
+| Datum | 14.05.2026 |
+| Alat koji je korišten | ChatGPT |
+| Svrha korištenja | Automatska promjena statusa opreme |
+| Kratak opis zadatka ili upita | Implementacija logike za zauzimanje i oslobađanje opreme nakon rezervacije. |
+| Šta je AI predložio ili generisao | AI je predložio statusni model opreme i automatsko ažuriranje stanja pri potvrdi rezervacije. |
+| Šta je tim prihvatio | Automatsku promjenu statusa opreme tokom rezervacijskog workflowa. |
+| Šta je tim izmijenio | Dodane dodatne provjere dostupnosti opreme pri izmjeni rezervacija. |
+| Šta je tim odbacio | Ručno upravljanje statusima opreme od strane administratora za svaku rezervaciju. |
+| Rizici, problemi ili greške koje su uočene | Rizik nekonzistentnog statusa opreme pri neuspješnom rollback-u rezervacije. |
+| Ko je koristio alat | Hamza Hadžić, Merima Glušac |
 
 ## Unos #21
 
-| Polje                                      | Detalji                                                                                                          |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| Datum                                      | 08.05.2026                                                                                                       |
-| Alat koji je korišten                      | Gemini                                                                                                           |
-| Svrha korištenja                           | E2E i integracijsko testiranje rezervacijskog workflowa                                                          |
-| Kratak opis zadatka ili upita              | Kreiranje scenarija za testiranje kompletnog toka rezervacije laboratorija i opreme.                             |
-| Šta je AI predložio ili generisao          | AI je generisao primjere E2E scenarija za rezervaciju, odobravanje, notifikacije i validaciju konflikta termina. |
-| Šta je tim prihvatio                       | Većinu osnovnih test scenarija i API integracijskih testova.                                                     |
-| Šta je tim izmijenio                       | Testni podaci i edge-case scenariji prilagođeni poslovnim pravilima sistema.                                     |
-| Šta je tim odbacio                         | Isključivo manuelno testiranje bez automatizacije.                                                               |
-| Rizici, problemi ili greške koje su uočene | Veća kompleksnost održavanja E2E testova pri promjenama frontend interfejsa.                                     |
-| Ko je koristio alat                        | Refik Mujčinović, Haris Macić                                                                                    |
+| Polje | Detalji |
+|---|---|
+| Datum | 08.05.2026 |
+| Alat koji je korišten | Gemini |
+| Svrha korištenja | E2E i integracijsko testiranje rezervacijskog workflowa |
+| Kratak opis zadatka ili upita | Kreiranje scenarija za testiranje kompletnog toka rezervacije laboratorija i opreme. |
+| Šta je AI predložio ili generisao | AI je generisao primjere E2E scenarija za rezervaciju, odobravanje, notifikacije i validaciju konflikta termina. |
+| Šta je tim prihvatio | Većinu osnovnih test scenarija i API integracijskih testova. |
+| Šta je tim izmijenio | Testni podaci i edge-case scenariji prilagođeni poslovnim pravilima sistema. |
+| Šta je tim odbacio | Isključivo manuelno testiranje bez automatizacije. |
+| Rizici, problemi ili greške koje su uočene | Veća kompleksnost održavanja E2E testova pri promjenama frontend interfejsa. |
+| Ko je koristio alat | Refik Mujčinović, Haris Macić |
 
 ## Unos #22
 
@@ -449,3 +449,153 @@
 | Šta je tim odbacio | Prijedlog za prikaz historije rezervacija kabineta na istoj stranici – ostavljeno za buduću iteraciju. |
 | Rizici, problemi ili greške koje su uočene | Potrebno paziti na autorizaciju – pristup detaljima kabineta treba biti ograničen na ovlaštene korisnike. |
 | Ko je koristio alat | Aner Atović |
+
+## Unos #31
+
+| Polje | Detalji |
+|---|---|
+| Datum | 28.05.2026 |
+| Alat koji je korišten | ChatGPT |
+| Svrha korištenja | Implementacija verifikacije email adrese |
+| Kratak opis zadatka ili upita | Implementacija slanja verifikacionog emaila, potvrde putem linka i prikaza statusa verifikacije na korisničkom profilu. |
+| Šta je AI predložio ili generisao | Primjere backend logike za generisanje tokena, API endpoint za potvrdu emaila i prikaz statusa verifikacije na frontend-u. |
+| Šta je tim prihvatio | Strukturu verifikacionog procesa i validaciju tokena. |
+| Šta je tim izmijenio | Vrijeme trajanja verifikacionog tokena i izgled korisničkih obavijesti. |
+| Šta je tim odbacio | Automatsko brisanje naloga bez verifikacije email adrese. |
+| Rizici, problemi ili greške koje su uočene | Mogućnost zloupotrebe tokena ukoliko nije pravilno zaštićen ili mu nije ograničeno trajanje. |
+| Ko je koristio alat | Hamza Hadžić |
+
+## Unos #32
+
+| Polje | Detalji |
+|---|---|
+| Datum | 28.05.2026 |
+| Alat koji je korišten | ChatGPT |
+| Svrha korištenja | Implementacija sistema podsjetnika |
+| Kratak opis zadatka ili upita | Implementacija in-app i email podsjetnika za rezervisane termine. |
+| Šta je AI predložio ili generisao | Logiku zakazivanja podsjetnika, konfigurabilne vremenske intervale i modele notifikacija. |
+| Šta je tim prihvatio | Mehanizam slanja podsjetnika 24h i 1h prije termina. |
+| Šta je tim izmijenio | Način prikaza notifikacija u korisničkom interfejsu. |
+| Šta je tim odbacio | Slanje email podsjetnika neverifikovanim korisnicima. |
+| Rizici, problemi ili greške koje su uočene | Kašnjenje notifikacija zbog vremenskih zona ili problema sa schedulerom.|
+| Ko je koristio alat | Hamza Hadžić |
+
+## Unos #33
+
+| Polje                                      | Detalji                                                                                                |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Datum                                      | 28.05.2026                                                                                             |
+| Alat koji je korišten                      | Claude Sonnet                                                                                                |
+| Svrha korištenja                           | Implementacija prikaza i uređivanja profila                                                            |
+| Kratak opis zadatka ili upita              | Kreiranje stranice profila sa prikazom korisničkih podataka i mogućnošću izmjene osnovnih informacija. |
+| Šta je AI predložio ili generisao          | Strukturu forme za uređivanje profila, validacije i API pozive za ažuriranje podataka.                 |
+| Šta je tim prihvatio                       | Prikaz osnovnih podataka i validaciju unosa.                                                           |
+| Šta je tim izmijenio                       | Raspored elemenata na stranici profila.                                                                |
+| Šta je tim odbacio                         | Mogućnost izmjene korisničke uloge od strane korisnika.                                                |
+| Rizici, problemi ili greške koje su uočene | Potreba za dodatnom validacijom jedinstvenosti korisničkog imena i email adrese.                       |
+| Ko je koristio alat                        | Emina Hamamdžić                                                                                        |
+
+## Unos #34
+
+| Polje                                      | Detalji                                                                     |
+| ------------------------------------------ | --------------------------------------------------------------------------- |
+| Datum                                      | 28.05.2026                                                                  |
+| Alat koji je korišten                      | Claude Sonnet                                                              |
+| Svrha korištenja                           | Implementacija promjene lozinke                                             |
+| Kratak opis zadatka ili upita              | Razvoj forme za promjenu lozinke sa validacijama trenutne i nove lozinke.   |
+| Šta je AI predložio ili generisao          | Primjere validacije lozinke, hashiranja i API endpoint za promjenu lozinke. |
+| Šta je tim prihvatio                       | Validaciju potvrde lozinke i sigurnosne provjere.                           |
+| Šta je tim izmijenio                       | Pravila složenosti lozinke.                                                 |
+| Šta je tim odbacio                         | Automatsku prijavu nakon promjene lozinke bez ponovne autentifikacije.      |
+| Rizici, problemi ili greške koje su uočene | Sigurnosni problemi ukoliko se lozinke ne hashiraju pravilno.               |
+| Ko je koristio alat                        | Emina Hamamdžić                                                             |
+
+## Unos #35
+
+| Polje                                      | Detalji                                                                                        |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| Datum                                      | 29.05.2026                                                                                     |
+| Alat koji je korišten                      | ChatGPT                                                                                        |
+| Svrha korištenja                           | Implementacija prikaza aktivnosti                                                              |
+| Kratak opis zadatka ili upita              | Kreiranje liste nedavnih aktivnosti prijavljenog korisnika na profilu.                         |
+| Šta je AI predložio ili generisao          | Model aktivnosti, API za dohvat aktivnosti i prijedlog prikaza aktivnosti u tabelarnom obliku. |
+| Šta je tim prihvatio                       | Prikaz naslova, opisa i vremena aktivnosti.                                                    |
+| Šta je tim izmijenio                       | Broj aktivnosti koje se prikazuju na profilu.                                                  |
+| Šta je tim odbacio                         | Prikaz aktivnosti drugih korisnika.                                                            |
+| Rizici, problemi ili greške koje su uočene | Potencijalno sporiji rad kod velikog broja aktivnosti.                                         |
+| Ko je koristio alat                        | Aner Atović                                                                                    |
+
+## Unos #36
+
+| Polje                                      | Detalji                                                                      |
+| ------------------------------------------ | ---------------------------------------------------------------------------- |
+| Datum                                      | 31.05.2026                                                                   |
+| Alat koji je korišten                      | ChatGPT                                                                      |
+| Svrha korištenja                           | Implementacija sigurnosnih email obavijesti                                  |
+| Kratak opis zadatka ili upita              | Slanje email upozorenja korisnicima nakon promjene email adrese ili lozinke. |
+| Šta je AI predložio ili generisao          | Predložak email poruke, logiku slanja i preporuke za sigurnosne obavijesti.  |
+| Šta je tim prihvatio                       | Slanje obavijesti nakon promjene osjetljivih podataka.                       |
+| Šta je tim izmijenio                       | Sadržaj i dizajn email poruke.                                               |
+| Šta je tim odbacio                         | Slanje obavijesti za svaku promjenu profila.                                 |
+| Rizici, problemi ili greške koje su uočene | Neisporučivanje emailova zbog problema sa SMTP servisom.                     |
+| Ko je koristio alat                        | Refik Mujčinović                                                             |
+
+## Unos #37
+
+| Polje                                      | Detalji                                                                                   |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| Datum                                      | 31.05.2026                                                                                |
+| Alat koji je korišten                      | Claude Sonnet                                                                             |
+| Svrha korištenja                           | Implementacija filtriranja rezervacija i eksporta                                         |
+| Kratak opis zadatka ili upita              | Dodavanje filtera za datum i kabinet te mogućnosti izvoza podataka u CSV i PDF format.    |
+| Šta je AI predložio ili generisao          | Primjere implementacije filtera, CSV generisanja i PDF izvještaja sa tabelarnim prikazom. |
+| Šta je tim prihvatio                       | Logiku filtriranja i eksport samo trenutno filtriranih podataka.                          |
+| Šta je tim izmijenio                       | Izgled filter sekcije i format PDF dokumenta.                                             |
+| Šta je tim odbacio                         | Automatski eksport nakon promjene filtera.                                                |
+| Rizici, problemi ili greške koje su uočene | Problemi sa prikazom bosanskih karaktera u PDF i CSV dokumentima.                         |
+| Ko je koristio alat                        | Alma Jusufbegović                                                                         |
+
+## Unos #38
+
+| Polje                                      | Detalji                                                                     |
+| ------------------------------------------ | --------------------------------------------------------------------------- |
+| Datum                                      | 28.05.2026                                                                  |
+| Alat koji je korišten                      | Github Copilot                                                                     |
+| Svrha korištenja                           | Priprema testnih scenarija                                                  |
+| Kratak opis zadatka ili upita              | Kreiranje dodatnih test slučajeva za ranije implementirane funkcionalnosti. |
+| Šta je AI predložio ili generisao          | Test scenarije, edge-case primjere i prijedloge integracionih testova.      |
+| Šta je tim prihvatio                       | Većinu testnih slučajeva za validaciju funkcionalnosti.                     |
+| Šta je tim izmijenio                       | Prioritete testnih scenarija prema riziku funkcionalnosti.                  |
+| Šta je tim odbacio                         | Previše detaljne testove za niskorizične funkcionalnosti.                   |
+| Rizici, problemi ili greške koje su uočene | Mogućnost da određeni scenariji ostanu nepokriveni testovima.               |
+| Ko je koristio alat                        | Haris Macić i Haris Sadiković                                               |
+
+## Unos #39
+
+| Polje                                      | Detalji                                                                    |
+| ------------------------------------------ | -------------------------------------------------------------------------- |
+| Datum                                      | 31.05.2026                                                                 |
+| Alat koji je korišten                      | ChatGPT                                                                    |
+| Svrha korištenja                           | Implementacija Dark/Light moda                                             |
+| Kratak opis zadatka ili upita              | Omogućavanje korisnicima odabira svijetle ili tamne teme aplikacije.       |
+| Šta je AI predložio ili generisao          | Primjere upravljanja temama, čuvanja korisničkih preferenci i CSS stilova. |
+| Šta je tim prihvatio                       | Koncept trajnog pamćenja odabrane teme.                                    |
+| Šta je tim izmijenio                       | Boje i kontrast elemenata korisničkog interfejsa.                          |
+| Šta je tim odbacio                         | Automatsko prebacivanje teme bez korisničkog izbora.                       |
+| Rizici, problemi ili greške koje su uočene | Problemi sa čitljivošću određenih komponenti u dark modu.                  |
+| Ko je koristio alat                        | Merima Glušac                                                              |
+
+## Unos #40
+
+| Polje                                      | Detalji                                                                                  |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| Datum                                      | 04.05.2026                                                                               |
+| Alat koji je korišten                      | ChatGPT                                                                                  |
+| Svrha korištenja                           | Implementacija vizualizacije stanja opreme                                               |
+| Kratak opis zadatka ili upita              | Razvoj grafičkog prikaza procenta ispravne, neispravne, servisirane i uklonjene opreme.  |
+| Šta je AI predložio ili generisao          | Prijedloge za kružne grafikone, izračun procenata i prikaz podataka po statusima opreme. |
+| Šta je tim prihvatio                       | Vizualni prikaz stanja opreme kroz prstenasti grafikon.                                  |
+| Šta je tim izmijenio                       | Kategorije i način prikaza pojedinih statusa opreme.                                     |
+| Šta je tim odbacio                         | Prikaz detalja o svakoj pojedinačnoj stavci opreme unutar grafikona.                     |
+| Rizici, problemi ili greške koje su uočene | Netočni procenti ukoliko podaci o statusima opreme nisu ažurni.                          |
+| Ko je koristio alat                        | Merima Glušac                                                                            |
