@@ -163,12 +163,16 @@ Očekivani rezultat:
 
 - statistike i tabele se prikazuju prema ulozi.
 
+Student:
 ![Student dashboard](screenshots/student_dashboard.png)
 
+Profesor:
 ![Profesor dashboard](screenshots/profesor_dashboard.png)
 
+Tehničar:
 ![Tehničar dashboard](screenshots/tehnicar_dashboard.png)
 
+Administrator:
 ![Administrator dashboard](screenshots/admin_dashboard.png)
 
 ### 6.2 Kalendar termina (sve uloge)
@@ -221,8 +225,10 @@ Očekivani rezultat:
 
 - nakon otkazivanja termin se uklanja sa liste aktivnih.
 
+Student:
 ![Aktivne rezervacije (student)](screenshots/moje_rezervacije.png)
 
+Profesor:
 ![Rezervisani termini (profesor)](screenshots/lista_rezervacija.png)
 
 ### 6.5 Zahtjevi studenata (Profesor)
@@ -269,8 +275,10 @@ Očekivani rezultat:
 
 - termin postaje rezervisan i vidljiv (ako je označeno).
 
-![Upravljanje terminima (tehničar)](screenshots/upravljanje_terminima.png)
+Tehničar:
+![Upravljanje terminima (Tehničar)](screenshots/upravljanje_terminima.png)
 
+Profesor:
 ![Rezervacija termina (Profesor)](screenshots/upravljanje_terminima2.png)
 
 ### 6.7 Upravljanje opremom (Tehničar, Admin; pregled Profesor)
