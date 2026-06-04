@@ -228,6 +228,8 @@ Očekivani rezultat:
 Student:
 ![Aktivne rezervacije (student)](screenshots/moje_rezervacije.png)
 
+![Moji zahtjevi (student)](screenshots/zahtjevi.png)
+
 Profesor:
 ![Rezervisani termini (profesor)](screenshots/lista_rezervacija.png)
 
