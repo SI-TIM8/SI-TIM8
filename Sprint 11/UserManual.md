@@ -163,7 +163,13 @@ Očekivani rezultat:
 
 - statistike i tabele se prikazuju prema ulozi.
 
-Slika (placeholder): Dashboard pregled po ulozi.
+![Student dashboard](screenshots/student_dashboard.png)
+
+![Profesor dashboard](screenshots/profesor_dashboard.png)
+
+![Tehničar dashboard](screenshots/tehnicar_dashboard.png)
+
+![Administrator dashboard](screenshots/admin_dashboard.png)
 
 ### 6.2 Kalendar termina (sve uloge)
 
@@ -179,7 +185,7 @@ Očekivani rezultat:
 
 - odabrani termin prikazuje detalje (kabinet, datum, vrijeme, kreator, status).
 
-Slika (placeholder): Kalendar termina i panel detalja.
+![Kalendar termina](screenshots/kalendar_termina.png)
 
 ### 6.3 Zakaži termin (Student)
 
@@ -197,7 +203,9 @@ Očekivani rezultat:
 - status zahtjeva postaje "Na čekanju".
 - termin se pojavljuje u "Moji zahtjevi" dok profesor ne odluči.
 
-Slika (placeholder): Lista termina za prijavu i modal opreme.
+![Lista termina](screenshots/moji_zahtjevi.png)
+
+![Pregled opreme](screenshots/modal_opreme.png)
 
 ### 6.4 Moje rezervacije / Lista rezervacija (Student, Profesor)
 
@@ -213,7 +221,9 @@ Očekivani rezultat:
 
 - nakon otkazivanja termin se uklanja sa liste aktivnih.
 
-Slika (placeholder): Aktivne rezervacije i tabovi zahtjeva.
+![Aktivne rezervacije (student)](screenshots/moje_rezervacije.png)
+
+![Rezervisani termini (profesor)](screenshots/lista_rezervacija.png)
 
 ### 6.5 Zahtjevi studenata (Profesor)
 
@@ -230,7 +240,9 @@ Očekivani rezultat:
 
 - status zahtjeva se ažurira, student dobija obavijest.
 
-Slika (placeholder): Lista zahtjeva i modal za odgovor.
+![Lista zahtjeva](screenshots/zahtjevi_studenata.png)
+
+![Modal za odgovor](screenshots/modal_odobri_zahtjev.png)
 
 ### 6.6 Upravljanje terminima (Tehničar, Profesor)
 
@@ -257,7 +269,9 @@ Očekivani rezultat:
 
 - termin postaje rezervisan i vidljiv (ako je označeno).
 
-Slika (placeholder): Upravljanje terminima i rezervacija.
+![Upravljanje terminima (tehničar)](screenshots/upravljanje_terminima.png)
+
+![Rezervacija termina (Profesor)](screenshots/upravljanje_terminima2.png)
 
 ### 6.7 Upravljanje opremom (Tehničar, Admin; pregled Profesor)
 
@@ -278,7 +292,9 @@ Očekivani rezultat:
 
 - promjene se vide u listi opreme, dokumentacija se može preuzeti.
 
-Slika (placeholder): Upravljanje opremom i modal detalja.
+![Upravljanje opremom](screenshots/upravljanje_opremom.png)
+
+![Dodavanje opreme](screenshots/modal_dodavanje_opreme.png)
 
 ### 6.8 Kvarovi opreme (Tehničar, Admin)
 
@@ -296,7 +312,9 @@ Očekivani rezultat:
 
 - status kvara se ažurira i korisnici dobijaju obavijest.
 
-Slika (placeholder): Lista kvarova i detalji kvara.
+![Lista kvarova](screenshots/kvarovi_opreme.png)
+
+![Detalji kvara](screenshots/detalji_kvara.png)
 
 ### 6.9 Historija termina (Profesor)
 
@@ -313,7 +331,9 @@ Očekivani rezultat:
 
 - kvar je zabilježen, tehničar dobija obavijest.
 
-Slika (placeholder): Historija termina i modal prijave kvara.
+![Historija termina](screenshots/historija_termina.png)
+
+![Prijava kvara](screenshots/modal_historija_termina.png)
 
 ### 6.10 Upravljanje korisnicima (Administrator)
 
@@ -332,7 +352,9 @@ Očekivani rezultat:
 - promjene se odmah prikazuju na listi.
 - deaktivirani korisnik gubi pristup sistemu.
 
-Slika (placeholder): Lista korisnika i modal za uređivanje.
+![Lista korisnika](screenshots/upravljanje_korisnicima.png)
+
+![Uređivanje podataka korisnika](screenshots/modal_upravljanje_korisnicima.png)
 
 ### 6.11 Objekti i kabineti (Administrator)
 
@@ -349,7 +371,7 @@ Očekivani rezultat:
 
 - objekti i kabineti se prikazuju u listi.
 
-Slika (placeholder): Lista objekata i kabineta.
+![Lista objekata i kabineta](screenshots/objekti_kabineti.png)
 
 ### 6.12 Moj profil (sve uloge)
 
@@ -366,7 +388,7 @@ Očekivani rezultat:
 
 - podaci se ažuriraju, a statusi su odmah vidljivi.
 
-Slika (placeholder): Profil korisnika.
+![Profil korisnika](screenshots/moj_profil.png)
 
 ### 6.13 O aplikaciji (sve uloge)
 
