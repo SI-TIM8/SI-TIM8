@@ -1,6 +1,8 @@
 # Architecture & Technical Overview: LABsistem
 
-Ovaj dokument pruža sveobuhvatan tehnički i arhitektonski pregled sistema **LABsistem**, softverskog rješenja za upravljanje laboratorijama, kabinetima, opremom i rezervacijama termina. Dokument služi kao primarna tehnička referenca za razvoj, testiranje, deployment i održavanje sistema.
+Ovaj dokument pruža sveobuhvatan tehnički i arhitektonski pregled sistema **LABsistem**, softverskog rješenja za upravljanje laboratorijama, kabinetima, opremom i rezervacijama termina. 
+
+- primarna tehnička referenca za razvoj, testiranje, deployment i održavanje sistema
 
 ---
 
@@ -34,3 +36,36 @@ Sistem je izgrađen korišćenjem modernih, stabilnih i široko prihvaćenih teh
 ## 3. Struktura Projekta i Organizacija Koda
 
 Repozitorijum je organizovan oko korijenskog direktorijuma `Projekat/` koji sadrži četiri glavne tehničke i logičke cjeline:
+Projekat/
+├── LabSistem.backend/          # Backend rješenje (.NET Solution)
+│   ├── LabSistem.slnx          # Moderni fajl konfiguracije rješenja
+│   ├── LABsistem.Presentation/ # API Host, Kontroleri, Program.cs (Entry point)
+│   ├── LABsistem.Api/          # Poslovna logika, Servisi, DTOs, Validatori
+│   ├── LabSistem.Dal/          # Data Access Layer, DbContext, Migracije
+│   └── LabSistem.Domain/       # Core Entiteti, Enumi, Apstrakcije
+├── LABsistem.Frontend/         # React SPA klijentska aplikacija
+│   ├── src/                    # Izvorni kod (main.jsx, App.jsx, komponente)
+│   ├── package.json            # npm skripte i zavisnosti
+│   └── nginx.conf              # Konfiguracija za produkcijski web server
+├── LABsistem.Tests/            # .NET projekat za unit i integracione testove
+└── LABsistem.E2E/              # End-to-End testovi (Playwright)
+
+---
+### Entry Points - Tačka ulaza u aplikaciju
+
+- **Backend** (Program.cs) : Inicijalizuje WebApplication.CreateBuilder, učitava .env konfiguracije, registruje servise u DI kontejner, konfiguriše HTTP pipeline (middleware) i pokreće aplikaciju preko app.Run()
+- **Frontend** (src/main.jsx) : Pokreće React aplikaciju, montira klijentski ruter i renderuje glavnu <App/> komponentu u DOM.
+
+---
+
+## 4. Slojevita Arhitektura i Zavisnosti Modula
+
+Unutar backend rješenja implementirana je Slojevita (Layered) Arhitektura sa jednosmjernim zavisnostima usmjerenim ka dole (od prezentacije prema domenu):
+
+[Presentation] ──> [Api] ──> [Dal] ──> [Domain]
+      │             │         │
+      └─────────────┴─────────┘ (Projektne reference)
+
+
+
+
