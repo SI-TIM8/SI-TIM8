@@ -79,9 +79,9 @@ Očekivani rezultat:
 
 ## 4. Testni korisnici / demo kredencijali
 
-U repozitoriju nisu definisani fiksni demo nalozi. Testne korisnike i njihove lozinke obezbjeđuje administrator sistema.
+Testne korisnike i njihove lozinke obezbjeđuje administrator sistema.
 
-Preporučeni format za demo:
+Demo nalozi i lozinke:
 
 - student: student / student123
 - profesor: profesor / profesor123
