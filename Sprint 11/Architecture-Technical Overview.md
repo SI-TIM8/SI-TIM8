@@ -65,10 +65,12 @@ Projekat/
 
 Unutar backend rješenja implementirana je Slojevita (Layered) Arhitektura sa jednosmjernim zavisnostima usmjerenim ka dole (od prezentacije prema domenu):
 
+```plaintext
 [Presentation] ──> [Api] ──> [Dal] ──> [Domain]
       │             │         │
       └─────────────┴─────────┘ (Projektne reference)
-      
+
+```  
 
 
 1. **LABsistem.Presentation**: Izložen prema spoljnom svijetu (HTTP Kontroleri). Zavisi od Api, Dal i Domain slojeva radi registracije i usmjeravanja.
