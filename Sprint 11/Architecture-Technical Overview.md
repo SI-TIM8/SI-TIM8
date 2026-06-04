@@ -36,6 +36,9 @@ Sistem je izgrađen korišćenjem modernih, stabilnih i široko prihvaćenih teh
 ## 3. Struktura Projekta i Organizacija Koda
 
 Repozitorijum je organizovan oko korijenskog direktorijuma `Projekat/` koji sadrži četiri glavne tehničke i logičke cjeline:
+### 3. Struktura Projekta i Organizacija Koda
+
+```plaintext
 Projekat/
 ├── LabSistem.backend/          # Backend rješenje (.NET Solution)
 │   ├── LabSistem.slnx          # Moderni fajl konfiguracije rješenja
@@ -49,7 +52,7 @@ Projekat/
 │   └── nginx.conf              # Konfiguracija za produkcijski web server
 ├── LABsistem.Tests/            # .NET projekat za unit i integracione testove
 └── LABsistem.E2E/              # End-to-End testovi (Playwright)
-
+```
 ---
 ### Entry Points - Tačka ulaza u aplikaciju
 
