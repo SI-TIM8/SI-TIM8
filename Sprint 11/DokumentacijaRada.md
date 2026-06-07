@@ -1,7 +1,7 @@
 # Dokumentacija rada tima
 
 **Projekat:** Sistem za upravljanje laboratorijskim resursima  
-**Tim:** Aner Atović, Hamza Hadžić, Emina Hamamdžić, Alma Jusufbegović, Merima Glušac, Haris Macić, Refik Mujčinović, Haris Sadiković
+**Tim:** Aner Atović, Hamza Hadžić, Emina Hamamdžić, Alma Jusufbegović, Merima Glušac, Haris Macić, Refik Mujčinović, Haris Sadiković  
 **Trajanje projekta:** Sprint 1 – Sprint 11 
 **Akademska godina:** 2025/2026
 
@@ -9,7 +9,7 @@
 
 ## 1. Svrha projekta
 
-Cilj projekta bio je razviti web aplikaciju za digitalizaciju upravljanja laboratorijskim resursima na fakultetu. Sistem zamjenjuje nestrukturirane, ručne procese rezervacije laboratorijskog prostora i opreme - kao što su dogovaranje putem emaila, fizičke liste ili usmeni dogovori - centralizovanom platformom kojoj svi akteri pristupaju putem preglednika.
+Cilj projekta bio je razviti web aplikaciju za digitalizaciju upravljanja laboratorijskim resursima na fakultetu. Sistem zamjenjuje nestrukturirane, ručne procese rezervacije laboratorijskog prostora i opreme, kao što su dogovaranje putem emaila, fizičke liste ili usmeni dogovori, centralizovanom platformom kojoj svi akteri pristupaju putem preglednika.
 
 Krajnji rezultat je funkcionalna, višekorisni sistem s podrškom za četiri korisničke uloge, kompletnim tokom rezervacije od podnošenja do odobrenja, upravljanjem inventarom i opremom, sistemom obavijesti te nizom sekundarnih funkcionalnosti poput email verifikacije, dark/light moda i vizualnih indikatora stanja opreme.
 
@@ -17,14 +17,14 @@ Krajnji rezultat je funkcionalna, višekorisni sistem s podrškom za četiri kor
 
 ## 2. Problem koji sistem rješava
 
-Laboratorije na fakultetu dijeli više korisničkih grupa - studenti, profesori, asistenti i tehničko osoblje. Prije uvođenja sistema, nije postojao strukturiran mehanizam za:
+Laboratorije na fakultetu dijeli više korisničkih grupa, studenti, profesori, asistenti i tehničko osoblje. Prije uvođenja sistema, nije postojao strukturiran mehanizam za:
 
 - **Rezervaciju termina i opreme** - studenti nisu imali pregled slobodnih termina niti mogućnost slanja formalnog zahtjeva za rezervaciju.
 - **Evidenciju stanja opreme** - kvarovi nisu sistematski prijavljivani niti praćeni, što je dovodilo do situacija u kojima se neispravna oprema nudila za rezervaciju.
 - **Upravljanje pristupom** - nije bilo jasne podjele prema ulogama; svako je imao isti nivo uvida i mogućnosti.
 - **Komunikaciju između aktera** - obavijesti o odobrenju, odbijanju ili kvaru opreme bile su neformalne i nepouzdane.
 
-Sistem direktno adresira sve četiri oblasti kroz strukturiran tok rada, automatizovane promjene statusa i integrisani sistem obavijesti.
+*Sistem direktno adresira sve četiri oblasti kroz strukturiran tok rada, automatizovane promjene statusa i integrisani sistem obavijesti.*
 
 ---
 
@@ -91,7 +91,7 @@ Sistem direktno adresira sve četiri oblasti kroz strukturiran tok rada, automat
 | **Sprint 1** | Projektna osnova | Definicija problema, Product Vision, Stakeholder Map, inicijalni Product Backlog |
 | **Sprint 2** | Zahtjevi | User storiji s acceptance kriterijima, prioritizacija backloga, NFR zahtjevi |
 | **Sprint 3** | Arhitektura | Domain Model, Use Case Model, Architecture Overview, ERD, Risk Register |
-| **Sprint 4** | Inicijalizacija | Definition of Done, Release Plan, tehnički skelet projekta, inicijalizacija repozitorija |
+| **Sprint 4** | Inicijalizacija | Definition of Done, Release Plan, tehnički skelet projekta, Branching Strategy |
 | **Sprint 5** | Autentifikacija | Login UI, JWT, RBAC, sigurna odjava, istek sesije, CI/CD pipeline, Docker konfiguracija |
 | **Sprint 6** | Administracija | CRUD korisnika s pretragom i filtriranjem, CRUD opreme, radno vrijeme, kabineti, termini |
 | **Sprint 7** | Rezervacije | Kalendarski prikaz, kreiranje zahtjeva, odabir opreme, odobravanje/odbijanje, pregled zahtjeva |
@@ -112,7 +112,7 @@ Ukupno **61 od 65 stavki** Product Backloga je implementirano i testirano. Sve p
 - Upravljanje kvarovima s automatskim otkazivanjem rezervacija
 - Sistem obavijesti (in-app i email) za sve ključne događaje
 - Korisnički profil s nedavnim aktivnostima, sigurnosnim alertom i exportom podataka
-- NFR testiranje: load test s 50 concurrent korisnika, ACID provjera, backup mehanizam
+- NFR testiranje: load test s 50 concurrent korisnika, ACID provjera
 
 ### Odgođeno / Nije završeno (Deferred)
 Četiri stavke planirane u Release Planu nisu ušle u finalni opseg:
@@ -121,7 +121,7 @@ Ukupno **61 od 65 stavki** Product Backloga je implementirano i testirano. Sve p
 |--------|--------|
 | **Audit log prijava** (evidentiranje uspješnih/neuspješnih pokušaja prijave) | Deprioritizovan u finalnim sprintovima zbog kapaciteta tima |
 | **Ocjena studentima** (profesor dodjeljuje ocjene unutar sistema) | Nije bio dio dogovorenog MVP-a; odgođeno za buduće verzije |
-| **Recenzije na opremu** (komentari profesora i tehničara na opremu) | Sprint 11 nije realiziran |
+| **Recenzije na opremu** (komentari profesora i tehničara na opremu) | Odgođeno za buduće verzije |
 | **Zasebna To-Do sekcija za tehničara** (workflow rješavanja kvara korak-po-korak) | Bazni workflow kvara završen u Sprint 9; napredna To-Do sekcija nije implementirana |
 
 ---
@@ -135,7 +135,7 @@ Odlučeno je da se koristi stateless JWT autentifikacija umjesto session-based p
 Trajno brisanje opreme iz sistema odbačeno je rano u razvoju jer bi uništilo referentni integritet - historija rezervacija, kvarovi i audit podaci ostali bi bez veze s opremom. Implementirano je soft-delete rješenje gdje arhivirana oprema gubi vidljivost u aktivnim listama ali zadržava sve relacije u bazi.
 
 **Docker Compose za lokalni razvoj i CI/CD pipeline**  
-Tim je od Sprinta 5 koristio Docker Compose za standardizaciju razvojnog okruženja, čime su eliminisane razlike između mašina članova tima (posebno problemi s lokalnim MySQL instalacijama). GitLab CI/CD pipeline postavljen istovremeno osigurao je automatsko pokretanje testova na svakom push-u.
+Tim je od Sprinta 5 koristio Docker Compose za standardizaciju razvojnog okruženja, čime su eliminisane razlike između mašina članova tima (posebno problemi s lokalnim MySQL instalacijama). CI/CD pipeline postavljen istovremeno osigurao je automatsko pokretanje testova na svakom push-u.
 
 **Automatska promjena statusa opreme pri prijavi kvara**  
 Odlučeno je da prijava kvara ne zahtijeva dodatnu potvrdu tehničara da bi se oprema označila kao neispravna - status se mijenja odmah. Ovo je svjesna odluka u korist brzine zaštite korisnika od rezervacije neispravne opreme, nauštrb scenarija gdje bi prijava bila greškom podnesena.
@@ -184,13 +184,10 @@ Sistem trenutno ne bilježi ko je kada i šta radio (osim nedavnih aktivnosti na
 Profesor trenutno nema mogućnost bilježenja prisutnosti ili dodjele ocjena unutar sistema. Ovo bi bila prirodna nadogradnja koja bi povezala laboratorijske rezervacije s akademskim evidencijama.
 
 **Recenzije i komentari na opremu**  
-Profesori i tehničari bi imali koristi od mogućnosti ostavljanja komentara na opremu - npr. napomene o specifičnostima upotrebe, skrivenim kvarovima ili preporukama za kalibraciju - što bi dopunilo formalnu dokumentaciju (PDF upute) neformalnim iskustvenim znanjem.
+Profesori i tehničari bi imali koristi od mogućnosti ostavljanja komentara na opremu - npr. napomene o specifičnostima upotrebe, skrivenim kvarovima ili preporukama za kalibraciju, što bi dopunilo formalnu dokumentaciju (PDF upute) neformalnim iskustvenim znanjem.
 
 **Naprednija analitika i izvještaji**  
-Trenutni export rezervacija u CSV/PDF bazičan je. Proširenje bi uključivalo dashboard s grafovima zauzetosti po kabinetu i periodu, statistiku kvarova po tipu opreme i izvještaj o studentskoj aktivnosti - korisno za planiranje nabavki i radnog vremena.
-
-**Notifikacije u realnom vremenu (WebSocket)**  
-Trenutne in-app obavijesti zahtijevaju osvježavanje stranice ili polling. Zamjena polling mehanizma WebSocket konekcijom osigurala bi instantno prikazivanje novih obavijesti bez korisničke akcije, što je posebno važno u slučajevima hitnih otkazivanja rezervacija.
+Trenutni export rezervacija u CSV/PDF bazičan je. Proširenje bi uključivalo dashboard s grafovima zauzetosti po kabinetu i periodu, statistiku kvarova po tipu opreme i izvještaj o studentskoj aktivnosti, korisno za planiranje nabavki i radnog vremena.
 
 **Mobilna responzivnost i PWA podrška**  
 Aplikacija je responzivna na širini od 360px do 1920px, ali nije optimizovana kao Progressive Web App. Dodavanje PWA manifesta i service workera omogućilo bi instalaciju na mobilne uređaje i osnovnu offline podršku (pregled vlastitih rezervacija bez konekcije).
