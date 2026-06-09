@@ -135,7 +135,7 @@ Odlučeno je da se koristi stateless JWT autentifikacija umjesto session-based p
 Trajno brisanje opreme iz sistema odbačeno je rano u razvoju jer bi uništilo referentni integritet - historija rezervacija, kvarovi i audit podaci ostali bi bez veze s opremom. Implementirano je soft-delete rješenje gdje arhivirana oprema gubi vidljivost u aktivnim listama ali zadržava sve relacije u bazi.
 
 **Docker Compose za lokalni razvoj i CI/CD pipeline**  
-Tim je od Sprinta 5 koristio Docker Compose za standardizaciju razvojnog okruženja, čime su eliminisane razlike između mašina članova tima (posebno problemi s lokalnim MySQL instalacijama). CI/CD pipeline postavljen istovremeno osigurao je automatsko pokretanje testova na svakom push-u.
+Tim je od Sprinta 5 koristio Docker Compose za standardizaciju razvojnog okruženja, čime su eliminisane razlike između mašina članova tima . CI/CD pipeline postavljen istovremeno osigurao je automatsko pokretanje testova na svakom push-u.
 
 **Automatska promjena statusa opreme pri prijavi kvara**  
 Odlučeno je da prijava kvara ne zahtijeva dodatnu potvrdu tehničara da bi se oprema označila kao neispravna - status se mijenja odmah. Ovo je svjesna odluka u korist brzine zaštite korisnika od rezervacije neispravne opreme, nauštrb scenarija gdje bi prijava bila greškom podnesena.
